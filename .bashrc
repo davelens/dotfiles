@@ -3,7 +3,7 @@ export PATH="${PATH}:/opt/local/bin:/opt/local/sbin:/opt/local/git:/Applications
 
 # Aliases
 alias lsa='ls -hal'
-alias h='history'
+alias his='history | grep'
 
 # Methods
 
