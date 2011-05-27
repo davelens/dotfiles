@@ -1,1 +1,1 @@
-# Blank config, for great justice
+" Blank config, for great justice
