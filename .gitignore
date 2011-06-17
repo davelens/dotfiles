@@ -2,6 +2,7 @@
 !.bash_profile
 !.gitconfig
 !.gitignore
-!.vimrc
+!.inputrc
 !.irssi/*.theme
+!.vimrc
 !Zend/*.epf
