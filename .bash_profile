@@ -4,8 +4,24 @@ export PATH="${PATH}:/opt/local/bin:/opt/local/sbin:/opt/local/git:/Applications
 # Aliases
 alias lsa='ls -hal'
 alias his='history | grep'
+alias ml='mysql -u root -p'
+
+# file size in current dir
+alias fs='ls -ltraSh | grep -v ^d'
+
+# dir size in current dir
+alias ds='du -sh */'
+
+# SSH keys to add
+ssh-add ~/.ssh/github
 
 # Methods
+
+# Checks if duplicate files exist in the current directory.
+checkdupes()
+{
+	shasum ${1} | awk {'print $1'} | sort | uniq -c | grep -v " 1 "
+}
 
 ##################################################
 # Fancy PWD display function
