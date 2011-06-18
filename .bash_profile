@@ -1,6 +1,7 @@
 # Settings
 export PATH="${PATH}:/opt/local/bin:/opt/local/sbin:/opt/local/git:/Applications/MAMP/Library/bin"
 
+
 # Aliases
 alias lsa='ls -hal'
 alias his='history | grep'
@@ -12,16 +13,11 @@ alias fs='ls -ltraSh | grep -v ^d'
 # dir size in current dir
 alias ds='du -sh */'
 
-# SSH keys to add
+# SSH keys to add - I generally don't use an id_rsa file, so add/delete this at your leisure
 ssh-add ~/.ssh/github
 
-# Methods
 
-# Checks if duplicate files exist in the current directory.
-checkdupes()
-{
-	shasum ${1} | awk {'print $1'} | sort | uniq -c | grep -v " 1 "
-}
+# Methods
 
 ##################################################
 # Fancy PWD display function
@@ -32,31 +28,34 @@ checkdupes()
 # /home/me/stuff          -> ~/stuff               if USER=me
 # /usr/share/big_dir_name -> ../share/big_dir_name if pwdmaxlen=20
 ##################################################
-bash_prompt_command() {
+rewrite_pwd()
+{
 	# how many characters of the $PWD should be kept
 	local pwdmaxlen=25
-	
+
 	# indicate that there has been dir truncation
 	local trunc_symbol=".."
 	local dir=${PWD##*/}
-	
+
 	pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
 
 	NEW_PWD=${PWD/$HOME/~}
-	
+
 	local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
-	
+
 	if [ ${pwdoffset} -gt "0" ]
 		then
 		NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
 		NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
 	fi
 }
-#
-bash_prompt() {
-    local NONE='\[\033[0m\]'    # unsets color to term's fg color
 
-        # regular colors
+# rewrites the PS1 bash prompt var
+rewrite_bash_prompt()
+{
+	local NONE='\[\033[0m\]'    # unsets color to term's fg color
+
+	# regular colors
 	local K='\[\033[0;30m\]'    # black
 	local R='\[\033[0;31m\]'    # red
 	local G='\[\033[0;32m\]'    # green
@@ -65,7 +64,7 @@ bash_prompt() {
 	local M='\[\033[0;35m\]'    # magenta
 	local C='\[\033[0;36m\]'    # cyan
 	local W='\[\033[0;37m\]'    # white
-						    
+				    
 	# empahsized (bolded) colors
 	local EMK='\[\033[1;30m\]'
 	local EMR='\[\033[1;31m\]'
@@ -75,7 +74,7 @@ bash_prompt() {
 	local EMM='\[\033[1;35m\]'
 	local EMC='\[\033[1;36m\]'
 	local EMW='\[\033[1;37m\]'
-										        
+
 	# background colors
 	local BGK='\[\033[40m\]'
 	local BGR='\[\033[41m\]'
@@ -85,7 +84,7 @@ bash_prompt() {
 	local BGM='\[\033[45m\]'
 	local BGC='\[\033[46m\]'
 	local BGW='\[\033[47m\]'
-															    
+
 	local UC=$C                 # user's color
 	[ $UID -eq "0" ] && UC=$R   # root's color
 
@@ -93,6 +92,7 @@ bash_prompt() {
 	PS1="${G}\u@local$(git_branch)> \${NEW_PWD} \\$ ${NONE}\n\$ "
 }
 
+# returns the active git branch - this is used in rewrite_bash_prompt()
 git_branch()
 {
     if ! git rev-parse --git-dir > /dev/null 2>&1; then
@@ -104,8 +104,7 @@ git_branch()
     echo ":$branch"
 }
 
-# Execute methods
-PROMPT_COMMAND=bash_prompt_command
-bash_prompt
-unset bash_prompt
 
+# Execute methods
+PROMPT_COMMAND=rewrite_pwd
+rewrite_bash_prompt
