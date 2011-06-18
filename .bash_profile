@@ -95,13 +95,13 @@ rewrite_bash_prompt()
 # returns the active git branch - this is used in rewrite_bash_prompt()
 git_branch()
 {
-    if ! git rev-parse --git-dir > /dev/null 2>&1; then
-        return 0
-    fi
-    
-    branch=$(git branch 2>/dev/null | grep '^\*' | sed 's/^\* //')
+	if ! git rev-parse --git-dir > /dev/null 2>&1; then
+		return 0
+	fi
 
-    echo ":$branch"
+	branch=$(git branch 2>/dev/null | grep '^\*' | sed 's/^\* //')
+
+	echo ":$branch"
 }
 
 
