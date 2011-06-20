@@ -13,6 +13,9 @@ alias fs='ls -ltraSh | grep -v ^d'
 # dir size in current dir
 alias ds='du -sh */'
 
+# remove all .svn folders recursively in current dir
+alias purgesvn="find . -type d -name '.svn' -exec rm -rf '{}' '+' "
+
 # SSH keys to add - I generally don't use an id_rsa file, so add/delete this at your leisure
 ssh-add ~/.ssh/github
 
