@@ -111,10 +111,15 @@ git_branch()
 # export all changed files between the given revision and HEAD, to a given location
 svnecf()
 {
-	rev=$1
-	tarfile=$2
+	tarfile=$1
+	start_rev=$2
+	end_rev=$3
 
-	svn diff -r "$rev":HEAD --summarize | 
+	if [[ "$end_rev" == "" ]]; then
+		 end_rev='HEAD'
+	fi 
+
+	svn diff -r "$start_rev":"$end_rev" --summarize | 
 	awk '{if ($1 != "D") print $2}'| 
 	xargs  -I {} tar rf "$tarfile" {}
 }
