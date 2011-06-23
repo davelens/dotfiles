@@ -16,8 +16,9 @@ alias ds='du -sh */'
 # remove all .svn folders recursively in current dir
 alias purgesvn="find . -type d -name '.svn' -exec rm -rf '{}' '+' "
 
+
 # SSH keys to add - I generally don't use an id_rsa file, so add/delete this at your leisure
-ssh-add ~/.ssh/github
+ssh-add ~/.ssh/github.id_rsa
 
 
 # Methods
@@ -105,6 +106,17 @@ git_branch()
 	branch=$(git branch 2>/dev/null | grep '^\*' | sed 's/^\* //')
 
 	echo ":$branch"
+}
+
+# export all changed files between the given revision and HEAD, to a given location
+svnecf()
+{
+	rev=$1
+	tarfile=$2
+
+	svn diff -r "$rev":HEAD --summarize | 
+	awk '{if ($1 != "D") print $2}'| 
+	xargs  -I {} tar rf "$tarfile" {}
 }
 
 
