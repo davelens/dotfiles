@@ -7,6 +7,7 @@ alias lsa='ls -hal'
 alias his='history | grep'
 alias ml='mysql -u root -p'
 
+
 # file size in current dir
 alias fs='ls -ltraSh | grep -v ^d'
 
@@ -93,19 +94,13 @@ rewrite_bash_prompt()
 	[ $UID -eq "0" ] && UC=$R   # root's color
 
 	# rewrite prompt
-	PS1="${G}\u@local$(git_branch)> \${NEW_PWD} \\$ ${NONE}\n\$ "
+	PS1="${G}\u@local:$(git_branch)> \${NEW_PWD} \\$ ${NONE}\n\$ "
 }
 
 # returns the active git branch - this is used in rewrite_bash_prompt()
 git_branch()
 {
-	if ! git rev-parse --git-dir > /dev/null 2>&1; then
-		return 0
-	fi
-
-	branch=$(git branch 2>/dev/null | grep '^\*' | sed 's/^\* //')
-
-	echo ":$branch"
+	git branch 2>/dev/null | grep '*' | sed 's/\* //'
 }
 
 # export all changed files between the given revision and HEAD, to a given location
@@ -121,10 +116,11 @@ svnecf()
 
 	svn diff -r "$start_rev":"$end_rev" --summarize | 
 	awk '{if ($1 != "D") print $2}'| 
-	xargs  -I {} tar rf "$tarfile" {}
+	xargs  -I {} tar -rvf "$tarfile" {}
 }
 
 
 # Execute methods
 PROMPT_COMMAND=rewrite_pwd
 rewrite_bash_prompt
+git st
