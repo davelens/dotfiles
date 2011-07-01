@@ -190,6 +190,9 @@ mysql_replace()
 PROMPT_COMMAND=rewrite_pwd
 rewrite_bash_prompt
 
+# add the github id_rsa key to the SSH agent
+ssh-add ~/.ssh/github.id_rsa
+
 # adds ~/.ssh/config to the ssh autocomplete
 complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/config)" ssh
 
