@@ -12,8 +12,8 @@ alias clearcache='sudo dscacheutil -flushcache'
 alias se='svn_ecf'
 alias gsd='get_sql_dump'
 
-# file size in current dir
-alias fs='ls -ltraSh | grep -v ^d'
+# file sizes in current dir
+alias fs='get_filesizes'
 
 # dir size in current dir
 alias ds='du -sh */'
@@ -105,6 +105,12 @@ rewrite_bash_prompt()
 git_branch()
 {
 	git branch 2>/dev/null | grep '*' | sed 's/\* //'
+}
+
+# get filesize
+get_filesizes()
+{
+	ls -laSh | grep -v ^d | awk '{print $5 "\t" $9}'
 }
 
 # export all changed files between the given revision and HEAD, to a given location
