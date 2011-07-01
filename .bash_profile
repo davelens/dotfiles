@@ -1,12 +1,16 @@
 # Settings
-export PATH="${PATH}:/opt/local/bin:/opt/local/sbin:/opt/local/git:/Applications/MAMP/Library/bin"
-
+# base PATH = /usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr/X11/bin
+if [[ ${PATH} != */opt/local/bin:/opt/local/sbin:/opt/local/git:/Applications/MAMP/Library/bin* ]]
+then
+	export PATH="${PATH}:/opt/local/bin:/opt/local/sbin:/opt/local/git:/Applications/MAMP/Library/bin"
+fi
 
 # Aliases
 alias lsa='ls -hal'
 alias his='history | grep'
-alias ml='mysql -u root -p'
-
+alias clearcache='sudo dscacheutil -flushcache'
+alias se='svn_ecf'
+alias gsd='get_sql_dump'
 
 # file size in current dir
 alias fs='ls -ltraSh | grep -v ^d'
@@ -104,7 +108,7 @@ git_branch()
 }
 
 # export all changed files between the given revision and HEAD, to a given location
-svnecf()
+svn_ecf()
 {
 	tarfile=$1
 	start_rev=$2
@@ -120,7 +124,34 @@ svnecf()
 }
 
 
+# fetch from a live database - connect through SSH, fetch the dump
+get_sql_dump()
+{
+	project=$1
+	ssh_hostname=$2
+	mysql_user=$3
+	mysql_database=$4
+	datefolder=$(date +'%d-%m')
+	
+	if [[ "$project" == "" ]] || [[ "$ssh_hostname" == "" ]] || [[ "$mysql_user" == "" ]] || [[ "$mysql_database" == "" ]]
+	then
+		echo "usage: getdump <project> <ssh_hostname> <mysql_user> <mysql_database>"
+	else
+		backup_dir=${HOME}/Desktop/backups/$project/$datefolder
+
+		mkdir -p $backup_dir && cd $backup_dir &&
+		ssh $ssh_hostname mysqldump -u $mysql_user -p $mysql_database > $ssh_hostname.sql
+	fi 	
+}
+
+
 # Execute methods
+
 PROMPT_COMMAND=rewrite_pwd
 rewrite_bash_prompt
+
+# adds ~/.ssh/config to the ssh autocomplete
+complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/config)" ssh
+
+# show the status of our config repo in the user dir
 git st
