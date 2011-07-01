@@ -1,29 +1,38 @@
 # Settings
-# base PATH = /usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr/X11/bin
-if [[ ${PATH} != */opt/local/bin:/opt/local/sbin:/opt/local/git:/Applications/MAMP/Library/bin* ]]
-then
-	export PATH="${PATH}:/opt/local/bin:/opt/local/sbin:/opt/local/git:/Applications/MAMP/Library/bin"
+# /opt/local binaries
+if [[ ${PATH} != */opt/local/bin* ]] ; then
+	export PATH="${PATH}:/opt/local/bin"
+fi
+if [[ ${PATH} != */opt/local/sbin* ]] ; then
+	export PATH="${PATH}:/opt/local/sbin"
 fi
 
-# Aliases
-alias lsa='ls -hal'
-alias his='history | grep'
-alias clearcache='sudo dscacheutil -flushcache'
-alias se='svn_ecf'
-alias gsd='get_sql_dump'
+# MAMP binaries
+if [[ ${PATH} != */Applications/MAMP/Library/bin* ]] ; then
+	export PATH="${PATH}:/Applications/MAMP/Library/bin"
+fi
 
-# file sizes in current dir
+# XCode X11 binaries
+if [[ ${PATH} != */usr/X11/bin* ]] ; then
+	export PATH="${PATH}:/usr/X11/bin"
+fi
+
+
+# Aliases
+alias clearcache='sudo dscacheutil -flushcache'
 alias fs='get_filesizes'
+alias gsd='get_sql_dump'
+alias his='history | grep'
+alias ls='ls -G'
+alias lsa='ls -hal'
+alias mr='mysql_replace'
+alias se='svn_export_changed_files'
 
 # dir size in current dir
 alias ds='du -sh */'
 
 # remove all .svn folders recursively in current dir
 alias purgesvn="find . -type d -name '.svn' -exec rm -rf '{}' '+' "
-
-
-# SSH keys to add - I generally don't use an id_rsa file, so add/delete this at your leisure
-ssh-add ~/.ssh/github.id_rsa
 
 
 # Methods
@@ -114,7 +123,7 @@ get_filesizes()
 }
 
 # export all changed files between the given revision and HEAD, to a given location
-svn_ecf()
+svn_export_changed_files()
 {
 	tarfile=$1
 	start_rev=$2
@@ -122,15 +131,19 @@ svn_ecf()
 
 	if [[ "$end_rev" == "" ]]; then
 		 end_rev='HEAD'
-	fi 
-
-	svn diff -r "$start_rev":"$end_rev" --summarize | 
-	awk '{if ($1 != "D") print $2}'| 
-	xargs  -I {} tar -rvf "$tarfile" {}
+	fi
+	
+	if [[ "$tarfile" == "" ]] || [[ "$start_rev" == "" ]]
+	then
+		echo "usage: svn_export_changed_files <tarfile> <start_rev> <*end_rev>"
+	else
+		svn diff -r "$start_rev":"$end_rev" --summarize | 
+		awk '{if ($1 != "D") print $2}'| 
+		xargs  -I {} tar -rvf "$tarfile" {}
+	fi
 }
 
-
-# fetch from a live database - connect through SSH, fetch the dump
+# performs a mysqldump through SSH, and stores it in the "backups" folder on your desktop
 get_sql_dump()
 {
 	project=$1
@@ -141,12 +154,33 @@ get_sql_dump()
 	
 	if [[ "$project" == "" ]] || [[ "$ssh_hostname" == "" ]] || [[ "$mysql_user" == "" ]] || [[ "$mysql_database" == "" ]]
 	then
-		echo "usage: getdump <project> <ssh_hostname> <mysql_user> <mysql_database>"
+		echo "usage: get_sql_dump <project> <ssh_hostname> <mysql_user> <mysql_database>"
 	else
 		backup_dir=${HOME}/Desktop/backups/$project/$datefolder
 
-		mkdir -p $backup_dir && cd $backup_dir &&
+		mkdir -p $backup_dir
+		cd $backup_dir
 		ssh $ssh_hostname mysqldump -u $mysql_user -p $mysql_database > $ssh_hostname.sql
+	fi 	
+}
+
+#replaces a local mysql database with the specified one
+mysql_replace()
+{
+	database=$1
+	sql_file=$2
+	
+	if [[ "$database" == "" ]] || [[ "$sql_file" == "" ]]
+	then
+		echo "usage: mysql_replace <database> <sql_file>"
+	else
+		echo "Dropping and re-creating database '$database'"
+		mysql $database -e "drop database $database; create database $database;"
+		
+		echo "Importing $sql_file ..."
+		mysql $database < $sql_file
+		
+		echo "Done."
 	fi 	
 }
 
