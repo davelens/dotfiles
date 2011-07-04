@@ -20,6 +20,7 @@ fi
 
 # Aliases
 alias clearcache='sudo dscacheutil -flushcache'
+alias csh='configure_ssh_host'
 alias fs='get_filesizes'
 alias gsd='get_sql_dump'
 alias his='history | grep'
@@ -43,7 +44,7 @@ alias purgesvn="find . -type d -name '.svn' -exec rm -rf '{}' '+' "
 # The home directory (HOME) is replaced with a ~
 # The last pwdmaxlen characters of the PWD are displayed
 # Leading partial directory names are striped off
-# /home/me/stuff          -> ~/stuff               if USER=me
+# /home/me/stuff          -> ~/stuff               if username=me
 # /usr/share/big_dir_name -> ../share/big_dir_name if pwdmaxlen=20
 ##################################################
 rewrite_pwd()
@@ -103,7 +104,7 @@ rewrite_bash_prompt()
 	local BGC='\[\033[46m\]'
 	local BGW='\[\033[47m\]'
 
-	local UC=$C                 # user's color
+	local UC=$C                 # username's color
 	[ $UID -eq "0" ] && UC=$R   # root's color
 
 	# rewrite prompt
@@ -148,23 +149,23 @@ get_sql_dump()
 {
 	project=$1
 	ssh_hostname=$2
-	mysql_user=$3
+	mysql_username=$3
 	mysql_database=$4
 	datefolder=$(date +'%d-%m')
 	
-	if [[ "$project" == "" ]] || [[ "$ssh_hostname" == "" ]] || [[ "$mysql_user" == "" ]] || [[ "$mysql_database" == "" ]]
+	if [[ "$project" == "" ]] || [[ "$ssh_hostname" == "" ]] || [[ "$mysql_username" == "" ]] || [[ "$mysql_database" == "" ]]
 	then
-		echo "usage: get_sql_dump <project> <ssh_hostname> <mysql_user> <mysql_database>"
+		echo "usage: get_sql_dump <project> <ssh_hostname> <mysql_username> <mysql_database>"
 	else
 		backup_dir=${HOME}/Desktop/backups/$project/$datefolder
 
 		mkdir -p $backup_dir
 		cd $backup_dir
-		ssh $ssh_hostname mysqldump -u $mysql_user -p $mysql_database > $ssh_hostname.sql
+		ssh $ssh_hostname mysqldump -u $mysql_username -p $mysql_database > $ssh_hostname.sql
 	fi 	
 }
 
-#replaces a local mysql database with the specified one
+# replaces a local mysql database with the specified one
 mysql_replace()
 {
 	database=$1
@@ -184,6 +185,28 @@ mysql_replace()
 	fi 	
 }
 
+# creates an SSH key and uploads it to the given host
+configure_ssh_host()
+{
+	username=$1
+	hostname=$2
+	identifier=$3
+	keyfile=$4
+	
+	if [[ "$identifier" == "" ]] || [[ "$username" == "" ]] || [[ "$hostname" == "" ]] || [[ "$keyfile" == "" ]]
+	then
+		echo "usage: configure_ssh_host <username> <hostname> <identifier> <keyfile>"
+	else
+		ssh-keygen -f ~/.ssh/$keyfile.id_rsa -C "$USER $(date +'%Y/%m%/%d %H:%M:%S')"
+		
+		echo -e "Host $identifier\n\tHostName $hostname\n\tUser $username\n\tIdentityFile ~/.ssh/$keyfile.id_rsa" >> ~/.ssh/config
+		
+		ssh $identifier 'mkdir -p .ssh && cat >> ~/.ssh/authorized_keys' < ~/.ssh/$keyfile.id_rsa.pub
+		
+		tput bold; ssh -o PasswordAuthentication=no $identifier true && { tput setaf 2; echo 'Success!'; } || { tput setaf 1; echo 'Failure'; }; tput sgr0
+	fi
+}
+
 
 # Execute methods
 
@@ -196,5 +219,5 @@ ssh-add ~/.ssh/github.id_rsa
 # adds ~/.ssh/config to the ssh autocomplete
 complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/config)" ssh
 
-# show the status of our config repo in the user dir
+# show the status of our config repo in the username dir
 git st
