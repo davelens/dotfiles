@@ -138,17 +138,23 @@ get_sql_dump()
 	ssh_hostname=$2
 	mysql_username=$3
 	mysql_database=$4
+	mysql_host=$5
 	datefolder=$(date +'%d-%m')
 	
 	if [[ "$project" == "" ]] || [[ "$ssh_hostname" == "" ]] || [[ "$mysql_username" == "" ]] || [[ "$mysql_database" == "" ]]
 	then
-		echo "usage: get_sql_dump <project> <ssh_hostname> <mysql_username> <mysql_database>"
+		echo "usage: get_sql_dump <project> <ssh_hostname> <mysql_username> <mysql_database> <*mysql_host>"
 	else
 		backup_dir=${HOME}/Desktop/backups/$project/$datefolder
 
+		if [[ "$mysql_host" != "" ]]
+		then
+			mysql_host="-h $mysql_host"
+		fi
+
 		mkdir -p $backup_dir
 		cd $backup_dir
-		ssh $ssh_hostname mysqldump -u $mysql_username -p $mysql_database > $ssh_hostname.sql
+		ssh $ssh_hostname mysqldump -u $mysql_username -p $mysql_database $mysql_host > $ssh_hostname.sql
 	fi 	
 }
 
