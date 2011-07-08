@@ -197,7 +197,15 @@ configure_ssh_host()
 		ssh $identifier 'mkdir -p .ssh && cat >> ~/.ssh/authorized_keys' < ~/.ssh/$keyfile.id_rsa.pub
 		
 		tput bold; ssh -o PasswordAuthentication=no $identifier true && { tput setaf 2; echo 'Success!'; } || { tput setaf 1; echo 'Failure'; }; tput sgr0
+		
+		ssh_load_autocomplete
 	fi
+}
+
+# adds ~/.ssh/config to the ssh autocomplete
+ssh_load_autocomplete()
+{
+	complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/config)" ssh
 }
 
 
@@ -210,7 +218,7 @@ rewrite_bash_prompt
 ssh-add ~/.ssh/github.id_rsa
 
 # adds ~/.ssh/config to the ssh autocomplete
-complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/config)" ssh
+ssh_load_autocomplete
 
 # show the status of our config repo in the username dir
 git st
