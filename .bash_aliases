@@ -7,6 +7,7 @@ alias ls='ls -G'
 alias lsa='ls -hal'
 alias mr='mysql_replace'
 alias se='svn_export_changed_files'
+alias ss='take_screenshot'
 
 # dir size in current dir
 alias ds='du -sh */'
