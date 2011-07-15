@@ -7,7 +7,8 @@ alias ls='ls -G'
 alias lsa='ls -hal'
 alias mr='mysql_replace'
 alias se='svn_export_changed_files'
-alias ss='osascript ~/.bin/hide_terminal.scpt && take_screenshot'
+alias tss='take_screenshot'
+alias ss='osascript ~/.bin/hide_terminal.scpt && tss'
 
 # dir size in current dir
 alias ds='du -sh */'
