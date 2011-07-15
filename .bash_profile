@@ -213,7 +213,7 @@ take_screenshot()
 {
 	filename="$(date +%Y-%m-%d-%H-%M-%S).png"
 
-	screencapture -ix ~/Desktop/$filename
+	screencapture -ix ~/Desktop/$filename && 
 	scp ~/Desktop/$filename davelens.be:screenshots/$filename
 	echo "http://code.davelens.be/screenshots/$filename" | pbcopy
 	rm -rf ~/Desktop/$filename
