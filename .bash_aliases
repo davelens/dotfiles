@@ -1,6 +1,7 @@
 alias clearcache='sudo dscacheutil -flushcache'
 alias csh='configure_ssh_host'
 alias fs='get_filesizes'
+alias gf='gather_files'
 alias gsd='get_sql_dump'
 alias his='history | grep'
 alias ls='ls -G'

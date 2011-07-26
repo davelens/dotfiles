@@ -219,6 +219,41 @@ take_screenshot()
 	rm -rf ~/Desktop/$filename
 }
 
+# recursively gathers all files that match the search query to the chosen directory
+gather_files()
+{
+	search=$1
+	destination=$2
+
+	if [[ "$search" == "" ]] || [[ "$destination" == "" ]]
+	then	
+		echo "usage: gather_files <search> <destination>"
+	else
+		find . -type f -name "$1" -exec mv -fv '{}' "$2" ';'
+	fi
+}
+
+# Command used to test rest services that are under development
+curlrest()
+{
+	method=$1
+	url=$2
+	parameters=$3
+
+	if [[ "$method" == "" ]] || [[ "$url" == "" ]]
+	then
+		echo "usage: curlrest <method> <url> <*parameters>"
+	else
+		if [[ "$parameters" != "" ]]
+		then
+			parameters="--data-urlencode $(echo $parameters | xargs | sed 's/&/ --data-urlencode /g')"
+		fi
+	
+		curl -v --globoff --get -X$method $url $parameters
+		echo ""
+	fi
+}
+
 
 # Execute methods
 
