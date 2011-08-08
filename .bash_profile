@@ -229,7 +229,7 @@ gather_files()
 	then	
 		echo "usage: gather_files <search> <destination>"
 	else
-		find . -type f -name "$1" -exec mv -fv '{}' "$2" ';'
+		find . -type f -name "$search" -exec mv -fv '{}' "$destination" ';'
 	fi
 }
 
