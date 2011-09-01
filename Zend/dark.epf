@@ -1,4 +1,4 @@
-#Fri Jun 17 18:37:28 CEST 2011
+#Thu Sep 01 12:03:56 CEST 2011
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_before_postfix_operator=false
 /instance/org.eclipse.team.ui/org.eclipse.team.ui.first_time=false
 /instance/org.eclipse.jdt.ui/java_operator=243,246,238
@@ -6,12 +6,13 @@
 /instance/org.eclipse.ui.workbench/org.eclipse.ui.r30.CONTENT_ASSIST_FOREGROUND_COLOR=51,51,51
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.alignment_for_parameters_in_method_declaration_line_wrap_policy=0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.brace_position_for_type_declaration=end_of_line
+/instance/org.eclipse.ui.workbench/resourcetypes=<?xml version\="1.0" encoding\="UTF-8"?>\n<editors version\="3.1">\n<info extension\="yml" name\="*">\n<editor id\="com.aptana.ide.editors.YMLEditor"/>\n<defaultEditor id\="com.aptana.ide.editors.YMLEditor"/>\n</info>\n<info extension\="sql" name\="*">\n<editor id\="org.eclipse.datatools.sqltools.sqlscrapbook.SQLScrapbookEditor"/>\n<editor id\="org.eclipse.datatools.sqltools.sqlbuilder"/>\n<defaultEditor id\="org.eclipse.datatools.sqltools.sqlscrapbook.SQLScrapbookEditor"/>\n<defaultEditor id\="org.eclipse.datatools.sqltools.sqlbuilder"/>\n</info>\n<info extension\="xslt" name\="*">\n<editor id\="org.eclipse.wst.xsl.ui.XSLEditor"/>\n<defaultEditor id\="org.eclipse.wst.xsl.ui.XSLEditor"/>\n</info>\n<info extension\="tag" name\="*"/>\n<info extension\="jpage" name\="*">\n<editor id\="org.eclipse.jdt.debug.ui.SnippetEditor"/>\n</info>\n<info extension\="shtml" name\="*">\n<editor id\="org.eclipse.ui.browser.editorSupport"/>\n<editor id\="com.aptana.ide.editors.HTMLEditor"/>\n</info>\n<info extension\="ddl" name\="*">\n<editor id\="org.eclipse.datatools.sqltools.sqlscrapbook.SQLScrapbookEditor"/>\n<defaultEditor id\="org.eclipse.datatools.sqltools.sqlscrapbook.SQLScrapbookEditor"/>\n</info>\n<info extension\="xsl" name\="*">\n<editor id\="org.eclipse.wst.xsl.ui.XSLEditor"/>\n<defaultEditor id\="org.eclipse.wst.xsl.ui.XSLEditor"/>\n</info>\n<info extension\="html" name\="*">\n<editor id\="org.eclipse.ui.browser.editorSupport"/>\n<editor id\="com.aptana.ide.editors.HTMLEditor"/>\n</info>\n<info extension\="htm" name\="*">\n<editor id\="org.eclipse.ui.browser.editorSupport"/>\n<editor id\="com.aptana.ide.editors.HTMLEditor"/>\n</info>\n<info extension\="tagf" name\="*"/>\n<info extension\="jsf" name\="*"/>\n<info extension\="json" name\="*">\n<editor id\="com.aptana.ide.editor.text"/>\n<defaultEditor id\="com.aptana.ide.editor.text"/>\n</info>\n<info extension\="xml" name\="*">\n<editor id\="com.aptana.ide.editors.XMLEditor"/>\n<defaultEditor id\="com.aptana.ide.editors.XMLEditor"/>\n</info>\n<info extension\="js" name\="*">\n<editor id\="org.eclipse.wst.jsdt.ui.CompilationUnitEditor"/>\n<editor id\="com.aptana.ide.editors.JSEditor"/>\n<defaultEditor id\="org.eclipse.wst.jsdt.ui.CompilationUnitEditor"/>\n</info>\n<info extension\="sdoc" name\="*">\n<editor id\="com.aptana.ide.editors.JSEditor"/>\n<defaultEditor id\="com.aptana.ide.editors.JSEditor"/>\n</info>\n<info extension\="log" name\="*">\n<editor id\="com.aptana.ide.logging.LogEditor"/>\n<defaultEditor id\="com.aptana.ide.logging.LogEditor"/>\n</info>\n<info extension\="sqlpage" name\="*">\n<editor id\="org.eclipse.datatools.sqltools.sqlscrapbook.SQLScrapbookEditor"/>\n<defaultEditor id\="org.eclipse.datatools.sqltools.sqlscrapbook.SQLScrapbookEditor"/>\n</info>\n<info extension\="jsp" name\="*"/>\n<info extension\="xhtml" name\="*">\n<editor id\="com.aptana.ide.editors.HTMLEditor"/>\n</info>\n<info extension\="tagx" name\="*"/>\n<info extension\="" name\="error_log">\n<editor id\="com.aptana.ide.logging.LogEditor"/>\n<defaultEditor id\="com.aptana.ide.logging.LogEditor"/>\n</info>\n<info extension\="jspx" name\="*"/>\n<info extension\="properties" name\="sample">\n<editor id\="org.eclipse.pde.ui.sampleEditor"/>\n<defaultEditor id\="org.eclipse.pde.ui.sampleEditor"/>\n</info>\n<info extension\="jspf" name\="*"/>\n<info extension\="" name\="access_log">\n<editor id\="com.aptana.ide.logging.LogEditor"/>\n<defaultEditor id\="com.aptana.ide.logging.LogEditor"/>\n</info>\n<info extension\="jardesc" name\="*">\n<editor id\="org.eclipse.jdt.ui.JARDescEditor"/>\n<defaultEditor id\="org.eclipse.jdt.ui.JARDescEditor"/>\n</info>\n<info extension\="css" name\="*">\n<editor id\="com.aptana.ide.editors.CSSEditor"/>\n<defaultEditor id\="com.aptana.ide.editors.CSSEditor"/>\n</info>\n<info extension\="server" name\="*">\n<editor id\="org.eclipse.wst.server.ui.editor"/>\n</info>\n</editors>
 /instance/org.eclipse.wst.sse.ui/useQuickDiffPrefPage=true
 /instance/org.eclipse.wst.html.core/docInvalidChar=2
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.indent_body_declarations_compare_to_type_header=true
 /instance/org.eclipse.wst.css.ui/COLON=\#9cb4aa | null | false | false | false | false
 /instance/org.eclipse.ant.ui/problem_security=warning
-/configuration/com.zend.php.startup/addons/firefox=true
+/configuration/com.zend.php.startup/addons/firefox=false
 /instance/org.eclipse.wst.jsdt.ui/java_keyword=147,199,99
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.alignment_for_assignment_indent_policy=0
 /instance/org.eclipse.wst.jsdt.ui/useQuickDiffPrefPage=true
@@ -22,6 +23,7 @@
 /instance/org.eclipse.ui.workbench/org.eclipse.ui.r30.org.eclipse.jface.textfont=1|Andale Mono|12.0|0|COCOA|1|AndaleMono;
 /instance/org.eclipse.wst.xml.ui/commentText=\#7f7f7f | null | false | false | false | false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.continuation_indentation=2
+@org.eclipse.dltk.mylyn=2.0.0.v20100615-1100
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_conditional_expression=80
 /instance/org.eclipse.jdt.ui/java_keyword_return=150,190,220
 /instance/org.eclipse.php.ui/semanticHighlighting.org.eclipse.php.internal.ui.editor.highlighters.StaticFieldHighlighting.color=\#96c9ff
@@ -45,7 +47,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_allocation_expression=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.blank_lines_before_package=0
 /instance/org.eclipse.datatools.connectivity/org.eclipse.datatools.enablement.oracle.10.driverTemplate=true
-/instance/org.eclipse.datatools.sqltools.sqleditor/Single\ quoted\ string=0,0,0,0,0,0,0,255
+/instance/org.eclipse.datatools.sqltools.sqleditor/Single\ quoted\ string=0,0,0,0,0,204,255,102
 /instance/org.eclipse.wst.validation/override=true
 /instance/org.eclipse.debug.ui/preferredDetailPanes=DefaultDetailPane\:DefaultDetailPane|
 /instance/org.eclipse.ui.editors/occurrenceHighlighting=false
@@ -72,7 +74,7 @@
 /instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.panel.local.ReplaceWithUrlPanel.height=161
 /instance/org.eclipse.wst.sse.ui/matchingBracketsColor=243,219,46
 /instance/org.eclipse.php.ui/closeStrings=false
-/instance/org.eclipse.debug.ui/preferredTargets=org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory\:org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory|default\:default|default,org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory\:default|org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory,org.eclipse.php.debug.ui.PHPtoggleTargetFactory\:org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory|org.eclipse.php.debug.ui.PHPtoggleTargetFactory\:org.eclipse.php.debug.ui.PHPtoggleTargetFactory|
+/instance/org.eclipse.debug.ui/preferredTargets=org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory\:org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory|default,org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory,org.eclipse.php.debug.ui.PHPtoggleTargetFactory\:default|default\:default|default,org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory\:default|org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory,org.eclipse.php.debug.ui.PHPtoggleTargetFactory\:org.eclipse.atf.mozilla.ide.debug.ui.JStoggleTargetFactory|org.eclipse.php.debug.ui.PHPtoggleTargetFactory\:org.eclipse.php.debug.ui.PHPtoggleTargetFactory|
 /instance/org.eclipse.wst.jsdt.ui/semanticHighlighting.objectInitializer.color=224,226,228
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_before_closing_paren_in_switch=false
 /instance/org.eclipse.jdt.debug.ui/org.eclipse.jdt.debug.ui.javaDebug.alertHCRFailed=false
@@ -84,7 +86,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_for=do not insert
 /instance/org.eclipse.ui.editors/PHPWriteOccurrenceHighlighting=false
 /instance/org.eclipse.wst.html.core/elemMissingStart=2
-/instance/org.eclipse.datatools.sqltools.sqleditor/Keyword=1,0,0,0,0,127,0,85
+/instance/org.eclipse.datatools.sqltools.sqleditor/Keyword=0,0,0,0,0,230,230,230
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.classpathVariable.JRE_SRC=
 /instance/org.eclipse.wst.jsdt.ui/semanticHighlighting.method.color=224,226,228
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indent_breaks_compare_to_cases=true
@@ -168,6 +170,7 @@
 /instance/org.eclipse.ui/SHOW_TRADITIONAL_STYLE_TABS=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_selector_in_method_invocation=16
 /instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.panel.local.IgnoreMethodPanel.height=130
+/instance/com.aptana.ide.editors/com.aptana.ide.editor.ENABLE_WORD_WRAP=true
 /instance/org.eclipse.mylyn.java.ui/org.eclipse.mylyn.java.ui.run.count.3_1_0=1
 /instance/org.eclipse.wst.jsdt.core/org.eclipse.wst.jsdt.core.codeComplete.localPrefixes=
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_method_invocation_arguments=do not insert
@@ -215,7 +218,7 @@
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_opening_paren_in_parenthesized_expression=false
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.alignment_for_compact_if_indent_policy=0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_postfix_operator=do not insert
-/instance/org.eclipse.team.svn.ui/history.comment=Y2hhbmdlZCBpZCB0byBhbGZyZXNjb19pZCBmb3IgZGVsZXRpb24gcXVlcnk\=;Zml4ZWQgYWdlbmRhIGZpbHRlcg\=\=;dXBkYXRlZCBkb2Nz;LSBzb21lIG1vcmUgcmVmYWN0b3JpbmcgYW5kIGFkZGl0aW9uYWwgbGFiZWxz;LSBhZGRlZCBwb3BvdXQgYWN0aW9uIGZvciBhYnR2Ci0gYWRkZWQgcG9wb3V0IGxpbmsgdG8gZGV0YWlsX2xpdmUudHBs;LSBhZGRlZCBhcnJheSBzbGljZSBzbyBvbmx5IHRoZSBsYXN0IDUgdXBjb21pbmcgY29uY2VydHMgYXJlIHNob3du;LSBhZGRlZCB1cGNvbWluZyBjb25jZXJ0cyB0byBkZXRhaWxfbGl2ZS50cGw\=;LSBmaXhlZCBvcmRlciBvZiBkaXZzIGluIGRldGFpbF9saXZlLnRwbAotIGZpeGVkIG5vbi1leGlzdGluZyBpdGVyYXRpb24gcGFyc2luZyBpbiBkZXRhaWwucGhw;LSBzcGxpdCB1cCB0YWJzIHNvIG90aGVyIGFjdGlvbnMgd29uJ3QgbG9hZCB0aGVt;YWRkZWQgYW4gSUQgdG8gdGhlIHJhdGluZyBkaXYgYW5kIGZpeGVkIGEgc21hbGwgYml0IG9mIEpT
+/instance/org.eclipse.team.svn.ui/history.comment=YWRkZWQgMyBuZXcgbWV0aG9kcyB0byB0aGUgYXBp;YWRkZWQgY3JlYXRlL3VwZGF0ZSBwdXNoIG5vdGlmaWNhdGlvbnMgdG8gYXJ0aXN0cy9jb25jZXJ0cw\=\=;Zml4ZWQgdGhlIHRpbWVzdGFtcCBmb3IgZ2V0Q29uY2VydENvbW1lbnRz;YWRkZWQgQHRvZG8gYW5kIHJlbW92ZWQgY29uc29sZS5sb2coKQ\=\=;YWRkZWQgc2xpZGVzaG93IGVmZmVjdCB0byBpbWFnZXMgb24gaG9tZXBhZ2U\=;YWRkZWQgcHVzaCBub3RpZmljYXRpb25zIGNsYXNzICsgdGhlIGNvbmNlcnRzIHJlcXVlc3QgaW4gYSBuZXcgaGVscGVyIGZpbGU\=;YWRkZWQg;c29tZSByZWZhY3RvcmluZw\=\=;Y2hhbmdlZCBicm93c2UudHBsICdidXkgdGlja2V0cycgbGluaw\=\=;dXBncmFkZWQgdG8ganF1ZXJ5IDEuNi4y
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_new_line_before_catch_in_try_statement=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_type_arguments=do not insert
 /instance/org.eclipse.datatools.connectivity/org.eclipse.datatools.enablement.sqlite.3_5_9.driver=true
@@ -261,6 +264,7 @@
 /instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_closing_angle_bracket_in_type_arguments=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_parenthesized_expression=do not insert
+/instance/com.aptana.ide.intro/com.aptana.ide.intro.IS_PORTAL_SHOWN_PREVIOUSLY=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_local_variable=insert
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_semicolon_in_for=true
 /instance/org.eclipse.wst.html.core/docInvalidContent=2
@@ -312,14 +316,15 @@
 /instance/org.eclipse.ui.workbench/org.eclipse.jface.textfont=1|Monaco|10.0|0|COCOA|1|Monaco;
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_while=do not insert
 /instance/org.eclipse.php.ui/org.eclipse.php.internal.ui.editor.highlighters.FunctionHighlighting=null | \#333333 | false | false | false | false
-/instance/org.eclipse.rse.core/org.eclipse.rse.systemtype.local.systemType.defaultUserId=dave
 /instance/org.eclipse.php.ui/org.eclipse.php.ui.editor.templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates><template autoinsert\="true" context\="php" deleted\="false" description\="dumps output with Spoon" enabled\="true" name\="dump">Spoon\:\:dump(${cursor});</template></templates>
 /instance/org.eclipse.ui.workbench/org.eclipse.ui.workbench.texteditor.blockSelectionModeFont=1|Monaco|11.0|0|COCOA|1|Monaco;
+@org.eclipse.dltk.launching=2.0.0.v20100615-1100
 /instance/org.eclipse.php.ui/editorColorKeyword=\#a0d8ff | null | false | false | false | false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_method_declaration=do not insert
 /instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.panel.remote.CreateFolderPanel.height=198
 /instance/org.eclipse.wst.sse.ui/hoverModifiers=combinationHover|true|0;problemHover|false|0;documentationHover|false|0;annotationHover|true|Shift;
-/instance/org.eclipse.team.svn.ui/history.selectCheckoutUrl=c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9mb3JrL3RhZ3MvZ2lsbGFpbg\=\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9mb3JrL3RhZ3MvZ2lsbGFp;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9mb3JrL3RhZ3MvZ2lsbGE\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9mb3JrL3RhZ3MvZ2lsbA\=\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9mb3JrL3RhZ3MvZ2ls
+/instance/org.eclipse.team.svn.ui/history.selectCheckoutUrl=c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9oYW5kZWxzYmV1cnMvdHJ1bms\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9oYW5kZWxzYmV1cnM\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9mb3JrL3RhZ3MvYnR2Y2li;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9mb3JrL3RhZ3Mv;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9mb3JrL3RhZ3MvYg\=\=
+/instance/org.eclipse.ui.workbench/org.eclipse.ui.r30.org.eclipse.php.debug.ui.themePHPDebug.codeCoverageCoveredLinesBg=40,40,40
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.format_javadoc_comments=true
 /instance/org.eclipse.php.ui/org.eclipse.php.internal.ui.editor.highlighters.FieldHighlighting=null | \#333333 | false | false | false | false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.join_lines_in_comments=true
@@ -339,12 +344,14 @@
 /instance/org.eclipse.ui.editors/taskIndication=true
 /instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.panel.local.AddToSVNPanel.height=224
 /instance/org.eclipse.ui.views.log/groupBy=0
+/instance/com.aptana.ide.core.ui/com.aptana.ide.core.ui.PREF_KEY_FIRST_STARTUP=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_bracket_in_array_reference=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.assertIdentifier=error
 /instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.panel.reporting.ErrorCancelPanel.width=640
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_comma_in_global=true
 /instance/org.eclipse.php.ui/editorColorTask=\#6991d0 |  | true | false | false | false
 /instance/org.eclipse.wst.jsdt.ui/proposalOrderMigrated=true
+/instance/org.eclipse.ui.workbench/org.eclipse.jface.bannerfont=1|Lucida Grande|11.0|0|COCOA|1|LucidaGrande;
 /instance/org.eclipse.wst.validation/vals/org.eclipse.jst.jsp.core.JSPContentValidator/global=FF01
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_catch=do not insert
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_opening_paren_in_switch=false
@@ -356,6 +363,7 @@
 /instance/org.eclipse.ui/presentationFactoryId=org.eclipse.ui.presentations.default
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
 /instance/org.eclipse.team.svn.ui/history.selectProjectNamePage=c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9kZ2kvdHJ1bms\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9kZ2kvZGdp;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9kZ2kv;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmU6L29wdC9zdm4vZm9yay9kZ2k\=
+/instance/org.eclipse.dltk.launching/org.eclipse.dltk.launching.PREF_INTERPRETER_XML=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<interpreterSettings/>\n
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_after_annotation=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_annotation=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_closing_brace_in_block=insert
@@ -390,12 +398,12 @@
 @org.eclipse.wst.css.ui=1.0.501.v201008232042
 /instance/org.eclipse.jdt.ui/content_assist_parameters_foreground=246,243,232
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.classpathVariable.JRE_SRCROOT=
-/instance/org.eclipse.ui.workbench/ColorsAndFontsPreferencePage.expandedCategories=Torg.eclipse.ui.workbenchMisc
+/instance/org.eclipse.ui.workbench/ColorsAndFontsPreferencePage.expandedCategories=Torg.eclipse.php.debug.ui.themePHPDebug
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_before_closing_paren_in_parenthesized_expression=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_synchronized=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_prefix_operator=do not insert
 /instance/org.eclipse.ui.editors/AbstractTextEditor.Color.SelectionBackground.SystemDefault=false
-/instance/org.eclipse.team.svn.ui/history.repositoryURL=c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9zY2hlcnBlbmhldXZlbC90cnVuaw\=\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9mb3JrL3RhZ3MvYXJ0c291bmQ\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9hZXljMjAxMS8\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9idHZjb250cm9s;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9zdXBlcnNob3Av
+/instance/org.eclipse.team.svn.ui/history.repositoryURL=c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9oYW5kZWxzYmV1cnMvdHJ1bms\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9kaWJv;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9zY2hlcnBlbmhldXZlbC90cnVuaw\=\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9mb3JrL3RhZ3MvYXJ0c291bmQ\=;c3ZuOi8vZ2FsbGl1bS5vcGVubWluZHMuYmUvb3B0L3N2bi9hZXljMjAxMS8\=
 /instance/org.eclipse.ui.editors/AbstractTextEditor.Color.Foreground.SystemDefault=false
 /instance/org.eclipse.datatools.sqltools.sqleditor/Others=0,0,0,0,1,246,243,232
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_constructor_declaration_parameters=insert
@@ -403,7 +411,8 @@
 /instance/org.eclipse.debug.ui/Console.highWaterMark=808000
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.alignment_for_superinterfaces_in_type_declaration_indent_policy=0
 @org.eclipse.dltk.validators.core=1.0.0.v20100615-1100
-/instance/org.eclipse.ui.workbench/ColorsAndFontsPreferencePage.selectedElement=CQUALIFIER_COLOR
+/instance/org.eclipse.ui.workbench/ColorsAndFontsPreferencePage.selectedElement=Corg.eclipse.php.debug.ui.themePHPDebug.codeCoverageUncoveredLinesBg
+/instance/com.aptana.ide.server.portal/com.aptana.ide.server.portal.MY_APTANA_PREVIOUSLY_OPENED=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.format_line_comments=true
 /instance/org.eclipse.ui.editors/PHPReadOccurrenceTextStyle=DASHED_BOX
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_before_comma_in_for_inits=false
@@ -429,7 +438,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_annotation_type_member_declaration=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.codeComplete.visibilityCheck=enabled
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.format_guardian_clause_on_one_line=true
-/instance/org.eclipse.debug.ui/org.eclipse.debug.ui.PREF_LAUNCH_PERSPECTIVES=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<launchPerspectives>\n<launchPerspective configurationType\="com.zend.php.debug.core.remoteLaunchConfigurationType" mode\="profile" perspective\="com.zend.php.profile.ui.perspective"/>\n<launchPerspective configurationType\="com.zend.php.debug.core.urlLaunchConfigurationType" mode\="profile" perspective\="com.zend.php.profile.ui.perspective"/>\n<launchPerspective configurationType\="org.eclipse.php.debug.core.launching.PHPExeLaunchConfigurationType" mode\="profile" perspective\="com.zend.php.profile.ui.perspective"/>\n<launchPerspective configurationType\="com.zend.php.phpunit.PHPUnitLaunchConfigurationType" mode\="profile" perspective\="com.zend.php.profile.ui.perspective"/>\n<launchPerspective configurationType\="org.eclipse.php.debug.core.launching.webPageLaunch" mode\="profile" perspective\="com.zend.php.profile.ui.perspective"/>\n</launchPerspectives>\n
+/instance/org.eclipse.debug.ui/org.eclipse.debug.ui.PREF_LAUNCH_PERSPECTIVES=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<launchPerspectives>\n<launchPerspective configurationType\="com.zend.php.phpunit.PHPUnitLaunchConfigurationType" mode\="profile" perspective\="com.zend.php.profile.ui.perspective"/>\n<launchPerspective configurationType\="com.zend.php.debug.core.urlLaunchConfigurationType" mode\="profile" perspective\="com.zend.php.profile.ui.perspective"/>\n<launchPerspective configurationType\="org.eclipse.php.debug.core.launching.webPageLaunch" mode\="profile" perspective\="com.zend.php.profile.ui.perspective"/>\n<launchPerspective configurationType\="org.eclipse.php.debug.core.launching.PHPExeLaunchConfigurationType" mode\="profile" perspective\="com.zend.php.profile.ui.perspective"/>\n<launchPerspective configurationType\="com.zend.php.debug.core.remoteLaunchConfigurationType" mode\="profile" perspective\="com.zend.php.profile.ui.perspective"/>\n</launchPerspectives>\n
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_before_comma_in_array_creation=false
 /instance/org.eclipse.wst.jsdt.ui/semanticHighlighting.method.enabled=true
 /instance/org.eclipse.wst.jsdt.ui/semanticHighlighting.localVariableDeclaration.color=224,226,228
@@ -502,7 +511,6 @@
 /instance/org.eclipse.wst.sse.ui/useAnnotationsPrefPage=true
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_between_empty_parens_in_method_invocation=false
 /instance/org.eclipse.jst.jsp.core/validateFragments=true
-/instance/com.zend.php.phpunit/=/Users/dave/Applications/Zend Studio.app/Contents/Resources/Java/plugins/com.zend.php.phpunit_8.0.0.v20110331-1830/resources/library/
 @org.eclipse.wst.sse.ui=1.2.2.v201008232126
 /instance/org.eclipse.datatools.sqltools.sqleditor/SQLEditor.executeSelectedSQL.betweenDelimiter.delimiterType=go
 /instance/</colorizer>=
@@ -525,6 +533,7 @@
 /instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.panel.common.CommentPanel.width=510
 /instance/org.eclipse.wst.sse.ui/content_assist_number_of_computers=7
 /instance/org.eclipse.team.cvs.ui/pref_first_startup=false
+/instance/org.eclipse.ui.workbench/org.eclipse.ui.r30.org.eclipse.php.debug.ui.themePHPDebug.codeCoverageUncoveredLinesBg=64,128,0
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.alignment_for_superclass_in_type_declaration_line_wrap_policy=0
 /instance/org.eclipse.jdt.ui/semanticHighlighting.class.color=202,230,130
 /instance/org.eclipse.jst.jsp.core/validation.translation-tei-message=2
@@ -558,6 +567,7 @@
 /instance/org.eclipse.jdt.ui/tabWidthPropagated=true
 /instance/org.eclipse.ui.editors/searchResultHighlighting=false
 /instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.properties.ResourcePropertyEditPanel.width=590
+/instance/org.eclipse.php.core/contentAssistAutoactivationDelay=0
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_before_opening_brace_in_method_declaration=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.codeComplete.staticFieldPrefixes=
 @org.eclipse.team.svn.core=0.7.9.I20110321-1700
@@ -650,6 +660,7 @@
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.alignment_for_conditional_expression_line_wrap_policy=0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.codeComplete.localSuffixes=
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_before_comma_in_method_invocation_arguments=false
+/instance/org.eclipse.dltk.mylyn/org.eclipse.dltk.mylyn.run.count.1_1_0=1
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_comma_in_multiple_field_declarations=true
 /instance/org.eclipse.jdt.ui/semanticHighlighting.autoboxing.color=255,187,187
 /instance/org.eclipse.egit.ui/decorator_recursive_limit=10
@@ -696,6 +707,7 @@
 /instance/org.eclipse.ui.editors/hyperlinkColor=230,230,230
 @org.eclipse.rse.core=3.1.100.v201003151933
 @org.eclipse.dltk.core.index.sql.h2=2.0.0.v20100805-1600
+/instance/com.aptana.ide.desktop.integration.protocolhandler/AptanaPluginInstallerProtocolHandlerRegistered=true
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_postfix_operator=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_and_in_type_parameter=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_switch=do not insert
@@ -725,7 +737,6 @@
 /instance/org.eclipse.php.ui/editorColorHeredoc=\#82d874 | null | false | false | false | false
 /instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.crashrecovery.relocated.RelocationChoicesPanel.width=470
 /instance/org.eclipse.wst.ws.service.policy/org.eclipse.wst.ws.service.policy.ui.servicepols.wsiprofilecomp.wsiap.defaultProtocol=http\://schemas.xmlsoap.org/wsdl/soap/
-/instance/org.eclipse.wst.sse.core/task-tag-projects-already-scanned=RemoteSystemsTempFiles,forkng,scherpenheuvel,btvcontrol,dgi,ibbt,abconcerts,artsound,custmz,gillain,spoon
 /instance/org.eclipse.php.ui/semanticHighlighting.org.eclipse.php.internal.ui.editor.highlighters.MethodHighlighting.color=\#e6e6e6
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.format_source_code=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.number_of_blank_lines_at_beginning_of_method_body=0
@@ -751,20 +762,22 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_arguments_in_explicit_constructor_call=16
 /instance/org.eclipse.wst.html.core/elemUnknownName=2
 /instance/org.eclipse.dltk.ui/CustomFiltersActionGroup.org.eclipse.php.ui.explorer.TAG_DUMMY_TO_TEST_EXISTENCE=storedViewPreferences
+/instance/org.eclipse.ui.workbench/org.eclipse.jface.headerfont=1|Lucida Grande|11.0|0|COCOA|1|LucidaGrande;
+/instance/com.aptana.ide.core.ui/com.aptana.ide.core.ui.WEB_PERSPECTIVE_LAST_VERSION=65
 /instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.panel.callback.PromptCredentialsPanel.width=470
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_bracket_in_array_type_reference=do not insert
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_comma_in_echo=true
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_before_opening_bracket_in_array_reference=false
+/instance/org.eclipse.php.ui/semanticHighlighting.org.eclipse.php.internal.ui.editor.highlighters.DeprecatedHighlighting.color=\#ff6666
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_unary_operator=false
 /instance/org.eclipse.php.ui/semanticHighlighting.org.eclipse.php.internal.ui.editor.highlighters.ConstantHighlighting.color=\#2bcd00
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_semicolon_in_for=do not insert
-/instance/org.eclipse.datatools.sqltools.sqleditor/Identifier=0,0,0,0,0,0,0,128
+/instance/org.eclipse.datatools.sqltools.sqleditor/Identifier=0,0,0,0,0,64,128,0
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_prefix_operator=false
 /instance/com.zend.php.ui/showTipOfTheDay=false
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.alignment_for_binary_expression_force_split=false
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_opening_paren_in_cast=false
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.continuation_indentation_for_array_initializer=2
-/configuration/org.eclipse.ui.ide/RECENT_WORKSPACES=/Users/dave/Zend/workspaces/DefaultWorkspace7
 /instance/org.eclipse.php.core/contentAssistShowVariablesFromOtherFiles=true
 /instance/org.eclipse.ui.editors/currentIPColor=26,89,26
 @org.eclipse.ant.ui=3.5.0.v20100427
@@ -779,7 +792,7 @@ file_export_version=3.0
 /instance/org.eclipse.wst.css.ui/ERROR=\#fb0000 | null | false | false | false | false
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_coloncolon_in_method_invocation=false
 @org.eclipse.php.debug.core=2.2.0.v20110307-1308
-/instance/org.eclipse.datatools.sqltools.sqleditor/Type=1,0,0,0,0,64,0,200
+/instance/org.eclipse.datatools.sqltools.sqleditor/Type=1,0,0,0,0,64,128,0
 @org.eclipse.wst.html.core=1.1.402.v201008311901
 /instance/org.eclipse.php.ui/editorColorNumber=\#fda200 | null | false | false | false | false
 /instance/org.eclipse.wst.validation/vals/org.eclipse.jst.jsp.core.JSPBatchValidator/global=FF01
@@ -875,6 +888,7 @@ file_export_version=3.0
 /instance/org.eclipse.ui.editors/occurrenceIndicationColor=97,97,97
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_new_line_in_empty_type_declaration=true
 @org.eclipse.jdt.launching=3.5.100.v20100526
+/instance/org.eclipse.php.debug.core/DefaultProjectBasePath=/btvcontrol
 /instance/org.eclipse.wst.server.core/module-start-timeout=300000
 @org.eclipse.ui.views.log=1.0.100.v20100423
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.compliance=1.6
@@ -914,6 +928,7 @@ file_export_version=3.0
 /instance/org.eclipse.wst.html.core/attrValueUnclosed=2
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.insert_space_after_comma_in_list=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indent_statements_compare_to_body=true
+/instance/org.eclipse.ui.workbench/editors=<?xml version\="1.0" encoding\="UTF-8"?>\n<editors>\n<descriptor class\="com.aptana.ide.editor.yml.YMLEditor" id\="com.aptana.ide.editors.YMLEditor" image\="icons/css.png" internal\="true" label\="Aptana YML Editor" openMode\="1" open_in_place\="false" plugin\="com.aptana.ide.editor.yaml"/>\n<descriptor class\="org.eclipse.datatools.sqltools.internal.sqlscrapbook.editor.SQLScrapbookEditor" id\="org.eclipse.datatools.sqltools.sqlscrapbook.SQLScrapbookEditor" image\="images/qrydoc.gif" internal\="true" label\="SQL File Editor" openMode\="1" open_in_place\="false" plugin\="org.eclipse.datatools.sqltools.sqlscrapbook"/>\n<descriptor class\="org.eclipse.datatools.sqltools.sqlbuilder.SQLBuilderEditor" id\="org.eclipse.datatools.sqltools.sqlbuilder" image\="images/qrydoc.gif" internal\="true" label\="SQL Query Builder" openMode\="1" open_in_place\="false" plugin\="org.eclipse.datatools.sqltools.sqlbuilder"/>\n<descriptor class\="org.eclipse.wst.xsl.ui.internal.editor.XSLEditor" id\="org.eclipse.wst.xsl.ui.XSLEditor" image\="$nl$/icons/full/xslt_file.gif" internal\="true" label\="XSL Editor" openMode\="1" open_in_place\="false" plugin\="org.eclipse.wst.xsl.ui"/>\n<descriptor class\="org.eclipse.jdt.internal.debug.ui.snippeteditor.JavaSnippetEditor" id\="org.eclipse.jdt.debug.ui.SnippetEditor" image\="$nl$/icons/full/obj16/jsbook_obj.gif" internal\="true" label\="Scrapbook" openMode\="1" open_in_place\="false" plugin\="org.eclipse.jdt.debug.ui"/>\n<descriptor id\="org.eclipse.ui.browser.editorSupport" image\="$nl$/icons/obj16/internal_browser.gif" internal\="false" label\="Web Browser" launcher\="org.eclipse.ui.internal.browser.BrowserLauncher" openMode\="4" open_in_place\="false" plugin\="org.eclipse.ui.browser"/>\n<descriptor class\="com.aptana.ide.editor.html.HTMLEditor" id\="com.aptana.ide.editors.HTMLEditor" image\="icons/html.png" internal\="true" label\="Aptana HTML Editor" openMode\="1" open_in_place\="false" plugin\="com.aptana.ide.editor.html"/>\n<descriptor class\="com.aptana.ide.editor.text.GenericTextEditor" id\="com.aptana.ide.editor.text" image\="icons/aptana_text.gif" internal\="true" label\="Aptana Text Editor" openMode\="1" open_in_place\="false" plugin\="com.aptana.ide.editor.text"/>\n<descriptor class\="com.aptana.ide.editor.xml.XMLEditor" id\="com.aptana.ide.editors.XMLEditor" image\="icons/xml.png" internal\="true" label\="Aptana XML Editor" openMode\="1" open_in_place\="false" plugin\="com.aptana.ide.editor.xml"/>\n<descriptor class\="org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor" id\="org.eclipse.wst.jsdt.ui.CompilationUnitEditor" image\="$nl$/icons/full/obj16/jcu_obj.gif" internal\="true" label\="JavaScript Editor" openMode\="1" open_in_place\="false" plugin\="org.eclipse.wst.jsdt.ui"/>\n<descriptor class\="com.aptana.ide.editor.js.JSEditor" id\="com.aptana.ide.editors.JSEditor" image\="icons/js_file.gif" internal\="true" label\="Aptana JS Editor" openMode\="1" open_in_place\="false" plugin\="com.aptana.ide.editor.js"/>\n<descriptor class\="com.aptana.ide.logging.LogReadonlyEditor" id\="com.aptana.ide.logging.LogEditor" image\="icons/windowlist.png" internal\="true" label\="Aptana Log Viewer" openMode\="1" open_in_place\="false" plugin\="com.aptana.ide.logging"/>\n<descriptor class\="org.eclipse.pde.internal.ui.samples.SampleEditor" id\="org.eclipse.pde.ui.sampleEditor" image\="$nl$/icons/obj16/build_exec.gif" internal\="true" label\="Code Sample Editor" openMode\="1" open_in_place\="false" plugin\="org.eclipse.pde.ui"/>\n<descriptor id\="org.eclipse.jdt.ui.JARDescEditor" image\="$nl$/icons/full/obj16/jar_desc_obj.gif" internal\="false" label\="JAR Export Wizard" launcher\="org.eclipse.jdt.internal.ui.jarpackager.OpenJarExportWizardEditorLauncher" openMode\="4" open_in_place\="false" plugin\="org.eclipse.jdt.ui"/>\n<descriptor class\="com.aptana.ide.editor.css.MultiPageCSSEditor" id\="com.aptana.ide.editors.CSSEditor" image\="icons/css.png" internal\="true" label\="Aptana CSS Editor" openMode\="1" open_in_place\="false" plugin\="com.aptana.ide.editor.css"/>\n<descriptor class\="org.eclipse.wst.server.ui.internal.editor.ServerEditor" id\="org.eclipse.wst.server.ui.editor" image\="icons/obj16/server.gif" internal\="true" label\="Server Editor" openMode\="1" open_in_place\="false" plugin\="org.eclipse.wst.server.ui"/>\n</editors>
 /instance/org.eclipse.wst.xml.ui/lastActivePage=1
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.compact_else_if=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_between_empty_braces_in_array_initializer=do not insert
@@ -935,13 +950,20 @@ file_export_version=3.0
 /instance/org.eclipse.wst.html.ui/autoPropose=false
 /instance/org.eclipse.jdt.ui/java_multi_line_comment=128,128,128
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_constructor_declaration=insert
+/instance/com.aptana.ide.editors/regionViewer.column.6=16
+/instance/com.aptana.ide.editors/regionViewer.column.5=16
 /instance/org.eclipse.php.debug.core/org.eclipse.php.debug.coreopen_in_browser=false
+/instance/com.aptana.ide.editors/regionViewer.column.4=16
 /instance/org.eclipse.wst.validation/DELEGATES_PREFERENCE=delegateValidatorList
 /instance/org.eclipse.jst.jsp.core/validation.translation-usebean-missing-type-info=2
+/instance/com.aptana.ide.editors/regionViewer.column.3=16
+/instance/com.aptana.ide.editors/regionViewer.column.2=75
 /instance/org.eclipse.ant.ui/problem_properties=ignore
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_type_parameters=do not insert
 @org.eclipse.team.ui=3.5.101.R36x_v20100825-0800
+/instance/com.aptana.ide.editors/regionViewer.column.1=75
 /instance/com.zend.php.formatter.core/com.zend.php.formatter.core.formatter.indent_breaks_compare_to_cases=true
+/instance/com.aptana.ide.editors/regionViewer.column.0=125
 /instance/org.eclipse.ui.editors/overviewRuler_migration=migrated_3.1
 /instance/org.eclipse.wst.html.ui/commentBorder=\#66747b | \#191919 | false | false | false | false
 /instance/org.eclipse.wst.jsdt.ui/org.eclipse.wst.jsdt.ui.text.code_templates_migrated=true
