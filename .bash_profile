@@ -260,8 +260,8 @@ curlrest()
 PROMPT_COMMAND=rewrite_pwd
 rewrite_bash_prompt
 
-# add the github id_rsa key to the SSH agent
-ssh-add ~/.ssh/github.id_rsa
+# add my personal.id_rsa key to the SSH agent (needed for Github and possibly other connections as well)
+ssh-add ~/.ssh/personal.id_rsa
 
 # adds ~/.ssh/config to the ssh autocomplete
 ssh_load_autocomplete
