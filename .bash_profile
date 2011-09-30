@@ -1,4 +1,8 @@
 # Settings
+if [[ ${PATH} != */usr/local* ]] ; then
+	export PATH="${PATH}:/usr/local"
+fi
+
 # /opt/local binaries
 if [[ ${PATH} != */opt/local/bin* ]] ; then
 	export PATH="${PATH}:/opt/local/bin"
