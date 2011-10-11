@@ -26,6 +26,11 @@ if [ -f ~/.bash_aliases ]; then
 	. ~/.bash_aliases
 fi
 
+# Git autocomplete
+if [ -f ~/.bin/git-completion.bash ]; then
+	. ~/.bin/git-completion.bash
+fi
+
 
 # Methods
 
