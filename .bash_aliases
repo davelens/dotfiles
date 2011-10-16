@@ -16,3 +16,6 @@ alias ds='du -sh */'
 
 # remove all .svn folders recursively in current dir
 alias purgesvn="find . -type d -name '.svn' -exec rm -rf '{}' '+' "
+
+# the Fork Tool
+alias ft=/Users/dave/.bin/forktool/ForkTool/ft.sh
