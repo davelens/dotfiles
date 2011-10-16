@@ -10,6 +10,7 @@ alias mr='mysql_replace'
 alias se='svn_export_changed_files'
 alias tss='take_screenshot'
 alias ss='osascript ~/.bin/hide_terminal.scpt && tss'
+alias thf='toggle_hidden_files'
 
 # dir size in current dir
 alias ds='du -sh */'

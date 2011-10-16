@@ -34,6 +34,124 @@ fi
 
 # Methods
 
+# creates an SSH key and uploads it to the given host
+configure_ssh_host()
+{
+	username=$1
+	hostname=$2
+	identifier=$3
+	keyfile=$4
+	
+	if [[ "$identifier" == "" ]] || [[ "$username" == "" ]] || [[ "$hostname" == "" ]] || [[ "$keyfile" == "" ]]
+	then
+		echo "usage: configure_ssh_host <username> <hostname> <identifier> <keyfile>"
+	else
+		ssh-keygen -f ~/.ssh/$keyfile.id_rsa -C "$USER $(date +'%Y/%m%/%d %H:%M:%S')"
+		
+		echo -e "Host $identifier\n\tHostName $hostname\n\tUser $username\n\tIdentityFile ~/.ssh/$keyfile.id_rsa" >> ~/.ssh/config
+		
+		ssh $identifier 'mkdir -p .ssh && cat >> ~/.ssh/authorized_keys' < ~/.ssh/$keyfile.id_rsa.pub
+		
+		tput bold; ssh -o PasswordAuthentication=no $identifier true && { tput setaf 2; echo 'Success!'; } || { tput setaf 1; echo 'Failure'; }; tput sgr0
+		
+		ssh_load_autocomplete
+	fi
+}
+
+# Command used to test rest services that are under development
+curlrest()
+{
+	method=$1
+	url=$2
+	parameters=$3
+
+	if [[ "$method" == "" ]] || [[ "$url" == "" ]]
+	then
+		echo "usage: curlrest <method> <url> <*parameters>"
+	else
+		if [[ "$parameters" != "" ]]
+		then
+			parameters="--data-urlencode $(echo $parameters | xargs | sed 's/&/ --data-urlencode /g')"
+		fi
+	
+		curl -v --globoff --get -X$method $url $parameters
+		echo ""
+	fi
+}
+
+# recursively gathers all files that match the search query to the chosen directory
+gather_files()
+{
+	search=$1
+	destination=$2
+
+	if [[ "$search" == "" ]] || [[ "$destination" == "" ]]
+	then	
+		echo "usage: gather_files <search> <destination>"
+	else
+		find . -type f -name "$search" -exec mv -fv '{}' "$destination" ';'
+	fi
+}
+
+# returns the active git branch - this is used in rewrite_bash_prompt()
+git_branch()
+{
+	git branch 2>/dev/null | grep '*' | sed 's/\* //'
+}
+
+# get filesize
+get_filesizes()
+{
+	ls -laSh | grep -v ^d | awk '{print $5 "\t" $9}'
+}
+
+# performs a mysqldump through SSH, and stores it in the "backups" folder on your desktop
+get_sql_dump()
+{
+	project=$1
+	ssh_hostname=$2
+	mysql_username=$3
+	mysql_database=$4
+	mysql_host=$5
+	datefolder=$(date +'%d-%m')
+	
+	if [[ "$project" == "" ]] || [[ "$ssh_hostname" == "" ]] || [[ "$mysql_username" == "" ]] || [[ "$mysql_database" == "" ]]
+	then
+		echo "usage: get_sql_dump <project> <ssh_hostname> <mysql_username> <mysql_database> <*mysql_host>"
+	else
+		backup_dir=${HOME}/Desktop/backups/$project/$datefolder
+
+		if [[ "$mysql_host" != "" ]]
+		then
+			mysql_host="-h $mysql_host"
+		fi
+
+		mkdir -p $backup_dir
+		cd $backup_dir
+		ssh $ssh_hostname mysqldump -u $mysql_username -p $mysql_database $mysql_host > $ssh_hostname.sql
+	fi 	
+}
+
+# replaces a local mysql database with the specified one
+mysql_replace()
+{
+	database=$1
+	sql_file=$2
+	
+	if [[ "$database" == "" ]] || [[ "$sql_file" == "" ]]
+	then
+		echo "usage: mysql_replace <database> <sql_file>"
+	else
+		echo "Dropping and re-creating database '$database'"
+		mysql $database -e "drop database $database; create database $database;"
+		
+		echo "Importing $sql_file ..."
+		mysql $database < $sql_file
+		
+		echo "Done."
+	fi 	
+}
+
 ##################################################
 # Fancy PWD display function
 ##################################################
@@ -107,16 +225,10 @@ rewrite_bash_prompt()
 	PS1="${G}\u@local:$(git_branch)> \${NEW_PWD} \\$ ${NONE}\n\$ "
 }
 
-# returns the active git branch - this is used in rewrite_bash_prompt()
-git_branch()
+# adds ~/.ssh/config to the ssh autocomplete
+ssh_load_autocomplete()
 {
-	git branch 2>/dev/null | grep '*' | sed 's/\* //'
-}
-
-# get filesize
-get_filesizes()
-{
-	ls -laSh | grep -v ^d | awk '{print $5 "\t" $9}'
+	complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/config)" ssh
 }
 
 # export all changed files between the given revision and HEAD, to a given location
@@ -140,83 +252,6 @@ svn_export_changed_files()
 	fi
 }
 
-# performs a mysqldump through SSH, and stores it in the "backups" folder on your desktop
-get_sql_dump()
-{
-	project=$1
-	ssh_hostname=$2
-	mysql_username=$3
-	mysql_database=$4
-	mysql_host=$5
-	datefolder=$(date +'%d-%m')
-	
-	if [[ "$project" == "" ]] || [[ "$ssh_hostname" == "" ]] || [[ "$mysql_username" == "" ]] || [[ "$mysql_database" == "" ]]
-	then
-		echo "usage: get_sql_dump <project> <ssh_hostname> <mysql_username> <mysql_database> <*mysql_host>"
-	else
-		backup_dir=${HOME}/Desktop/backups/$project/$datefolder
-
-		if [[ "$mysql_host" != "" ]]
-		then
-			mysql_host="-h $mysql_host"
-		fi
-
-		mkdir -p $backup_dir
-		cd $backup_dir
-		ssh $ssh_hostname mysqldump -u $mysql_username -p $mysql_database $mysql_host > $ssh_hostname.sql
-	fi 	
-}
-
-# replaces a local mysql database with the specified one
-mysql_replace()
-{
-	database=$1
-	sql_file=$2
-	
-	if [[ "$database" == "" ]] || [[ "$sql_file" == "" ]]
-	then
-		echo "usage: mysql_replace <database> <sql_file>"
-	else
-		echo "Dropping and re-creating database '$database'"
-		mysql $database -e "drop database $database; create database $database;"
-		
-		echo "Importing $sql_file ..."
-		mysql $database < $sql_file
-		
-		echo "Done."
-	fi 	
-}
-
-# creates an SSH key and uploads it to the given host
-configure_ssh_host()
-{
-	username=$1
-	hostname=$2
-	identifier=$3
-	keyfile=$4
-	
-	if [[ "$identifier" == "" ]] || [[ "$username" == "" ]] || [[ "$hostname" == "" ]] || [[ "$keyfile" == "" ]]
-	then
-		echo "usage: configure_ssh_host <username> <hostname> <identifier> <keyfile>"
-	else
-		ssh-keygen -f ~/.ssh/$keyfile.id_rsa -C "$USER $(date +'%Y/%m%/%d %H:%M:%S')"
-		
-		echo -e "Host $identifier\n\tHostName $hostname\n\tUser $username\n\tIdentityFile ~/.ssh/$keyfile.id_rsa" >> ~/.ssh/config
-		
-		ssh $identifier 'mkdir -p .ssh && cat >> ~/.ssh/authorized_keys' < ~/.ssh/$keyfile.id_rsa.pub
-		
-		tput bold; ssh -o PasswordAuthentication=no $identifier true && { tput setaf 2; echo 'Success!'; } || { tput setaf 1; echo 'Failure'; }; tput sgr0
-		
-		ssh_load_autocomplete
-	fi
-}
-
-# adds ~/.ssh/config to the ssh autocomplete
-ssh_load_autocomplete()
-{
-	complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/config)" ssh
-}
-
 # takes a screenshot and uploads it to my hosting
 take_screenshot()
 {
@@ -228,39 +263,20 @@ take_screenshot()
 	rm -rf ~/Desktop/$filename
 }
 
-# recursively gathers all files that match the search query to the chosen directory
-gather_files()
+# toggles between hiding/showing of hidden files
+toggle_hidden_files()
 {
-	search=$1
-	destination=$2
-
-	if [[ "$search" == "" ]] || [[ "$destination" == "" ]]
-	then	
-		echo "usage: gather_files <search> <destination>"
-	else
-		find . -type f -name "$search" -exec mv -fv '{}' "$destination" ';'
-	fi
-}
-
-# Command used to test rest services that are under development
-curlrest()
-{
-	method=$1
-	url=$2
-	parameters=$3
-
-	if [[ "$method" == "" ]] || [[ "$url" == "" ]]
-	then
-		echo "usage: curlrest <method> <url> <*parameters>"
-	else
-		if [[ "$parameters" != "" ]]
-		then
-			parameters="--data-urlencode $(echo $parameters | xargs | sed 's/&/ --data-urlencode /g')"
-		fi
+	value="$(defaults read com.apple.finder AppleShowAllFiles)"
 	
-		curl -v --globoff --get -X$method $url $parameters
-		echo ""
+	if [[ "$value" == "FALSE" ]]; then
+		newValue="TRUE"
+	else
+		newValue="FALSE"
 	fi
+	
+	defaults write com.apple.finder AppleShowAllFiles $newValue
+	killall Finder
+	echo "AppleShowAllFiles is now $newValue."
 }
 
 
