@@ -96,7 +96,7 @@ gather_files()
 # returns the active git branch - this is used in rewrite_bash_prompt()
 git_branch()
 {
-	git branch 2>/dev/null | grep '*' | sed 's/\* //'
+	git branch 2>/dev/null | grep '*' | sed 's/\* /:/'
 }
 
 # get filesize
@@ -222,7 +222,7 @@ rewrite_bash_prompt()
 	[ $UID -eq "0" ] && UC=$R   # root's color
 
 	# rewrite prompt
-	PS1="${G}\u@local:$(git_branch)> \${NEW_PWD} \\$ ${NONE}\n\$ "
+	PS1="${G}\u@local$(git_branch)> \${NEW_PWD} \\$ ${NONE}\n\$ "
 }
 
 # adds ~/.ssh/config to the ssh autocomplete
@@ -290,6 +290,3 @@ ssh-add ~/.ssh/personal.id_rsa
 
 # adds ~/.ssh/config to the ssh autocomplete
 ssh_load_autocomplete
-
-# show the status of our config repo in the username dir
-git st
