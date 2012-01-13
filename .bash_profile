@@ -222,7 +222,7 @@ rewrite_bash_prompt()
 	[ $UID -eq "0" ] && UC=$R   # root's color
 
 	# rewrite prompt
-	PS1="${G}\u@local:$(git_branch)> \${NEW_PWD} \\$ ${NONE}\n\$ "
+	PS1="${G}\u@\h> \${NEW_PWD} \\$ ${NONE}\n\$ "
 }
 
 # adds ~/.ssh/config to the ssh autocomplete
