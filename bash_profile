@@ -1,29 +1,27 @@
-# Settings
-if [[ ${PATH} != */usr/local* ]] ; then
-	export PATH="${PATH}:/usr/local"
+# /usr/local binaries
+if [[ $PATH != */usr/local* ]] ; then
+	export PATH="$PATH:/usr/local/bin"
+	export PATH="$PATH:/usr/local/sbin"
 fi
 
-# /opt/local binaries
-if [[ ${PATH} != */opt/local/bin* ]] ; then
-	export PATH="${PATH}:/opt/local/bin"
-fi
-if [[ ${PATH} != */opt/local/sbin* ]] ; then
-	export PATH="${PATH}:/opt/local/sbin"
+if [[ $PATH != */opt/local* ]] ; then
+	export PATH="$PATH:/opt/local/bin"
+	export PATH="$PATH:/opt/local/sbin"
 fi
 
 # MAMP binaries
-if [[ ${PATH} != */Applications/MAMP/Library/bin* ]] ; then
-	export PATH="${PATH}:/Applications/MAMP/Library/bin"
+if [[ $PATH != */Applications/MAMP/Library/bin* ]] ; then
+	export PATH="$PATH:/Applications/MAMP/Library/bin"
 fi
 
 # XCode X11 binaries
-if [[ ${PATH} != */usr/X11/bin* ]] ; then
-	export PATH="${PATH}:/usr/X11/bin"
+if [[ $PATH != */usr/X11/bin* ]] ; then
+	export PATH="$PATH:/usr/X11/bin"
 fi
 
 # Aliases
-if [ -f ~/.bash_aliases ]; then
-	. ~/.bash_aliases
+if [ -f ~/.aliases ]; then
+	. ~/.aliases
 fi
 
 # Git autocomplete
@@ -31,6 +29,16 @@ if [ -f ~/.bin/git-completion.bash ]; then
 	. ~/.bin/git-completion.bash
 fi
 
+# color ls
+export CLICOLOR=1
+
+# don't put duplicate lines in the history
+export HISTCONTROL=ignoredups 
+
+# append to the history file rather than overwriting
+shopt -s histappend 
+
+export HISTIGNORE="ls:ll:la:pwd:clear:h:j"
 
 # Methods
 
