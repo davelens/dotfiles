@@ -6,3 +6,5 @@ rm ~/.gitconfig
 rm ~/.inputrc
 rm ~/.irssi
 rm ~/.vimrc
+
+echo 'Done.';

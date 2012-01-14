@@ -33,3 +33,5 @@ for name in *; do
     fi
   fi
 done
+
+echo 'Done.'
