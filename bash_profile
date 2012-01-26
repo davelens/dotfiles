@@ -173,7 +173,7 @@ get_sql_dump()
 		
 		# Prepare the backup dir and transfer the tarball
 		echo "Transferring tarball to $backup_dir/$ssh_hostname.tar"
-		rsync -ur $ssh_hostname:$ssh_hostname.tar $backup_dir/$ssh_hostname.tar > /dev/null
+		scp $ssh_hostname:$ssh_hostname.tar $backup_dir/$ssh_hostname.tar > /dev/null
 		
 		# See the comments above
 		echo "Cleaning up the server..."
