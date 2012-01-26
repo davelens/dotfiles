@@ -19,6 +19,11 @@ if [[ $PATH != */usr/X11/bin* ]] ; then
 	export PATH="$PATH:/usr/X11/bin"
 fi
 
+# rbenv
+if [[ $PATH != */.rbenv* ]] ; then
+	export PATH="$HOME/.rbenv/bin:$PATH"
+fi
+
 # Aliases
 if [ -f ~/.aliases ]; then
 	. ~/.aliases
@@ -151,7 +156,7 @@ get_sql_dump()
 		    echo -e "WARNING: Backup file already exists ($backup_dir/$ssh_hostname.tar).\nContinue? (y/n)"
 		    read proceed
 		    
-		    if [[ "$proceed" != "y" ]]
+		    if [[ $proceed != "y" ]]
 		    then
 		    	echo "Exiting..."
 		    	return
@@ -337,3 +342,6 @@ ssh-add ~/.ssh/personal.id_rsa
 
 # adds ~/.ssh/config to the ssh autocomplete
 ssh_load_autocomplete
+
+# initialize rbenv
+eval "$(rbenv init -)"
