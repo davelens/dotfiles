@@ -118,25 +118,64 @@ get_sql_dump()
 {
 	project=$1
 	ssh_hostname=$2
-	mysql_username=$3
-	mysql_database=$4
+	mysql_database=$3
+	mysql_username=$4
 	mysql_host=$5
 	datefolder=$(date +'%d-%m')
 	
-	if [[ "$project" == "" ]] || [[ "$ssh_hostname" == "" ]] || [[ "$mysql_username" == "" ]] || [[ "$mysql_database" == "" ]]
+	if [[ $project == "" ]] || [[ $ssh_hostname == "" ]] || [[ $mysql_database == "" ]]
 	then
-		echo "usage: get_sql_dump <project> <ssh_hostname> <mysql_username> <mysql_database> <*mysql_host>"
+		echo "usage: get_sql_dump <project> <ssh_hostname> <mysql_database> <*mysql_username> <*mysql_host>"
 	else
-		backup_dir=${HOME}/Desktop/backups/$project/$datefolder
-
-		if [[ "$mysql_host" != "" ]]
+		if [[ $mysql_username != "" ]]
 		then
-			mysql_host="-h $mysql_host"
+			mysql_username="-u $mysql_username -p "
 		fi
 
-		mkdir -p $backup_dir
+		if [[ $mysql_host != "" ]]
+		then
+			mysql_host=" -h $mysql_host"
+		fi
+		
+		# Prepare the backup dir if it does not exist yet
+		backup_dir=${HOME}/Desktop/backups/$project/$datefolder
+		if [[ ! -d $backup_dir ]]
+		then
+		    echo "Creating backup dir ($backup_dir)"
+    		mkdir -p $backup_dir
+		fi
+
+		# Give the user a warning if the file already exists		
+		if [[ -f $backup_dir/$ssh_hostname.tar ]]
+		then
+		    echo -e "WARNING: Backup file already exists ($backup_dir/$ssh_hostname.tar).\nContinue? (y/n)"
+		    read proceed
+		    
+		    if [[ "$proceed" != "y" ]]
+		    then
+		    	echo "Exiting..."
+		    	return
+		    fi
+		fi
+
+		# Because the scope of all our vars is local, we have to put them in a backticked string to execute them with parsed vars
+		echo "Executing mysqldump on the server..."
+		prepare_dump=`ssh $ssh_hostname "mysqldump $mysql_username$mysql_database$mysql_host > $ssh_hostname.sql" > /dev/null`
+		
+		# create the tarball
+		echo "Creating tarball..."
+		create_tarball=`ssh $ssh_hostname "tar -cvzf $ssh_hostname.tar $ssh_hostname.sql && rm $ssh_hostname.sql" > /dev/null`
+		
+		# Prepare the backup dir and transfer the tarball
+		echo "Transferring tarball to $backup_dir/$ssh_hostname.tar"
+		rsync -ur $ssh_hostname:$ssh_hostname.tar $backup_dir/$ssh_hostname.tar > /dev/null
+		
+		# See the comments above
+		echo "Cleaning up the server..."
+		clear_server=`ssh $ssh_hostname "rm $ssh_hostname.tar"`
+
 		cd $backup_dir
-		ssh $ssh_hostname mysqldump -u $mysql_username -p $mysql_database $mysql_host > $ssh_hostname.sql
+		echo "Done."
 	fi 	
 }
 
