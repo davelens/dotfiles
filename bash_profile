@@ -4,11 +4,6 @@ if [[ $PATH != */usr/local* ]] ; then
 	export PATH="$PATH:/usr/local/sbin"
 fi
 
-if [[ $PATH != */opt/local* ]] ; then
-	export PATH="$PATH:/opt/local/bin"
-	export PATH="$PATH:/opt/local/sbin"
-fi
-
 # MAMP binaries
 if [[ $PATH != */Applications/MAMP/Library/bin* ]] ; then
 	export PATH="$PATH:/Applications/MAMP/Library/bin"
