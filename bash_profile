@@ -24,6 +24,9 @@ if [ -f ~/.bin/git-completion.bash ]; then
 	. ~/.bin/git-completion.bash
 fi
 
+# Load RVM (Ruby Version Manager) into a shell session as a function
+[[ -s ~/.rvm/scripts/rvm ]] && . ~/.rvm/scripts/rvm
+
 # color ls
 export CLICOLOR=1
 
