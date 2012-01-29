@@ -1,4 +1,4 @@
-# /usr/local binaries
+# /usr/local binaries should always come first
 if [[ $PATH != */usr/local* ]] ; then
 	export PATH="$PATH:/usr/local/bin"
 	export PATH="$PATH:/usr/local/sbin"
