@@ -62,6 +62,10 @@ set convert-meta off
 "\e[1;9D": backward-word
 "\e[1;9C": forward-word
 
+# Use Control+← and Control+→
+"\e[1;5D": backward-word
+"\e[1;5C": forward-word
+
 # Miscellaneous
 # -----------------------------------------------------------------------------
 # Neither sound a beep nor flash the screen when trying to ring the bell.
