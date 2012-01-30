@@ -12,6 +12,7 @@ alias tss='take_screenshot'
 alias ss='osascript ~/.bin/hide_terminal.scpt && tss'
 alias thf='toggle_hidden_files'
 alias webview='git instaweb --httpd=webrick'
+alias nano='vi'
 
 # dir size in current dir
 alias ds='du -sh */'
