@@ -27,6 +27,8 @@ fi
 # Load RVM (Ruby Version Manager) into a shell session as a function
 [[ -s ~/.rvm/scripts/rvm ]] && . ~/.rvm/scripts/rvm
 
+export EDITOR=vim
+
 # color ls
 export CLICOLOR=1
 
