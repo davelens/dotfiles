@@ -13,6 +13,7 @@ alias ss='osascript ~/.bin/hide_terminal.scpt && tss'
 alias thf='toggle_hidden_files'
 alias webview='git instaweb --httpd=webrick'
 alias nano='vi'
+alias rsync='rsync --exclude-from=/Users/dave/.bin/rsync-exclude-list.txt'
 
 # dir size in current dir
 alias ds='du -sh */'
