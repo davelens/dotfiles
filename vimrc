@@ -8,6 +8,8 @@ set linespace=0
 set visualbell
 set nocursorcolumn
 set cursorline
+set ignorecase
+set smartcase
 
 " Let the backspace behave
 set backspace=indent,eol,start whichwrap+=<,>,[,]
