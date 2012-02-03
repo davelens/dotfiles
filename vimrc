@@ -10,6 +10,7 @@ set nocursorcolumn
 set cursorline
 set ignorecase
 set smartcase
+set incsearch
 
 " Let the backspace behave
 set backspace=indent,eol,start whichwrap+=<,>,[,]
