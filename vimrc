@@ -11,13 +11,14 @@ set cursorline
 set ignorecase
 set smartcase
 set incsearch
+set wildmenu
+set laststatus=2
 
 " Let the backspace behave
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
 "Default
-""set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
-"set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\ 
+set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\ 
 " MapCTRL+e and CTRL+a to respectively jump to end and start of line 
 imap <C-e> <esc>$i<right>
 imap <C-a> <esc>0i
