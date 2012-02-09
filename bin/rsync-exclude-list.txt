@@ -2,3 +2,7 @@
 files/
 cache/
 install/
+.settings/
+.buildpath
+.project
+.DS_Store
