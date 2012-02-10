@@ -87,7 +87,7 @@ curlrest()
 	fi
 }
 
-# recursively gathers all files that match the search query to the chosen directory
+# recursively moves all files matching the search query to the chosen directory
 gather_files()
 {
 	search=$1
