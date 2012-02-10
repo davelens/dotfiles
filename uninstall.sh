@@ -1,4 +1,4 @@
-rm ~/.aliases
+rm ~/.bash
 rm ~/.bash_profile
 rm ~/.bashrc
 rm ~/.bin
