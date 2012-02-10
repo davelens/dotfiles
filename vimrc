@@ -13,6 +13,7 @@ set smartcase
 set incsearch
 set wildmenu
 set laststatus=2
+set paste
 
 " Let the backspace behave
 set backspace=indent,eol,start whichwrap+=<,>,[,]
