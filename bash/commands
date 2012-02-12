@@ -205,3 +205,10 @@ toggle_hidden_files()
 	echo "AppleShowAllFiles is now $newValue."
 }
 
+# syncs git production and staging branch with master 
+git_sync_with_master()
+{
+	git checkout production && git merge origin/master && git push origin production
+	git checkout staging && git merge origin/master && git push origin staging
+	git checkout master
+}
