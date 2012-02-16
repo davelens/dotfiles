@@ -4,22 +4,28 @@
 # OVERWRITE SHELL VARS
 ########################################################################
 
-# /usr/local binaries should always come first
-if [[ $PATH != */usr/local* ]] ; then
-	export PATH="/usr/local/bin:$PATH"
-	export PATH="/usr/local/sbin:$PATH"
-fi
+# list the directories we want to add to the PATH variable, if they exist.
+paths_to_add=(
+  "$HOME/bin"
+  # Homebrew
+  /usr/local/{,s}bin
+  # Macports
+  /opt/local/{,s}bin
+  # System
+  /{,s}bin
+  /usr/{,s}bin
+  # Git
+  /usr/local/git/bin
+  # X binaries
+  /usr/X11/bin
+  # MAMP
+  /Applications/MAMP/Library/bin
+);
 
-# MAMP binaries
-if [[ $PATH != */Applications/MAMP/Library/bin* ]] ; then
-	export PATH="$PATH:/Applications/MAMP/Library/bin"
-fi
 
-# XCode X11 binaries
-if [[ $PATH != */usr/X11/bin* ]] ; then
-	export PATH="$PATH:/usr/X11/bin"
-fi
-
+# Now implode everything into the new PATH variable.
+printf -v PATH "%s:" "${paths_to_add[@]}";
+export PATH="${PATH%:}";
 
 # Load RVM (Ruby Version Manager) into a shell session as a function
 [[ -s ~/.rvm/scripts/rvm ]] && . ~/.rvm/scripts/rvm
