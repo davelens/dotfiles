@@ -6,6 +6,7 @@ rm ~/.gitconfig
 rm ~/.gitignore_global
 rm ~/.inputrc
 rm ~/.irssi
+rm ~/.osx
 rm ~/.vim
 rm ~/.vimrc
 
