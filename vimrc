@@ -15,6 +15,14 @@ set incsearch
 set wildmenu
 set laststatus=2
 set paste
+set smartindent
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
+set noexpandtab
+
+" Whitespace settings for Ruby
+autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
 
 " Let the backspace behave
 set backspace=indent,eol,start whichwrap+=<,>,[,]
