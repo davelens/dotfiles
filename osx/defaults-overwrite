@@ -23,10 +23,10 @@ defaults write -g NSWindowResizeTime -float 0.01
 
 # Make Launchpad show/hide instantly
 defaults write com.apple.dock springboard-show-duration -int 0
-defaults write com.apple.dock springboard-hide-duration -int 0;
+defaults write com.apple.dock springboard-hide-duration -int 0
 
 # Autohide the dock
-defaults write com.apple.dock autohide-time-modifier -int 0
+defaults write com.apple.dock autohide-time-modifier -float 0.5
 
 # Enables you to select and copy text in Quick Look windows
 defaults write com.apple.finder QLEnableTextSelection -bool true
