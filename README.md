@@ -14,3 +14,5 @@ I use an abundant number of OSX setting overrides. Most of these are widely reco
 	source ~/.dotfiles/osx/defaults-overwrite
 
 You can use the provided reset to restore to OSX default settings. Note that this also overrides any custom settings you defined yourself, so use with caution!
+
+	source ~/.dotfiles/osx/defaults-reset
