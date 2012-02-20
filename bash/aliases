@@ -16,6 +16,8 @@ alias thf='toggle_hidden_files'
 alias webview='git instaweb --httpd=webrick'
 alias nano='vi'
 alias rsync='rsync --exclude-from=$HOME/.bin/rsync-exclude-list.txt'
+alias toggle_desktop='toggle_default finder CreateDesktop'
+alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
 
 # dir size in current dir
 alias ds='du -sh */'

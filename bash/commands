@@ -189,20 +189,21 @@ take_screenshot()
 	rm -rf ~/Desktop/$filename
 }
 
-# toggles between hiding/showing of hidden files
-toggle_hidden_files()
+toggle_default()
 {
-	value="$(defaults read com.apple.finder AppleShowAllFiles)"
-	
-	if [[ "$value" == "FALSE" ]]; then
+	environment=$1
+	setting=$2
+	value="$(defaults read com.apple.$environment $setting)"
+
+	if [[ $value == 0 ]]; then
 		newValue="TRUE"
 	else
 		newValue="FALSE"
 	fi
-	
-	defaults write com.apple.finder AppleShowAllFiles $newValue
+
+	defaults write com.apple.$environment $setting -bool $newValue
 	killall Finder
-	echo "AppleShowAllFiles is now $newValue."
+	echo "$setting is now $newValue."
 }
 
 # syncs git production and staging branch with master 
