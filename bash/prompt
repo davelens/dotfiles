@@ -70,7 +70,7 @@ rewrite_prompt()
 	[ $UID -eq "0" ] && UC=$R   # root's color
 
 	# rewrite prompt
-	PS1="${G}\u@\h> \${NEW_PWD} \\$ ${NONE}\n\$ "
+	PS1="${G}\u@\h> \${NEW_PWD} ${C}\$(git_branch)\${NONE}${NONE}\n$ "
 }
 
 # adds ~/.ssh/config to the ssh autocomplete
