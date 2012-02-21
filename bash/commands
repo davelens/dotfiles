@@ -62,7 +62,7 @@ move_files()
 # returns the active git branch - this is used in rewrite_prompt()
 git_branch()
 {
-	git branch --no-color 2>/dev/null | sed 's/* \(.*\)/(branch: \1)/'
+	git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(branch: \1)/'
 }
 
 # get filesize
