@@ -89,8 +89,8 @@ defaults write -g PMPrintingExpandedStateForPrint -bool true
 # Disable writing of .DS_Store files on network volumes
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
-# Disable Mission Control all-together
-defaults write com.apple.dock mcx-expose-disabled -bool true
+# Disable Mission Control all-together (Commented out until Lion, see how it functions there)
+#defaults write com.apple.dock mcx-expose-disabled -bool true
 
 # User Airdrop over every interface
 defaults write com.apple.networkbrowser BrowseAllInterfaces -bool true
