@@ -21,6 +21,10 @@ set softtabstop=4
 set tabstop=4
 set noexpandtab
 
+" Auto-completion
+set wildmode=longest,list,full
+set wildmenu
+
 " Whitespace settings for Ruby
 autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
 
@@ -29,9 +33,12 @@ set backspace=indent,eol,start whichwrap+=<,>,[,]
 
 "Default
 set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\ 
-" MapCTRL+e and CTRL+a to respectively jump to end and start of line 
-imap <C-e> <esc>$i<right>
-imap <C-a> <esc>0i
+
+" When editing a file, always jump to the last known cursor position.
+autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
+
+" Delete trailing whitespaces on saving a file
+autocmd BufWritePre * :%s/\s\+$//e
 
 " Do not exit visual mode when shifting
 vnoremap > >gv
