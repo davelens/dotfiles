@@ -29,7 +29,7 @@ set wildmenu
 autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
 
 " Run current testfile through phpunit
-autocmd FileType php map <F5> :! pu %<cr>
+autocmd FileType php map <F5> :! phpunit --colors %<cr>
 
 " Let the backspace behave
 set backspace=indent,eol,start whichwrap+=<,>,[,]
