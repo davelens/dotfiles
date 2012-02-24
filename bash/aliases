@@ -19,6 +19,7 @@ alias rsync='rsync --exclude-from=$HOME/.osx/rsync-exclude-list.txt'
 alias toggle_desktop='toggle_default finder CreateDesktop'
 alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
 alias memcache_start='memcached -d -m 100 start'
+alias pu='phpunit --colors'
 
 # dir size in current dir
 alias ds='du -sh */'

@@ -28,11 +28,14 @@ set wildmenu
 " Whitespace settings for Ruby
 autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
 
+" Run current testfile through phpunit
+autocmd FileType php map <F5> :! pu %<cr>
+
 " Let the backspace behave
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
 "Default
-set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\ 
+set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\
 
 " When editing a file, always jump to the last known cursor position.
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
