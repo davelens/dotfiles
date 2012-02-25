@@ -12,21 +12,30 @@ set cursorline
 set ignorecase
 set smartcase
 set incsearch
-set wildmenu
 set laststatus=2
-set paste
+set foldclose=all
+set foldmethod=marker
+
+" Indentation and whitespace settings
 set smartindent
+set cindent
+set autoindent
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
 set noexpandtab
 
+" Whitespace settings for Ruby
+autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
+
 " Auto-completion
 set wildmode=longest,list,full
 set wildmenu
+set completeopt=preview,menu,longest
 
-" Whitespace settings for Ruby
-autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
+" Not too long or we drop to a virtual stand still when editing
+" large-all-on-one-line-code (like OOo xml files.)
+set synmaxcol=512
 
 " Run current testfile through phpunit
 autocmd FileType php map <F5> :! clear && phpunit --colors %<cr>
