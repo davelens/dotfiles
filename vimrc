@@ -1,8 +1,17 @@
+set nocompatible
+au!
+
 " enable Pathogen plugin manager
 call pathogen#infect()
 filetype plugin indent on
 
-set nocompatible
+" Remember undo's even when buffer has been in the background.
+" Also allows for sending buffers to the background without saving...
+set hidden
+" ... this is where this comes in:
+set autowrite
+set autoread
+
 set encoding=utf-8
 set fileformat=unix
 set linespace=0
