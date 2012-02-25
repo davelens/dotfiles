@@ -52,7 +52,7 @@ autocmd FileType php map <F5> :! clear && phpunit --colors %<cr>
 " Let the backspace behave
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
-"Default
+" statusline (active file, line+col position, file format+encoding+filetype
 set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\
 
 " When editing a file, always jump to the last known cursor position.
