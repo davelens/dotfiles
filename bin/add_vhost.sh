@@ -11,7 +11,7 @@ else
 	echo -e "<VirtualHost *:80>\n\tServerName $project.dev\n\tDocumentRoot $docroot\n\n\t<Directory $docroot>\n\t\tOptions Includes FollowSymLinks\n\t\tAllowOverride All\n\t\tOrder allow,deny\n\t\tAllow from all\n\t</Directory>\n</VirtualHost>" >> /etc/apache2/other/$project.conf
 
 	# append the TLD to the hosts file
-	echo -e "127.0.0.1\t$project.dev" >> /etc/hosts
+	echo -e "127.0.0.1 $project.dev" >> /etc/hosts
 
 	# restart apache
 	apachectl restart
