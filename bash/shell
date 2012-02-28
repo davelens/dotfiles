@@ -7,6 +7,8 @@
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
   "$HOME/bin"
+  # MySQL
+  /usr/local/mysql/bin
   # Homebrew
   /usr/local/{,s}bin
   # Macports
@@ -30,7 +32,7 @@ export PATH="${PATH%:}";
 # Load RVM (Ruby Version Manager) into a shell session as a function
 [[ -s ~/.rvm/scripts/rvm ]] && . ~/.rvm/scripts/rvm
 
-# General settings 
+# General settings
 export EDITOR=vim
 export CLICOLOR=1
 
@@ -39,7 +41,7 @@ export LC_ALL='en_GB.UTF-8';
 export LANG='en_GB';
 
 # don't put duplicate lines in the history
-export HISTCONTROL=ignoredups 
+export HISTCONTROL=ignoredups
 
 # let the history ignore the following commands
 export HISTIGNORE="ls:ll:la:pwd:clear:h:j"
@@ -52,7 +54,7 @@ export PAGER='less --quit-if-one-screen --no-init --ignore-case --RAW-CONTROL-CH
 ########################################################################
 
 # append to the history file rather than overwriting
-shopt -s histappend 
+shopt -s histappend
 shopt -s nocaseglob;
 
 
