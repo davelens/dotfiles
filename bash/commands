@@ -7,19 +7,19 @@ configure_ssh_host()
 	hostname=$2
 	identifier=$3
 	keyfile=$4
-	
+
 	if [[ "$identifier" == "" ]] || [[ "$username" == "" ]] || [[ "$hostname" == "" ]] || [[ "$keyfile" == "" ]]
 	then
 		echo "usage: configure_ssh_host <username> <hostname> <identifier> <keyfile>"
 	else
 		ssh-keygen -f ~/.ssh/$keyfile.id_rsa -C "$USER $(date +'%Y/%m%/%d %H:%M:%S')"
-		
+
 		echo -e "Host $identifier\n\tHostName $hostname\n\tUser $username\n\tIdentityFile ~/.ssh/$keyfile.id_rsa" >> ~/.ssh/config
-		
+
 		ssh $identifier 'mkdir -p .ssh && cat >> ~/.ssh/authorized_keys' < ~/.ssh/$keyfile.id_rsa.pub
-		
+
 		tput bold; ssh -o PasswordAuthentication=no $identifier true && { tput setaf 2; echo 'Success!'; } || { tput setaf 1; echo 'Failure'; }; tput sgr0
-		
+
 		ssh_load_autocomplete
 	fi
 }
@@ -39,7 +39,7 @@ curlrest()
 		then
 			parameters="--data-urlencode $(echo $parameters | xargs | sed 's/&/ --data-urlencode /g')"
 		fi
-	
+
 		curl -v --globoff --get -X$method $url $parameters
 		echo ""
 	fi
@@ -52,7 +52,7 @@ move_files()
 	destination=$2
 
 	if [[ "$search" == "" ]] || [[ "$destination" == "" ]]
-	then	
+	then
 		echo "usage: gather_files <search> <destination>"
 	else
 		find . -type f -name "$search" -exec mv -fv '{}' "$destination" ';'
@@ -80,7 +80,7 @@ get_sql_dump()
 	mysql_username=$4
 	mysql_host=$5
 	datefolder=$(date +'%d-%m')
-	
+
 	if [[ $project == "" ]] || [[ $ssh_hostname == "" ]] || [[ $mysql_database == "" ]]
 	then
 		echo "usage: get_sql_dump <project> <ssh_hostname> <mysql_database> <*mysql_username> <*mysql_host>"
@@ -94,7 +94,7 @@ get_sql_dump()
 		then
 			mysql_host=" -h $mysql_host"
 		fi
-		
+
 		# Prepare the backup dir if it does not exist yet
 		backup_dir=${HOME}/Desktop/backups/$project/$datefolder
 		if [[ ! -d $backup_dir ]]
@@ -103,12 +103,12 @@ get_sql_dump()
     		mkdir -p $backup_dir
 		fi
 
-		# Give the user a warning if the file already exists		
+		# Give the user a warning if the file already exists
 		if [[ -f $backup_dir/$ssh_hostname.tar ]]
 		then
 		    echo -e "WARNING: Backup file already exists ($backup_dir/$ssh_hostname.tar).\nContinue? (y/n)"
 		    read proceed
-		    
+
 		    if [[ $proceed != "y" ]]
 		    then
 		    	echo "Exiting..."
@@ -119,22 +119,22 @@ get_sql_dump()
 		# Because the scope of all our vars is local, we have to put them in a backticked string to execute them with parsed vars
 		echo "Executing mysqldump on the server..."
 		prepare_dump=`ssh $ssh_hostname "mysqldump $mysql_username$mysql_database$mysql_host > $ssh_hostname.sql" > /dev/null`
-		
+
 		# create the tarball
 		echo "Creating tarball..."
 		create_tarball=`ssh $ssh_hostname "tar -cvzf $ssh_hostname.tar $ssh_hostname.sql && rm $ssh_hostname.sql" > /dev/null`
-		
+
 		# Prepare the backup dir and transfer the tarball
 		echo "Transferring tarball to $backup_dir/$ssh_hostname.tar"
 		scp $ssh_hostname:$ssh_hostname.tar $backup_dir/$ssh_hostname.tar > /dev/null
-		
+
 		# See the comments above
 		echo "Cleaning up the server..."
 		clear_server=`ssh $ssh_hostname "rm $ssh_hostname.tar"`
 
 		cd $backup_dir
 		echo "Done."
-	fi 	
+	fi
 }
 
 # replaces a local mysql database with the specified one
@@ -142,19 +142,19 @@ mysql_replace()
 {
 	database=$1
 	sql_file=$2
-	
+
 	if [[ "$database" == "" ]] || [[ "$sql_file" == "" ]]
 	then
 		echo "usage: mysql_replace <database> <sql_file>"
 	else
 		echo "Dropping and re-creating database '$database'"
 		mysql $database -e "drop database $database; create database $database;"
-		
+
 		echo "Importing $sql_file ..."
 		mysql $database < $sql_file
-		
+
 		echo "Done."
-	fi 	
+	fi
 }
 
 # export all changed files between the given revision and HEAD, to a given location
@@ -167,13 +167,13 @@ svn_export_changed_files()
 	if [[ "$end_rev" == "" ]]; then
 		 end_rev='HEAD'
 	fi
-	
+
 	if [[ "$tarfile" == "" ]] || [[ "$start_rev" == "" ]]
 	then
 		echo "usage: svn_export_changed_files <tarfile> <start_rev> <*end_rev>"
 	else
-		svn diff -r "$start_rev":"$end_rev" --summarize | 
-		awk '{if ($1 != "D") print $2}'| 
+		svn diff -r "$start_rev":"$end_rev" --summarize |
+		awk '{if ($1 != "D") print $2}'|
 		xargs  -I {} tar -rvf "$tarfile" {}
 	fi
 }
@@ -183,7 +183,7 @@ take_screenshot()
 {
 	filename="$(date +%Y-%m-%d-%H-%M-%S).png"
 
-	screencapture -ix ~/Desktop/$filename && 
+	screencapture -ix ~/Desktop/$filename &&
 	scp ~/Desktop/$filename davelens.be:screenshots/$filename
 	echo "http://code.davelens.be/screenshots/$filename" | pbcopy
 	rm -rf ~/Desktop/$filename
@@ -206,10 +206,25 @@ toggle_default()
 	echo "$setting is now $newValue."
 }
 
-# syncs git production and staging branch with master 
+# syncs git production and staging branch with master
 git_sync_with_master()
 {
 	git checkout production && git merge origin/master && git push origin production
 	git checkout staging && git merge origin/master && git push origin staging
 	git checkout master
 }
+
+# attempts to recursively find a match for a given string in the given file(s)
+search()
+{
+	files=$1
+	string=$2
+
+	if [[ $files == '' ]] || [[ $string == '' ]];
+	then
+		echo "example: search *.php getData()"
+	else
+		find . -type f -name "$files" -exec grep -l "$string" {} +
+	fi
+}
+
