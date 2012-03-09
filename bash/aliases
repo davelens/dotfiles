@@ -21,6 +21,7 @@ alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
 alias memcache_start='memcached -d -m 100 start'
 alias pu='phpunit --colors'
 alias add_vhost='sudo ~/.bin/./add_vhost.sh'
+alias preview="open -a Preview"
 
 # dir size in current dir
 alias ds='du -sh */'
