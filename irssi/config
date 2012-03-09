@@ -15,8 +15,8 @@ servers = (
 
 channels = (
   { name = "#forkcms"; chatnet = "freenode"; autojoin = "Yes"; },
-  { name = "#netlash"; chatnet = "kreynet"; autojoin = "Yes"; },
-  { name = "#netlab"; chatnet = "kreynet"; autojoin = "Yes"; }
+  { name = "#wijs"; chatnet = "kreynet"; autojoin = "Yes"; },
+  { name = "#wijsneuzen"; chatnet = "kreynet"; autojoin = "Yes"; },
 );
 
 chatnets = {
