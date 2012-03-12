@@ -217,14 +217,20 @@ git_sync_with_master()
 # attempts to recursively find a match for a given string in the given file(s)
 search()
 {
-	files=$1
-	string=$2
+	string=$1
+	files=$2
 
-	if [[ $files == '' ]] || [[ $string == '' ]];
+	if [[ $string == '' ]];
 	then
-		echo "example: search *.php getData()"
+		echo "usage: search <search> '<*glob_expansion>'"
+		echo "	Make sure the glob expansion is in quotes!"
 	else
-		find . -type f -name "$files" -exec grep -l "$string" {} +
+		if [[ $files == '' ]];
+		then
+			find . -type f -exec grep -l "$string" {} +
+		else
+			find . -type f -name "$files" -exec grep -l "$string" {} +
+		fi
 	fi
 }
 
