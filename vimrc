@@ -79,6 +79,9 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 
+" Disable the bloody visual bell
+set t_vg=
+
 set t_Co=256
 colorscheme zenburn
 syntax on
