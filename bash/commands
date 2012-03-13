@@ -244,7 +244,7 @@ search_and_replace()
 	if [[ $search == '' ]] || [[ $replace == '' ]];
 	then
 		echo "usage: search_and_replace <search> <replace <*glob_expansion>"
-		echo "	Make sure the glob expansion is on quotes!"
+		echo "	Make sure the glob expansion is in quotes!"
 	else
 		if [[ $files == '' ]];
 		then
