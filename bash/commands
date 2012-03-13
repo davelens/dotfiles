@@ -178,34 +178,6 @@ svn_export_changed_files()
 	fi
 }
 
-# takes a screenshot and uploads it to my hosting
-take_screenshot()
-{
-	filename="$(date +%Y-%m-%d-%H-%M-%S).png"
-
-	screencapture -ix ~/Desktop/$filename &&
-	scp ~/Desktop/$filename davelens.be:screenshots/$filename
-	echo "http://code.davelens.be/screenshots/$filename" | pbcopy
-	rm -rf ~/Desktop/$filename
-}
-
-toggle_default()
-{
-	environment=$1
-	setting=$2
-	value="$(defaults read com.apple.$environment $setting)"
-
-	if [[ $value == 0 ]]; then
-		newValue="TRUE"
-	else
-		newValue="FALSE"
-	fi
-
-	defaults write com.apple.$environment $setting -bool $newValue
-	killall Finder
-	echo "$setting is now $newValue."
-}
-
 # syncs git production and staging branch with master
 git_sync_with_master()
 {
