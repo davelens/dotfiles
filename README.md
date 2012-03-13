@@ -11,6 +11,7 @@ If you're sick of my dotfiles, you can copy-paste the following in your shell:
 # Settings you should change
 - Your personal info in .dotfiles/gitconfig
 - If you use irssi (or plan to): Your desired servers, channels, highlights and aliases in .dotfiles/irssi/config
+- The take_screenshot command in .dotfiles/bash/osx uploads a screenshot to my webspace and puts the link in my clipboard. If you want to use this as well, just replace it with your own SSH host.
 
 # Mac OS X defaults
 I use an abundant number of OSX setting overrides. Most of these are widely recognized as optimal settings, but some might seem odd, strange or unwanted for you. That is why it requires a separate install instruction. If you want to give it a go, just copy-paste the line below in your shell:
