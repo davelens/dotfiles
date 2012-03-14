@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Set a global variable representing the OS we're on.
+# Set a global variable representing the OS I'm on.
 # This way I can filter out dotfiles content for specific OSes.
 # Mac OS X = Darwin
-# Ubuntu, Debian, Mint,...  Linux
+# Ubuntu, Debian, Mint,... = Linux
 OS=`uname -s`
 
 # Source the files in the bash folder
