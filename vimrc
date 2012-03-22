@@ -73,6 +73,10 @@ nmap <c-p> [[
 nmap <CR> o<ESC>
 nmap <C-CR> O<ESC>
 
+" Copy to/paste from system clipboard
+map <C-y> "+y
+map <C-p> "+p
+
 " Less finger wrecking window navigation.
 nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
