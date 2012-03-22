@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# ************************************
+# This file will only load on Mac OS X
+# ************************************
+
 # takes a screenshot and uploads it to my hosting
 take_screenshot()
 {
@@ -11,6 +15,7 @@ take_screenshot()
 	rm -rf ~/Desktop/$filename
 }
 
+# toggles a boolean setting in the com.apple environment
 toggle_default()
 {
 	environment=$1
