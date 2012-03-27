@@ -42,6 +42,9 @@ set wildmode=longest,list,full
 set wildmenu
 set completeopt=preview,menu,longest
 
+" AutoComplPop setting to trigger autocomplete after 4 typed, matching chars
+let g:acp_behaviorKeywordLength = 4
+
 " Not too long or we drop to a virtual stand still when editing
 " large-all-on-one-line-code (like OOo xml files.)
 set synmaxcol=512
