@@ -7,7 +7,7 @@ if [[ $project == "" ]] || [[ $docroot == "" ]] || [[ `whoami` != 'root' ]];
 then
 	echo "usage: sudo ./add_vhost.sh <project> <document_root>"
 else
-	# Apache uses /etc/apache2/sites-enabled as vhost folder, Mac uses /etc/apache2/other
+	# Linux uses /etc/apache2/sites-enabled as vhost folder, Mac uses /etc/apache2/other
 	if [[ `uname -s` == 'Darwin' ]];
 	then
 		vhost_folder='other'
