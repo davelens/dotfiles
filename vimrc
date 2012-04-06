@@ -58,11 +58,6 @@ set backspace=indent,eol,start whichwrap+=<,>,[,]
 " statusline (active file, line+col position, file format+encoding+filetype
 set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\
 
-" When editing a file, always jump to the last known cursor position.
-autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
-
-" Delete trailing whitespaces on saving a file
-autocmd BufWritePre * :%s/\s\+$//e
 
 " Do not exit visual mode when shifting
 vnoremap > >gv
@@ -87,9 +82,36 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" When editing a file, always jump to the last known cursor position.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Delete trailing whitespaces on saving a file
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+autocmd BufWritePre * :%s/\s\+$//e
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Rename the current file in your buffer
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! RenameFile()
+	let old_name = expand('%')
+	let new_name = input('New file name: ', expand('%'))
+	if new_name != '' && new_name != old_name
+		exec ':saveas ' . new_name
+		exec ':silent !rm ' . old_name
+		redraw!
+	endif
+endfunction
+map <leader>n :call RenameFile()<cr>
+
 " Disable the bloody visual bell
 set t_vb=
 
+" Set vim in 256 color-mode
 set t_Co=256
+
+" Syntax coloring
 colorscheme zenburn
 syntax on
