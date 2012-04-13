@@ -112,6 +112,9 @@ set t_vb=
 " Set vim in 256 color-mode
 set t_Co=256
 
+" Use the railscasts colorscheme for ruby files
+autocmd FileType ruby colorscheme railscasts
+
 " Syntax coloring
 colorscheme zenburn
 syntax on
