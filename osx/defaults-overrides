@@ -1,5 +1,10 @@
 #!/bin/bash
 
+####################################################################
+# A big number of these should be credited to Matthias Bynens.
+# This is my own take on the defaults, attuned to my preferences.
+####################################################################
+
 # Disable 3D Dock
 defaults write com.apple.dock no-glass -bool true
 
