@@ -114,6 +114,7 @@ set t_Co=256
 
 " Use the railscasts colorscheme for ruby files
 autocmd FileType ruby colorscheme railscasts
+autocmd FileType eruby colorscheme railscasts
 
 " Syntax coloring
 colorscheme zenburn
