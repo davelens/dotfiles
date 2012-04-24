@@ -7,6 +7,8 @@
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
   "$HOME/bin"
+  # RVM
+  "$HOME/.rvm/bin"
   # MySQL
   /usr/local/mysql/bin
   # Homebrew
@@ -30,7 +32,7 @@ printf -v PATH "%s:" "${paths_to_add[@]}";
 export PATH="${PATH%:}";
 
 # Load RVM (Ruby Version Manager) into a shell session as a function
-[[ -s ~/.rvm/scripts/rvm ]] && . ~/.rvm/scripts/rvm
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
 # General settings
 export EDITOR=vim
