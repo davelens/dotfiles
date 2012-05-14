@@ -1,6 +1,3 @@
-[submodule "vim/bundle/vim-autocomplpop"]
-	path = vim/bundle/vim-autocomplpop
-	url = https://github.com/vim-scripts/AutoComplPop
 [submodule "vim/bundle/vitality"]
 	path = vim/bundle/vitality
 	url = https://github.com/sjl/vitality.vim
