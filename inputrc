@@ -48,6 +48,7 @@ set skip-completed-text on
 # Line editing
 # -----------------------------------------------------------------------------
 # Allow UTF-8 input and output, instead of showing them like $'\0123\0456'.
+set meta-flag on
 set input-meta on
 set output-meta on
 set convert-meta off
