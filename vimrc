@@ -61,6 +61,13 @@ set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{Synta
 " Syntastic should check syntax upon opening files
 let g:syntastic_check_on_open=1
 
+" Configure syntastic to provide syntax checks for php and ruby
+:let g:syntastic_mode_map = { 'mode': 'active',
+							\ 'active_filetypes': ['ruby', 'php'],
+							\ 'passive_filetypes': [] }
+
+au FileType xhtml,xml,smarty so ~/.vim/bundle/html-autoclosetag/ftplugin/html_autoclosetag.vim
+
 " Do not exit visual mode when shifting
 vnoremap > >gv
 vnoremap < <gv
@@ -117,10 +124,6 @@ set t_Co=256
 " Use the railscasts colorscheme for ruby files
 autocmd FileType ruby colorscheme railscasts
 autocmd FileType eruby colorscheme railscasts
-
-:let g:syntastic_mode_map = { 'mode': 'active',
-							\ 'active_filetypes': ['ruby', 'php'],
-							\ 'passive_filetypes': [] }
 
 " Syntax coloring
 colorscheme zenburn

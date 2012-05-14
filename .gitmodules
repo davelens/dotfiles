@@ -10,3 +10,6 @@
 [submodule "vim/bundle/autoclose"]
 	path = vim/bundle/autoclose
 	url = https://github.com/Townk/vim-autoclose
+[submodule "vim/bundle/html-autoclosetag"]
+	path = vim/bundle/html-autoclosetag
+	url = https://github.com/vim-scripts/HTML-AutoCloseTag
