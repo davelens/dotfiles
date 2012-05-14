@@ -56,8 +56,10 @@ autocmd FileType php map <F5> :! clear && phpunit --colors %<cr>
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
 " statusline (active file, line+col position, file format+encoding+filetype
-set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\
+set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{SyntasticStatuslineFlag()}\ %=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\
 
+" Syntastic should check syntax upon opening files
+let g:syntastic_check_on_open=1
 
 " Do not exit visual mode when shifting
 vnoremap > >gv
@@ -115,6 +117,10 @@ set t_Co=256
 " Use the railscasts colorscheme for ruby files
 autocmd FileType ruby colorscheme railscasts
 autocmd FileType eruby colorscheme railscasts
+
+:let g:syntastic_mode_map = { 'mode': 'active',
+							\ 'active_filetypes': ['ruby', 'php'],
+							\ 'passive_filetypes': [] }
 
 " Syntax coloring
 colorscheme zenburn
