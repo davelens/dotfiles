@@ -52,6 +52,9 @@ export HISTIGNORE="ls:ll:la:pwd:clear:h:j"
 # PAGER is the path to the program used to list the contents of files through
 export PAGER='less --quit-if-one-screen --no-init --ignore-case --RAW-CONTROL-CHARS --quiet --dumb';
 
+# Vim plugin CommandT split-window fix; see http://groups.google.com/group/iterm2-discuss/browse_thread/thread/47700851d59386fb?pli=1
+stty -ixon
+
 ########################################################################
 # SHELL OPTIONS
 ########################################################################
