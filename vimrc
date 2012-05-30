@@ -91,6 +91,16 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 
+" Disable the bloody visual bell
+set t_vb=
+
+" Set vim in 256 color-mode
+set t_Co=256
+
+" Use the railscasts colorscheme for ruby files
+autocmd FileType ruby colorscheme railscasts
+autocmd FileType eruby colorscheme railscasts
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " When editing a file, always jump to the last known cursor position.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -109,6 +119,7 @@ function! SaveAndRefreshFirefox()
 	silent exec '!osascript ~/.dotfiles/osx/refresh-firefox.scpt'
 	redraw!
 endfunction
+
 map <leader>w :call SaveAndRefreshFirefox()<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -123,17 +134,24 @@ function! RenameFile()
 		redraw!
 	endif
 endfunction
+
 map <leader>n :call RenameFile()<cr>
 
-" Disable the bloody visual bell
-set t_vb=
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" For programming languages using a semi colon at the end of statement.
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" If there isn't one, append a semi colon to the end of the current line.
+function! AppendSemiColon()
+    if getline('.') !~ ';$'
+        let save_cursor = getpos('.')
+        exec("s/$/;/")
+        call setpos('.', save_cursor)
+    endif
+endfunction
 
-" Set vim in 256 color-mode
-set t_Co=256
+autocmd FileType c,cc,cpp,css,java,javascript,lex,perl,php,sql,y
+    \ nmap <silent> <Leader>; :call AppendSemiColon()<cr>
 
-" Use the railscasts colorscheme for ruby files
-autocmd FileType ruby colorscheme railscasts
-autocmd FileType eruby colorscheme railscasts
 
 " Syntax coloring
 colorscheme zenburn
