@@ -102,6 +102,16 @@ autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "norm
 autocmd BufWritePre * :%s/\s\+$//e
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" When enabled, upon saving a file this refreshes the browser
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! SaveAndRefreshFirefox()
+	w
+	silent exec '!osascript ~/.dotfiles/osx/refresh-firefox.scpt'
+	redraw!
+endfunction
+map <leader>w :call SaveAndRefreshFirefox()<cr>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Rename the current file in your buffer
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! RenameFile()
