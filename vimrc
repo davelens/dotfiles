@@ -97,6 +97,9 @@ set t_vb=
 " Set vim in 256 color-mode
 set t_Co=256
 
+" The swapfile directory
+set directory=~/.vim
+
 " Use the railscasts colorscheme for ruby files
 autocmd FileType ruby colorscheme railscasts
 autocmd FileType eruby colorscheme railscasts
