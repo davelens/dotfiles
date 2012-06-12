@@ -1,0 +1,15 @@
+*vim-common-index*
+
+
+Common
+******
+
+- Eclipse Projects (|vim-common-project|)
+
+- Utility Commands (|vim-common-util|)
+
+- Local History (|vim-common-history|)
+
+- Web Lookup Commands (|vim-common-web|)
+
+vim:ft=eclimhelp

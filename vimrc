@@ -42,7 +42,7 @@ set wildmode=longest,list,full
 set wildmenu
 set completeopt=preview,menu,longest
 
-" AutoComplPop setting to trigger autocomplete after 4 typed, matching chars
+" AutoComplPop setting to trigger default autocompletion after 4 typed, matching chars
 let g:acp_behaviorKeywordLength = 4
 
 " Not too long or we drop to a virtual stand still when editing
@@ -113,6 +113,28 @@ autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "norm
 " Delete trailing whitespaces on saving a file
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 autocmd BufWritePre * :%s/\s\+$//e
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" AutoComplPop user defined completion for Eclim PHP completion.
+" I modified this for PHP use, based on the example given in the Eclim docs:
+" http://eclim.org/vim/code_completion.html#vim-code-completion
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:acp_behaviorPHPEclimLength = 3
+let g:acp_behavior = {
+    \ 'php': [{
+      \ 'command': "\<c-x>\<c-u>",
+      \ 'completefunc' : 'eclim#php#complete#CodeComplete',
+      \ 'meets'        : 'MeetsForPHPEclim',
+    \ }]
+  \ }
+
+function MeetsForPHPEclim(context)
+	if(a:context =~ '\k->\k\{0,}$' || a:context =~ '\(self\|parent\)::\k\{0,}$')
+		return 1
+	else
+		return g:acp_behaviorPHPEclimLength >= 0 && (a:context =~ '\k::\k\{' . g:acp_behaviorPHPEclimLength . ',}$')
+	endif
+endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " When enabled, upon saving a file this refreshes the browser
