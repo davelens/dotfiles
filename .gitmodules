@@ -22,3 +22,6 @@
 [submodule "vim/bundle/phpcomplete"]
 	path = vim/bundle/phpcomplete
 	url = https://github.com/shawncplus/phpcomplete.vim
+[submodule "vim/bundle/ctrlp"]
+	path = vim/bundle/ctrlp
+	url = http://github.com/kien/ctrlp.vim.git
