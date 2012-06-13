@@ -42,9 +42,6 @@ set wildmode=longest,list,full
 set wildmenu
 set completeopt=preview,menu,longest
 
-" AutoComplPop setting to trigger default autocompletion after 4 typed, matching chars
-let g:acp_behaviorKeywordLength = 4
-
 " Not too long or we drop to a virtual stand still when editing
 " large-all-on-one-line-code (like OOo xml files.)
 set synmaxcol=512
@@ -104,21 +101,23 @@ set directory=~/.vim
 autocmd FileType ruby colorscheme railscasts
 autocmd FileType eruby colorscheme railscasts
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " When editing a file, always jump to the last known cursor position.
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Delete trailing whitespaces on saving a file
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 autocmd BufWritePre * :%s/\s\+$//e
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" AutoComplPop user defined completion for Eclim PHP completion.
-" I modified this for PHP use, based on the example given in the Eclim docs:
+" AutoComplPop default + Eclim configuration.
+" This contains user defined completion for PHP completion with Eclim.
+" Note that if you do not have Eclim installed, this obviously won't work.
+"
+" I modified the example given in the Eclim docs:
 " http://eclim.org/vim/code_completion.html#vim-code-completion
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" AutoComplPop setting to trigger default autocompletion after 4 typed, matching chars
+let g:acp_behaviorKeywordLength = 4
+
 let g:acp_behaviorPHPEclimLength = 3
 let g:acp_behavior = {
     \ 'php': [{
@@ -135,6 +134,11 @@ function MeetsForPHPEclim(context)
 		return g:acp_behaviorPHPEclimLength >= 0 && (a:context =~ '\k::\k\{' . g:acp_behaviorPHPEclimLength . ',}$')
 	endif
 endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" CtrlP configuration
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ctrlp_map = '<leader>t'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " When enabled, upon saving a file this refreshes the browser
