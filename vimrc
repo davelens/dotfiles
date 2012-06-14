@@ -120,18 +120,33 @@ let g:acp_behaviorKeywordLength = 4
 
 let g:acp_behaviorPHPEclimLength = 3
 let g:acp_behavior = {
-    \ 'php': [{
-      \ 'command': "\<c-x>\<c-u>",
-      \ 'completefunc' : 'eclim#php#complete#CodeComplete',
-      \ 'meets'        : 'MeetsForPHPEclim',
-    \ }]
-  \ }
+    \ 'php': [
+		\{
+			\ 'meets'			: 'AutocompletePHPEclim',
+			\ 'command'			: "\<c-x>\<c-u>",
+			\ 'completefunc'	: 'eclim#php#complete#CodeComplete'
+		\},
+		\{
+			\ 'meets'			: "AutocompletePHPKeywords",
+			\ 'command'			: "\<c-x>\<c-p>",
+			\ 'repeat'			: 0
+		\}
+	\]
+\}
 
-function MeetsForPHPEclim(context)
+" This gives eclipse completion on $var-> and class::
+function! AutocompletePHPEclim(context)
 	if(a:context =~ '\k->\k\{0,}$' || a:context =~ '\(self\|parent\)::\k\{0,}$')
 		return 1
 	else
 		return g:acp_behaviorPHPEclimLength >= 0 && (a:context =~ '\k::\k\{' . g:acp_behaviorPHPEclimLength . ',}$')
+	endif
+endfunction
+
+" This providedes buffer completion on regular keywords/variables
+function! AutocompletePHPKeywords(context)
+	if(a:context =~ '\k\{' . g:acp_behaviorKeywordLength . ',}$')
+		return 1
 	endif
 endfunction
 
