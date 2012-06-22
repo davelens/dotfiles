@@ -5,10 +5,10 @@ if [[ $OS == 'Darwin' ]]
 then
 	alias ls='ls -G'
 	alias lsa='ls -hal'
-	alias tss='take_screenshot'
 	alias ss='osascript ~/.osx/hide-terminal.scpt && tss'
 	alias toggle_desktop='toggle_default finder CreateDesktop'
 	alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
+	alias tss='take_screenshot'
 fi
 
 # Linux (Ubuntu, Debian, Mint,...)
@@ -17,25 +17,23 @@ then
 	alias lsa='ls -hal --color=tty'
 fi
 
+alias add_vhost='sudo ~/.bin/./add_vhost.sh'
 alias clearcache='sudo dscacheutil -flushcache'
 alias csh='configure_ssh_host'
-alias fs='get_filesizes'
-alias mf='move_files'
-alias his='history | grep'
-alias sar='search_and_replace'
-alias gsd='get_sql_dump'
-alias mr='mysql_replace'
-alias se='svn_export_changed_files'
-alias git-web='git instaweb --httpd=webrick'
-alias nano='vim'
-alias vi='vim'
-alias rsync='rsync --exclude-from=$HOME/.bin/rsync-exclude-list.txt'
-alias memcache_start='memcached -d -m 100 start'
-alias pu='phpunit --colors'
-alias add_vhost='sudo ~/.bin/./add_vhost.sh'
-
-# dir size in current dir
 alias ds='du -sh */'
+alias fs='get_filesizes'
+alias git-web='git instaweb --httpd=webrick'
+alias gsd='get_sql_dump'
+alias his='history | grep'
+alias memcache_start='memcached -d -m 100 start'
+alias mf='move_files'
+alias mr='mysql_replace'
+alias nano='vim'
+alias pu='phpunit --colors'
+alias sar='search_and_replace'
+alias se='svn_export_changed_files'
+alias rsync='rsync --exclude-from=$HOME/.bin/rsync-exclude-list.txt'
+alias vi='vim'
 
 # remove all .svn folders recursively in current dir
 alias purgesvn="find . -type d -name '.svn' -exec rm -rf '{}' '+' "
