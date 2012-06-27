@@ -33,5 +33,5 @@
 	tool = vimdiff
 
 [core]
-	editor = vi
+	editor = /usr/bin/vim
 	excludesfile = ~/.gitignore_global
