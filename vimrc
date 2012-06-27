@@ -118,7 +118,7 @@ autocmd BufWritePre * :%s/\s\+$//e
 " AutoComplPop setting to trigger default autocompletion after 4 typed, matching chars
 let g:acp_behaviorKeywordLength = 4
 
-let g:acp_behaviorPHPEclimLength = 3
+let g:acp_behaviorPHPEclimLength = 4
 let g:acp_behavior = {
     \ 'php': [
 		\{
