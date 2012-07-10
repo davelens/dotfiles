@@ -35,7 +35,7 @@ set tabstop=4
 set noexpandtab
 
 " Whitespace settings for Ruby
-autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
+au FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
 
 " Auto-completion
 set wildmode=longest,list,full
@@ -47,7 +47,7 @@ set completeopt=preview,menu,longest
 set synmaxcol=512
 
 " Run current testfile through phpunit
-autocmd FileType php map <F5> :! clear && phpunit --colors %<cr>
+au FileType php map <F5> :! clear && phpunit --colors %<cr>
 
 " Let the backspace behave
 set backspace=indent,eol,start whichwrap+=<,>,[,]
@@ -98,14 +98,13 @@ set t_Co=256
 set directory=~/.vim
 
 " Use the railscasts colorscheme for ruby files
-autocmd FileType ruby colorscheme railscasts
-autocmd FileType eruby colorscheme railscasts
+au FileType ruby,eruby colorscheme railscasts
 
 " When editing a file, always jump to the last known cursor position.
-autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
+au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
 
 " Delete trailing whitespaces on saving a file
-autocmd BufWritePre * :%s/\s\+$//e
+au BufWritePre * :%s/\s\+$//e
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " AutoComplPop default + Eclim configuration.
@@ -194,10 +193,5 @@ function! AppendSemiColon()
     endif
 endfunction
 
-autocmd FileType c,cc,cpp,css,java,javascript,lex,perl,php,sql,y
+au FileType c,cc,cpp,css,java,javascript,lex,perl,php,sql,y
     \ nmap <silent> <Leader>; :call AppendSemiColon()<cr>
-
-
-" Syntax coloring
-colorscheme zenburn
-syntax on
