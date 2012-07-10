@@ -106,6 +106,19 @@ au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`
 " Delete trailing whitespaces on saving a file
 au BufWritePre * :%s/\s\+$//e
 
+" Syntax coloring
+colorscheme zenburn
+syntax on
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" <leader>i shows the ID of item under the cursor position. This is used
+" whilst developing colorschemes.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>i :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+			\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+			\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " AutoComplPop default + Eclim configuration.
 " This contains user defined completion for PHP completion with Eclim.
