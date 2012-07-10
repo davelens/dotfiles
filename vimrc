@@ -154,6 +154,7 @@ endfunction
 " CtrlP configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ctrlp_map = '<leader>t'
+let g:ctrlp_working_path_mode = 0
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " When enabled, upon saving a file this refreshes the browser
