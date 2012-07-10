@@ -55,9 +55,6 @@ set backspace=indent,eol,start whichwrap+=<,>,[,]
 " statusline (active file, line+col position, file format+encoding+filetype
 set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{SyntasticStatuslineFlag()}\ %=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\
 
-" Syntastic should check syntax upon opening files
-let g:syntastic_check_on_open=1
-
 " Configure syntastic to provide syntax checks for php and ruby
 let g:syntastic_mode_map = { 'mode': 'active',
 \ 'active_filetypes': ['ruby', 'php'],
