@@ -53,7 +53,7 @@ au FileType php map <F5> :! clear && phpunit --colors %<cr>
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
 " statusline (active file, line+col position, file format+encoding+filetype
-set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{SyntasticStatuslineFlag()}\ %=%{&ff},%{strlen(&fenc)?&fenc:''}%Y\
+set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ (%p%%)%=%{SyntasticStatuslineFlag()}\ %=%{&ff},%{strlen(&fenc)?&fenc:''}%Y
 
 " Configure syntastic to provide syntax checks for php and ruby
 let g:syntastic_mode_map = { 'mode': 'active',
