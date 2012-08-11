@@ -63,7 +63,7 @@ function attach_to_tmux_session()
 
 
 # Define our project working directory
-path="$HOME/Sites/wijs"
+path="$HOME/Sites"
 
 # Get the project from a given parameter, or query the user if none was provided
 if [ "$1" == "" ]; then
