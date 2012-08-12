@@ -20,7 +20,7 @@ rewrite_pwd()
 
 	pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
 
-	NEW_PWD=${PWD/$HOME/~}
+	NEW_PWD=${PWD/$HOME/"~"}
 
 	local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
 
@@ -45,7 +45,7 @@ rewrite_prompt()
 	local M='\[\033[0;35m\]'    # magenta
 	local C='\[\033[0;36m\]'    # cyan
 	local W='\[\033[0;37m\]'    # white
-				    
+
 	# empahsized (bolded) colors
 	local EMK='\[\033[1;30m\]'
 	local EMR='\[\033[1;31m\]'
