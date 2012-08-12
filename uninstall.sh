@@ -9,5 +9,6 @@ rm ~/.irssi
 rm ~/.osx
 rm ~/.vim
 rm ~/.vimrc
+rm ~/.tmux.conf
 
 echo 'Done.';
