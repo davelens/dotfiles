@@ -9,10 +9,30 @@ function lowercase()
 	fi
 }
 
+function split_string()
+{
+	if [[ ! -n $1 ]] || [[ ! -n $2 ]]; then
+		echo '[usage]: split_string "," "this, is, a, string"'
+	fi
+
+	STR_ARRAY=(`echo $2 | sed -e "s/\\$1//g"`)
+
+	for x in "${STR_ARRAY[@]}"
+	do
+		echo "> [$x]"
+	done
+}
+
 function create_new_project()
 {
 	path=$1
-	project=$2
+	session=$2
+
+	if $(echo $session | grep --quiet 'wijs/'); then
+		company=`echo $session | cut -d '/' -f1`
+		project=`echo $session | cut -d '/' -f2`
+		path="$path/$company"
+	fi
 
 	echo "$(tput setaf 10)Creating project directory ...$(tput sgr0)"
 	mkdir -p $path/$project
