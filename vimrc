@@ -103,6 +103,9 @@ au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`
 " Delete trailing whitespaces on saving a file
 au BufWritePre * :%s/\s\+$//e
 
+" Disable autoclose for ruby files so vim-endwise works again (temp. fix)
+autocmd FileType ruby,eruby :let g:AutoCloseExpandEnterOn=""
+
 " Syntax coloring
 colorscheme zenburn
 syntax on
