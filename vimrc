@@ -60,8 +60,6 @@ let g:syntastic_mode_map = { 'mode': 'active',
 \ 'active_filetypes': ['ruby', 'php'],
 \ 'passive_filetypes': [] }
 
-au FileType xhtml,xml,smarty so ~/.vim/bundle/html-autoclosetag/ftplugin/html_autoclosetag.vim
-
 " Do not exit visual mode when shifting
 vnoremap > >gv
 vnoremap < <gv
