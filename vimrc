@@ -68,10 +68,6 @@ vnoremap < <gv
 nmap <c-n> ]]
 nmap <c-p> [[
 
-" Add open lines without going to insert mode.
-nmap <CR> o<ESC>
-nmap <C-CR> O<ESC>
-
 " Copy to/cut/paste from system clipboard
 map <C-y> "+y
 map <C-x> "+x
