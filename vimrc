@@ -107,8 +107,8 @@ nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 
 " Leader bindings
-map <leader>i :call GetVimElementID()<CR>
 map <leader>s <ESC>:w<CR>
+map <leader>i :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
 map <leader>w :call SaveAndRefreshFirefox()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
@@ -176,7 +176,8 @@ let g:ctrlp_custom_ignore = {
 	\ }
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" When enabled, upon saving a file this refreshes the browser
+" When enabled, upon saving a file this refreshes the browser. I use this in
+" a dual monitor setup, with my browser active in the second monitor.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! SaveAndRefreshFirefox()
 	w
