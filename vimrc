@@ -60,25 +60,6 @@ let g:syntastic_mode_map = { 'mode': 'active',
 \ 'active_filetypes': ['ruby', 'php'],
 \ 'passive_filetypes': [] }
 
-" Do not exit visual mode when shifting
-vnoremap > >gv
-vnoremap < <gv
-
-" Hop from method to method.
-nmap <c-n> ]]
-nmap <c-p> [[
-
-" Copy to/cut/paste from system clipboard
-map <C-y> "+y
-map <C-x> "+x
-map <C-M-p> "+p
-
-" Less finger wrecking window navigation.
-nnoremap <c-j> <c-w>j
-nnoremap <c-k> <c-w>k
-nnoremap <c-h> <c-w>h
-nnoremap <c-l> <c-w>l
-
 " Disable the bloody visual bell
 set t_vb=
 
@@ -102,14 +83,45 @@ colorscheme zenburn
 au FileType ruby,eruby colorscheme railscasts
 syntax on
 
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" <leader>i shows the ID of item under the cursor position. This is used
+" Various bindings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Do not exit visual mode when shifting
+vnoremap > >gv
+vnoremap < <gv
+
+" Hop from method to method.
+nmap <c-n> ]]
+nmap <c-p> [[
+
+" Copy to/cut/paste from system clipboard
+map <C-y> "+y
+map <C-x> "+x
+map <C-M-p> "+p
+
+" Less finger wrecking window navigation.
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-h> <c-w>h
+nnoremap <c-l> <c-w>l
+
+" Leader bindings
+map <leader>i :call GetVimElementID()<CR>
+map <leader>s <ESC>:w<CR>
+map <leader>n :call RenameFile()<CR>
+map <leader>w :call SaveAndRefreshFirefox()<CR>
+nmap <silent> <leader>; :call AppendSemiColon()<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" This shows the vim-ID of an item under the cursor position. This is used
 " whilst developing colorschemes.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>i :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-			\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-			\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
-
+function! GetVimElementID()
+	:echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+	   \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+	   \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
+endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " AutoComplPop default + Eclim configuration.
@@ -172,8 +184,6 @@ function! SaveAndRefreshFirefox()
 	redraw!
 endfunction
 
-map <leader>w :call SaveAndRefreshFirefox()<cr>
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Rename the current file in your buffer
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -187,8 +197,6 @@ function! RenameFile()
 	endif
 endfunction
 
-map <leader>n :call RenameFile()<cr>
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " For programming languages using a semi colon at the end of statement.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -200,6 +208,3 @@ function! AppendSemiColon()
         call setpos('.', save_cursor)
     endif
 endfunction
-
-au FileType c,cc,cpp,css,java,javascript,lex,perl,php,sql,y
-    \ nmap <silent> <Leader>; :call AppendSemiColon()<cr>
