@@ -88,9 +88,6 @@ set t_Co=256
 " The swapfile directory
 set directory=~/.vim
 
-" Use the railscasts colorscheme for ruby files
-au FileType ruby,eruby colorscheme railscasts
-
 " When editing a file, always jump to the last known cursor position.
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
 
@@ -102,6 +99,7 @@ autocmd FileType html,xhtml,ruby,eruby :let g:AutoCloseExpandEnterOn=""
 
 " Syntax coloring
 colorscheme zenburn
+au FileType ruby,eruby colorscheme railscasts
 syntax on
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
