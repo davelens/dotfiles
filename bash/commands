@@ -197,6 +197,7 @@ git_sync_with_master()
 {
 	git checkout production && git merge origin/master && git push origin production
 	git checkout staging && git merge origin/master && git push origin staging
+	git checkout development && git merge origin/master && git push origin development
 	git checkout master
 }
 
