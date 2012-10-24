@@ -1,7 +1,23 @@
 #!/bin/bash
 
 ########################################################################
-# OVERWRITE SHELL VARS
+# GENERAL
+########################################################################
+export EDITOR=vim
+
+# Make ls & grep pretty
+export CLICOLOR=1
+export GREP_OPTIONS='--color=auto'
+
+# PAGER is the path to the program used to list the contents of files through
+export PAGER='less --quit-if-one-screen --no-init --ignore-case --RAW-CONTROL-CHARS --quiet --dumb';
+
+# Vim plugin CommandT split-window fix; see http://groups.google.com/group/iterm2-discuss/browse_thread/thread/47700851d59386fb?pli=1
+stty -ixon
+
+
+########################################################################
+# PATH
 ########################################################################
 
 # list the directories we want to add to the PATH variable, if they exist.
@@ -24,6 +40,8 @@ paths_to_add=(
   /usr/X11/bin
   # MAMP
   /Applications/MAMP/Library/bin
+  # Fork CLI tool
+  "$HOME/Sites/fork/knife"
 );
 
 
@@ -34,33 +52,60 @@ export PATH="${PATH%:}";
 # Load RVM (Ruby Version Manager) into a shell session as a function
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
-# General settings
-export EDITOR=vim
-export CLICOLOR=1
 
-# Prefer the Queen's English and use UTF-8.
-export LC_ALL='en_GB.UTF-8';
-export LC_CTYPE='en_GB.UTF-8';
-export LANG='en_GB';
+########################################################################
+# HISTORY
+########################################################################
+# When the command contains an invalid history operation (for instance when
+# using an unescaped "!" (I get that a lot in quick e-mails and commit
+# messages) or a failed substitution (e.g. "^foo^bar" when there was no "foo"
+# in the previous command line), do not throw away the command line, but let me
+# correct it.
+shopt -s histreedit;
 
-# don't put duplicate lines in the history
-export HISTCONTROL=ignoredups
+# append to the history file rather than overwriting
+shopt -s histappend
+
+# Keep a reasonably long history.
+export HISTSIZE=4096;
+
+# Keep even more history lines inside the file, so we can still look up
+# previous commands without needlessly cluttering the current shell's history.
+export HISTFILESIZE=16384;
+
+# When executing the same command twice or more in a row, only store it once.
+export HISTCONTROL=ignoredups;
+
+# Keep track of the time the commands were executed.
+# The xterm colour escapes require special care when piping; e.g. "| less -R".
+export HISTTIMEFORMAT="${FG_BLUE}${FONT_BOLD}%Y/%m/%d %H:%M:%S${FONT_RESET} ";
 
 # let the history ignore the following commands
 export HISTIGNORE="ls:ll:la:pwd:clear:h:j"
 
-# PAGER is the path to the program used to list the contents of files through
-export PAGER='less --quit-if-one-screen --no-init --ignore-case --RAW-CONTROL-CHARS --quiet --dumb';
-
-# Vim plugin CommandT split-window fix; see http://groups.google.com/group/iterm2-discuss/browse_thread/thread/47700851d59386fb?pli=1
-stty -ixon
 
 ########################################################################
-# SHELL OPTIONS
+# LOCALE AND COMPLETION
 ########################################################################
-
-# append to the history file rather than overwriting
-shopt -s histappend
+# general case-insensitive globbing
 shopt -s nocaseglob;
 
+# do not autocomplete when accidentally pressing tab on an empty line.
+shopt -s no_empty_cmd_completion;
 
+# Do not overwrite files when redirecting using ">".
+# Note that you can still override this with ">|".
+set -o noclobber;
+
+# prefer English and use UTF-8.
+printf -v available_locales ' %s ' $(locale -a);
+for lang in en_US en_GB en; do
+	for locale in "$lang".{UTF-8,utf8}; do
+		if [[ "$available_locales" =~ " $locale " ]]; then
+			export LC_ALL="$locale";
+			export LANG="$lang";
+			break 2;
+		fi;
+	done;
+done;
+unset available_locales lang locale;
