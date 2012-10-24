@@ -76,7 +76,7 @@ au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`
 au BufWritePre * :%s/\s\+$//e
 
 " Disable autoclose for ruby files so vim-endwise works again (temp. fix)
-autocmd FileType html,xhtml,ruby,eruby :let g:AutoCloseExpandEnterOn=""
+autocmd FileType html,xhtml,smarty,ruby,eruby :let g:AutoCloseExpandEnterOn=""
 
 " Syntax coloring
 colorscheme zenburn
