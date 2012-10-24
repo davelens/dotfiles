@@ -1,3 +1,4 @@
+rm ~/.ackrc
 rm ~/.bash
 rm ~/.bash_profile
 rm ~/.bashrc
