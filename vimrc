@@ -67,7 +67,7 @@ set t_vb=
 set t_Co=256
 
 " The swapfile directory
-set directory=~/.vim
+set directory=~/.vim/swp
 
 " When editing a file, always jump to the last known cursor position.
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
