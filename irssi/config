@@ -221,6 +221,7 @@ settings = {
     use_msgs_window = "no";
     show_nickmode = "yes";
     autocreate_query_level = "MSGS";
+    term_charset = "utf-8";
   };
   "irc/core" = {
     skip_motd = "yes";
