@@ -10,6 +10,12 @@ servers = (
     chatnet = "freenode";
     port = "6665";
     autoconnect = "no";
+  },
+  {
+    address = "portlane.se.quakenet.org";
+    chatnet = "quakenet";
+    port = "6665";
+    autoconnect = "no";
   }
 );
 
@@ -37,6 +43,7 @@ chatnets = {
     max_whois = "30";
   };
   SILC = { type = "SILC"; };
+  quakenet = { type = "IRC"; };
 };
 
 hilights = (
