@@ -41,7 +41,7 @@ paths_to_add=(
   # MAMP
   /Applications/MAMP/Library/bin
   # Fork CLI tool
-  "$HOME/Sites/fork/knife"
+  "$HOME/Sites/personal/knife"
 );
 
 
