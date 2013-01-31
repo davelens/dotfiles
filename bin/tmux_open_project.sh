@@ -9,20 +9,6 @@ function lowercase()
 	fi
 }
 
-function split_string()
-{
-	if [[ ! -n $1 ]] || [[ ! -n $2 ]]; then
-		echo '[usage]: split_string "," "this, is, a, string"'
-	fi
-
-	STR_ARRAY=(`echo $2 | sed -e "s/\\$1//g"`)
-
-	for x in "${STR_ARRAY[@]}"
-	do
-		echo "> [$x]"
-	done
-}
-
 function create_new_project()
 {
 	path=$1
@@ -56,8 +42,6 @@ function open_tmux_session()
 	tmux new-window -n database -t $project
 	tmux send-keys -t $project:2 "cd $path/$project" C-m
 	tmux send-keys -t $project:2 "clear && ./dbshell" C-m
-	tmux split-window -v -p 15 -t database
-	tmux send-keys -t $project:2 "clear && php -a" C-m
 	tmux select-pane -t $project:2 -U
 	# shell window
 	tmux new-window -n shell -t $project
