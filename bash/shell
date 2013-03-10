@@ -25,6 +25,7 @@ paths_to_add=(
   "$HOME/bin"
   # RVM
   "$HOME/.rvm/bin"
+  "$HOME/.rvm/scripts/rvm"
   # MySQL
   /usr/local/mysql/bin
   # Homebrew
