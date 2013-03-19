@@ -50,10 +50,6 @@ paths_to_add=(
 printf -v PATH "%s:" "${paths_to_add[@]}";
 export PATH="${PATH%:}";
 
-# Load RVM (Ruby Version Manager) into a shell session as a function
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
-
-
 ########################################################################
 # HISTORY
 ########################################################################
