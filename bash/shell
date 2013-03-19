@@ -50,6 +50,9 @@ paths_to_add=(
 printf -v PATH "%s:" "${paths_to_add[@]}";
 export PATH="${PATH%:}";
 
+# node.js modules path
+export NODE_PATH="/usr/local/share/npm/lib/node_modules"
+
 ########################################################################
 # HISTORY
 ########################################################################
