@@ -241,3 +241,15 @@ search_and_replace()
 		fi
 	fi
 }
+
+# grabs a password from a Fork globals file
+fork_get_db_password()
+{
+    file=$1
+    if [ -z "$file" ]
+    then
+        echo "usage: fork_get_db_password <file>"
+    else
+        cat $file | grep DB_PASSWORD | cut -c25- | sed 's/.\{3\}$//' | perl -ne 'chomp and print'
+    fi
+}
