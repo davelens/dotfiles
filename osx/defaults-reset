@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Reset global OS X settings
-defaults delete -g NSAutomaticWindowAnimationsEnabled 
+defaults delete -g NSAutomaticWindowAnimationsEnabled
 defaults delete -g NSWindowResizeTime
 defaults delete -g AppleEdgeResizeExteriorSize
 defaults delete -g AppleMomentumScrollSupported
@@ -28,3 +28,6 @@ rm ~/Library/Preferences/com.apple.launchservices.plist
 
 # Turn on Time Machine
 sudo tmutil enable
+
+# Enable Notification Center
+sudo defaults write /System/Library/LaunchAgents/com.apple.notificationcenterui KeepAlive -bool true
