@@ -43,12 +43,17 @@ paths_to_add=(
   /Applications/MAMP/Library/bin
   # Fork CLI tool
   "$HOME/Sites/personal/knife"
+  # Firefox
+  "$HOME/Applications/Firefox.app/Contents/MacOS"
 );
 
 
 # Now implode everything into the new PATH variable.
 printf -v PATH "%s:" "${paths_to_add[@]}";
 export PATH="${PATH%:}";
+
+# RVM scripts loading
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
 # node.js modules path
 export NODE_PATH="/usr/local/share/npm/lib/node_modules"
