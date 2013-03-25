@@ -29,5 +29,8 @@ rm ~/Library/Preferences/com.apple.launchservices.plist
 # Turn on Time Machine
 sudo tmutil enable
 
+# Re-enable HTML content in Mail.app
+defaults write com.apple.mail PreferPlainText -bool false
+
 # Enable Notification Center
 sudo defaults write /System/Library/LaunchAgents/com.apple.notificationcenterui KeepAlive -bool true

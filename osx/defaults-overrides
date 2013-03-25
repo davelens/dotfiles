@@ -152,6 +152,9 @@ sudo tmutil disable
 # Kill affected applications
 for app in Safari Finder Dock Mail SystemUIServer; do killall "$app" >/dev/null 2>&1; done
 
+# View all e-mail messages in plain text by default
+defaults write com.apple.mail PreferPlainText -bool TRUE
+
 ####################################################################
 # Mountain Lion specific defaults
 ####################################################################
