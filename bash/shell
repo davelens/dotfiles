@@ -45,6 +45,8 @@ paths_to_add=(
   "$HOME/Sites/personal/knife"
   # Firefox
   "$HOME/Applications/Firefox.app/Contents/MacOS"
+  # PEAR
+  /usr/local/Cellar/php53/5.3.22/bin
 );
 
 
