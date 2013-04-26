@@ -73,7 +73,7 @@ set directory=~/.vim/swp
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
 
 " Delete trailing whitespaces on saving a file
-au BufWritePre * :%s/\s\+$//e
+au BufWritePre * call StripTrailingWhitespace()
 
 " Disable autoclose for ruby files so vim-endwise works again (temp. fix)
 autocmd FileType html,xhtml,twig,smarty,ruby,eruby :let g:AutoCloseExpandEnterOn=""
@@ -112,6 +112,17 @@ map <leader>i :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
 map <leader>w :call SaveAndRefreshFirefox()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Strips all trailing whitespace, except for the filetypes specified.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! StripTrailingWhitespace()
+    " Don't strip on these filetypes
+    if &ft =~ 'markdown\|diff'
+        return
+    endif
+    %s/\s\+$//e
+endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " This shows the vim-ID of an item under the cursor position. This is used
