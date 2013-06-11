@@ -9,7 +9,6 @@ function lowercase()
 	fi
 }
 
-
 # accepts path and session (=company/project)
 function create_new_project()
 {
@@ -44,6 +43,13 @@ function open_tmux_session()
 	tmux new-window -n shell -t $session
 	tmux send-keys -t $session:3 "cd $path/$session" C-m
 	tmux send-keys -t $session:3 "clear && git st" C-m
+	# rails needs a console window
+	if [ -f "$path/$session/Gemfile" ] && grep -Rq "gem 'rails'" "$path/$session/Gemfile"; then
+		tmux new-window -n console -t $session
+		tmux send-keys -t $session:4 "cd $path/$session" C-m
+		tmux send-keys -t $session:4 "clear && rails c" C-m
+		tmux send-keys -t $session:3 "bundle install" C-m
+	fi
 	# select the editor and attach to the session
 	tmux select-window -t $session:1
 }
