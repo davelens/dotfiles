@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# creates an SSH key and uploads it to the given host
+# Creates an SSH key and uploads it to the given host.
 configure_ssh_host()
 {
 	username=$1
@@ -24,7 +24,7 @@ configure_ssh_host()
 	fi
 }
 
-# Command used to test rest services that are under development
+# Command used to test rest services that are under development.
 curlrest()
 {
 	method=$1
@@ -45,7 +45,7 @@ curlrest()
 	fi
 }
 
-# recursively moves all files matching the search query to the chosen directory
+# Recursively moves all files matching the search query to the chosen directory.
 move_files()
 {
 	search=$1
@@ -59,19 +59,19 @@ move_files()
 	fi
 }
 
-# returns the active git branch - this is used in rewrite_prompt()
+# Returns the active git branch - this is used in rewrite_prompt().
 git_branch()
 {
 	git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(branch: \1)/'
 }
 
-# get filesize
+# Get a list of all filesizes in the current folder ("du -sh *" for files).
 get_filesizes()
 {
 	ls -laSh | grep -v ^d | awk '{print $5 "\t" $9}'
 }
 
-# performs a mysqldump and creates a tarball through SSH, and stores it in the "backups" folder on your desktop
+# Performs a mysqldump and creates a tarball through SSH, and stores it in the "backups" folder on your desktop.
 get_sql_dump()
 {
 	project=$1
@@ -137,7 +137,7 @@ get_sql_dump()
 	fi
 }
 
-# Drops all tables in a specified MySQL database
+# Drops all tables in a specified MySQL database.
 mysql_drop_all_tables()
 {
 	user=$1
@@ -151,7 +151,7 @@ mysql_drop_all_tables()
 	fi
 }
 
-# replaces a local mysql database with the specified one
+# Replaces a local mysql database with the specified one.
 mysql_replace()
 {
 	database=$1
@@ -171,7 +171,7 @@ mysql_replace()
 	fi
 }
 
-# export all changed files between the given revision and HEAD, to a given location
+# Export all changed files between the given revision and HEAD, to a given location.
 svn_export_changed_files()
 {
 	tarfile=$1
@@ -192,7 +192,7 @@ svn_export_changed_files()
 	fi
 }
 
-# syncs git production and staging branch with master
+# Syncs git production and staging branch with master.
 git_sync_with_master()
 {
 	git checkout production && git merge origin/master && git push origin production
@@ -201,7 +201,7 @@ git_sync_with_master()
 	git checkout master
 }
 
-# attempts to recursively find a match for a given string in the given file(s)
+# Attempts to recursively find a match for a given string in the given file(s).
 search()
 {
 	string=$1
@@ -221,7 +221,7 @@ search()
 	fi
 }
 
-# attempts to recursively search the given range of files for a given perl-compatible regex and replace with a given value
+# Attempts to recursively search the given range of files for a given perl-compatible regex and replace with a given value.
 search_and_replace()
 {
 	search=$1
@@ -242,7 +242,7 @@ search_and_replace()
 	fi
 }
 
-# grabs a password from a Fork globals file
+# Grabs a password from a Fork globals file.
 fork_get_db_password()
 {
     file=$1
@@ -252,4 +252,19 @@ fork_get_db_password()
     else
         cat $file | grep DB_PASSWORD | cut -c25- | sed 's/.\{3\}$//' | perl -ne 'chomp and print'
     fi
+}
+
+# Checks if a given process exists.
+process_exists()
+{
+	[ `pgrep -n $1` ] && echo 1
+}
+
+# Compatible secure copy command for Vagrant boxes.
+vscp()
+{
+	[ ! $(process_exists "VBoxHeadless") ] && echo "No vagrant VM is running" && return;
+
+	OPTIONS=`vagrant ssh-config | awk -v ORS=' ' ' {print "-o " $1 "=" $2}'`
+	scp ${OPTIONS} "$@" || echo "Transfer failed. Did you use 'default:' as the target?"
 }
