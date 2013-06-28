@@ -42,8 +42,6 @@ paths_to_add=(
   /usr/local/git/bin
   # X binaries
   /usr/X11/bin
-  # MAMP
-  /Applications/MAMP/Library/bin
   # Firefox
   "$HOME/Applications/Firefox.app/Contents/MacOS"
   # PEAR
