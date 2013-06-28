@@ -1,7 +1,7 @@
 # Install
 Run the following line in your shell:
 
-    git clone https://github.com/davelens/dotfiles.git ~/.dotfiles && cd ~/.dotfiles && ./install.sh *
+    git clone git@github.com:davelens/dotfiles.git ~/.dotfiles && cd ~/.dotfiles && ./install.sh *
 
 # Uninstall
 If you're sick of my dotfiles, you can copy-paste the following in your shell:
