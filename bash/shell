@@ -44,8 +44,6 @@ paths_to_add=(
   /usr/X11/bin
   # MAMP
   /Applications/MAMP/Library/bin
-  # Fork CLI tool
-  "$HOME/Sites/personal/knife"
   # Firefox
   "$HOME/Applications/Firefox.app/Contents/MacOS"
   # PEAR
