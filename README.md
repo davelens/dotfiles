@@ -14,7 +14,7 @@ If you're sick of my dotfiles, you can copy-paste the following in your shell:
 - The take_screenshot command in .dotfiles/bash/osx uploads a screenshot to my webspace and puts the link in my clipboard. If you want to use this as well, just replace my SSH-host with your own.
 
 # Mac OS X defaults
-I use an abundant number of OSX setting overrides. These are subjective, so some might seem odd, strange or unwanted for you. That is why it requires a separate install instruction. A big credit here should be given to @mathiasbynens his collection of OSX defaults. If you want to give it a go, just copy-paste the line below in your shell:
+I use an abundant number of OSX setting overrides. These are subjective, so some might seem odd, strange or unwanted for you. That is why it requires a separate install instruction. A big credit here should be given to [@mathiasbynens](http://github.com/mathiasbynens) his collection of OSX defaults. If you want to give it a go, just copy-paste the line below in your shell:
 
 	source ~/.dotfiles/osx/defaults-overrides
 
