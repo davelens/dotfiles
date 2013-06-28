@@ -34,7 +34,8 @@ set softtabstop=4
 set tabstop=4
 set noexpandtab
 
-" Whitespace settings for Ruby
+" Whitespace settings for specific types
+au FileType javascript setlocal ts=2 sts=2 sw=2
 au FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
 
 " Auto-completion
