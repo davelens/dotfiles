@@ -48,6 +48,8 @@ paths_to_add=(
   /usr/local/Cellar/php53/5.3.25/bin
   # Node
   /usr/local/share/npm/bin
+  # Dotfiles
+  "$HOME/.dotfiles/bin"
 );
 
 
