@@ -16,3 +16,6 @@
 
 # Fork CMS cache.
 --ignore-dir=compiled_templates
+
+# Rails caches/logs
+--ignore-dir=cache,log
