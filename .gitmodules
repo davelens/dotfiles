@@ -4,9 +4,6 @@
 [submodule "vim/bundle/autocomplpop"]
 	path = vim/bundle/autocomplpop
 	url = https://github.com/vim-scripts/AutoComplPop
-[submodule "vim/bundle/syntastic"]
-	path = vim/bundle/syntastic
-	url = https://github.com/scrooloose/syntastic.git
 [submodule "vim/bundle/autoclose"]
 	path = vim/bundle/autoclose
 	url = https://github.com/Townk/vim-autoclose
