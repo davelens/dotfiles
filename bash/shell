@@ -50,6 +50,8 @@ paths_to_add=(
   "$HOME/Applications/Firefox.app/Contents/MacOS"
   # PEAR
   /usr/local/Cellar/php53/5.3.25/bin
+  # Node
+  /usr/local/share/npm/bin
 );
 
 
