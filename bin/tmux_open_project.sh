@@ -29,26 +29,53 @@ function open_tmux_session()
 {
 	path=$1
 	session=$2
+	mysql_running=`pgrep -n mysqld`
+
+	if [ ! $mysql_running ]; then
+		echo -n "$(tput setaf 11)MySQL is not running. Would you like to start it? $(tput sgr0)$(tput bold)(y/n)$(tput sgr0)$(tput setaf 11):$(tput sgr0) "
+		read start_mysql
+
+		if [ $(lowercase $start_mysql) == "y" ]; then
+			mysql.server start
+			mysql_running=`pgrep -n mysqld`
+		fi
+	fi
 
 	# editor window
 	tmux new-session -s $session -n editor -d
 	tmux send-keys -t $session "cd $path/$session" C-m
 	tmux send-keys -t $session "clear && vim" C-m
-	# database window
-	tmux new-window -n database -t $session
-	tmux send-keys -t $session:2 "cd $path/$session" C-m
-	tmux send-keys -t $session:2 "clear && ./dbshell" C-m
-	tmux select-pane -t $session:2 -U
+	# database window (only when MySQL is up and running)
+	if [ $mysql_running ]; then
+		tmux new-window -n database -t $session
+		tmux send-keys -t $session:database "cd $path/$session" C-m
+		if [ -f "$path/$session/dbshell" ]; then
+			tmux send-keys -t $session:database "clear && ./dbshell" C-m
+		fi
+		tmux select-pane -t $session:database -U
+	fi
 	# shell window
 	tmux new-window -n shell -t $session
-	tmux send-keys -t $session:3 "cd $path/$session" C-m
-	tmux send-keys -t $session:3 "clear && git st" C-m
+	tmux send-keys -t $session:shell "cd $path/$session && clear" C-m
 	# rails needs a console window
 	if [ -f "$path/$session/Gemfile" ] && grep -Rq "gem 'rails'" "$path/$session/Gemfile"; then
-		tmux new-window -n console -t $session
-		tmux send-keys -t $session:4 "cd $path/$session" C-m
-		tmux send-keys -t $session:4 "clear && rails c" C-m
-		tmux send-keys -t $session:3 "bundle install" C-m
+		tmux send-keys -t $session:shell "clear && bundle install" C-m
+
+		if [ $mysql_running ]; then
+			# open a client connection to the dev database for this rails project
+			database="$project""_dev"
+			tmux send-keys -t $session:database "clear && mysql $database" C-m
+
+			# console window
+			tmux new-window -n console -t $session
+			tmux send-keys -t $session:console "cd $path/$session" C-m
+			tmux send-keys -t $session:console "clear && rails c" C-m
+
+			# guard window
+			tmux new-window -n guard -t $session
+			tmux send-keys -t $session:guard "cd $path/$session" C-m
+			tmux send-keys -t $session:guard "clear && bundle exec guard" C-m
+		fi
 	fi
 	# select the editor and attach to the session
 	tmux select-window -t $session:1
