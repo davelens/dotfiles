@@ -21,6 +21,11 @@ function create_new_project()
 	echo "$(tput setaf 10)Clone git repo ...$(tput sgr0)"
 	git clone git@$github_url:$session.git $path/$session && cd $path/$session
 
+	# If this is a Rails project, I want it to symlink the project in POW.
+	if [ -f "$path/$session/Gemfile" ] && grep -Rq "gem 'rails'" "$path/$session/Gemfile"; then
+		ln -s $path/$session ~/.pow/
+	fi
+
 	echo "$(tput setaf 10)Done.$(tput sgr0)"
 }
 
