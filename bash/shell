@@ -18,6 +18,10 @@ unset MAILCHECK
 # Vim plugin CommandT split-window fix; see http://groups.google.com/group/iterm2-discuss/browse_thread/thread/47700851d59386fb?pli=1
 stty -ixon
 
+# Ruby performance settings
+export RUBY_GC_MALLOC_LIMIT=60000000
+export RUBY_FREE_MIN=200000
+
 
 ########################################################################
 # PATH
@@ -51,7 +55,6 @@ paths_to_add=(
   # Dotfiles
   "$HOME/.dotfiles/bin"
 );
-
 
 # Now implode everything into the new PATH variable.
 printf -v PATH "%s:" "${paths_to_add[@]}";
