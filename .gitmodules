@@ -31,3 +31,6 @@
 [submodule "vim/bundle/snipmate"]
 	path = vim/bundle/snipmate
 	url = https://github.com/msanders/snipmate.vim
+[submodule "vim/bundle/vim-holylight"]
+	path = vim/bundle/vim-holylight
+	url = git://github.com/Dinduks/vim-holylight.git
