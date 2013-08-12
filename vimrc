@@ -4,6 +4,7 @@ au!
 " enable Pathogen plugin manager
 call pathogen#infect()
 filetype plugin indent on
+syntax on
 
 " Remember undo's even when buffer has been in the background.
 " Also allows for sending buffers to the background without saving...
@@ -79,10 +80,9 @@ au BufWritePre * call StripTrailingWhitespace()
 " Disable autoclose for ruby files so vim-endwise works again (temp. fix)
 autocmd FileType html,xhtml,twig,smarty,ruby,eruby :let g:AutoCloseExpandEnterOn=""
 
-" Syntax coloring
-colorscheme zenburn
-au FileType ruby,eruby colorscheme railscasts
-syntax on
+" solarized options
+let g:solarized_termtrans = 1
+colorscheme solarized
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -113,6 +113,9 @@ map <leader>i :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
 map <leader>w :call SaveAndRefreshFirefox()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
+
+" Overwrite vim-holylight default of 1kk
+let g:holylight_threshold = 800000
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
