@@ -38,6 +38,7 @@ alias sar='search_and_replace'
 alias se='svn_export_changed_files'
 alias selenium='java -jar /usr/local/bin/selenium-server-standalone-2.31.0.jar'
 alias rsync='rsync --exclude-from=$HOME/.bin/rsync-exclude-list.txt'
+alias ta='tmux attach'
 alias vi='vim'
 
 # remove all .svn folders recursively in current dir
