@@ -193,12 +193,23 @@ svn_export_changed_files()
 }
 
 # Syncs git production and staging branch with master.
-git_sync_with_master()
+git_merge()
 {
-	git checkout production && git merge origin/master && git push origin production
-	git checkout staging && git merge origin/master && git push origin staging
-	git checkout development && git merge origin/master && git push origin development
-	git checkout master
+	source_branch=$1
+	target_branch=$2
+
+	if [[ $target_branch == '' ]]; then
+		target_branch='master'
+	fi
+
+	if [[ $source_branch == '' ]];
+	then
+		echo "usage: git_merge <source_branch> '<*target_branch>'"
+	else
+		git push origin $source_branch && \
+		git checkout $target_branch && git merge $source_branch && git push origin $target_branch
+		git checkout $source_branch
+	fi
 }
 
 # Attempts to recursively find a match for a given string in the given file(s).
