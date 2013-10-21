@@ -43,7 +43,10 @@ chatnets = {
     max_whois = "30";
   };
   SILC = { type = "SILC"; };
-  quakenet = { type = "IRC"; };
+  quakenet = {
+	type = "IRC";
+    nick = "Pretzl";
+  };
 };
 
 hilights = (
