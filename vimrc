@@ -117,6 +117,9 @@ nmap <silent> <leader>; :call AppendSemiColon()<CR>
 " Overwrite vim-holylight default of 1kk
 let g:holylight_threshold = 800000
 
+" Include matchit on runtime
+runtime macros/matchit.vim
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
