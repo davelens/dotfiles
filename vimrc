@@ -7,7 +7,6 @@ call vundle#rc()
 Bundle 'sjl/vitality.vim'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'vim-scripts/AutoComplPop'
-Bundle 'Valloric/YouCompleteMe'
 Bundle 'kien/ctrlp.vim'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'Townk/vim-autoclose'
