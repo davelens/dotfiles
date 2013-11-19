@@ -1,8 +1,28 @@
 set nocompatible
-au!
+filetype off
 
-" enable Pathogen plugin manager
-call pathogen#infect()
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+Bundle 'sjl/vitality'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'vim-scripts/AutoComplPop'
+Bundle 'Valloric/YouCompleteMe'
+Bundle 'kien/ctrlp.vim'
+Bundle 'scrooloose/nerdcommenter'
+Bundle 'Townk/autoclose'
+Bundle 'shawncplus/phpcomplete'
+Bundle 'davelens/xmledit'
+Bundle 'vim-ruby/vim-ruby'
+Bundle 'msanders/snipmate.vim'
+Bundle 'Dinduks/vim-holylight'
+Bundle 'kana/vim-textobj-user'
+Bundle 'nelstrom/vim-textobj-rubyblock'
+Bundle 'tpope/vim-surround'
+Bundle 'tpope/vim-repeat'
+Bundle 'tpope/vim-endwise'
+Bundle 'tpope/vim-rails'
+
 filetype plugin indent on
 syntax on
 
