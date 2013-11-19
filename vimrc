@@ -77,11 +77,6 @@ set backspace=indent,eol,start whichwrap+=<,>,[,]
 " statusline (active file, line+col position, file format+encoding+filetype
 set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ %=%{&ff},%{strlen(&fenc)?&fenc:''}%Y
 
-" Configure syntastic to provide syntax checks for php and ruby
-"let g:syntastic_mode_map = { 'mode': 'active',
-"\ 'active_filetypes': ['ruby', 'php'],
-"\ 'passive_filetypes': [] }
-
 " Disable the bloody visual bell
 set t_vb=
 
