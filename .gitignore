@@ -1,2 +1,4 @@
 bash/private
 vim/.netrwhist
+vim/bundle/**
+~vim/bundle/vundle
