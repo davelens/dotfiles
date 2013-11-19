@@ -4,14 +4,14 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-Bundle 'sjl/vitality'
+Bundle 'sjl/vitality.vim'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'vim-scripts/AutoComplPop'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'kien/ctrlp.vim'
 Bundle 'scrooloose/nerdcommenter'
-Bundle 'Townk/autoclose'
-Bundle 'shawncplus/phpcomplete'
+Bundle 'Townk/vim-autoclose'
+Bundle 'shawncplus/phpcomplete.vim'
 Bundle 'davelens/xmledit'
 Bundle 'vim-ruby/vim-ruby'
 Bundle 'msanders/snipmate.vim'
