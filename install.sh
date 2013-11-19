@@ -34,7 +34,4 @@ for name in *; do
   fi
 done
 
-git submodule init
-git submodule update
-
 echo 'Done.'
