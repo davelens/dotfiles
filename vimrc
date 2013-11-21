@@ -128,6 +128,9 @@ map <leader>n :call RenameFile()<CR>
 map <leader>w :call SaveAndRefreshFirefox()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
+" Filetype-specific mappings
+autocmd FileType ruby map <leader>r :A<CR>
+
 " Overwrite vim-holylight default of 1kk
 let g:holylight_threshold = 800000
 
