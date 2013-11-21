@@ -61,6 +61,7 @@ au FileType php setlocal ts=4 sts=4 sw=4 noexpandtab
 set wildmode=longest,list,full
 set wildmenu
 set completeopt=preview,menu,longest
+set colorcolumn=80
 
 " Not too long or we drop to a virtual stand still when editing
 " large-all-on-one-line-code (like OOo xml files.)
