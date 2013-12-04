@@ -5,6 +5,7 @@ rm ~/.bashrc
 rm ~/.bin
 rm ~/.gitconfig
 rm ~/.gitignore_global
+rm ~/.guardrc
 rm ~/.inputrc
 rm ~/.irssi
 rm ~/.osx
