@@ -125,7 +125,6 @@ nnoremap <c-l> <c-w>l
 map <leader>s <ESC>:w<CR>
 map <leader>i :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
-map <leader>w :call SaveAndRefreshFirefox()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
