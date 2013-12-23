@@ -194,7 +194,7 @@ function! AutocompletePHPEclim(context)
 	endif
 endfunction
 
-" This providedes buffer completion on regular keywords/variables
+" This provides buffer completion on regular keywords/variables
 function! AutocompletePHPKeywords(context)
 	if(a:context =~ '\k\{' . g:acp_behaviorKeywordLength . ',}$')
 		return 1
