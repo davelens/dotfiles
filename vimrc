@@ -165,6 +165,9 @@ endfunction
 " I modified the example given in the Eclim docs:
 " http://eclim.org/vim/code_completion.html#vim-code-completion
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ycm_min_num_of_chars_for_completion = 4
+let g:ycm_key_list_select_completion = ['<C-j>', '<C-k>']
+
 " AutoComplPop setting to trigger default autocompletion after 4 typed, matching chars
 let g:acp_behaviorKeywordLength = 4
 
