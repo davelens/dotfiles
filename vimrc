@@ -169,41 +169,6 @@ endfunction
 let g:ycm_min_num_of_chars_for_completion = 4
 let g:ycm_key_list_select_completion = ['<C-j>', '<C-k>']
 
-" AutoComplPop setting to trigger default autocompletion after 4 typed, matching chars
-let g:acp_behaviorKeywordLength = 4
-
-let g:acp_behaviorPHPEclimLength = 4
-let g:acp_behavior = {
-    \ 'php': [
-		\{
-			\ 'meets'			: 'AutocompletePHPEclim',
-			\ 'command'			: "\<c-x>\<c-u>",
-			\ 'completefunc'	: 'eclim#php#complete#CodeComplete'
-		\},
-		\{
-			\ 'meets'			: "AutocompletePHPKeywords",
-			\ 'command'			: "\<c-x>\<c-p>",
-			\ 'repeat'			: 0
-		\}
-	\]
-\}
-
-" This gives eclipse completion on $var-> and class::
-function! AutocompletePHPEclim(context)
-	if(a:context =~ '\k->\k\{0,}$' || a:context =~ '\(self\|parent\)::\k\{0,}$')
-		return 1
-	else
-		return g:acp_behaviorPHPEclimLength >= 0 && (a:context =~ '\k::\k\{' . g:acp_behaviorPHPEclimLength . ',}$')
-	endif
-endfunction
-
-" This provides buffer completion on regular keywords/variables
-function! AutocompletePHPKeywords(context)
-	if(a:context =~ '\k\{' . g:acp_behaviorKeywordLength . ',}$')
-		return 1
-	endif
-endfunction
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CtrlP configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
