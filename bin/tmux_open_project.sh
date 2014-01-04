@@ -26,6 +26,11 @@ function create_new_project()
     ln -s $path/$session ~/.pow/
   fi
 
+  # This means we are working on a Rails engine project
+  if [ -d "$path/$session/spec/dummy" ]; then
+    ln -s $path/$session/spec/dummy ~/.pow/
+  fi
+
   echo "$(tput setaf 10)Done.$(tput sgr0)"
 }
 
