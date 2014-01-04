@@ -30,9 +30,8 @@ export RUBY_FREE_MIN=200000
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
   "$HOME/bin"
-  # RVM
-  "$HOME/.rvm/bin"
-  "$HOME/.rvm/scripts/rvm"
+  # RBENV
+  /usr/local/var/rbenv
   # MySQL
   /usr/local/mysql/bin
   # Homebrew
@@ -60,11 +59,11 @@ paths_to_add=(
 printf -v PATH "%s:" "${paths_to_add[@]}";
 export PATH="${PATH%:}";
 
-# RVM scripts loading
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
-
 # node.js modules path
 export NODE_PATH="/usr/local/share/npm/lib/node_modules"
+
+# RBENV initializatio
+eval "$(rbenv init -)"
 
 ########################################################################
 # HISTORY
