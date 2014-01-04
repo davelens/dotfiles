@@ -17,6 +17,7 @@ then
 fi
 
 alias add_vhost='sudo ~/.bin/./add_vhost.sh'
+alias be='bundle exec'
 alias clearcache='sudo dscacheutil -flushcache'
 alias csh='configure_ssh_host'
 alias dev='~/.bin/./tmux_open_project.sh'
