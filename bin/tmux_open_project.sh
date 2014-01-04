@@ -1,5 +1,20 @@
 #!/bin/bash
 
+function is_rails_project()
+{
+  [ -f "$1/Gemfile" ] && grep -Rq "gem 'rails'" "$1/Gemfile"
+}
+
+function is_rails_engine_project()
+{
+  [ -d "$1/spec/dummy" ]
+}
+
+function is_rails_related()
+{
+  is_rails_project "$path/$session" || is_rails_engine_project "$path/$session"
+}
+
 function lowercase()
 {
   if [ -n "$1" ]; then
@@ -22,12 +37,12 @@ function create_new_project()
   git clone git@$github_url:$session.git $path/$session && cd $path/$session
 
   # If this is a Rails project, I want it to symlink the project in POW.
-  if [ -f "$path/$session/Gemfile" ] && grep -Rq "gem 'rails'" "$path/$session/Gemfile"; then
+  if is_rails_project "$path/$session"; then
     ln -s $path/$session ~/.pow/
   fi
 
   # This means we are working on a Rails engine project
-  if [ -d "$path/$session/spec/dummy" ]; then
+  if is_rails_engine_project "$path/$session"; then
     ln -s $path/$session/spec/dummy ~/.pow/
   fi
 
@@ -70,29 +85,36 @@ function open_tmux_session()
   tmux new-window -n shell -t $session
   tmux send-keys -t $session:shell "cd $path/$session && clear" C-m
 
-  # rails needs a console window
-  if [ -f "$path/$session/Gemfile" ] && grep -Rq "gem 'rails'" "$path/$session/Gemfile"; then
+  if is_rails_project "$path/$session"; then
     tmux send-keys -t $session:shell "clear && bundle install" C-m
-
-    if [ $mysql_running ]; then
-      # open a client connection to the dev database for this rails project
-      database="${project/-/_}""_dev"
-      tmux send-keys -t $session:database "clear && mysql $database" C-m
-
-      # console window
-      tmux new-window -n console -t $session
-      tmux send-keys -t $session:console "cd $path/$session" C-m
-      tmux send-keys -t $session:console "clear && rails c" C-m
-
-      # guard window
-      tmux new-window -n guard -t $session
-      tmux send-keys -t $session:guard "cd $path/$session" C-m
-      tmux send-keys -t $session:guard "clear && bundle exec guard" C-m
-    fi
   fi
 
-  # select the editor and attach to the session
-  tmux select-window -t $session:1
+  if [ $mysql_running ]; then
+    # open a client connection to the dev database for this rails project
+    database="${project/-/_}""_dev"
+    tmux send-keys -t $session:database "clear && mysql $database" C-m
+  fi
+
+  # Rails-specific windows
+  if is_rails_related "$path/$session"; then
+    console_path="$path/$session"
+    if is_rails_engine_project "$path/$session"; then
+      console_path="$path/$session/spec/dummy"
+    fi
+
+    # rails needs a console window
+    tmux new-window -n console -t $session
+    tmux send-keys -t $session:console "cd $console_path" C-m
+    tmux send-keys -t $session:console "clear && rails c" C-m
+
+    # guard window
+    tmux new-window -n guard -t $session
+    tmux send-keys -t $session:guard "cd $path/$session" C-m
+    tmux send-keys -t $session:guard "clear && bundle exec guard" C-m
+
+    # select the editor and attach to the session
+    tmux select-window -t $session:1
+  fi
 }
 
 # accepts session (=company/project)
