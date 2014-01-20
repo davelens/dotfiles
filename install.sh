@@ -8,7 +8,7 @@ for name in *; do
     if [ ! -L "$target" ]; then
       cutline=`grep -n -m1 "$cutstring" "$target" | sed "s/:.*//"`
       if [ -n "$cutline" ]; then
-	cutline=$((cutline-1))
+        cutline=$((cutline-1))
         echo "Updating $target"
         head -n $cutline "$target" > update_tmp
         startline=`sed '1!G;h;$!d' "$name" | grep -n -m1 "$cutstring" | sed "s/:.*//"`
