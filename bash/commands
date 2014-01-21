@@ -65,6 +65,11 @@ git_branch()
 	git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(branch: \1)/'
 }
 
+git_delete_new_files()
+{
+  for file in $(git st | grep '??' | awk '{print substr($0, 4)}'); do rm -r $file; done
+}
+
 # Get a list of all filesizes in the current folder ("du -sh *" for files).
 get_filesizes()
 {
