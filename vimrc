@@ -126,6 +126,8 @@ let mapleader = ' '
 map <leader>s <ESC>:w<CR>
 map <leader>i :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
+map <F5> :set paste<CR>
+map <F6> :set nopaste<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
