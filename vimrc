@@ -67,9 +67,6 @@ set colorcolumn=80
 " large-all-on-one-line-code (like OOo xml files.)
 set synmaxcol=512
 
-" Run current testfile through phpunit
-au FileType php map <F5> :! clear && phpunit --colors %<cr>
-
 " Let the backspace behave
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 
@@ -132,6 +129,7 @@ nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
 autocmd FileType ruby map <leader>r :A<CR>
+autocmd FileType php map <leader>r :! clear && phpunit --colors %<CR>
 
 " Overwrite vim-holylight default of 1kk
 let g:holylight_threshold = 800000
