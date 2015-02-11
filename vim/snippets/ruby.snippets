@@ -2,3 +2,15 @@ snippet it
 	it '${1}' do
 		${2}
 	end
+
+snippet specfile
+	require 'rails_helper'
+
+	describe ${1} do
+	  let(:model) { described_class }
+		let(:klass) { model.to_s.underscore.to_sym }
+
+		it '#respond_to?' do
+			expect(build(klass)).to respond_to?(${2})
+		end
+	end
