@@ -1,5 +1,5 @@
-bind "\e[B": history-search-forward
-bind "\e[A": history-search-backward
+bind "\e[A" ed-search-prev-history
+bind "\e[B" ed-search-next-history
 
 bind "\e[1;5D" vi-prev-word
 bind "\e[1;5C" vi-next-word
