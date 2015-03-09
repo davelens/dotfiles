@@ -35,7 +35,7 @@ for name in *; do
 done
 
 # Install Vundle (vim plugin manager)
-if [ ! -f "~/.vim/bundle/vundle" ]; then
+if [ ! -d ~/.vim/bundle/vundle ]; then
   git clone git@github.com:gmarik/vundle.git ~/.vim/bundle/vundle
 fi
 
