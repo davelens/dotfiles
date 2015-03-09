@@ -1,2 +1,0 @@
-Guard.options[:clear] = true
-Guard.options[:all_after_pass] = false
