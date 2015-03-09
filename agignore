@@ -1,0 +1,6 @@
+log/*
+tiny_mce/*
+jquery.js
+minified.*
+*.sql
+*.json
