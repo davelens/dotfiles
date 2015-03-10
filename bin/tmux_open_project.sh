@@ -86,7 +86,7 @@ function open_tmux_session()
   tmux send-keys -t $session:shell "cd $path/$session && clear" C-m
 
   if is_rails_project "$path/$session"; then
-    tmux send-keys -t $session:shell "clear && bundle install" C-m
+    tmux send-keys -t $session:shell "clear && bin/bundle install" C-m
   fi
 
   if [ $mysql_running ]; then
@@ -105,12 +105,12 @@ function open_tmux_session()
     # rails needs a console window
     tmux new-window -n console -t $session
     tmux send-keys -t $session:console "cd $console_path" C-m
-    tmux send-keys -t $session:console "clear && rails c" C-m
+    tmux send-keys -t $session:console "clear && bin/rails c" C-m
 
     # guard window
     tmux new-window -n guard -t $session
     tmux send-keys -t $session:guard "cd $path/$session" C-m
-    tmux send-keys -t $session:guard "clear && bundle exec guard" C-m
+    tmux send-keys -t $session:guard "clear && bin/bundle exec guard" C-m
 
     # select the editor and attach to the session
     tmux select-window -t $session:1
