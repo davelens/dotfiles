@@ -19,8 +19,8 @@ servers = (
   }
 );
 
-channels = (
-  { name = "#wijs"; chatnet = "kreynet"; autojoin = "Yes"; },
+channels = ( 
+  { name = "#wijs"; chatnet = "kreynet"; autojoin = "Yes"; }
 );
 
 chatnets = {
@@ -43,10 +43,7 @@ chatnets = {
     max_whois = "30";
   };
   SILC = { type = "SILC"; };
-  quakenet = {
-	type = "IRC";
-    nick = "Pretzl";
-  };
+  quakenet = { type = "IRC"; nick = "Pretzl"; };
 };
 
 hilights = (
@@ -238,5 +235,6 @@ settings = {
     lag_max_before_disconnect = "30";
     alternate_nick = "deur-";
   };
+  "perl/core/scripts" = { autoaway_timeout = "600"; };
 };
 logs = { };

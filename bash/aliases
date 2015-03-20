@@ -13,6 +13,18 @@ fi
 # Linux (Ubuntu, Debian, Mint,...)
 if [[ $OS == 'Linux' ]]
 then
+  # di = directory
+  # fi = file
+  # ln = symbolic link
+  # pi = fifo file
+  # so = socket file
+  # bd = block (buffered) special file
+  # cd = character (unbuffered) special file
+  # or = symbolic link pointing to a non-existent file (orphan)
+  # mi = non-existent file pointed to by a symbolic link (visible when you type ls -l)
+  # ex = file which is executable (ie. has 'x' set in permissions).
+  # *.rpm = files with the ending .rpm
+  LS_COLORS=$LS_COLORS:'di=0;35:'; export LS_COLORS
 	alias lsa='ls -hal --color=tty'
 fi
 
