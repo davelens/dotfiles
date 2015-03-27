@@ -176,6 +176,16 @@ mysql_replace()
 	fi
 }
 
+# Returns information on LOC added/removed for a given git log range and an
+# optional author.
+git_loc()
+{
+  range=$1
+  author=$2
+
+  git log -$1 --author="$2" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }' -
+}
+
 # Syncs git production and staging branch with master.
 git_merge()
 {
