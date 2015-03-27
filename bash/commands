@@ -45,20 +45,6 @@ curlrest()
 	fi
 }
 
-# Recursively moves all files matching the search query to the chosen directory.
-move_files()
-{
-	search=$1
-	destination=$2
-
-	if [[ "$search" == "" ]] || [[ "$destination" == "" ]]
-	then
-		echo "usage: gather_files <search> <destination>"
-	else
-		find . -type f -name "$search" -exec mv -fv '{}' "$destination" ';'
-	fi
-}
-
 # Returns the active git branch - this is used in rewrite_prompt().
 git_branch()
 {
@@ -142,6 +128,20 @@ get_sql_dump()
 	fi
 }
 
+# Recursively moves all files matching the search query to the chosen directory.
+move_files()
+{
+	search=$1
+	destination=$2
+
+	if [[ "$search" == "" ]] || [[ "$destination" == "" ]]
+	then
+		echo "usage: move_files <search> <destination>"
+	else
+		find . -type f -name "$search" -exec mv -fv '{}' "$destination" ';'
+	fi
+}
+
 # Drops all tables in a specified MySQL database.
 mysql_drop_all_tables()
 {
@@ -173,27 +173,6 @@ mysql_replace()
 		mysql $database < $sql_file
 
 		echo "Done."
-	fi
-}
-
-# Export all changed files between the given revision and HEAD, to a given location.
-svn_export_changed_files()
-{
-	tarfile=$1
-	start_rev=$2
-	end_rev=$3
-
-	if [[ "$end_rev" == "" ]]; then
-		 end_rev='HEAD'
-	fi
-
-	if [[ "$tarfile" == "" ]] || [[ "$start_rev" == "" ]]
-	then
-		echo "usage: svn_export_changed_files <tarfile> <start_rev> <*end_rev>"
-	else
-		svn diff -r "$start_rev":"$end_rev" --summarize |
-		awk '{if ($1 != "D") print $2}'|
-		xargs  -I {} tar -rvf "$tarfile" {}
 	fi
 }
 
@@ -278,28 +257,31 @@ search_and_replace()
 	fi
 }
 
-# Grabs a password from a Fork globals file.
-fork_get_db_password()
+# Export all changed files between the given revision and HEAD, to a given location.
+svn_export_changed_files()
 {
-    file=$1
-    if [ -z "$file" ]
-    then
-        echo "usage: fork_get_db_password <file>"
-    else
-        cat $file | grep DB_PASSWORD | cut -c25- | sed 's/.\{3\}$//' | perl -ne 'chomp and print'
-    fi
-}
+	tarfile=$1
+	start_rev=$2
+	end_rev=$3
 
-# Checks if a given process exists.
-process_exists()
-{
-	[ `pgrep -n $1` ] && echo 1
+	if [[ "$end_rev" == "" ]]; then
+		 end_rev='HEAD'
+	fi
+
+	if [[ "$tarfile" == "" ]] || [[ "$start_rev" == "" ]]
+	then
+		echo "usage: svn_export_changed_files <tarfile> <start_rev> <*end_rev>"
+	else
+		svn diff -r "$start_rev":"$end_rev" --summarize |
+		awk '{if ($1 != "D") print $2}'|
+		xargs  -I {} tar -rvf "$tarfile" {}
+	fi
 }
 
 # Compatible secure copy command for Vagrant boxes.
 vscp()
 {
-	[ ! $(process_exists "VBoxHeadless") ] && echo "No vagrant VM is running" && return;
+	[ ! $(pgrep -n "VBoxHeadless") ] && echo "No vagrant VM is running" && return;
 
 	OPTIONS=`vagrant ssh-config | awk -v ORS=' ' ' {print "-o " $1 "=" $2}'`
 	scp ${OPTIONS} "$@" || echo "Transfer failed. Did you use 'default:' as the target?"
