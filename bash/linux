@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# *********************************
+# This file will only load on Linux
+# *********************************
+
+# TODO: Install albert/1pass as prerequisites.
+if [[ $OS == 'Linux' ]]; then
+  setxkbmap -option altwin:ctrl_win # Switch win/command key with ctrl
+  setxkbmap -option ctrl:nocaps # Switch capslock with ctrl
+
+  # Make sure we can use 256 color in (XFCE)Terminal
+  if [ -e /usr/share/terminfo/x/xterm-256color ] && [ "$COLORTERM" == "xfce4-terminal" ]; then
+      export TERM=xterm-256color
+  fi
+
+  # Runs albert headless
+  # Project link: https://github.com/ManuelSchneid3r/albert
+  if [ ! `pgrep -n albert` ]; then
+    nohup albert </dev/null &>/dev/null &
+  fi
+
+  # Runs 1pass script headless
+  # 1pass is a workaround script to easily access your 1Password data on Linux.
+  # Project link: http://www.lucianofiandesio.com/1password-in-linux
+  if [ ! `pgrep -n 1pass` ]; then
+    nohup ./Applications/1pass/1pass </dev/null &>/dev/null &
+  fi
+fi
