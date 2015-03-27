@@ -21,6 +21,7 @@ Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-rails'
+Bundle 'osyo-manga/vim-monster'
 
 filetype plugin indent on
 syntax on
