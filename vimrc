@@ -100,6 +100,8 @@ autocmd filetype crontab setlocal nobackup nowritebackup
 let g:solarized_termtrans = 1
 colorscheme solarized
 set background=dark
+" solarized comes with a toggle-background method.
+call togglebg#map("<F4>")
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
