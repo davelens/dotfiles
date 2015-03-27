@@ -7,7 +7,7 @@ export EDITOR=vim
 
 # Make ls & grep pretty
 export CLICOLOR=1
-export GREP_OPTIONS='--color=auto'
+#export GREP_OPTIONS='--color=auto'
 
 # PAGER is the path to the program used to list the contents of files through
 export PAGER='less --quit-if-one-screen --no-init --ignore-case --RAW-CONTROL-CHARS --quiet --dumb';
@@ -31,6 +31,7 @@ export RUBY_GC_HEAP_FREE_SLOTS=200000
 paths_to_add=(
   "$HOME/bin"
   # RBENV
+  "$HOME/.rbenv/bin"
   /usr/local/var/rbenv
   # MySQL
   /usr/local/mysql/bin
