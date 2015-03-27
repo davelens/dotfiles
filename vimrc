@@ -99,6 +99,7 @@ autocmd filetype crontab setlocal nobackup nowritebackup
 " solarized options
 let g:solarized_termtrans = 1
 colorscheme solarized
+set background=dark
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
