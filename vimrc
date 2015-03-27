@@ -124,13 +124,15 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 
+" Easy paste/nopaste
+map <F5> :set paste<CR>
+map <F6> :set nopaste<CR>
+
 " Leader bindings
 let mapleader = ' '
 map <leader>s <ESC>:w<CR>
 map <leader>i :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
-map <F5> :set paste<CR>
-map <F6> :set nopaste<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
