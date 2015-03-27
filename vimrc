@@ -164,13 +164,9 @@ function! GetVimElementID()
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" AutoComplPop default + Eclim configuration.
-" This contains user defined completion for PHP completion with Eclim.
-" Note that if you do not have Eclim installed, this obviously won't work.
-"
-" I modified the example given in the Eclim docs:
-" http://eclim.org/vim/code_completion.html#vim-code-completion
+" YouCompleteMe / Eclim configuration
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:EclimCompletionMethod = 'omnifunc'
 let g:ycm_min_num_of_chars_for_completion = 4
 let g:ycm_key_list_select_completion = ['<C-j>', '<C-k>']
 
