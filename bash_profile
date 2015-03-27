@@ -12,7 +12,6 @@ for file in ~/.bash/{shell,commands,prompt,aliases,private}; do
 done;
 unset file;
 
-if [[ $OS == 'Darwin' ]];
-then
+if [[ $OS == 'Darwin' ]]; then
 	source ~/.bash/osx
 fi
