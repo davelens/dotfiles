@@ -21,3 +21,12 @@ I use an abundant number of OSX setting overrides. These are subjective, so some
 You can use the provided reset to restore to OSX default settings. Note that this also overrides any custom settings you defined yourself, so use with caution!
 
 	source ~/.dotfiles/osx/defaults-reset
+
+# Vim
+Remember to call ```:VundleInstall``` in Vim to install all included plugins.
+
+## YouCompleteMe
+YouCompleteMe is a Vim plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
+
+### Mac OS X Yosemite
+If you're on Yosemite the chances are that the YCM component failed to compile. I got this fixed with [a helpful SO answer](http://stackoverflow.com/questions/29529455/missing-c-header-debug-after-updating-osx-command-line-tools-6-3#answer-29576048).
