@@ -3,7 +3,7 @@ servers = (
     address = "irssi.be.krey.net";
     chatnet = "kreynet";
     port = "6667";
-    autoconnect = "yes";
+    autoconnect = "no";
   },
   {
     address = "holmes.freenode.net";
