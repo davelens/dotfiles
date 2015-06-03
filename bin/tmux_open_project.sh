@@ -2,7 +2,7 @@
 
 function is_rails_project()
 {
-  [ -f "$1/Gemfile" ] && grep -Rq "gem 'rails'" "$1/Gemfile"
+  [ -f "$1/Gemfile" ] && (grep -Rq "gem 'rails'" "$1/Gemfile" || grep -Rq "gem 'udongo'" "$1/Gemfile")
 }
 
 function is_rails_engine_project()
