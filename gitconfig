@@ -1,35 +1,35 @@
 [user]
-	name = davelens
-	email = github@davelens.be
+  name = davelens
+  email = github@davelens.be
 [diff]
 [color]
-	ui = auto
+  ui = auto
 [alias]
-	st = status --short
-	ci = commit
-	co = checkout
-	di = diff
-	dc = diff --cached
-	amend = commit --amend
-	aa = add --all
-	head = !git l -1
-	h = !git head
-	r = !git --no-pager l -20
-	ra = !git r --all
-	ff = merge --ff-only
-	pullff = pull --ff-only
-	l = log --graph --abbrev-commit --date=relative
-	la = !git l --all
-	fa = fetch --all
-	pom = push origin master
+  st = status --short
+  ci = commit
+  co = checkout
+  di = diff
+  dc = diff --cached
+  amend = commit --amend
+  aa = add --all
+  head = !git l -1
+  h = !git head
+  r = !git --no-pager l -20
+  ra = !git r --all
+  ff = merge --ff-only
+  pullff = pull --ff-only
+  l = log --graph --abbrev-commit --date=relative
+  la = !git l --all
+  fa = fetch --all
+  pom = push origin master
   pod = push origin develop
 
 [format]
-	pretty=format:%C(yellow)%h%Creset | %C(green)%ad (%ar)%Creset | %C(blue)%an%Creset | %s
+  pretty=format:%C(yellow)%h%Creset | %C(green)%ad (%ar)%Creset | %C(blue)%an%Creset | %s
 
 [merge]
-	tool = vimdiff
+  tool = vimdiff
 
 [core]
-	editor = vim
-	excludesfile = ~/.gitignore_global
+  editor = vim
+  excludesfile = ~/.gitignore_global
