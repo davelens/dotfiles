@@ -1,5 +1,6 @@
 bash/private
 vim/.netrwhist
 vim/bundle/**
+irssi/config
 irssi/sasl.auth
 ~vim/bundle/vundle
