@@ -22,6 +22,7 @@
 	la = !git l --all
 	fa = fetch --all
 	pom = push origin master
+  pod = push origin develop
 
 [format]
 	pretty=format:%C(yellow)%h%Creset | %C(green)%ad (%ar)%Creset | %C(blue)%an%Creset | %s
