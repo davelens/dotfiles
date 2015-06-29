@@ -11,7 +11,6 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'Townk/vim-autoclose'
 Bundle 'shawncplus/phpcomplete.vim'
-Bundle 'sukima/xmledit'
 Bundle 'vim-ruby/vim-ruby'
 Bundle 'msanders/snipmate.vim'
 Bundle 'Dinduks/vim-holylight'
@@ -22,6 +21,7 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-rails'
 Bundle 'osyo-manga/vim-monster'
+Bundle 'alvan/vim-closetag'
 
 filetype plugin indent on
 syntax on
@@ -183,6 +183,11 @@ let g:ctrlp_working_path_mode = 0
 let g:ctrlp_custom_ignore = {
 	\ 'dir':  'frontend\/files$\|\.git$\|\.svn$\|\compiled_templates$\|\app/assets/images$\|tmp\|\public\/uploads$',
 	\ }
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" closetag.vim configuration
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:closetag_filenames = "*.html,*.xhtml,*.html.erb"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " When enabled, upon saving a file this refreshes the browser. I use this in
