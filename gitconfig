@@ -12,6 +12,7 @@
   dc = diff --cached
   amend = commit --amend
   aa = add --all
+  ap = add -p
   head = !git l -1
   h = !git head
   r = !git --no-pager l -20
@@ -21,6 +22,8 @@
   l = log --graph --abbrev-commit --date=relative
   la = !git l --all
   fa = fetch --all
+  puom = pull origin master
+  puod = pull origin develop
   pom = push origin master
   pod = push origin develop
 
