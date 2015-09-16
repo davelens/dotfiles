@@ -187,7 +187,7 @@ let g:ctrlp_custom_ignore = {
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " closetag.vim configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:closetag_filenames = "*.html,*.xhtml,*.html.erb"
+let g:closetag_filenames = "*.html,*.xhtml,*.html.erb,*.tpl"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " When enabled, upon saving a file this refreshes the browser. I use this in
