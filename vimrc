@@ -135,6 +135,7 @@ let mapleader = ' '
 map <leader>s <ESC>:w<CR>
 map <leader>i :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
+map <leader>f :call TestCurrentLine()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
@@ -146,6 +147,17 @@ let g:holylight_threshold = 800000
 
 " Include matchit on runtime
 runtime macros/matchit.vim
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Runs bin/rspec on the current line.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! TestCurrentLine()
+  "if expand("%") != ""
+    ":w
+  "end
+  let spec_line_number = line('.')
+  exec ":!clear && bin/rspec %:" . spec_line_number
+endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
