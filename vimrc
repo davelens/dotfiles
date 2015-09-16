@@ -22,6 +22,7 @@ Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-rails'
 Bundle 'osyo-manga/vim-monster'
 Bundle 'alvan/vim-closetag'
+Bundle 'ecomba/vim-ruby-refactoring'
 
 filetype plugin indent on
 syntax on
