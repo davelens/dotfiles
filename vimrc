@@ -56,7 +56,7 @@ set tabstop=2
 set expandtab
 
 " Whitespace settings for specific types
-au FileType php setlocal ts=4 sts=4 sw=4 noexpandtab
+au FileType php setlocal ts=2 sts=2 sw=2 noexpandtab
 
 " Auto-completion
 set wildmode=longest,list,full
