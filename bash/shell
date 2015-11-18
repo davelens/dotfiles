@@ -49,7 +49,7 @@ paths_to_add=(
   # Firefox
   "$HOME/Applications/Firefox.app/Contents/MacOS"
   # PEAR
-  /usr/local/Cellar/php53/5.3.25/bin
+  /usr/local/Cellar/php54/5.4.45_3/bin
   # Node
   /usr/local/share/npm/bin
   # Dotfiles
