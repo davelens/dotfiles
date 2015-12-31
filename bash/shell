@@ -29,31 +29,31 @@ export RUBY_GC_HEAP_FREE_SLOTS=200000
 
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
-  "$HOME/bin"
-  # RBENV
-  "$HOME/.rbenv/bin"
-  /usr/local/var/rbenv
-  # MySQL
-  /usr/local/mysql/bin
-  # Homebrew
-  /usr/local/{,s}bin
-  # Macports
-  /opt/local/{,s}bin
-  # System
-  /{,s}bin
-  /usr/{,s}bin
-  # Git
-  /usr/local/git/bin
-  # X binaries
-  /usr/X11/bin
-  # Firefox
-  "$HOME/Applications/Firefox.app/Contents/MacOS"
-  # PEAR
-  /usr/local/Cellar/php54/5.4.45_3/bin
-  # Node
-  /usr/local/share/npm/bin
-  # Dotfiles
-  "$HOME/.dotfiles/bin"
+"$HOME/bin"
+# RBENV
+"$HOME/.rbenv/bin"
+/usr/local/var/rbenv
+# MySQL
+/usr/local/mysql/bin
+# Homebrew
+/usr/local/{,s}bin
+# Macports
+/opt/local/{,s}bin
+# System
+/{,s}bin
+/usr/{,s}bin
+# Git
+/usr/local/git/bin
+# X binaries
+/usr/X11/bin
+# Firefox
+"$HOME/Applications/Firefox.app/Contents/MacOS"
+# PEAR
+/usr/local/Cellar/php54/5.4.45_3/bin
+# Node
+/usr/local/share/npm/bin
+# Dotfiles
+"$HOME/.dotfiles/bin"
 );
 
 # Now implode everything into the new PATH variable.
@@ -113,13 +113,13 @@ set -o noclobber;
 # prefer English and use UTF-8.
 printf -v available_locales ' %s ' $(locale -a);
 for lang in en_US en_GB en; do
-	for locale in "$lang".{UTF-8,utf8}; do
-		if [[ "$available_locales" =~ " $locale " ]]; then
-			export LC_ALL="$locale";
-			export LANG="$lang";
-			break 2;
-		fi;
-	done;
+  for locale in "$lang".{UTF-8,utf8}; do
+    if [[ "$available_locales" =~ " $locale " ]]; then
+      export LC_ALL="$locale";
+      export LANG="$lang";
+      break 2;
+    fi;
+  done;
 done;
 unset available_locales lang locale;
 

@@ -3,28 +3,28 @@
 # Command used to test rest services that are under development.
 curlrest()
 {
-	method=$1
-	url=$2
-	parameters=$3
+  method=$1
+  url=$2
+  parameters=$3
 
-	if [[ "$method" == "" ]] || [[ "$url" == "" ]]
-	then
-		echo "usage: curlrest <method> <url> <*parameters>"
-	else
-		if [[ "$parameters" != "" ]]
-		then
-			parameters="--data-urlencode $(echo $parameters | xargs | sed 's/&/ --data-urlencode /g')"
-		fi
+  if [[ "$method" == "" ]] || [[ "$url" == "" ]]
+  then
+    echo "usage: curlrest <method> <url> <*parameters>"
+  else
+    if [[ "$parameters" != "" ]]
+    then
+      parameters="--data-urlencode $(echo $parameters | xargs | sed 's/&/ --data-urlencode /g')"
+    fi
 
-		curl -v --globoff --get -X$method $url $parameters
-		echo ""
-	fi
+    curl -v --globoff --get -X$method $url $parameters
+    echo ""
+  fi
 }
 
 # Returns the active git branch - this is used in rewrite_prompt().
 git_branch()
 {
-	git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(branch: \1)/'
+  git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(branch: \1)/'
 }
 
 git_delete_new_files()
@@ -35,55 +35,55 @@ git_delete_new_files()
 # Get a list of all filesizes in the current folder ("du -sh *" for files).
 get_filesizes()
 {
-	ls -laSh | grep -v ^d | awk '{print $5 "\t" $9}'
+  ls -laSh | grep -v ^d | awk '{print $5 "\t" $9}'
 }
 
 # Recursively moves all files matching the search query to the chosen directory.
 move_files()
 {
-	search=$1
-	destination=$2
+  search=$1
+  destination=$2
 
-	if [[ "$search" == "" ]] || [[ "$destination" == "" ]]
-	then
-		echo "usage: move_files <search> <destination>"
-	else
-		find . -type f -name "$search" -exec mv -fv '{}' "$destination" ';'
-	fi
+  if [[ "$search" == "" ]] || [[ "$destination" == "" ]]
+  then
+    echo "usage: move_files <search> <destination>"
+  else
+    find . -type f -name "$search" -exec mv -fv '{}' "$destination" ';'
+  fi
 }
 
 # Drops all tables in a specified MySQL database.
 mysql_drop_all_tables()
 {
-	user=$1
-	database=$2
+  user=$1
+  database=$2
 
-	if [[ "$user" == "" ]] || [[ "$database" == "" ]]
-	then
-		echo "usage: mysql_drop_all_tables <user> <database>"
-	else
-		mysqldump -u $user -p $database --add-drop-table --no-data | grep ^DROP | mysql -u $user -p $database
-	fi
+  if [[ "$user" == "" ]] || [[ "$database" == "" ]]
+  then
+    echo "usage: mysql_drop_all_tables <user> <database>"
+  else
+    mysqldump -u $user -p $database --add-drop-table --no-data | grep ^DROP | mysql -u $user -p $database
+  fi
 }
 
 # Replaces a local mysql database with the specified one.
 mysql_replace()
 {
-	database=$1
-	sql_file=$2
+  database=$1
+  sql_file=$2
 
-	if [[ "$database" == "" ]] || [[ "$sql_file" == "" ]]
-	then
-		echo "usage: mysql_replace <database> <sql_file>"
-	else
-		echo "Dropping and re-creating database '$database'"
-		mysql $database -e "drop database $database; create database $database;"
+  if [[ "$database" == "" ]] || [[ "$sql_file" == "" ]]
+  then
+    echo "usage: mysql_replace <database> <sql_file>"
+  else
+    echo "Dropping and re-creating database '$database'"
+    mysql $database -e "drop database $database; create database $database;"
 
-		echo "Importing $sql_file ..."
-		mysql $database < $sql_file
+    echo "Importing $sql_file ..."
+    mysql $database < $sql_file
 
-		echo "Done."
-	fi
+    echo "Done."
+  fi
 }
 
 # Returns information on LOC added/removed for a given git log range and an
@@ -99,110 +99,110 @@ git_loc()
 # Syncs git production and staging branch with master.
 git_merge()
 {
-	source_branch=$1
-	target_branch=$2
+  source_branch=$1
+  target_branch=$2
 
-	if [[ $target_branch == '' ]]; then
-		target_branch='master'
-	fi
+  if [[ $target_branch == '' ]]; then
+    target_branch='master'
+  fi
 
-	if [[ $source_branch == '' ]];
-	then
-		echo "usage: git_merge <source_branch> '<*target_branch>'"
-	else
-		git push origin $source_branch && \
-		git checkout $target_branch && git merge $source_branch && git push origin $target_branch
-		git checkout $source_branch
-	fi
+  if [[ $source_branch == '' ]];
+  then
+    echo "usage: git_merge <source_branch> '<*target_branch>'"
+  else
+    git push origin $source_branch && \
+      git checkout $target_branch && git merge $source_branch && git push origin $target_branch
+    git checkout $source_branch
+  fi
 }
 
 git_pick_latest_commit()
 {
-	source_branch=$1
-	target_branch=$2
+  source_branch=$1
+  target_branch=$2
 
-	if [[ $target_branch == '' ]]; then
-		target_branch='master'
-	fi
+  if [[ $target_branch == '' ]]; then
+    target_branch='master'
+  fi
 
-	if [[ $source_branch == '' ]];
-	then
-		echo "usage: git_pick_latest_commit <source_branch> '<*target_branch>'"
-	else
+  if [[ $source_branch == '' ]];
+  then
+    echo "usage: git_pick_latest_commit <source_branch> '<*target_branch>'"
+  else
     git checkout $source_branch
     hash=$(git rev-parse head)
-		git checkout $target_branch && git cherry-pick $hash && git push origin $target_branch
-		git checkout $source_branch
-	fi
+    git checkout $target_branch && git cherry-pick $hash && git push origin $target_branch
+    git checkout $source_branch
+  fi
 }
 
 # Attempts to recursively find a match for a given string in the given file(s).
 search()
 {
-	string=$1
-	files=$2
+  string=$1
+  files=$2
 
-	if [[ $string == '' ]];
-	then
-		echo "usage: search <search> '<*glob_expansion>'"
-		echo "	Make sure the glob expansion is in quotes!"
-	else
-		if [[ $files == '' ]];
-		then
-			find . -type f -exec grep -l "$string" {} +
-		else
-			find . -type f -name "$files" -exec grep -l "$string" {} +
-		fi
-	fi
+  if [[ $string == '' ]];
+  then
+    echo "usage: search <search> '<*glob_expansion>'"
+    echo "	Make sure the glob expansion is in quotes!"
+  else
+    if [[ $files == '' ]];
+    then
+      find . -type f -exec grep -l "$string" {} +
+    else
+      find . -type f -name "$files" -exec grep -l "$string" {} +
+    fi
+  fi
 }
 
 # Attempts to recursively search the given range of files for a given perl-compatible regex and replace with a given value.
 search_and_replace()
 {
-	search=$1
-	replace=$2
-	files=$3
+  search=$1
+  replace=$2
+  files=$3
 
-	if [[ $search == '' ]] || [[ $replace == '' ]];
-	then
-		echo "usage: search_and_replace <search> <replace <*glob_expansion>"
-		echo "	Make sure the glob expansion is in quotes!"
-	else
-		if [[ $files == '' ]];
-		then
-			sudo find . -type f -exec perl -pi -e "s/$search/$replace/g" {} \;
-		else
-			sudo find . -type f -name "$files" -exec perl -pi -e "s/$search/$replace/g" {} \;
-		fi
-	fi
+  if [[ $search == '' ]] || [[ $replace == '' ]];
+  then
+    echo "usage: search_and_replace <search> <replace <*glob_expansion>"
+    echo "	Make sure the glob expansion is in quotes!"
+  else
+    if [[ $files == '' ]];
+    then
+      sudo find . -type f -exec perl -pi -e "s/$search/$replace/g" {} \;
+    else
+      sudo find . -type f -name "$files" -exec perl -pi -e "s/$search/$replace/g" {} \;
+    fi
+  fi
 }
 
 # Export all changed files between the given revision and HEAD, to a given location.
 svn_export_changed_files()
 {
-	tarfile=$1
-	start_rev=$2
-	end_rev=$3
+  tarfile=$1
+  start_rev=$2
+  end_rev=$3
 
-	if [[ "$end_rev" == "" ]]; then
-		 end_rev='HEAD'
-	fi
+  if [[ "$end_rev" == "" ]]; then
+    end_rev='HEAD'
+  fi
 
-	if [[ "$tarfile" == "" ]] || [[ "$start_rev" == "" ]]
-	then
-		echo "usage: svn_export_changed_files <tarfile> <start_rev> <*end_rev>"
-	else
-		svn diff -r "$start_rev":"$end_rev" --summarize |
-		awk '{if ($1 != "D") print $2}'|
-		xargs  -I {} tar -rvf "$tarfile" {}
-	fi
+  if [[ "$tarfile" == "" ]] || [[ "$start_rev" == "" ]]
+  then
+    echo "usage: svn_export_changed_files <tarfile> <start_rev> <*end_rev>"
+  else
+    svn diff -r "$start_rev":"$end_rev" --summarize |
+    awk '{if ($1 != "D") print $2}'|
+    xargs  -I {} tar -rvf "$tarfile" {}
+  fi
 }
 
 # Compatible secure copy command for Vagrant boxes.
 vscp()
 {
-	[ ! $(pgrep -n "VBoxHeadless") ] && echo "No vagrant VM is running" && return;
+  [ ! $(pgrep -n "VBoxHeadless") ] && echo "No vagrant VM is running" && return;
 
-	OPTIONS=`vagrant ssh-config | awk -v ORS=' ' ' {print "-o " $1 "=" $2}'`
-	scp ${OPTIONS} "$@" || echo "Transfer failed. Did you use 'default:' as the target?"
+  OPTIONS=`vagrant ssh-config | awk -v ORS=' ' ' {print "-o " $1 "=" $2}'`
+  scp ${OPTIONS} "$@" || echo "Transfer failed. Did you use 'default:' as the target?"
 }
