@@ -148,9 +148,6 @@ nmap <silent> <leader>; :call AppendSemiColon()<CR>
 autocmd FileType ruby map <leader>r :A<CR>
 autocmd FileType php map <leader>r :! clear && phpunit --colors %<CR>
 
-" Overwrite vim-holylight default of 1kk
-let g:holylight_threshold = 800000
-
 " Include matchit on runtime
 runtime macros/matchit.vim
 
