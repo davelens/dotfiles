@@ -22,6 +22,8 @@ Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-rails'
 Bundle 'osyo-manga/vim-monster'
 Bundle 'alvan/vim-closetag'
+Bundle 'bling/vim-airline'
+
 
 filetype plugin indent on
 syntax on
@@ -223,3 +225,5 @@ function! AppendSemiColon()
         call setpos('.', save_cursor)
     endif
 endfunction
+
+let g:airline_powerline_fonts = 1
