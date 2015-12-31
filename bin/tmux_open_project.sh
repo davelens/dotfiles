@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. ~/.bash/commands
+
 function is_rails_project()
 {
   [ -f "$1/Gemfile" ] && (grep -Rq "gem 'rails'" "$1/Gemfile" || grep -Rq "gem 'udongo'" "$1/Gemfile")
@@ -13,15 +15,6 @@ function is_rails_engine_project()
 function is_rails_related()
 {
   is_rails_project "$path/$session" || is_rails_engine_project "$path/$session"
-}
-
-function lowercase()
-{
-  if [ -n "$1" ]; then
-    echo "$1" | tr "[:upper:]" "[:lower:]"
-  else
-    cat - | tr "[:upper:]" "[:lower:]"
-  fi
 }
 
 # accepts path and session (=company/project)

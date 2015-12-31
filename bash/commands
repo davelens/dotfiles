@@ -1,5 +1,14 @@
 #!/bin/bash
 
+function lowercase()
+{
+  if [ -n "$1" ]; then
+    echo "$1" | tr "[:upper:]" "[:lower:]"
+  else
+    cat - | tr "[:upper:]" "[:lower:]"
+  fi
+}
+
 # Command used to test rest services that are under development.
 curlrest()
 {
