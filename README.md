@@ -22,7 +22,7 @@ You can use the provided reset to restore to OSX default settings. Note that thi
 
 	source ~/.dotfiles/osx/defaults-reset
 
-# Vim
+# Vim plugins
 Remember to call ```:VundleInstall``` in Vim to install all included plugins.
 
 ## vim-airline
