@@ -155,11 +155,11 @@ runtime macros/matchit.vim
 " Strips all trailing whitespace, except for the filetypes specified.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! StripTrailingWhitespace()
-    " Don't strip on these filetypes
-    if &ft =~ 'markdown\|diff'
-        return
-    endif
-    %s/\s\+$//e
+  " Don't strip on these filetypes
+  if &ft =~ 'markdown\|diff'
+    return
+  endif
+  %s/\s\+$//e
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -167,9 +167,9 @@ endfunction
 " whilst developing colorschemes.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! GetVimElementID()
-	:echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-    \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-    \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
+  :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+        \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -188,8 +188,8 @@ let g:ycm_key_list_previous_completion=[]
 let g:ctrlp_map = '<leader>t'
 let g:ctrlp_working_path_mode = 0
 let g:ctrlp_custom_ignore = {
-	\ 'dir':  'frontend\/files$\|\.git$\|\.svn$\|\compiled_templates$\|\app/assets/images$\|tmp\|\public\/uploads$',
-	\ }
+      \ 'dir':  'frontend\/files$\|\.git$\|\.svn$\|\compiled_templates$\|\app/assets/images$\|tmp\|\public\/uploads$',
+      \ }
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " closetag.vim configuration
@@ -201,22 +201,22 @@ let g:closetag_filenames = "*.html,*.xhtml,*.html.erb"
 " a dual monitor setup, with my browser active in the second monitor.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! SaveAndRefreshFirefox()
-	w
-	silent exec '!osascript ~/.dotfiles/osx/refresh-firefox.scpt'
-	redraw!
+  w
+  silent exec '!osascript ~/.dotfiles/osx/refresh-firefox.scpt'
+  redraw!
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Rename the current file in your buffer
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! RenameFile()
-	let old_name = expand('%')
-	let new_name = input('New file name: ', expand('%'))
-	if new_name != '' && new_name != old_name
-		exec ':saveas ' . new_name
-		exec ':silent !rm ' . old_name
-		redraw!
-	endif
+  let old_name = expand('%')
+  let new_name = input('New file name: ', expand('%'))
+  if new_name != '' && new_name != old_name
+    exec ':saveas ' . new_name
+    exec ':silent !rm ' . old_name
+    redraw!
+  endif
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -224,9 +224,9 @@ endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " If there isn't one, append a semi colon to the end of the current line.
 function! AppendSemiColon()
-    if getline('.') !~ ';$'
-        let save_cursor = getpos('.')
-        exec("s/$/;/")
-        call setpos('.', save_cursor)
-    endif
+  if getline('.') !~ ';$'
+    let save_cursor = getpos('.')
+    exec("s/$/;/")
+    call setpos('.', save_cursor)
+  endif
 endfunction
