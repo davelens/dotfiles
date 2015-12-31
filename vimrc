@@ -104,9 +104,6 @@ set background=dark
 " solarized comes with a toggle-background method.
 call togglebg#map("<F4>")
 
-" allows airline to use the powerline font symbols through a patched font
-let g:airline_powerline_fonts = 1
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Various bindings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -205,6 +202,12 @@ function! SaveAndRefreshFirefox()
   silent exec '!osascript ~/.dotfiles/osx/refresh-firefox.scpt'
   redraw!
 endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-airline configuration
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" allows airline to use the powerline font symbols through a patched font
+let g:airline_powerline_fonts = 1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Rename the current file in your buffer
