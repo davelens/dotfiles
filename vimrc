@@ -104,6 +104,8 @@ set background=dark
 " solarized comes with a toggle-background method.
 call togglebg#map("<F4>")
 
+" allows airline to use the powerline font symbols through a patched font
+let g:airline_powerline_fonts = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Various bindings
@@ -231,5 +233,3 @@ function! AppendSemiColon()
         call setpos('.', save_cursor)
     endif
 endfunction
-
-let g:airline_powerline_fonts = 1
