@@ -178,7 +178,10 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:EclimCompletionMethod = 'omnifunc'
 let g:ycm_min_num_of_chars_for_completion = 4
-let g:ycm_key_list_select_completion = ['<C-j>', '<C-k>']
+" C-P and C-N still work when emptying these, so why not?
+" Considering another plugin can have conflicting bindings, this is a sane setting.
+let g:ycm_key_list_select_completion=[]
+let g:ycm_key_list_previous_completion=[]
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CtrlP configuration
