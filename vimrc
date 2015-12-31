@@ -127,6 +127,10 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 
+" Giving this a go; ESC remapping in insert mode.
+" Less finger wrecking than C-[, and rare enough not to obstruct while typing.
+inoremap jk <Esc>
+
 " Easy paste/nopaste
 map <F5> :set paste<CR>
 map <F6> :set nopaste<CR>
