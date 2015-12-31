@@ -133,3 +133,8 @@ complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/confi
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
 fi
+
+# Tmuxinator is a tmux session manager
+if [ -f ~/.bin/tmuxinator.bash ]; then
+  . ~/.bin/tmuxinator.bash
+fi
