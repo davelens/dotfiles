@@ -24,7 +24,6 @@ Bundle 'osyo-manga/vim-monster'
 Bundle 'alvan/vim-closetag'
 Bundle 'bling/vim-airline'
 
-
 filetype plugin indent on
 syntax on
 
