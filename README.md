@@ -26,7 +26,7 @@ You can use the provided reset to restore to OSX default settings. Note that thi
 Remember to call ```:VundleInstall``` in Vim to install all included plugins.
 
 ## vim-airline
-In order to display the fancy powerline symbols, you should locate and install the follow font:
+In order to display the fancy powerline symbols, you should locate and install the following font:
 ```bash
 fonts/InputMono-Regular.ttf
 ```
