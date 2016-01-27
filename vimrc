@@ -154,7 +154,11 @@ runtime macros/matchit.vim
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! TestCurrentLine()
   let spec_line_number = line('.')
-  exec ":!clear && bin/rspec %:" . spec_line_number
+  if filereadable('spec/dummy/bin/rspec')
+    exec ":!clear && spec/dummy/bin/rspec %:" . spec_line_number
+  else
+    exec ":!clear && bin/rspec %:" . spec_line_number
+  endif
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
