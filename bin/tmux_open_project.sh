@@ -88,7 +88,7 @@ function open_tmux_session()
 
   if [ $mysql_running ]; then
     # open a client connection to the dev database for this rails project
-    database="${project/-/_}""_dev"
+    database="$(echo ${project} | sed -e "s/-/_/g")_dev"
     tmux send-keys -t $session:database "clear && mysql $database" C-m
   fi
 
