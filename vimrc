@@ -142,6 +142,7 @@ map <leader>i :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
 map <leader>f :call TestCurrentLine()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
+map <leader>g :call OpenGem()<CR>
 
 " Filetype-specific mappings
 autocmd FileType ruby map <leader>r :A<CR>
@@ -244,5 +245,16 @@ function! AppendSemiColon()
     let save_cursor = getpos('.')
     exec("s/$/;/")
     call setpos('.', save_cursor)
+  endif
+endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Opens the specified gem's source code
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! OpenGem()
+  let gem = input('Open which gem?: ')
+  if gem != ''
+    exec ':e `bundle show '. gem .'`'
+    exec ':lcd %:p:h'
   endif
 endfunction
