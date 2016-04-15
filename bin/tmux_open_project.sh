@@ -59,6 +59,7 @@ function open_tmux_session()
       else
         mysql.server start
       fi
+      sleep 1
       mysql_running=`pgrep -n mysqld`
     fi
   fi
