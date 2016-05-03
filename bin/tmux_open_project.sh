@@ -95,20 +95,23 @@ function open_tmux_session()
 
   # Rails-specific windows
   if is_rails_related "$path/$session"; then
-    console_path="$path/$session"
-    if is_rails_engine_project "$path/$session"; then
-      console_path="$path/$session/spec/dummy"
-    fi
-
-    # rails needs a console window
     tmux new-window -n console -t $session
-    tmux send-keys -t $session:console "cd $console_path" C-m
-    tmux send-keys -t $session:console "clear && bin/rails c" C-m
-
-    # guard window
     tmux new-window -n guard -t $session
-    tmux send-keys -t $session:guard "cd $path/$session" C-m
-    tmux send-keys -t $session:guard "clear && bin/bundle exec guard" C-m
+
+    if is_rails_engine_project "$path/$session"; then
+      tmux send-keys -t $session:console "cd $path/$session && spring" C-m
+      tmux send-keys -t $session:console "cd $path/$session/spec/dummy" C-m
+      tmux send-keys -t $session:console "clear && rails c" C-m
+
+      tmux send-keys -t $session:guard "cd $path/$session" C-m
+      tmux send-keys -t $session:guard "clear && bundle exec guard" C-m
+    else
+      tmux send-keys -t $session:console "cd $path/$session" C-m
+      tmux send-keys -t $session:console "clear && bin/rails c" C-m
+
+      tmux send-keys -t $session:guard "cd $path/$session" C-m
+      tmux send-keys -t $session:guard "clear && bin/bundle exec guard" C-m
+    fi
 
     # select the editor and attach to the session
     tmux select-window -t $session:1
