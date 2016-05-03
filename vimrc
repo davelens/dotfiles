@@ -56,6 +56,7 @@ set shiftwidth=2
 set softtabstop=2
 set tabstop=2
 set expandtab
+set smarttab
 
 " Whitespace settings for specific types
 au FileType php setlocal ts=2 sts=2 sw=2 noexpandtab
