@@ -8,7 +8,7 @@ If you're sick of my dotfiles, you can copy-paste the following in your shell:
 
 	cd ~/.dotfiles && ./uninstall.sh
 
-# Settings you should change
+# Things you should change
 - Your personal info in .dotfiles/gitconfig
 - If you use irssi (or plan to): Your desired servers, channels, highlights and aliases in .dotfiles/irssi/config
 - The take_screenshot command in .dotfiles/bash/osx uploads a screenshot to my webspace and puts the link in my clipboard. If you want to use this as well, just replace my SSH-host with your own.
@@ -22,11 +22,22 @@ You can use the provided reset to restore to OSX default settings. Note that thi
 
 	source ~/.dotfiles/osx/defaults-reset
 
-# Vim
+# Vim plugins
 Remember to call ```:VundleInstall``` in Vim to install all included plugins.
 
+## vim-airline
+In order to display the fancy powerline symbols, you should locate and install the following font:
+```bash
+fonts/InputMono-Regular.ttf
+```
+
+If you don't wish to make use of the fancy powerline icons, uncomment the following line in the vimrc file:
+```vimscript
+let g:airline_powerline_fonts = 1
+```
+
 ## YouCompleteMe
-YouCompleteMe is a Vim plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
+YouCompleteMe (YCM) is a Vim plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
 
 ### Mac OS X Yosemite
 If you're on Yosemite the chances are that the YCM component failed to compile. I got this fixed with [a helpful SO answer](http://stackoverflow.com/questions/29529455/missing-c-header-debug-after-updating-osx-command-line-tools-6-3#answer-29576048).

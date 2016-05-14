@@ -4,25 +4,26 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-Bundle 'sjl/vitality.vim'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'Valloric/YouCompleteMe'
-Bundle 'kien/ctrlp.vim'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'Townk/vim-autoclose'
-Bundle 'shawncplus/phpcomplete.vim'
-Bundle 'vim-ruby/vim-ruby'
-Bundle 'msanders/snipmate.vim'
-Bundle 'Dinduks/vim-holylight'
-Bundle 'kana/vim-textobj-user'
-Bundle 'nelstrom/vim-textobj-rubyblock'
-Bundle 'tpope/vim-surround'
-Bundle 'tpope/vim-repeat'
-Bundle 'tpope/vim-endwise'
-Bundle 'tpope/vim-rails'
-Bundle 'osyo-manga/vim-monster'
-Bundle 'alvan/vim-closetag'
-Bundle 'ecomba/vim-ruby-refactoring'
+Plugin 'sjl/vitality.vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'kien/ctrlp.vim'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'Townk/vim-autoclose'
+Plugin 'shawncplus/phpcomplete.vim'
+Plugin 'msanders/snipmate.vim'
+Plugin 'Dinduks/vim-holylight'
+Plugin 'kana/vim-textobj-user'
+Plugin 'nelstrom/vim-textobj-rubyblock'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-endwise'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-fugitive'
+Plugin 'osyo-manga/vim-monster'
+Plugin 'alvan/vim-closetag'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 
 filetype plugin indent on
 syntax on
@@ -55,9 +56,10 @@ set shiftwidth=2
 set softtabstop=2
 set tabstop=2
 set expandtab
+set smarttab
 
 " Whitespace settings for specific types
-au FileType php setlocal ts=4 sts=4 sw=4 noexpandtab
+au FileType php setlocal ts=2 sts=2 sw=2 noexpandtab
 
 " Auto-completion
 set wildmode=longest,list,full
@@ -104,7 +106,6 @@ set background=dark
 " solarized comes with a toggle-background method.
 call togglebg#map("<F4>")
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Various bindings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -127,6 +128,10 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 
+" Giving this a go; ESC remapping in insert mode.
+" Less finger wrecking than C-[, and rare enough not to obstruct while typing.
+inoremap jk <Esc>
+
 " Easy paste/nopaste
 map <F5> :set paste<CR>
 map <F6> :set nopaste<CR>
@@ -138,13 +143,11 @@ map <leader>i :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
 map <leader>f :call TestCurrentLine()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
+map <leader>g :call OpenGem()<CR>
 
 " Filetype-specific mappings
 autocmd FileType ruby map <leader>r :A<CR>
 autocmd FileType php map <leader>r :! clear && phpunit --colors %<CR>
-
-" Overwrite vim-holylight default of 1kk
-let g:holylight_threshold = 800000
 
 " Include matchit on runtime
 runtime macros/matchit.vim
@@ -153,22 +156,22 @@ runtime macros/matchit.vim
 " Runs bin/rspec on the current line.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! TestCurrentLine()
-  "if expand("%") != ""
-    ":w
-  "end
   let spec_line_number = line('.')
-  exec ":!clear && bin/rspec %:" . spec_line_number
+  if filereadable('spec/dummy/bin/rspec')
+    exec ":!clear && spec/dummy/bin/rspec %:" . spec_line_number
+  else
+    exec ":!clear && bin/rspec %:" . spec_line_number
+  endif
 endfunction
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! StripTrailingWhitespace()
-    " Don't strip on these filetypes
-    if &ft =~ 'markdown\|diff'
-        return
-    endif
-    %s/\s\+$//e
+  " Don't strip on these filetypes
+  if &ft =~ 'markdown\|diff'
+    return
+  endif
+  %s/\s\+$//e
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -176,9 +179,9 @@ endfunction
 " whilst developing colorschemes.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! GetVimElementID()
-	:echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-	   \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-	   \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
+  :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+        \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -186,7 +189,10 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:EclimCompletionMethod = 'omnifunc'
 let g:ycm_min_num_of_chars_for_completion = 4
-let g:ycm_key_list_select_completion = ['<C-j>', '<C-k>']
+" C-P and C-N still work when emptying these, so why not?
+" Considering another plugin can have conflicting bindings, this is a sane setting.
+let g:ycm_key_list_select_completion=[]
+let g:ycm_key_list_previous_completion=[]
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CtrlP configuration
@@ -194,8 +200,8 @@ let g:ycm_key_list_select_completion = ['<C-j>', '<C-k>']
 let g:ctrlp_map = '<leader>t'
 let g:ctrlp_working_path_mode = 0
 let g:ctrlp_custom_ignore = {
-	\ 'dir':  'frontend\/files$\|\.git$\|\.svn$\|\compiled_templates$\|\app/assets/images$\|tmp\|\public\/uploads$',
-	\ }
+      \ 'dir':  'frontend\/files$\|\.git$\|\.svn$\|\compiled_templates$\|\app/assets/images$\|tmp\|\public\/uploads$',
+      \ }
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " closetag.vim configuration
@@ -207,22 +213,28 @@ let g:closetag_filenames = "*.html,*.xhtml,*.html.erb,*.tpl"
 " a dual monitor setup, with my browser active in the second monitor.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! SaveAndRefreshFirefox()
-	w
-	silent exec '!osascript ~/.dotfiles/osx/refresh-firefox.scpt'
-	redraw!
+  w
+  silent exec '!osascript ~/.dotfiles/osx/refresh-firefox.scpt'
+  redraw!
 endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-airline configuration
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" allows airline to use the powerline font symbols through a patched font
+let g:airline_powerline_fonts = 1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Rename the current file in your buffer
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! RenameFile()
-	let old_name = expand('%')
-	let new_name = input('New file name: ', expand('%'))
-	if new_name != '' && new_name != old_name
-		exec ':saveas ' . new_name
-		exec ':silent !rm ' . old_name
-		redraw!
-	endif
+  let old_name = expand('%')
+  let new_name = input('New file name: ', expand('%'))
+  if new_name != '' && new_name != old_name
+    exec ':saveas ' . new_name
+    exec ':silent !rm ' . old_name
+    redraw!
+  endif
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -230,9 +242,20 @@ endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " If there isn't one, append a semi colon to the end of the current line.
 function! AppendSemiColon()
-    if getline('.') !~ ';$'
-        let save_cursor = getpos('.')
-        exec("s/$/;/")
-        call setpos('.', save_cursor)
-    endif
+  if getline('.') !~ ';$'
+    let save_cursor = getpos('.')
+    exec("s/$/;/")
+    call setpos('.', save_cursor)
+  endif
+endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Opens the specified gem's source code
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! OpenGem()
+  let gem = input('Open which gem?: ')
+  if gem != ''
+    exec ':e `bundle show '. gem .'`'
+    exec ':lcd %:p:h'
+  endif
 endfunction

@@ -3,11 +3,11 @@
 # Mac commands
 if [[ $OS == 'Darwin' ]]
 then
-	alias ls='ls -G'
-	alias lsa='ls -hal'
-	alias toggle_desktop='toggle_default finder CreateDesktop'
-	alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
-	alias tss='take_screenshot'
+  alias ls='ls -G'
+  alias lsa='ls -hal'
+  alias toggle_desktop='toggle_default finder CreateDesktop'
+  alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
+  alias tss='take_screenshot'
 fi
 
 # Linux (Ubuntu, Debian, Mint,...)
@@ -25,7 +25,7 @@ then
   # ex = file which is executable (ie. has 'x' set in permissions).
   # *.rpm = files with the ending .rpm
   LS_COLORS=$LS_COLORS:'di=0;35:'; export LS_COLORS
-	alias lsa='ls -hal --color=tty'
+  alias lsa='ls -hal --color=tty'
 fi
 
 alias add_vhost='sudo ~/.bin/./add_vhost.sh'
