@@ -12,7 +12,7 @@ take_screenshot()
   screencapture -ix ~/Desktop/$filename &&
     scp ~/Desktop/$filename davelens.be:screenshots/$filename
   echo "http://code.davelens.be/screenshots/$filename" | pbcopy
-  rm -rf ~/Desktop/$filename
+  rm ~/Desktop/$filename
 }
 alias ss="osascript ~/.osx/hide-terminal.scpt && tss && killall Terminal"
 
