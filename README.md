@@ -36,6 +36,16 @@ If you don't wish to make use of the fancy powerline icons, uncomment the follow
 let g:airline_powerline_fonts = 1
 ```
 
+## vim-holylight
+If you want to let your Vim always open in light or dark mode, put the following in your .vimrc:
+```vimscript
+" Light
+let g:holylight_threshold=0
+
+" Dark
+let g:holylight_threshold=5000000
+```
+
 ## YouCompleteMe
 YouCompleteMe (YCM) is a Vim plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
 
