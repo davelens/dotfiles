@@ -4,6 +4,9 @@
 # This file will only load on Mac OS X
 # ************************************
 
+# iTerm2 shell integration
+test -e "${HOME}/.bin/iterm2_shell_integration.bash" && source "${HOME}/.bin/iterm2_shell_integration.bash"
+
 # takes a screenshot and uploads it to my hosting
 take_screenshot()
 {
