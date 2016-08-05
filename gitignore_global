@@ -42,3 +42,4 @@ Thumbs.db
 .buildpath
 .project
 _backups/
+latest.sql
