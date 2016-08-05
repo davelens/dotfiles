@@ -24,6 +24,7 @@ Plugin 'osyo-manga/vim-monster'
 Plugin 'alvan/vim-closetag'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'mileszs/apidock.vim'
 
 filetype plugin indent on
 syntax on
@@ -223,6 +224,12 @@ endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " allows airline to use the powerline font symbols through a patched font
 let g:airline_powerline_fonts = 1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" apidock.vim configuration
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" This change allows existing links to open in the currently open Firefox app.
+let g:browser = 'open -a ~/Applications/Firefox.app'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Rename the current file in your buffer
