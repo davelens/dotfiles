@@ -9,7 +9,6 @@ NOW_PLAYING=$(osascript <<EOF
 	if is_app_running("iTunes") then
 		tell application "iTunes" to set itunes_state to (player state as text)
 	end if
-	(* Whatever other music applications you use *)
 
 	if spotify_state is equal to "playing" then
 		tell application "Spotify"
