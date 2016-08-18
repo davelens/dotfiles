@@ -54,9 +54,7 @@ If you're on Yosemite the chances are that the YCM component failed to compile. 
 
 # Tmux
 ## Statusline "Segments"
-My tmux config now parses small bits of information to the right. They are inspired by and/or stolen from the (now unmaintained) [tmux-powerline repo](https://github.com/erikw/tmux-powerline).
-
-They are located to the left of the date in the status-right section:
+My tmux config now parses small bits of information to the left of the date in the status-right section. They are inspired by and/or stolen from the (now unmaintained) [tmux-powerline repo](https://github.com/erikw/tmux-powerline):
 
 * Laptop battery status. Done via [richo/battery](https://github.com/richo/battery)
 * Unread e-mail count. Caveats:
