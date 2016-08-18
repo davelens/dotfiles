@@ -51,3 +51,21 @@ YouCompleteMe (YCM) is a Vim plugin that requires a pre-compiled component. [See
 
 ### Mac OS X Yosemite
 If you're on Yosemite the chances are that the YCM component failed to compile. I got this fixed with [a helpful SO answer](http://stackoverflow.com/questions/29529455/missing-c-header-debug-after-updating-osx-command-line-tools-6-3#answer-29576048).
+
+# Tmux
+## Statusline "Segments"
+My tmux config now parses small bits of information to the right. They are inspired by and/or stolen from the (now unmaintained) [tmux-powerline repo](https://github.com/erikw/tmux-powerline).
+
+They are located to the left of the date in the status-right section:
+
+* Laptop battery status. Done via [richo/battery](https://github.com/richo/battery)
+* Unread e-mail count. Caveats:
+  * Reads user/pass from your .netrc file.
+  * You need to configure which servers to check [here](https://github.com/davelens/dotfiles/blob/master/bin/tmux/mailcount.sh#L6).
+* Current track playing in Spotify or iTunes. Taken from a StackOverflow post, can't remember which.
+
+## There are strange symbols in my statusline, howcome?
+In order to display the fancy powerline symbols, you should locate and install the following font:
+```bash
+fonts/InputMono-Regular.ttf
+```
