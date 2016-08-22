@@ -3,7 +3,7 @@
 
 battery_info()
 {
-  # See https://github.com/richo/battery/blob/master/bin/battery
+  # Slightly modified from https://github.com/richoH/dotfiles/blob/master/bin/battery
   battery_charging=`battery Charging`
   battery_discharging=`battery Discharging`
 
