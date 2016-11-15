@@ -26,6 +26,7 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'mileszs/apidock.vim'
 Plugin 'elixir-lang/vim-elixir'
+Plugin 'kchmck/vim-coffee-script'
 
 filetype plugin indent on
 syntax on
