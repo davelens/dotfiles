@@ -22,6 +22,9 @@ stty -ixon
 export RUBY_GC_MALLOC_LIMIT=60000000
 export RUBY_GC_HEAP_FREE_SLOTS=200000
 
+# Go lang work dir
+export GOPATH=$HOME/.go
+
 
 ########################################################################
 # PATH
@@ -54,6 +57,8 @@ paths_to_add=(
 /usr/local/share/npm/bin
 # Dotfiles
 "$HOME/.dotfiles/bin"
+# Go lang
+"usr/local/go/bin"
 );
 
 # Now implode everything into the new PATH variable.
