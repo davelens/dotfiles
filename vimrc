@@ -303,3 +303,20 @@ function! ExtractVariable()
     normal! $p
 endfunction
 vnoremap <leader>rv :call ExtractVariable()<cr>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Resizes the focused window to a ratio of your choice.
+" The first argument determines the size you want your focused window to be.
+" The second argument lets you choose to set it for horizontal or vertical
+" splits.
+"
+" Example: AutoResizeWindowOnFocus(6, 'v') will resize in a ratio of 60/40,
+" while AutoResizeWindowOnFocus(7, 'v') will resize in a ratio of 70/30.
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! AutoResizeWindowOnFocus(ratio, axis)
+  if a:axis == 'h'
+    let &winheight = &lines * a:ratio / 10
+  else
+    let &winwidth = &columns * a:ratio / 10
+  end
+endfunction
