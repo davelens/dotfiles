@@ -30,11 +30,15 @@ In order to display the fancy powerline symbols, you should locate and install t
 ```bash
 fonts/InputMono-Regular.ttf
 ```
+Afterwards you **need** to configure your terminal to use InputMono as the non-ASCII font. If you're an iTerm2 user like myself, you can do this in the ```Preferences > Profiles > Text``` tab where you can check ```Use a different font for non-ASCII text``` and select the font in the dropdown.
 
 If you don't wish to make use of the fancy powerline icons, uncomment the following line in the vimrc file:
 ```vimscript
 let g:airline_powerline_fonts = 1
 ```
+
+### iTerm2
+You need to configure iTerm2 to use the InputMono font for unknown
 
 ## vim-holylight
 If you want to let your Vim always open in light or dark mode, put the following in your .vimrc:
