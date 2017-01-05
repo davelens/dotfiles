@@ -8,23 +8,23 @@ battery_info()
   battery_discharging=`battery Discharging`
 
   if [[ $battery_charging ]]; then
-    echo "$(segment "⚡ $battery_charging%" 220)"
+    echo "$(segment "⚡ $battery_charging%" 150)"
   fi
 
   if [[ $battery_discharging ]]; then
     bgcolor=''
 
-    if [[ $battery_discharging < 10 ]]; then
-      fgcolor=172
+    if [[ $battery_discharging -lt 10 ]]; then
+      fgcolor=208
       bgcolor=52
-    elif [[ $battery_discharging < 25 ]]; then
-      fgcolor=172
-    elif [[ $battery_discharging < 50 ]]; then
-      fgcolor=136
-    elif [[ $battery_discharging < 75 ]]; then
+    elif [[ $battery_discharging -lt 25 ]]; then
+      fgcolor=208
+    elif [[ $battery_discharging -lt 50 ]]; then
       fgcolor=142
+    elif [[ $battery_discharging -lt 75 ]]; then
+      fgcolor=220
     else
-      fgcolor=34
+      fgcolor=40
     fi
 
     echo "$(segment "⚡ $battery_discharging%" $fgcolor $bgcolor)"
