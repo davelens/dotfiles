@@ -230,8 +230,8 @@ let g:airline_powerline_fonts = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " apidock.vim configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" This change allows existing links to open in the currently open Firefox app.
-let g:browser = 'open -a ~/Applications/Firefox.app'
+" This change allows existing links to open in the default browser
+let g:browser = 'open'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Rename the current file in your buffer
