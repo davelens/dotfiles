@@ -32,7 +32,9 @@ rewrite_pwd()
 }
 
 prompt_branch() {
-  echo "(branch: `git_branch`)"
+  if [ -d ".git" ]; then
+    echo "(branch: `git_branch`)"
+  fi
 }
 
 # rewrites the PS1 bash prompt var
