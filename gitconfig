@@ -27,6 +27,7 @@
   pom = push origin master
   pod = push origin develop
   prd = pull-request -b develop
+  m = "!/bin/bash gm"
 
 [format]
   pretty=format:%C(yellow)%h%Creset | %C(green)%ad (%ar)%Creset | %C(blue)%an%Creset | %s

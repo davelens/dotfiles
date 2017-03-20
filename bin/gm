@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# gm stands for `git merge`.
+
+# Stops further execution after any error.
+set -e
+
+if [ ! -d ".git" ]; then
+  exit
+fi
+
+# If you want this cmd to be standalone, just grab the git_branch command from
+# the file below (or use your own method).
+. ~/.bash/commands
+
+branch=`git_branch`
+
+if [ $# -eq 0 ]; then
+  read -p "To which branch would you like to merge $branch? (default: develop) " target
+
+  if [ "$target" == "" ]; then
+    target="develop"
+  fi
+else
+  target="$1"
+fi
+
+git checkout $target
+git merge $branch
+
+push_and_clean_up() {
+  git push origin $target
+  echo "Branch $target pushed to remote."
+  git branch -d $branch
+  echo "Local branch $branch removed."
+  git push origin :$branch
+  echo "Remote branch $branch removed."
+}
+
+while true; do
+  read -p "Do you want to push to the remote $target branch? " yn
+  case $yn in
+    [Yy]* ) push_and_clean_up; break;;
+    [Nn]* ) exit;;
+    * ) echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
+  esac
+done
+
+echo "$branch merged into $target."
