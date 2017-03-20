@@ -31,6 +31,10 @@ rewrite_pwd()
   fi
 }
 
+prompt_branch() {
+  echo "(branch: `git_branch`)"
+}
+
 # rewrites the PS1 bash prompt var
 rewrite_prompt()
 {
@@ -70,7 +74,7 @@ rewrite_prompt()
   [ $UID -eq "0" ] && UC=$R   # root's color
 
   # rewrite prompt
-  PS1="${G}\u@\h> \${NEW_PWD} ${C}\$(git_branch)\${NONE}${NONE}\n$ "
+  PS1="${G}\u@\h> \${NEW_PWD} ${C}\$(prompt_branch)\${NONE}${NONE}\n$ "
 }
 
 PROMPT_COMMAND=rewrite_pwd
