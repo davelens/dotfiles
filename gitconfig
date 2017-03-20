@@ -26,6 +26,7 @@
   puod = pull origin develop
   pom = push origin master
   pod = push origin develop
+  prd = pull-request -b develop
 
 [format]
   pretty=format:%C(yellow)%h%Creset | %C(green)%ad (%ar)%Creset | %C(blue)%an%Creset | %s
