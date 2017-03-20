@@ -143,3 +143,6 @@ fi
 if [ -f ~/.bin/tmuxinator.bash ]; then
   . ~/.bin/tmuxinator.bash
 fi
+
+# Alias hub straight into git
+eval "$(hub alias -s)"
