@@ -48,6 +48,7 @@ function open_tmux_session()
   path=$1
   session=$2
   mysql_running=`pgrep -n mysqld`
+  export TMUX_PATH="$path/$session"
 
   if [ ! $mysql_running ]; then
     echo -n "$(tput setaf 11)MySQL is not running. Would you like to start it? $(tput sgr0)$(tput bold)(y/n)$(tput sgr0)$(tput setaf 11):$(tput sgr0) "
