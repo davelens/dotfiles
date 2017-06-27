@@ -13,3 +13,13 @@ snippet specfile
 			expect(build(klass)).to respond_to?(${2})
 		end
 	end
+snippet booltest
+	describe '#${1:method}' do
+		it 'true' do
+			expect(instance.$1).to be true
+		end
+
+		it 'false' do
+			expect(instance.$1).to be false
+		end
+	end
