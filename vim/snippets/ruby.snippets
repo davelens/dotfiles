@@ -6,7 +6,7 @@ snippet specfile
 	require 'rails_helper'
 
 	describe ${1} do
-	  let(:model) { described_class }
+		let(:model) { described_class }
 		let(:klass) { model.to_s.underscore.to_sym }
 
 		it '#respond_to?' do
