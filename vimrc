@@ -10,7 +10,6 @@ Plugin 'Valloric/YouCompleteMe'
 Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'Townk/vim-autoclose'
-Plugin 'shawncplus/phpcomplete.vim'
 Plugin 'Dinduks/vim-holylight'
 Plugin 'kana/vim-textobj-user'
 Plugin 'nelstrom/vim-textobj-rubyblock'
@@ -22,13 +21,11 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'MarcWeber/vim-addon-mw-utils' " Snipmate dependency
 Plugin 'tomtom/tlib_vim' " Snipmate dependency
 Plugin 'garbas/vim-snipmate'
-Plugin 'osyo-manga/vim-monster'
 Plugin 'alvan/vim-closetag'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'mileszs/apidock.vim'
 Plugin 'elixir-lang/vim-elixir'
-Plugin 'kchmck/vim-coffee-script'
 
 filetype plugin indent on
 syntax on
