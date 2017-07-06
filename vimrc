@@ -23,7 +23,6 @@ Plugin 'garbas/vim-snipmate'
 Plugin 'alvan/vim-closetag'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'mileszs/apidock.vim'
 Plugin 'elixir-lang/vim-elixir'
 
 filetype plugin indent on
