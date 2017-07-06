@@ -185,9 +185,8 @@ function! GetVimElementID()
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" YouCompleteMe / Eclim configuration
+" YouCompleteMe configuration
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:EclimCompletionMethod = 'omnifunc'
 let g:ycm_min_num_of_chars_for_completion = 4
 " C-P and C-N still work when emptying these, so why not?
 " Considering another plugin can have conflicting bindings, this is a sane setting.
