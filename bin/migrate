@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+# Fail early when we don't have a bin/rails file for now
+if [ ! -x bin/rails ]; then
+  exit
+fi
+
+# Rails 5+
+if [ -x config/cable.yml ]; then
+  command=bin/rails
+else # Rails < 5
+  command=bin/rake
+fi
+
+if [[ $# -eq 1 && $1 == '-r' ]]; then
+  action=rollback
+else
+  action=migrate
+fi
+
+$command db:$action
+$command db:$action RAILS_ENV=test
