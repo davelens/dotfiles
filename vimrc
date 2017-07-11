@@ -141,7 +141,6 @@ let mapleader = ' '
 map <leader>s <ESC>:w<CR>
 map <leader>i :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
-map <leader>f :call TestCurrentLine()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 map <leader>g :call OpenGem()<CR>
 
@@ -152,17 +151,6 @@ autocmd FileType php map <leader>r :! clear && phpunit --colors %<CR>
 " Include matchit on runtime
 runtime macros/matchit.vim
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Runs bin/rspec on the current line.
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! TestCurrentLine()
-  let spec_line_number = line('.')
-  if filereadable('spec/dummy/bin/rspec')
-    exec ":!clear && spec/dummy/bin/rspec %:" . spec_line_number
-  else
-    exec ":!clear && bin/rspec %:" . spec_line_number
-  endif
-endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -355,4 +343,85 @@ function! AutoResizeWindowOnFocus(ratio, axis)
   else
     let &winwidth = &columns * a:ratio / 10
   end
+endfunction
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Runs bin/rspec on the current line.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! TestCurrentLine()
+  if filereadable('spec/dummy/bin/rspec')
+    let cmd = 'spec/dummy/bin/rspec'
+  elseif filereadable('bin/rspec')
+    let cmd = 'bin/rspec'
+  elseif filereadable('Gemfile') && filereadable('bin/bundle')
+    let cmd = 'bin/bundle exec rspec'
+  else
+    let cmd = 'rspec'
+  endif
+
+  let filename = @%
+  :VimuxRunCommand(cmd . ' ' . filename .':'. line('.'))
+endfunction
+"map <leader>f :call TestCurrentLine()<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" RUNNING TESTS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+function! MapCR()
+  nnoremap <cr> :call RunTestFile()<cr>
+endfunction
+call MapCR()
+nnoremap <leader>f :call RunNearestTest()<cr>
+nnoremap <leader>T :call RunTests('')<cr>
+"nnoremap <leader>c :w\|:!script/features<cr>
+"nnoremap <leader>w :w\|:!script/features --profile wip<cr>
+
+function! RunTestFile(...)
+  if a:0
+    let command_suffix = a:1
+  else
+    let command_suffix = ""
+  endif
+
+  " Are we in a test file?
+  let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\)$') != -1
+
+  " Run the tests for the previously-marked file (or the current file if
+  " it's a test).
+  if in_test_file
+    call SetTestFile(command_suffix)
+  elseif !exists("t:grb_test_file")
+    return
+  end
+  call RunTests(t:grb_test_file)
+endfunction
+
+function! RunNearestTest()
+  let spec_line_number = line('.')
+  call RunTestFile(":" . spec_line_number)
+endfunction
+
+function! SetTestFile(command_suffix)
+  " Set the spec file that tests will be run for.
+  let t:grb_test_file=@% . a:command_suffix
+endfunction
+
+function! RunTests(filename)
+  " Write the file and run tests for the given filename
+  if expand("%") != ""
+    :w
+  end
+
+  if filereadable('spec/dummy/bin/rspec')
+    exec ":!spec/dummy/bin/rspec " . a:filename
+  elseif filereadable('bin/rspec')
+    exec ":!bin/rspec " . a:filename
+  elseif filereadable('Gemfile') && filereadable('bin/bundle')
+    exec ":!bin/bundle exec rspec " . a:filename
+  elseif filereadable('Gemfile')
+    exec ":!bundle exec rspec " . a:filename
+  else
+    exec ":!rspec " . a:filename
+  endif
 endfunction
