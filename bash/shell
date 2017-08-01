@@ -36,6 +36,9 @@ paths_to_add=(
 # RBENV
 "$HOME/.rbenv/bin"
 /usr/local/var/rbenv
+# Golang
+/usr/local/opt/go/libexec/bin
+"$HOME/.go/bin"
 # MySQL
 /usr/local/mysql/bin
 # Homebrew

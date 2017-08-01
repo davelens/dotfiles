@@ -21,6 +21,8 @@ Plugin 'garbas/vim-snipmate'
 Plugin 'alvan/vim-closetag'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'fatih/vim-go'
+Plugin 'nsf/gocode'
 
 filetype plugin indent on
 syntax on

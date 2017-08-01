@@ -23,7 +23,13 @@ You can use the provided reset to restore to OSX default settings. Note that thi
 	source ~/.dotfiles/osx/defaults-reset
 
 # Vim plugins
-Remember to call ```:VundleInstall``` in Vim to install all included plugins.
+Remember to call ```:PluginInstall``` in Vim to install all included plugins.
+
+## YouCompleteMe
+YouCompleteMe (YCM) is a Vim plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
+
+## gocode
+gocode is an autocompletion daemon for the Go programming language. It can integrate with vim's omni-completion, though it requires [a few additional steps to install](https://github.com/nsf/gocode/blob/master/README.md#setup).
 
 ## vim-airline
 In order to display the fancy powerline symbols, you should locate and install the following font:
@@ -37,8 +43,6 @@ If you don't wish to make use of the fancy powerline icons, uncomment the follow
 let g:airline_powerline_fonts = 1
 ```
 
-## YouCompleteMe
-YouCompleteMe (YCM) is a Vim plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
 
 ### iTerm2
 You need to configure iTerm2 to use the InputMono font for unknown
