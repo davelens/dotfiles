@@ -302,7 +302,7 @@ function! InlineVariable()
     :let @a = l:tmp_a
     :let @b = l:tmp_b
 endfunction
-nnoremap <leader>ri :call InlineVariable()<cr>
+nnoremap <leader>iv :call InlineVariable()<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " EXTRACT VARIABLE (SKETCHY)
@@ -323,7 +323,7 @@ function! ExtractVariable()
     " Paste the original selected text to be the variable value
     normal! $p
 endfunction
-vnoremap <leader>rv :call ExtractVariable()<cr>
+vnoremap <leader>ev :call ExtractVariable()<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Resizes the focused window to a ratio of your choice.
@@ -342,37 +342,16 @@ function! AutoResizeWindowOnFocus(ratio, axis)
   end
 endfunction
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Runs bin/rspec on the current line.
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! TestCurrentLine()
-  if filereadable('spec/dummy/bin/rspec')
-    let cmd = 'spec/dummy/bin/rspec'
-  elseif filereadable('bin/rspec')
-    let cmd = 'bin/rspec'
-  elseif filereadable('Gemfile') && filereadable('bin/bundle')
-    let cmd = 'bin/bundle exec rspec'
-  else
-    let cmd = 'rspec'
-  endif
-
-  let filename = @%
-  :VimuxRunCommand(cmd . ' ' . filename .':'. line('.'))
-endfunction
-"map <leader>f :call TestCurrentLine()<CR>
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" RUNNING TESTS
+" Running tests. Original code taken from Gary Bernhardt, and slightly
+" modified to support running tests in Rails engine projects.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 function! MapCR()
   nnoremap <cr> :call RunTestFile()<cr>
 endfunction
 call MapCR()
 nnoremap <leader>f :call RunNearestTest()<cr>
 nnoremap <leader>T :call RunTests('')<cr>
-"nnoremap <leader>c :w\|:!script/features<cr>
-"nnoremap <leader>w :w\|:!script/features --profile wip<cr>
 
 function! RunTestFile(...)
   if a:0
