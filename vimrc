@@ -91,6 +91,9 @@ au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`
 " Delete trailing whitespaces on saving a file
 au BufWritePre * call StripTrailingWhitespace()
 
+" Close preview windows after autocomplete automatically
+au CompleteDone * pclose
+
 " Disable autoclose for ruby files so vim-endwise works again (temp. fix)
 au FileType html,xhtml,twig,smarty,ruby,eruby :let g:AutoCloseExpandEnterOn=""
 
