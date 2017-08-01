@@ -28,8 +28,8 @@ Remember to call ```:PluginInstall``` in Vim to install all included plugins.
 ## YouCompleteMe
 YouCompleteMe (YCM) is a Vim plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
 
-## gocode
-gocode is an autocompletion daemon for the Go programming language. It can integrate with vim's omni-completion, though it requires [a few additional steps to install](https://github.com/nsf/gocode/blob/master/README.md#setup).
+## vim-go
+This plugin adds a plethora of support for the Go programming language. You will need to call ```:GoInstallBinaries``` from vim in order to install the necessary binaries in the ```~/.go``` directory.
 
 ## vim-airline
 In order to display the fancy powerline symbols, you should locate and install the following font:

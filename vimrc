@@ -22,7 +22,7 @@ Plugin 'alvan/vim-closetag'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'fatih/vim-go'
-Plugin 'nsf/gocode'
+Plugin 'nsf/gocode', { 'rtp': 'vim/' }
 
 filetype plugin indent on
 syntax on
