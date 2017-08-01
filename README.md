@@ -37,21 +37,11 @@ If you don't wish to make use of the fancy powerline icons, uncomment the follow
 let g:airline_powerline_fonts = 1
 ```
 
-### iTerm2
-You need to configure iTerm2 to use the InputMono font for unknown
-
-## vim-holylight
-If you want to let your Vim always open in light or dark mode, put the following in your .vimrc:
-```vimscript
-" Light
-let g:holylight_threshold=0
-
-" Dark
-let g:holylight_threshold=5000000
-```
-
 ## YouCompleteMe
 YouCompleteMe (YCM) is a Vim plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
+
+### iTerm2
+You need to configure iTerm2 to use the InputMono font for unknown
 
 ### Mac OS X Yosemite
 If you're on Yosemite the chances are that the YCM component failed to compile. I got this fixed with [a helpful SO answer](http://stackoverflow.com/questions/29529455/missing-c-header-debug-after-updating-osx-command-line-tools-6-3#answer-29576048).
