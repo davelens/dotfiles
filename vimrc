@@ -136,7 +136,7 @@ map <F6> :set nopaste<CR>
 " Leader bindings
 let mapleader = ' '
 map <leader>s <ESC>:w<CR>
-map <leader>i :call GetVimElementID()<CR>
+map <leader>id :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 map <leader>g :call OpenGem()<CR>
