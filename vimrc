@@ -90,11 +90,11 @@ au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`
 au BufWritePre * call StripTrailingWhitespace()
 
 " Disable autoclose for ruby files so vim-endwise works again (temp. fix)
-autocmd FileType html,xhtml,twig,smarty,ruby,eruby :let g:AutoCloseExpandEnterOn=""
+au FileType html,xhtml,twig,smarty,ruby,eruby :let g:AutoCloseExpandEnterOn=""
 
 " Make Vim able to correctly edit crontabs without tempfile errors.
 " More info: http://calebthompson.io/crontab-and-vim-sitting-in-a-tree
-autocmd filetype crontab setlocal nobackup nowritebackup
+au FileType crontab setlocal nobackup nowritebackup
 
 " solarized options
 let g:solarized_termtrans = 1
