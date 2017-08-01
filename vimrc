@@ -63,7 +63,7 @@ au FileType php setlocal ts=2 sts=2 sw=2 noexpandtab
 " Auto-completion
 set wildmode=longest,list,full
 set wildmenu
-set completeopt=preview,menu,longest
+set completeopt=menu,longest
 set colorcolumn=80
 
 " Not too long or we drop to a virtual stand still when editing
