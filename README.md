@@ -23,7 +23,13 @@ You can use the provided reset to restore to OSX default settings. Note that thi
 	source ~/.dotfiles/osx/defaults-reset
 
 # Vim plugins
-Remember to call ```:VundleInstall``` in Vim to install all included plugins.
+Remember to call ```:PluginInstall``` in Vim to install all included plugins.
+
+## YouCompleteMe
+YouCompleteMe (YCM) is a Vim plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
+
+## gocode
+gocode is an autocompletion daemon for the Go programming language. It can integrate with vim's omni-completion, though it requires [a few additional steps to install](https://github.com/nsf/gocode/blob/master/README.md#setup).
 
 ## vim-airline
 In order to display the fancy powerline symbols, you should locate and install the following font:
@@ -37,21 +43,9 @@ If you don't wish to make use of the fancy powerline icons, uncomment the follow
 let g:airline_powerline_fonts = 1
 ```
 
+
 ### iTerm2
 You need to configure iTerm2 to use the InputMono font for unknown
-
-## vim-holylight
-If you want to let your Vim always open in light or dark mode, put the following in your .vimrc:
-```vimscript
-" Light
-let g:holylight_threshold=0
-
-" Dark
-let g:holylight_threshold=5000000
-```
-
-## YouCompleteMe
-YouCompleteMe (YCM) is a Vim plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
 
 ### Mac OS X Yosemite
 If you're on Yosemite the chances are that the YCM component failed to compile. I got this fixed with [a helpful SO answer](http://stackoverflow.com/questions/29529455/missing-c-header-debug-after-updating-osx-command-line-tools-6-3#answer-29576048).

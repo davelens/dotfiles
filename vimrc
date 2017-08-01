@@ -1,6 +1,4 @@
 set nocompatible
-filetype off
-
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
@@ -23,7 +21,8 @@ Plugin 'garbas/vim-snipmate'
 Plugin 'alvan/vim-closetag'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'elixir-lang/vim-elixir'
+Plugin 'fatih/vim-go'
+Plugin 'nsf/gocode'
 
 filetype plugin indent on
 syntax on
@@ -64,7 +63,7 @@ au FileType php setlocal ts=2 sts=2 sw=2 noexpandtab
 " Auto-completion
 set wildmode=longest,list,full
 set wildmenu
-set completeopt=preview,menu,longest
+set completeopt=menu,longest
 set colorcolumn=80
 
 " Not too long or we drop to a virtual stand still when editing
@@ -92,12 +91,15 @@ au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`
 " Delete trailing whitespaces on saving a file
 au BufWritePre * call StripTrailingWhitespace()
 
+" Close preview windows after autocomplete automatically
+au CompleteDone * pclose
+
 " Disable autoclose for ruby files so vim-endwise works again (temp. fix)
-autocmd FileType html,xhtml,twig,smarty,ruby,eruby :let g:AutoCloseExpandEnterOn=""
+au FileType html,xhtml,twig,smarty,ruby,eruby :let g:AutoCloseExpandEnterOn=""
 
 " Make Vim able to correctly edit crontabs without tempfile errors.
 " More info: http://calebthompson.io/crontab-and-vim-sitting-in-a-tree
-autocmd filetype crontab setlocal nobackup nowritebackup
+au FileType crontab setlocal nobackup nowritebackup
 
 " solarized options
 let g:solarized_termtrans = 1
@@ -139,7 +141,7 @@ map <F6> :set nopaste<CR>
 " Leader bindings
 let mapleader = ' '
 map <leader>s <ESC>:w<CR>
-map <leader>i :call GetVimElementID()<CR>
+map <leader>id :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 map <leader>g :call OpenGem()<CR>
@@ -305,7 +307,7 @@ function! InlineVariable()
     :let @a = l:tmp_a
     :let @b = l:tmp_b
 endfunction
-nnoremap <leader>ri :call InlineVariable()<cr>
+nnoremap <leader>iv :call InlineVariable()<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " EXTRACT VARIABLE (SKETCHY)
@@ -326,7 +328,7 @@ function! ExtractVariable()
     " Paste the original selected text to be the variable value
     normal! $p
 endfunction
-vnoremap <leader>rv :call ExtractVariable()<cr>
+vnoremap <leader>ev :call ExtractVariable()<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Resizes the focused window to a ratio of your choice.
@@ -345,37 +347,16 @@ function! AutoResizeWindowOnFocus(ratio, axis)
   end
 endfunction
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Runs bin/rspec on the current line.
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! TestCurrentLine()
-  if filereadable('spec/dummy/bin/rspec')
-    let cmd = 'spec/dummy/bin/rspec'
-  elseif filereadable('bin/rspec')
-    let cmd = 'bin/rspec'
-  elseif filereadable('Gemfile') && filereadable('bin/bundle')
-    let cmd = 'bin/bundle exec rspec'
-  else
-    let cmd = 'rspec'
-  endif
-
-  let filename = @%
-  :VimuxRunCommand(cmd . ' ' . filename .':'. line('.'))
-endfunction
-"map <leader>f :call TestCurrentLine()<CR>
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" RUNNING TESTS
+" Running tests. Original code taken from Gary Bernhardt, and slightly
+" modified to support running tests in Rails engine projects.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 function! MapCR()
   nnoremap <cr> :call RunTestFile()<cr>
 endfunction
 call MapCR()
 nnoremap <leader>f :call RunNearestTest()<cr>
 nnoremap <leader>T :call RunTests('')<cr>
-"nnoremap <leader>c :w\|:!script/features<cr>
-"nnoremap <leader>w :w\|:!script/features --profile wip<cr>
 
 function! RunTestFile(...)
   if a:0
