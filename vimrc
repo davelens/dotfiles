@@ -147,8 +147,8 @@ nmap <silent> <leader>; :call AppendSemiColon()<CR>
 map <leader>g :call OpenGem()<CR>
 
 " Filetype-specific mappings
-autocmd FileType ruby map <leader>r :A<CR>
-autocmd FileType php map <leader>r :! clear && phpunit --colors %<CR>
+au FileType ruby map <leader>r :A<CR>
+au FileType php map <leader>r :! clear && phpunit --colors %<CR>
 
 " Include matchit on runtime
 runtime macros/matchit.vim
@@ -348,15 +348,13 @@ function! AutoResizeWindowOnFocus(ratio, axis)
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Running tests. Original code taken from Gary Bernhardt, and slightly
+" Running tests. Original code for Ruby taken from Gary Bernhardt, and slightly
 " modified to support running tests in Rails engine projects.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! MapCR()
-  nnoremap <cr> :call RunTestFile()<cr>
-endfunction
-call MapCR()
-nnoremap <leader>f :call RunNearestTest()<cr>
-nnoremap <leader>T :call RunTests('')<cr>
+" RUBY
+au FileType ruby,eruby nnoremap <cr> :call RunTestFile()<cr>
+au FileType ruby,eruby nnoremap <leader>f :call RunNearestTest()<cr>
+au FileType ruby,eruby nnoremap <leader>T :call RunTests('')<cr>
 
 function! RunTestFile(...)
   if a:0
