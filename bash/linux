@@ -19,11 +19,4 @@ if [[ $OS == 'Linux' ]]; then
   if [ ! `pgrep -n albert` ]; then
     nohup albert </dev/null &>/dev/null &
   fi
-
-  # Runs 1pass script headless
-  # 1pass is a workaround script to easily access your 1Password data on Linux.
-  # Project link: http://www.lucianofiandesio.com/1password-in-linux
-  if [ ! `pgrep -n 1pass` ]; then
-    nohup ./Applications/1pass/1pass </dev/null &>/dev/null &
-  fi
 fi
