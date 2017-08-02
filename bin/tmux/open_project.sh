@@ -55,11 +55,7 @@ function open_tmux_session()
     read start_mysql
 
     if [ $(lowercase $start_mysql) == "y" ]; then
-      if [[ `uname -s` == 'Linux' ]]; then
-        systemctl start mysqld
-      else
-        mysql.server start
-      fi
+      mysql.server start
       sleep 1
       mysql_running=`pgrep -n mysqld`
     fi
