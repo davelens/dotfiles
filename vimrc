@@ -148,7 +148,6 @@ map <leader>g :call OpenGem()<CR>
 
 " Filetype-specific mappings
 au FileType ruby map <leader>r :A<CR>
-au FileType php map <leader>r :! clear && phpunit --colors %<CR>
 
 " Include matchit on runtime
 runtime macros/matchit.vim
