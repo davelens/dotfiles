@@ -150,7 +150,6 @@ au FileType ruby map <leader>r :A<CR>
 au FileType ruby map <leader>g :call OpenGem()<CR>
 au FileType go map <leader>r :GoAlternate<CR>
 au FileType go noremap <leader>g :GoRun<CR>
-au FileType go inoremap <leader>g <C-C>:GoRun<CR>
 
 " Include matchit on runtime
 runtime macros/matchit.vim
