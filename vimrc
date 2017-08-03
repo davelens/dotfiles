@@ -396,6 +396,11 @@ function! RunTests(filename)
   if &filetype == 'ruby' || &filetype == 'eruby'
     call RunRubyTests(a:filename)
   elseif &filetype == 'go'
+    if a:filename == ''
+      :!go test
+      return
+    endif
+
     :GoTest
   endif
 endfunction
