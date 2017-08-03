@@ -148,6 +148,8 @@ nmap <silent> <leader>; :call AppendSemiColon()<CR>
 " Filetype-specific mappings
 au FileType ruby map <leader>r :A<CR>
 au FileType ruby map <leader>g :call OpenGem()<CR>
+au FileType go map <leader>r :GoAlternate<CR>
+au FileType go map <leader>g :GoRun<CR>
 
 " Include matchit on runtime
 runtime macros/matchit.vim
@@ -348,14 +350,14 @@ endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Running tests. Original code for Ruby taken from Gary Bernhardt, and slightly
-" modified to support running tests in Rails engine projects.
+" modified to support running tests in Rails engine projects and Go.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" RUBY
-au FileType ruby,eruby nnoremap <cr> :call RunTestFile()<cr>
-au FileType ruby,eruby nnoremap <leader>f :call RunNearestTest()<cr>
-au FileType ruby,eruby nnoremap <leader>T :call RunTests('')<cr>
+nnoremap <cr> :call RunTestFile()<cr>
+nnoremap <leader>f :call RunNearestTest()<cr>
+nnoremap <leader>T :call RunTests('')<cr>
 
 function! RunTestFile(...)
+
   if a:0
     let command_suffix = a:1
   else
@@ -363,7 +365,7 @@ function! RunTestFile(...)
   endif
 
   " Are we in a test file?
-  let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\)$') != -1
+  let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|.go\)$') != -1
 
   " Run the tests for the previously-marked file (or the current file if
   " it's a test).
@@ -388,9 +390,17 @@ endfunction
 function! RunTests(filename)
   " Write the file and run tests for the given filename
   if expand("%") != ""
-    :w
+    :silent! w
   end
 
+  if &filetype == 'ruby' || &filetype == 'eruby'
+    call RunRubyTests(a:filename)
+  elseif &filetype == 'go'
+    :GoTest
+  endif
+endfunction
+
+function! RunRubyTests(filename)
   if filereadable('spec/dummy/bin/rspec')
     exec ":!spec/dummy/bin/rspec " . a:filename
   elseif filereadable('bin/rspec')
