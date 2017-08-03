@@ -144,10 +144,10 @@ map <leader>s <ESC>:w<CR>
 map <leader>id :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
-map <leader>g :call OpenGem()<CR>
 
 " Filetype-specific mappings
 au FileType ruby map <leader>r :A<CR>
+au FileType ruby map <leader>g :call OpenGem()<CR>
 
 " Include matchit on runtime
 runtime macros/matchit.vim
