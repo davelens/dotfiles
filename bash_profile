@@ -13,7 +13,7 @@ done;
 unset file;
 
 if [[ $OS == 'Darwin' ]]; then
-	source ~/.bash/osx
+	source ~/.bash/macos
 fi
 
 if [[ $OS == 'Linux' ]]; then

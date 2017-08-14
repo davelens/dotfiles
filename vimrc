@@ -204,7 +204,7 @@ let g:closetag_filenames = "*.html,*.xhtml,*.html.erb,*.tpl"
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! SaveAndRefreshFirefox()
   w
-  silent exec '!osascript ~/.dotfiles/osx/refresh-firefox.scpt'
+  silent exec '!osascript ~/.dotfiles/macos/refresh-firefox.scpt'
   redraw!
 endfunction
 

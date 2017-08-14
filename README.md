@@ -11,12 +11,12 @@ If you're sick of my dotfiles, you can copy-paste the following in your shell:
 # Things you should change
 - Your personal info in .dotfiles/gitconfig
 - If you use irssi (or plan to): Your desired servers, channels, highlights and aliases in .dotfiles/irssi/config
-- The take_screenshot command in .dotfiles/bash/osx uploads a screenshot to my webspace and puts the link in my clipboard. If you want to use this as well, just replace my SSH-host with your own.
+- The take_screenshot command in .dotfiles/bash/macos uploads a screenshot to my webspace and puts the link in my clipboard. If you want to use this as well, just replace my SSH-host with your own.
 
 # macOS defaults
 I use an abundant number of macOS setting overrides. These are subjective, so some might seem odd, strange or unwanted for you. That is why it requires a separate install instruction. A big credit here should be given to [@mathiasbynens](http://github.com/mathiasbynens), as he keeps maintaining his list for every major macOS release. If you want to give it a go, just copy-paste the line below in your shell. Use at your own discretion though, there is no reset:
 
-	source ~/.dotfiles/osx/defaults-overrides
+	source ~/.dotfiles/macos/defaults-overrides
 
 # Vim plugins
 Remember to call ```:PluginInstall``` in Vim to install all included plugins, prior to all subsequent steps here.

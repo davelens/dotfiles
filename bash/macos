@@ -17,7 +17,7 @@ take_screenshot()
   echo "http://code.davelens.be/screenshots/$filename" | pbcopy
   rm ~/Desktop/$filename
 }
-alias ss="osascript ~/.osx/hide-terminal.scpt && tss && killall Terminal"
+alias ss="osascript ~/.macos/hide-terminal.scpt && tss && killall Terminal"
 
 # toggles a boolean setting in the com.apple environment
 toggle_default()

@@ -10,7 +10,7 @@ rm ~/.gitignore_global
 rm ~/.guard.rb
 rm ~/.inputrc
 rm ~/.irssi
-rm ~/.osx
+rm ~/.macos
 rm ~/.rspec
 rm ~/.vim
 rm ~/.vimrc
