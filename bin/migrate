@@ -1,16 +1,10 @@
 #!/bin/bash
 set -e
 
-# Fail early when we don't have a bin/rails file for now
-if [ ! -x bin/rails ]; then
-  exit
-fi
-
-# Rails 5+
-if [ -x config/cable.yml ]; then
-  command=bin/rails
+if [ -x config/cable.yml ]; then # Rails 5+
+  command=rails
 else # Rails < 5
-  command=bin/rake
+  command=rake
 fi
 
 if [[ $# -eq 1 && $1 == '-r' ]]; then
@@ -19,5 +13,9 @@ else
   action=migrate
 fi
 
+[ -x bin/ ] && command=bin/$command
+
+[ -x spec/dummy ] && pushd spec/dummy >/dev/null # Rails engine support
 $command db:$action
 $command db:$action RAILS_ENV=test
+[ -x spec/dummy ] && popd >/dev/null
