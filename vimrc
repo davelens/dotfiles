@@ -369,7 +369,7 @@ endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Running tests. Original code for Ruby taken from Gary Bernhardt, and slightly
-" modified to support running tests in Rails engine projects and Go.
+" modified to support running tests in Rails engine projects, Go and Elixir.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nnoremap <cr> :call RunTestFile()<cr>
 nnoremap <leader>f :call RunNearestTest()<cr>
