@@ -15,6 +15,8 @@ Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-fugitive'
+Plugin 'elixir-editors/vim-elixir'
+Plugin 'slashmili/alchemist.vim' " Autocompletion for elixir projects
 Plugin 'MarcWeber/vim-addon-mw-utils' " Snipmate dependency
 Plugin 'tomtom/tlib_vim' " Snipmate dependency
 Plugin 'garbas/vim-snipmate'
@@ -150,9 +152,26 @@ au FileType ruby map <leader>r :A<CR>
 au FileType ruby map <leader>g :call OpenGem()<CR>
 au FileType go map <leader>r :GoAlternate<CR>
 au FileType go noremap <leader>E :GoRun<CR>
+au FileType elixir map <leader>r :call AltCommand(expand('%'), ':e')<cr>
 
 " Include matchit on runtime
 runtime macros/matchit.vim
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Opens alternate files using alt, a CLI tool to help find the "alternate"
+" path of a given path. The most prominent example of this is to find
+" a related test/spec file in code files.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Run a given vim command on the results of alt from a given path.
+" See usage below.
+function! AltCommand(path, vim_command)
+  let l:alternate = system("alt " . a:path)
+  if empty(l:alternate)
+    echo "No alternate file for " . a:path . " exists!"
+  else
+    exec a:vim_command . " " . l:alternate
+  endif
+endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
@@ -365,7 +384,7 @@ function! RunTestFile(...)
   endif
 
   " Are we in a test file?
-  let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|.go\)$') != -1
+  let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|.go\|_test.exs\)$') != -1
 
   " Run the tests for the previously-marked file (or the current file if
   " it's a test).
@@ -402,6 +421,13 @@ function! RunTests(filename)
     endif
 
     :GoTest
+  elseif &filetype == 'elixir'
+    if a:filename == ''
+      :!mix test
+      return
+    endif
+
+    :!mix test $(a:filename)
   endif
 endfunction
 
