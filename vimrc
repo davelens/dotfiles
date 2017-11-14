@@ -5,7 +5,7 @@ call vundle#rc()
 Plugin 'sjl/vitality.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'kien/ctrlp.vim'
+Plugin 'junegunn/fzf.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'kana/vim-textobj-user'
@@ -204,13 +204,19 @@ let g:ycm_key_list_select_completion=[]
 let g:ycm_key_list_previous_completion=[]
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" CtrlP configuration
+" FZF configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ctrlp_map = '<leader>t'
-let g:ctrlp_working_path_mode = 0
-let g:ctrlp_custom_ignore = {
-      \ 'dir': 'frontend/files$\|\.git$\|\.svn$\|compiled_templates$\|app/assets/images$\|tmp\|public/uploads$\|node_modules$\|_build$\|deps$\|priv/static\|coverage$',
-      \ }
+set rtp+=/usr/local/opt/fzf
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+if filereadable('.gitignore')
+  nnoremap <leader>t :GFiles<cr>
+else
+  nnoremap <leader>t :FZF<cr>
+endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " closetag.vim configuration
