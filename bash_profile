@@ -6,8 +6,10 @@ for file in ~/.bash/{shell,commands,prompt,aliases,private}; do
 done;
 unset file;
 
+# Load OS specific files
 OS=`uname -s`
 [ $OS == 'Darwin' ] && . ~/.bash/macos
 [ $OS == 'Linux' ] && . ~/.bash/linux
 
-[ -f $(brew --prefix)/etc/bash_completion  ] && . $(brew --prefix)/etc/bash_completion
+# Provide BASH completion for a myriad of functions
+[ -f $(brew --prefix)/etc/bash_completion ] && . $(brew --prefix)/etc/bash_completion
