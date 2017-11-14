@@ -62,7 +62,9 @@ paths_to_add=(
 # Dotfiles
 "$HOME/.dotfiles/bin"
 # Go lang
-"usr/local/go/bin"
+usr/local/go/bin
+# ImageMagick (convert, animate, MagickWand-config,...)
+/usr/local/opt/imagemagick@6/bin
 );
 
 # Now implode everything into the new PATH variable.
