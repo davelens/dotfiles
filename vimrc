@@ -213,7 +213,7 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 
 if filereadable('.gitignore')
-  nnoremap <leader>t :GFiles<cr>
+  nnoremap <leader>t :GFiles --cached --others --exclude-standard<cr>
 else
   nnoremap <leader>t :FZF<cr>
 endif
