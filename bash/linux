@@ -19,4 +19,6 @@ if [[ $OS == 'Linux' ]]; then
   if [ ! `pgrep -n albert` ]; then
     nohup albert </dev/null &>/dev/null &
   fi
+
+  alias pbcopy='xclip -selection clipboard'
 fi
