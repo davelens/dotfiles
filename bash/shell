@@ -40,6 +40,7 @@ paths_to_add=(
 # Homebrew
 /usr/local/{,s}bin
 "$HOME/.linuxbrew/bin"
+"$HOME/.linuxbrew/opt/go/libexec/bin"
 # System
 /{,s}bin
 /usr/{,s}bin
