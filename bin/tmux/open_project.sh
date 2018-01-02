@@ -93,21 +93,23 @@ function open_tmux_session()
   # Rails-specific windows
   if is_rails_related "$path/$session"; then
     tmux new-window -n console -t $session
-    tmux new-window -n guard -t $session
+    tmux new-window -n tests -t $session
 
     if is_rails_engine_project "$path/$session"; then
       tmux send-keys -t $session:console "cd $path/$session && spring" C-m
       tmux send-keys -t $session:console "cd $path/$session/spec/dummy" C-m
       tmux send-keys -t $session:console "clear && rails c" C-m
 
-      tmux send-keys -t $session:guard "cd $path/$session" C-m
-      tmux send-keys -t $session:guard "clear && bundle exec guard" C-m
+      tmux send-keys -t $session:tests "cd $path/$session" C-m
+      tmux send-keys -t $session:tests "clear" C-m
+      tmux send-keys -t $session:tests "bundle exec guard"
     else
       tmux send-keys -t $session:console "cd $path/$session" C-m
       tmux send-keys -t $session:console "clear && bin/rails c" C-m
 
-      tmux send-keys -t $session:guard "cd $path/$session" C-m
-      tmux send-keys -t $session:guard "clear && bin/bundle exec guard" C-m
+      tmux send-keys -t $session:tests "cd $path/$session" C-m
+      tmux send-keys -t $session:tests "clear" C-m
+      tmux send-keys -t $session:tests "bin/bundle exec guard"
     fi
 
     # select the editor and attach to the session
