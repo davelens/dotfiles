@@ -68,12 +68,12 @@ function open_tmux_session()
 
   # database window (only when MySQL is up and running)
   if [ $mysql_running ]; then
-    tmux new-window -n database -t $session
-    tmux send-keys -t $session:database "cd $path/$session" C-m
+    tmux new-window -n db -t $session
+    tmux send-keys -t $session:db "cd $path/$session" C-m
     if [ -f "$path/$session/dbshell" ]; then
-      tmux send-keys -t $session:database "clear && ./dbshell" C-m
+      tmux send-keys -t $session:db "clear && ./dbshell" C-m
     fi
-    tmux select-pane -t $session:database -U
+    tmux select-pane -t $session:db -U
   fi
 
   # shell window
@@ -87,7 +87,7 @@ function open_tmux_session()
   if [ $mysql_running ]; then
     # open a client connection to the dev database for this rails project
     database="$(echo ${project} | sed -e "s/-/_/g")_dev"
-    tmux send-keys -t $session:database "clear && mysql $database" C-m
+    tmux send-keys -t $session:db "clear && mysql $database" C-m
   fi
 
   # Rails-specific windows
