@@ -30,7 +30,7 @@ else
 fi
 
 git checkout $target
-git merge $branch
+git merge --no-ff $branch
 
 push_and_clean_up() {
   git push origin $target
