@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# mr stands for "merge request", in context of GitLab's Merge Request feature.
+# This is intended to provide a functionality similar to `hub pull-request -b`
+# as seen in GitHub's hub CLI tool.
+
+# Stops further execution after any error.
+set -e
+
+if [ ! `command -v gitlab` ]; then
+  echo "EXIT: This command uses the CLI version of NARKOZ/gitlab to connect with GitLab's API. Run \`gem install gitlab\` to install it."
+  exit
+fi
+
+if [ ! -d ".git" ]; then
+  echo "EXIT: Local working directory is not a cloned git repo."
+  exit
+fi
+
+if [ -z ${GITLAB_API_ENDPOINT} ]; then
+  echo "EXIT: You need to set GITLAB_API_ENDPOINT, GITLAB_API_PRIVATE_TOKEN and GITLAB_USER_ID env variables."
+  exit
+fi
+
+# If you want this cmd to be standalone, just grab the git_branch command from
+# the file below (or use your own method).
+. ~/.bash/commands
+
+branch=`git_branch`
+
+if [ $# -eq 0 ]; then
+  read -p "Create merge request for which target branch? (default: develop) " target
+  [ ! $target ] && target="develop"
+
+  read -p "Provide a description for the merge request: " description
+  # Param uses double quotes to allow for whitespace.
+  [ ! "$description" ] && description="WIP: add a description"
+else
+  target="$1"
+  description="$2"
+fi
+
+if [ ! -z ${GITLAB_USER_ID} ]; then
+  gitlab users --only=id,name
+  read -p "Enter the GitLab user ID that should be assigned for this merge request: " GITLAB_USER_ID
+fi
+
+if [ ! -f ".gitlab-project-id" ]; then
+  gitlab projects --only=id,name_with_namespace
+  read -p "Enter the project ID correspondent with the local working dir: " project_id
+
+  if [ ! $project_id ]; then
+    echo "EXIT: No valid project ID given. This is necessary to create a merge request."
+    exit
+  fi
+
+  echo $project_id > .gitlab-project-id
+else
+  project_id=`cat .gitlab-project-id`
+fi
+
+gitlab create_merge_request $project_id "'$description'" "{source_branch: '$branch', target_branch: '$target', assignee_id: $GITLAB_USER_ID}" --only=web_url | awk '{print $2}' | grep https

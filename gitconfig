@@ -33,6 +33,9 @@
   # call with the pull request #, it will check out the pr locally
   get-pr = "!f() { remote=${2:-$(git remote|head -1)}; git fetch -fu $remote refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
 
+  # GitLab Merge Requests (mainly making use of https://github.com/NARKOZ/gitlab)
+  mr = "!/bin/bash mr"
+
   # remove local branches that were created from `git pr`
   pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
 
