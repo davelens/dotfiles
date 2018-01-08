@@ -8,6 +8,9 @@ If you're sick of my dotfiles, you can copy-paste the following in your shell:
 
 	cd ~/.dotfiles && ./uninstall.sh
 
+# ENV variables
+The dotfiles will pick up a ```~/.env``` file and export its contents as env variables.
+
 # Things you should change
 - Your personal info in .dotfiles/gitconfig
 - If you use irssi (or plan to): Your desired servers, channels, highlights and aliases in .dotfiles/irssi/config

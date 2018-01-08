@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Load up the .env file, if present.
+[ -r ~/.env ] && export $(cat ~/.env | grep -v ^\# | xargs)
+
 # Source the files in the bash folder
 for file in ~/.bash/{shell,commands,prompt,aliases,private}; do
 	[ -r "$file" ] && . "$file";
