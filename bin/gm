@@ -6,6 +6,7 @@
 set -e
 
 if [ ! -d ".git" ]; then
+  echo "EXIT: Local working directory is not a cloned git repo."
   exit
 fi
 
@@ -17,14 +18,7 @@ branch=`git_branch`
 
 if [ $# -eq 0 ]; then
   read -p "To which branch would you like to merge $branch? (default: develop) " target
-
-  if [ "$target" == "q" ]; then
-    exit
-  fi
-
-  if [ "$target" == "" ]; then
-    target="develop"
-  fi
+  [ ! $target ] && target="develop"
 else
   target="$1"
 fi
