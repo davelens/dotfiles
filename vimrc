@@ -25,6 +25,7 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'fatih/vim-go'
 Plugin 'nsf/gocode', { 'rtp': 'vim/' }
+Plugin 'kopischke/vim-fetch'
 
 filetype plugin indent on
 syntax on
