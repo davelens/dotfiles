@@ -2,6 +2,10 @@ set nocompatible
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
+if has("unix")
+  let g:uname = system("uname")
+endif
+
 Plugin 'sjl/vitality.vim'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'Valloric/YouCompleteMe'
@@ -207,7 +211,12 @@ let g:ycm_key_list_previous_completion=[]
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " FZF configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set rtp+=/usr/local/opt/fzf
+if g:uname == "Darwin\n"
+  set rtp+=/usr/local/opt/fzf
+else
+  set rtp+=~/.linuxbrew/opt/fzf
+endif
+
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
