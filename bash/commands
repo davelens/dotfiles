@@ -226,3 +226,7 @@ sf() {
   files=`eval $rg_command $search | fzf --ansi --multi --reverse | awk -F ':' '{print $1":"$2":"$3}'`
   [[ -n "$files" ]] && ${EDITOR:-vim} $files
 }
+
+export_env_vars_from_file() {
+  export $(cat $1 | grep -v ^\# | xargs)
+}
