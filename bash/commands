@@ -44,7 +44,7 @@ git_delete_new_files()
 # Get a list of all filesizes in the current folder ("du -sh *" for files).
 get_filesizes()
 {
-  ls -laSh | grep -v ^d | awk '{print $5 "\t" $9}'
+  ls -laSh $1 | grep -v ^d | awk '{print $5 "\t" $9}'
 }
 
 # Recursively moves all files matching the search query to the chosen directory.
