@@ -443,7 +443,7 @@ function! RunTests(filename)
       return
     endif
 
-    :!mix test $(a:filename)
+    exec ":!mix test " . a:filename
   endif
 endfunction
 
