@@ -2,9 +2,9 @@
 set -e
 
 if [ -x config/cable.yml ]; then # Rails 5+
-  command=rails
+  command='bundle exec rails'
 else # Rails < 5
-  command=rake
+  command='bundle exec rake'
 fi
 
 if [[ $# -eq 1 && $1 == '-r' ]]; then
@@ -13,9 +13,13 @@ else
   action=migrate
 fi
 
-[ -x bin/ ] && command=bin/$command
+[ -x bin/bundle ] && command=bin/$command
 
-[ -x spec/dummy ] && pushd spec/dummy >/dev/null # Rails engine support
+#if [ -x spec/dummy ]; then
+  #pushd spec/dummy >/dev/null # Rails engine support
+  #popd >/dev/null
+#else
+#fi
+
 $command db:$action
 $command db:$action RAILS_ENV=test
-[ -x spec/dummy ] && popd >/dev/null
