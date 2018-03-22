@@ -2,8 +2,8 @@
 load '~/.bin/tmux/netrc.rb'
 require 'net/imap'
 
+# You can add multiple servers here as you see fit.
 servers = {
-  #'mail.openminds.be' => { port: 143, ssl: false },
   'imap.telenet.be' => { port: 993, ssl: true },
 }
 
@@ -21,12 +21,3 @@ servers.each { |server, options|
 }
 
 puts count
-
-#imap = Net::IMAP.new('imap.telenet.be')
-#imap.login(user, pass)
-#imap.examine('Inbox')
-#imap.search(['NEW']).each do |message_id|
-  #envelope = imap.fetch(message_id, "ENVELOPE")[0].attr["ENVELOPE"]
-  #puts "#{envelope.from[0].name}: \t#{envelope.subject}"
-#end
-#imap.disconnect
