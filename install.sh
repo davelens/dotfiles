@@ -25,7 +25,7 @@ for name in *; do
       fi
     fi
   else
-    if [ "$name" != 'install.sh' ] && [ "$name" != 'uninstall.sh' ] && [ "$name" != 'README.md' ] && [ "$name" != 'TODO.md' ]; then
+    if [[ $name != *.sh* ]] && [[ $name != *.md* ]] && [[ $name != *.dist* ]]; then
       echo "Creating $target"
       if [ -n "$(grep "$cutstring" "$name")" ]; then
         cp "$PWD/$name" "$target"
