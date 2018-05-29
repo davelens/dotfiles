@@ -12,9 +12,10 @@ take_screenshot()
 {
   filename="$(date +%Y-%m-%d-%H-%M-%S).jpg"
 
+  # TODO: Configure the destination server with ENV vars or something.
   screencapture -ix ~/Desktop/$filename &&
     scp ~/Desktop/$filename davelens.be:screenshots/$filename
-  echo "http://code.davelens.be/screenshots/$filename" | pbcopy
+  echo "https://www.davelens.be/screenshots/$filename" | pbcopy
   rm ~/Desktop/$filename
 }
 alias ss="osascript ~/.macos/hide-terminal.scpt && tss && killall Terminal"
