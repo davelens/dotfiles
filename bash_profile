@@ -16,3 +16,4 @@ OS=`uname -s`
 
 # Provide BASH completion for a myriad of functions
 [ -f $(brew --prefix)/etc/bash_completion ] && . $(brew --prefix)/etc/bash_completion
+[ -f "${HOME}/.iterm2_shell_integration" ] && . "${HOME}/.iterm2_shell_integration.bash"
