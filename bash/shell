@@ -47,9 +47,10 @@ paths_to_add=(
 # X binaries
 /usr/X11/bin
 # paths for brew-installed software
+$(brew --prefix openssl)/bin
 $(brew --prefix imagemagick@6)/bin
-/usr/local/opt/openssl/bin
 $(brew --prefix qt@5.5)/bin
+$(brew --prefix mysql@5.7)/bin
 # MySQL (TODO: Double check this on Linux)
 #/usr/local/mysql/bin
 # RBENV (TODO: Double check this on Linux)
