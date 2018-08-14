@@ -8,7 +8,7 @@ battery_info()
   battery_discharging=`battery Discharging`
 
   if [[ $battery_charging ]]; then
-    echo "$(segment "battery_charging%" 150)"
+    echo "$(segment "$battery_charging%" 150)"
   fi
 
   if [[ $battery_discharging ]]; then
