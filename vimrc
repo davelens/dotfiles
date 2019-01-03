@@ -153,7 +153,7 @@ map <leader>n :call RenameFile()<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
-au FileType ruby map <leader>r :A<CR>
+au FileType ruby map <leader>r :call AltCommand(expand('%'), ':e')<CR>
 au FileType ruby map <leader>g :call OpenGem()<CR>
 au FileType go map <leader>r :GoAlternate<CR>
 au FileType go noremap <leader>E :GoRun<CR>
