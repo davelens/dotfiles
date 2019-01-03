@@ -459,7 +459,7 @@ endfunction
 
 function! RunRubyTests(filename)
   if filereadable('spec/dummy/bin/rspec')
-    exec ":!spec/dummy/bin/rspec " . a:filename
+    exec ":!bin/spring stop && spec/dummy/bin/rspec " . a:filename
   elseif filereadable('bin/rspec')
     exec ":!bin/rspec " . a:filename
   elseif filereadable('Gemfile') && filereadable('bin/bundle')
