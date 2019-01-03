@@ -194,7 +194,7 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! ConvertCamelCaseToSnakeCase()
   let save_cursor = getpos('.')
-	%s#\C\(\<\u[a-z0-9]\+\|[a-z0-9]\+\)\(\u\)#\l\1_\l\2#g
+    %s#\C\(\<\u[a-z0-9]\+\|[a-z0-9]\+\)\(\u\)#\l\1_\l\2#g
   call setpos('.', save_cursor)
 endfunction
 nnoremap <leader>_ :call ConvertCamelCaseToSnakeCase()<cr>
