@@ -150,6 +150,7 @@ let mapleader = ' '
 map <leader>s <ESC>:w<CR>
 map <leader>id :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
+map <leader>json <Esc>:%!python -m json.tool<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
