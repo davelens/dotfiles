@@ -30,6 +30,7 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'fatih/vim-go'
 Plugin 'nsf/gocode', { 'rtp': 'vim/' }
 Plugin 'kopischke/vim-fetch'
+Plugin 'w0rp/ale'
 
 filetype plugin indent on
 syntax on
