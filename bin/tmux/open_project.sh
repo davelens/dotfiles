@@ -102,7 +102,6 @@ function open_tmux_session()
 
       tmux send-keys -t $session:tests "cd $path/$session" C-m
       tmux send-keys -t $session:tests "clear" C-m
-      tmux send-keys -t $session:tests "bundle exec guard"
     else
       tmux send-keys -t $session:console "cd $path/$session" C-m
       tmux send-keys -t $session:console "clear && bin/rails c" C-m
