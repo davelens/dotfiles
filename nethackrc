@@ -1,0 +1,39 @@
+NAME=Pretzl
+OPTIONS=pettype:cat,catname:Pippin
+
+# Use same colors for item mods.
+OPTIONS=menucolors
+MENUCOLOR=" blessed "=green
+MENUCOLOR=" holy "=green
+MENUCOLOR=" cursed "=red
+MENUCOLOR=" unholy "=red
+MENUCOLOR=" cursed .* (being worn)"=orange&underline
+
+# Automatically pick stuff up.
+# Use the fancy HP bar displayed behind your name.
+# Always use colors to render entities.
+# Show necessary XP to level up.
+# Let sortloot also sort items on the ground.
+# Turn off dark rooms as I dislike them.
+# Turn off bones files. I have yet to ascend and don't want to die by my hand.
+OPTIONS=autopickup, hitpointbar, color, showexp, sortloot:full, !dark_room, !bones
+# Gold, amulets, rings, wands, scrolls, potions, (spell)books.
+OPTIONS=pickup_types:$"=/!?+
+
+# Ensure status changes will be shown for a few turns after they happen.
+OPTIONS=statushilites:10
+
+# Always show gold as the proper color.
+OPTIONS=hilite_status:gold/always/yellow
+
+# Show when XL changes.
+OPTIONS=hilite_status:experience-level/changed/white/cyan
+
+# Specify multiple cutoffs for all ability scores.
+OPTIONS=hilite_status:characteristics/<5/red
+OPTIONS=hilite_status:characteristics/>6/orange
+OPTIONS=hilite_status:characteristics/>8/brown
+OPTIONS=hilite_status:characteristics/>11/yellow
+OPTIONS=hilite_status:characteristics/>13/green
+OPTIONS=hilite_status:characteristics/>16/cyan
+OPTIONS=hilite_status:characteristics/>18/lightblue
