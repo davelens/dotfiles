@@ -16,7 +16,7 @@ MENUCOLOR=" cursed .* (being worn)"=orange&underline
 # Let sortloot also sort items on the ground.
 # Turn off dark rooms as I dislike them.
 # Turn off bones files. I have yet to ascend and don't want to die by my hand.
-OPTIONS=autopickup, hitpointbar, color, showexp, sortloot:full, !dark_room, !bones
+OPTIONS=autopickup, hitpointbar, color, sortloot:full, !dark_room, !bones
 # Gold, amulets, rings, wands, scrolls, potions, (spell)books.
 OPTIONS=pickup_types:$"=/!?+
 
