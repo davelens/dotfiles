@@ -138,6 +138,10 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 
+" ALE feedback navigation for errors/warnings
+"nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+"nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
 " Giving this a go; ESC remapping in insert mode.
 " Less finger wrecking than C-[, and rare enough not to obstruct while typing.
 inoremap jk <Esc>
