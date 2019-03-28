@@ -108,7 +108,6 @@ function open_tmux_session()
 
       tmux send-keys -t $session:tests "cd $path/$session" C-m
       tmux send-keys -t $session:tests "clear" C-m
-      tmux send-keys -t $session:tests "bin/bundle exec guard"
     fi
 
     # select the editor and attach to the session
