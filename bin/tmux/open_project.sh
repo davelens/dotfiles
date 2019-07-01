@@ -93,6 +93,7 @@ function open_tmux_session()
   if is_rails_related "$path/$session"; then
     tmux new-window -n console -t $session
     tmux new-window -n tests -t $session
+    tmux new-window -n server -t $session
 
     if is_rails_engine_project "$path/$session"; then
       tmux send-keys -t $session:console "cd $path/$session && spring" C-m
@@ -107,6 +108,9 @@ function open_tmux_session()
 
       tmux send-keys -t $session:tests "cd $path/$session" C-m
       tmux send-keys -t $session:tests "clear" C-m
+
+      tmux send-keys -t $session:server "cd $path/$session" C-m
+      tmux send-keys -t $session:server "clear && bin/rails s"
     fi
 
     # select the editor and attach to the session
