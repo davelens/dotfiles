@@ -30,32 +30,21 @@ export GOPATH=$HOME/.go
 # PATH
 ########################################################################
 
+export BREW_PATH=$(brew --prefix)
+
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
 # Dotfiles
-"$HOME/.bin"
-# Golang
-/usr/local/opt/go/libexec/bin
-"$HOME/.go/bin"
+$HOME/.bin
 # Homebrew
-/usr/local/{,s}bin
-"$HOME/.linuxbrew/bin"
-"$HOME/.linuxbrew/opt/go/libexec/bin"
+$BREW_PATH/opt/openssl/bin
+$BREW_PATH/opt/imagemagick@6/bin
+$BREW_PATH/opt/qt@5.5/bin
+$BREW_PATH/opt/mysql@5.7/bin
 # System
 /{,s}bin
 /usr/{,s}bin
-# X binaries
-/usr/X11/bin
-# paths for brew-installed software
-$(brew --prefix openssl)/bin
-$(brew --prefix imagemagick@6)/bin
-$(brew --prefix qt@5.5)/bin
-$(brew --prefix mysql@5.7)/bin
-# MySQL (TODO: Double check this on Linux)
-#/usr/local/mysql/bin
-# RBENV (TODO: Double check this on Linux)
-#"$HOME/.rbenv/bin"
-#/usr/local/var/rbenv
+/usr/local/{,s}bin
 );
 
 # Now implode everything into the new PATH variable.
@@ -132,14 +121,13 @@ unset available_locales lang locale;
 complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/config)" ssh
 
 # load bash_completion through brew, when installed
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-fi
+[ -f $BREW_PATH/etc/bash_completion ] && . $BREW_PATH/etc/bash_completion
+
+# load the shell integration
+[ -f "${HOME}/.iterm2_shell_integration" ] && . "${HOME}/.iterm2_shell_integration.bash"
 
 # Tmuxinator is a tmux session manager
-if [ -f ~/.bin/tmuxinator.bash ]; then
-  . ~/.bin/tmuxinator.bash
-fi
+[ -f ~/.bin/tmuxinator.bash ] && . ~/.bin/tmuxinator.bash
 
 # Alias hub straight into git
 eval "$(hub alias -s)"
