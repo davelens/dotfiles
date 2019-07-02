@@ -123,9 +123,6 @@ complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/confi
 # load bash_completion through brew, when installed
 [ -f $BREW_PATH/etc/bash_completion ] && . $BREW_PATH/etc/bash_completion
 
-# load the shell integration
-[ -f "${HOME}/.iterm2_shell_integration" ] && . "${HOME}/.iterm2_shell_integration.bash"
-
 # Tmuxinator is a tmux session manager
 [ -f ~/.bin/tmuxinator.bash ] && . ~/.bin/tmuxinator.bash
 
