@@ -37,6 +37,7 @@ paths_to_add=(
 # Dotfiles
 $HOME/.bin
 # Homebrew
+/usr/local/{,s}bin
 $BREW_PATH/opt/openssl/bin
 $BREW_PATH/opt/imagemagick@6/bin
 $BREW_PATH/opt/qt@5.5/bin
@@ -44,7 +45,6 @@ $BREW_PATH/opt/mysql@5.7/bin
 # System
 /{,s}bin
 /usr/{,s}bin
-/usr/local/{,s}bin
 );
 
 # Now implode everything into the new PATH variable.
