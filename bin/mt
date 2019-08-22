@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# mt stands for "merge into temp". The temp branch is a branch I regularly use
+# that gets pushed to staging. It's used to combine features in development
+# for review, as well as a testing ground to see if certain features conflict.
+
+# Stops further execution after any error.
+set -e
+
+if [ ! -d ".git" ]; then
+  echo "EXIT: Local working directory is not a cloned git repo."
+  exit
+fi
+
+# If you want this cmd to be standalone, just grab the git_branch command from
+# the file below (or use your own method).
+. ~/.bash/commands
+branch=`git_branch`
+
+if [ ! `git branch --list temp` ]; then
+  echo "$(tput setaf 3)Creating missing $(tput setaf 7)temp$(tput setaf 3) branch...$(tput sgr0)"
+  git checkout -b temp
+else
+  echo "$(tput setaf 7)Switching to temp branch...$(tput sgr0)"
+  git checkout temp
+fi
+
+deploy_to_staging() {
+  if [ ! -f config/deploy/staging.rb ]; then
+    echo "$(tput setaf 9)No capistrano staging environment is configured\!$(tput sgr0)" && exit
+  fi
+
+  sed -i -e "s/set :branch, 'develop'/set :branch, ENV['BRANCH'] || 'develop'/g" config/deploy/staging.rb
+
+  echo "$(tput setaf 7)Deploying temp branch to staging...$(tput sgr0)"
+  bundle exec cap staging deploy BRANCH=temp
+}
+
+ask_to_push_to_temp() {
+  while true; do
+    read -p "$(tput setaf 7)Do you want to push to the remote temp branch?$(tput sgr0) " yn
+    case $yn in
+      [Yy]* ) git push origin temp; break;;
+      [Nn]* ) break;;
+      * ) echo "$(tput setaf 3)Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.$(tput sgr0)";;
+    esac
+  done
+}
+
+ask_to_deploy() {
+  while true; do
+    read -p "$(tput setaf 7)Do you want to deploy the temp branch to staging?$(tput sgr0) " yn
+    case $yn in
+      [Yy]* ) deploy_to_staging; break;;
+      [Nn]* ) break;;
+      * ) echo "$(tput setaf 3)Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.$(tput sgr0)";;
+    esac
+  done
+}
+
+post_merge() {
+  ask_to_push_to_temp
+  ask_to_deploy
+  git checkout $branch
+}
+
+echo "$(tput setaf 7)Merging $branch into temp branch...$(tput sgr0)"
+git merge --no-ff $branch && post_merge
+rm config/deploy/staging.rb-e

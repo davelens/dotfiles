@@ -36,6 +36,9 @@
   # GitLab Merge Requests (mainly making use of https://github.com/NARKOZ/gitlab)
   mr = "!/bin/bash mr"
 
+  # Merge into the temp branch
+  mt = "!/bin/bash mt"
+
   # remove local branches that were created from `git pr`
   pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
 
