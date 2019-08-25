@@ -1,33 +1,40 @@
 set nocompatible
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
 
 if has("unix")
   let g:uname = system("uname")
 endif
 
-Plugin 'sjl/vitality.vim'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'junegunn/fzf.vim'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'kana/vim-textobj-user'
-Plugin 'nelstrom/vim-textobj-rubyblock'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-endwise'
-Plugin 'tpope/vim-rails'
-Plugin 'tpope/vim-fugitive'
-Plugin 'elixir-editors/vim-elixir'
-Plugin 'slashmili/alchemist.vim' " Autocompletion for elixir projects
-Plugin 'MarcWeber/vim-addon-mw-utils' " Snipmate dependency
-Plugin 'tomtom/tlib_vim' " Snipmate dependency
-Plugin 'garbas/vim-snipmate'
-Plugin 'alvan/vim-closetag'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'w0rp/ale'
+" Automatic install of vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.vim/bundle')
+Plug 'sjl/vitality.vim'
+Plug 'altercation/vim-colors-solarized'
+Plug 'Valloric/YouCompleteMe'
+Plug 'junegunn/fzf.vim'
+Plug 'scrooloose/nerdcommenter'
+Plug 'jiangmiao/auto-pairs'
+Plug 'kana/vim-textobj-user'
+Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-rails'
+Plug 'tpope/vim-fugitive'
+Plug 'elixir-editors/vim-elixir'
+Plug 'slashmili/alchemist.vim' " Autocompletion for elixir projects
+Plug 'MarcWeber/vim-addon-mw-utils' " Snipmate dependency
+Plug 'tomtom/tlib_vim' " Snipmate dependency
+Plug 'garbas/vim-snipmate'
+Plug 'alvan/vim-closetag'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'w0rp/ale'
+call plug#end()
 
 filetype plugin indent on
 syntax on
