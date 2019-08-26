@@ -4,6 +4,11 @@ if has("unix")
   let g:uname = system("uname")
 endif
 
+" Automatic download of our Powerline font for vim-airline
+if empty(glob('~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf'))
+  silent exe '! curl -fLo ~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf '. shellescape('https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf', 1)
+endif
+
 " Automatic install of vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
