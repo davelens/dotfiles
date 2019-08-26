@@ -33,7 +33,7 @@ Plug 'garbas/vim-snipmate'
 Plug 'alvan/vim-closetag'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 call plug#end()
 
 filetype plugin indent on
