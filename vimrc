@@ -1,11 +1,7 @@
 set nocompatible
 
-if has("unix")
-  let g:uname = system("uname")
-endif
-
 " Automatic download of our Powerline font for vim-airline
-if empty(glob('~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf'))
+if has('mac') && empty(glob('~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf'))
   silent exe '! curl -fLo ~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf '. shellescape('https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf', 1)
 endif
 
@@ -20,7 +16,6 @@ call plug#begin('~/.vim/bundle')
 Plug 'sjl/vitality.vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'Valloric/YouCompleteMe'
-Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'jiangmiao/auto-pairs'
 Plug 'kana/vim-textobj-user'
@@ -39,6 +34,12 @@ Plug 'alvan/vim-closetag'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'dense-analysis/ale'
+if has('mac')
+  Plug '/usr/local/opt/fzf'
+elseif has('unix')
+  Plug '~/.linuxbrew/opt/fzf'
+endif
+Plug 'junegunn/fzf.vim'
 call plug#end()
 
 filetype plugin indent on
@@ -236,12 +237,6 @@ let g:ycm_key_list_previous_completion=[]
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " FZF configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if g:uname == "Darwin\n"
-  set rtp+=/usr/local/opt/fzf
-else
-  set rtp+=~/.linuxbrew/opt/fzf
-endif
-
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
