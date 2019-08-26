@@ -1,3 +1,0 @@
-export THREADS=3
-export POW_TIMEOUT=900
-export POW_WORKERS=3
