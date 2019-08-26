@@ -5,5 +5,5 @@ vim/bundle/**
 irssi/config
 irssi/sasl.auth
 vim/bundle/vundle
-vim/autoload/gocomplete.vim
+vim/autoload/*.vim
 vim/ftplugin/go
