@@ -16,4 +16,6 @@ rm ~/.vim
 rm ~/.vimrc
 rm ~/.tmux.conf
 
+rm ~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf
+
 echo 'Done.';
