@@ -1,0 +1,22 @@
+require:
+  - rubocop-performance
+  - rubocop-rails
+
+AllCops:
+  TargetRubyVersion: 2.4
+  Exclude:
+    - '**/spec/**/*'
+
+Style/Documentation:
+  Enabled: false
+
+# Read up on https://bugs.ruby-lang.org/issues/8976#note-30
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# Do not whine about compact style of module/class definitions.
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
