@@ -260,6 +260,16 @@ function! SaveAndRefreshFirefox()
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ALE configuration
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ale_fixers = {
+\   'javascript': ['eslint'],
+\   'ruby': ['rubocop']
+\}
+
+nmap <leader><CR> <Plug>(ale_fix)
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-airline configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Automatic download of our Powerline font for vim-airline
