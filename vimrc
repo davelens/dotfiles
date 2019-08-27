@@ -198,6 +198,7 @@ function! StripTrailingWhitespace()
     return
   endif
   %s/\s\+$//e
+  %s/\($\n\s*\)\+\%$//e
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
