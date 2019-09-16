@@ -8,9 +8,9 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/bundle')
+Plug 'adelarsq/vim-matchit'
 Plug 'sjl/vitality.vim'
 Plug 'altercation/vim-colors-solarized'
-Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdcommenter'
 Plug 'jiangmiao/auto-pairs'
 Plug 'kana/vim-textobj-user'
@@ -29,12 +29,20 @@ Plug 'alvan/vim-closetag'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'dense-analysis/ale'
+Plug 'junegunn/fzf.vim'
+
+if has('nvim')
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+else
+  Plug 'Valloric/YouCompleteMe'
+endif
+
 if has('mac')
   Plug '/usr/local/opt/fzf'
 elseif has('unix')
   Plug '~/.linuxbrew/opt/fzf'
 endif
-Plug 'junegunn/fzf.vim'
+
 call plug#end()
 
 filetype plugin indent on
@@ -166,12 +174,7 @@ nmap <silent> <leader>; :call AppendSemiColon()<CR>
 " Filetype-specific mappings
 au FileType ruby map <leader>r :call AltCommand(expand('%'), ':e')<CR>
 au FileType ruby map <leader>g :call OpenGem()<CR>
-au FileType go map <leader>r :GoAlternate<CR>
-au FileType go noremap <leader>E :GoRun<CR>
 au FileType elixir map <leader>r :call AltCommand(expand('%'), ':e')<cr>
-
-" Include matchit on runtime
-runtime macros/matchit.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Opens alternate files using alt, a CLI tool to help find the "alternate"
@@ -279,6 +282,7 @@ endif
 
 " allows airline to use the powerline font symbols through a patched font
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#coc#enabled = 1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " apidock.vim configuration

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-if [ -x config/cable.yml ]; then # Rails 5+
+if [ -f config/cable.yml ]; then # Rails 5+
   command='bundle exec rails'
 else # Rails < 5
   command='bundle exec rake'

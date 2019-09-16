@@ -7,3 +7,4 @@ irssi/sasl.auth
 vim/bundle/vundle
 vim/autoload/*.vim
 vim/ftplugin/go
+node_modules

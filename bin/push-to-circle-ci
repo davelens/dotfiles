@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This allows you to test different .circleci/config.yml settings without
+# pushing intermediary commits. Keeps your git history clean.
+
 [[ "${CIRCLE_TOKEN}" == "" ]] && echo 'Please set the CIRCLE_TOKEN environment variable with a personal token. You can generate get these at https://circleci.com/account/api' && exit;
 
 rev=$1
