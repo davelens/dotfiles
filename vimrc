@@ -160,9 +160,11 @@ nnoremap <c-l> <c-w>l
 " Less finger wrecking than C-[, and rare enough not to obstruct while typing.
 inoremap jk <Esc>
 
+" Toggles search highlighting
+nnoremap <F3> :set hlsearch!<CR>
 " Easy paste/nopaste
-map <F5> :set paste<CR>
-map <F6> :set nopaste<CR>
+nnoremap <F5> :set paste<CR>
+nnoremap <F6> :set nopaste<CR>
 
 " Leader bindings
 let mapleader = ' '
