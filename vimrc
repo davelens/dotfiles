@@ -20,6 +20,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-dispatch'
 Plug 'elixir-editors/vim-elixir'
 Plug 'slashmili/alchemist.vim' " Autocompletion for elixir projects
 Plug 'MarcWeber/vim-addon-mw-utils' " Snipmate dependency
@@ -420,26 +421,23 @@ endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Running tests. Original code for Ruby taken from Gary Bernhardt, and slightly
-" modified to support running tests in Rails engine projects, Go and Elixir.
+" modified to support running tests in Rails engine projects and Elixir.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nnoremap <cr> :call RunTestFile()<cr>
 nnoremap <leader>f :call RunNearestTest()<cr>
 nnoremap <leader>T :call RunTests('')<cr>
 
 function! RunTestFile(...)
-
   if a:0
     let command_suffix = a:1
   else
     let command_suffix = ""
   endif
 
-  " Are we in a test file?
-  let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|.go\|_test.exs\)$') != -1
-
-  " Run the tests for the previously-marked file (or the current file if
-  " it's a test).
-  if in_test_file
+  " If we're in a test/spec file, remember the filename. Otherwise, if no prior
+  " tests have run, exit early.
+  if match(expand("%"), '\(.feature\|_spec.rb\|.go\|_test.exs\)$') != -1
+    echo command_suffix
     call SetTestFile(command_suffix)
   elseif !exists("t:grb_test_file")
     return
@@ -465,33 +463,34 @@ function! RunTests(filename)
 
   if &filetype == 'ruby' || &filetype == 'eruby'
     call RunRubyTests(a:filename)
-  elseif &filetype == 'go'
-    if a:filename == ''
-      :!go test
-      return
-    endif
-
-    :GoTest
   elseif &filetype == 'elixir'
     if a:filename == ''
       :!mix test
       return
     endif
 
-    exec ":!mix test " . a:filename
+    exec ":Dispatch mix test " . a:filename
   endif
 endfunction
 
-function! RunRubyTests(filename)
+function! RubyTestCommand()
   if filereadable('spec/dummy/bin/rspec')
-    exec ":!bin/spring stop && spec/dummy/bin/rspec " . a:filename
+    return 'bin/spring stop && spec/dummy/bin/rspec'
   elseif filereadable('bin/rspec')
-    exec ":!bin/rspec " . a:filename
+    return 'bin/rspec'
   elseif filereadable('Gemfile') && filereadable('bin/bundle')
-    exec ":!bin/bundle exec rspec " . a:filename
+    return 'bin/bundle exec rspec'
   elseif filereadable('Gemfile')
-    exec ":!bundle exec rspec " . a:filename
+    return 'bundle exec rspec'
   else
-    exec ":!rspec " . a:filename
-  endif
+    return 'rspec'
+endfunction
+
+function! RunRubyTests(filename)
+  "let t:ruby_test_command=@ . RubyTestCommand()
+  if a:filename == ''
+    exe "silent !tmux send -t 5 '" . RubyTestCommand() . " " . a:filename" . "' Enter"
+  else
+    exe ":Dispatch " . RubyTestCommand() . " " . a:filename
+  end
 endfunction
