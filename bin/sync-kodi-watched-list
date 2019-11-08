@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Stops further execution after any error.
+set -e
+
+scp netflix:.kodi/userdata/addon_data/service.watchedlist/watchedlist.db . && \
+  scp watchedlist.db alexandria:/volume1/Alexandria/documents/kodi/ && \
+  rm watchedlist.db
