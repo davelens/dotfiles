@@ -1,5 +1,5 @@
 NAME=Pretzl
-OPTIONS=pettype:cat,catname:Pippin
+OPTIONS=role:Valkyrie,align:l,race:human,pettype:cat,catname:Pippin
 
 # Use same colors for item mods.
 OPTIONS=menucolors
