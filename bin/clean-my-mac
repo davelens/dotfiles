@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This command was made to clean up unused, cached crap from most of the heavy
+# hitter apps on my machine. Inspired by CleanMyMac which, however useful and
+# efficient as it may be, costs money.
+
 # Stops further execution after any error.
 set -e
 
