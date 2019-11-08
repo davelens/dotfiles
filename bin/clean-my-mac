@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Stops further execution after any error.
+set -e
+
+# iLifeMedia caches. I suspect these are used in in-app media browsers.
+# Wait a year and you'll have several gigs of images and movie clips in these.
+rm ~/Library/Containers/com.apple.MediaLibraryService/Data/Library/Caches/com.apple.iLifeMediaBrowser.ILPhotosTranscodeCache/* || true
+rm ~/Library/Containers/com.apple.garageband10/Data/Library/Caches/com.apple.iLifeMediaBrowser.ILPhotosTranscodeCache/* || true
+
+# Spotify song and album cover caches.
+rm -rf ~/Library/Caches/com.spotify.client/{Data,Browser,fsCachedData,com.apple.metal}/*
+rm ~/Library/Caches/com.spotify.client/Cache.db* || true
+
+# Firefox cache
+firefox_profile=`ls ~/Library/Caches/Firefox/Profiles/`
+rm -rf ~/Library/Caches/Firefox/Profiles/$firefox_profile/cache2/entries
+mkdir ~/Library/Caches/Firefox/Profiles/$firefox_profile/cache2/entries
+
+# Thunderbird cache
+thunderbird_profile=`ls ~/Library/Caches/Thunderbird/Profiles/`
+rm -rf ~/Library/Caches/Thunderbird/Profiles/$thunderbird_profile/cache2/entries
+mkdir ~/Library/Caches/Thunderbird/Profiles/$thunderbird_profile/cache2/entries
+
+# Safari cache
+rm -rf ~/Library/Caches/com.apple.Safari/{Webkit,WebKitCache,TabSnapshots,fsCachedData,com.apple.metal,FavoritesPickerImageCache}/*
+rm ~/Library/Caches/com.apple.Safari/Cache.db* || true
+
+# iTunes cache
+rm -rf ~/Library/Caches/com.apple.iTunes/*
+
+# Google Chrome cache
+rm -rf ~/Library/Caches/Google/Chrome/Default/*
+
+# Whatsapp
+rm ~/Library/Application\ Support/Whatsapp/Cache/* || true
+
+# Photos.app cache
+rm -rf ~/Library/Containers/com.apple.Photos/Data/Library/Caches/Photos/*
+
+# App Store
+rm -rf ~/Library/Containers/com.apple.appstore/Data/Library/Caches/com.apple.appstore/*
+
+# macos help daemon
+rm -rf ~/library/Caches/com.apple.helpd/*
+
+# Logs data from services launching at startup
+rm ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
