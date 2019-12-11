@@ -54,6 +54,9 @@ $BREW_PATH/opt/mysql@5.7/bin
 printf -v PATH "%s:" "${paths_to_add[@]}";
 export PATH="${PATH%:}";
 
+# Fixes installation of mysql2 gem due to missing openssl lib.
+LIBRARY_PATH=$LIBRARY_PATH:$BREW_PATH/opt/openssl/lib/
+
 # node.js modules path
 export NODE_PATH="/usr/local/share/npm/lib/node_modules"
 
