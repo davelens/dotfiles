@@ -27,6 +27,7 @@
   pom = push origin master
   pod = push origin develop
   prd = pull-request -b develop
+  prs = "pr list --format='%pC%>(8)%i%Creset %t% l%n%x09 %U%n'"
   m = "!/bin/bash gm"
 
   # GitHub Pull Requests (stolen from https://github.com/pd/dotfiles/blob/e2d2418f96c5d13b4b06e3f2dff78dfb51eeb49c/gitconfig#L47-48)
