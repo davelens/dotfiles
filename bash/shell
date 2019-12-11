@@ -5,6 +5,9 @@
 ########################################################################
 export EDITOR=vim
 
+# Remove the zsh warning introduced in macos Catalina
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 # Make ls & grep pretty
 export CLICOLOR=1
 #export GREP_OPTIONS='--color=auto'
