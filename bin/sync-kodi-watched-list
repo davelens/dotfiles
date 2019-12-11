@@ -4,5 +4,5 @@
 set -e
 
 scp netflix:.kodi/userdata/addon_data/service.watchedlist/watchedlist.db . && \
-  scp watchedlist.db alexandria:/volume1/Alexandria/documents/kodi/ && \
+  scp watchedlist.db alexandria:/volume1/storage/documents/kodi/ && \
   rm watchedlist.db
