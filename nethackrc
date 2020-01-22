@@ -10,13 +10,14 @@ MENUCOLOR=" unholy "=red
 MENUCOLOR=" cursed .* (being worn)"=orange&underline
 
 # Automatically pick stuff up.
+# Display the number of turns.
 # Use the fancy HP bar displayed behind your name.
 # Always use colors to render entities.
 # Show necessary XP to level up.
 # Let sortloot also sort items on the ground.
 # Turn off dark rooms as I dislike them.
 # Turn off bones files. I have yet to ascend and don't want to die by my hand.
-OPTIONS=autopickup, hitpointbar, color, sortloot:full, !dark_room, !bones
+OPTIONS=autopickup, time, hitpointbar, color, sortloot:full, !dark_room, !bones
 # Gold, amulets, rings, wands, scrolls, potions, (spell)books.
 OPTIONS=pickup_types:$"=/!?+
 
