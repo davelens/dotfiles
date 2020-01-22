@@ -31,6 +31,7 @@ then
 fi
 
 alias be='bundle exec'
+alias bundle_mysql2_openssl_fix='bundle config --local build.Mysql2 "--with-ldflags=-L/usr/local/opt/openssl/lib --with-cppflags=-I/usr/local/opt/openssl/include"'
 alias clearcache='sudo dscacheutil -flushcache'
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias ci='git ci-status'
