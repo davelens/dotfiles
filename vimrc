@@ -486,12 +486,13 @@ function! RubyTestCommand()
     return 'bundle exec rspec'
   else
     return 'rspec'
+  endif
 endfunction
 
 function! RunRubyTests(filename)
   "let t:ruby_test_command=@ . RubyTestCommand()
   if a:filename == ''
-    exe "silent !tmux send -t 5 '" . RubyTestCommand() . " " . a:filename" . "' Enter"
+    exe "silent !tmux send -t 5 '" . RubyTestCommand() . " " . a:filename . "' Enter"
   else
     exe ":Dispatch " . RubyTestCommand() . " " . a:filename
   end
