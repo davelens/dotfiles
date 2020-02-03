@@ -52,3 +52,8 @@ rm -rf ~/library/Caches/com.apple.helpd/*
 
 # Logs data from services launching at startup
 rm ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
+
+# Clean all log files across all my Sites projects.
+# My Sites folder is structured according to git repo structure (user/project).
+# The ls check will fail silently if you don't have a similar structure.
+ls ~/Sites/*/**/log/* 2>/dev/null && rm ~/Sites/*/**/log/*
