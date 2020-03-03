@@ -36,7 +36,7 @@ song_playing()
   song_playing=`~/.bin/tmux/current_track.sh`
 
   if [[ $song_playing ]]; then
-    echo "#[fg=colour30]♫ $song_playing"
+    echo "#[fg=colour30]$song_playing"
   fi
 }
 

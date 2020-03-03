@@ -1,32 +1,19 @@
-#!/bin/bash
-NOW_PLAYING=$(osascript <<EOF
-  set spotify_state to false
-  set itunes_state to false
+#!/usr/bin/env osascript
+# Returns the current playing song in Spotify for OSX
 
-	if is_app_running("Spotify") then
-		tell application "Spotify" to set spotify_state to (player state as text)
-	end if
-	if is_app_running("iTunes") then
-		tell application "iTunes" to set itunes_state to (player state as text)
-	end if
+tell application "Spotify"
+  if it is running then
+    if player state is playing then
+      set track_name to name of current track
+      set artist_name to artist of current track
 
-	if spotify_state is equal to "playing" then
-		tell application "Spotify"
-			set track_name to name of current track
-			set artist_name to artist of current track
-			return track_name & " - " & artist_name
-		end tell
-	else if itunes_state is equal to "playing" then
-		tell application "iTunes"
-			set track_name to name of current track
-			set artist_name to artist of current track
-			return track_name & " - " & artist_name
-		end tell
-	end if
-
-	on is_app_running(app_name)
-		tell application "System Events" to (name of processes) contains app_name
-	end is_app_running
-EOF)
-
-echo $NOW_PLAYING
+      if artist_name > 0
+        # If the track has an artist set and is therefore most likely a song rather than an advert
+        "♫ " & artist_name & " - " & track_name
+      else
+        # If the track doesn't have an artist set and is therefore most likely an advert rather than a song
+        "~ " & track_name
+      end if
+    end if
+  end if
+end tell

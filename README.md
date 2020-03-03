@@ -59,4 +59,4 @@ My tmux config now parses small bits of information to the left of the date in t
 * Unread e-mail count. Caveats:
   * Reads user/pass from your ```.netrc```.
   * You need to configure which servers to check [here](https://github.com/davelens/dotfiles/blob/master/bin/tmux/mailcount.sh#L6).
-* Current track playing in Spotify or iTunes. Taken from a StackOverflow post, can't remember which.
+* Current track playing in Spotify. Taken from [jdxcode/tmux-spotify-info](https://github.com/jdxcode/tmux-spotify-info)
