@@ -494,6 +494,6 @@ function! RunRubyTests(filename)
   if a:filename == ''
     exe "silent !tmux send -t 5 '" . RubyTestCommand() . " " . a:filename . "' Enter"
   else
-    exe ":Dispatch " . RubyTestCommand() . " " . a:filename
+    exe "!" . RubyTestCommand() . " " . a:filename
   end
 endfunction
