@@ -31,6 +31,9 @@ Vim will use YouCompleteMe (YCM), a plugin that requires a pre-compiled componen
 
 Neovim will use coc.nvim for now. I'm not completely sold on it as it seems bloated and has features currently present in ALE. The alternative will be to use [Shougo/deoplete.nvim](https://github.com/Shougo/deoplete.nvim) in combination with [autozimu/LanguageClient-neovim](https://github.com/autozimu/LanguageClient-neovim) and the solargraph LS for Ruby.
 
+### YCM and macos < 10.10
+If you're on a version of macos lower than 10.10, chances are that the YCM component failed to compile. I got this fixed with [a helpful SO answer](http://stackoverflow.com/questions/29529455/missing-c-header-debug-after-updating-osx-command-line-tools-6-3#answer-29576048).
+
 ## Vim plugins
 I use `vim-plug` to manage my plugins. Remember to call ```:PlugInstall``` in Vim to install all included plugins, prior to all subsequent steps here.
 
@@ -47,9 +50,6 @@ let g:airline_powerline_fonts = 1
 
 #### iTerm2
 If you're an iTerm2 user like myself, you can do this in your profile settings in the Text tab. Look for ```Use a different font for non-ASCII text``` and select the font in the dropdown.
-
-#### Mac OS X Yosemite
-If you're on Yosemite the chances are that the YCM component failed to compile. I got this fixed with [a helpful SO answer](http://stackoverflow.com/questions/29529455/missing-c-header-debug-after-updating-osx-command-line-tools-6-3#answer-29576048).
 
 # Tmux
 ## Statusline "Segments"
