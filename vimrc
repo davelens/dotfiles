@@ -250,6 +250,16 @@ else
   nnoremap <leader>t :FZF<cr>
 endif
 
+" Use a preview window for searches made with ripgrep.
+" I do NOT use shellescape() around q-args because I want arguments like -t
+" to keep working as well.
+command! -bang -nargs=* Rg
+      \ call fzf#vim#grep(
+      \   'rg --column --line-number --no-heading --color=always --smart-case '.<q-args>, 1,
+      \   <bang>0 ? fzf#vim#with_preview('right:50%')
+      \           : fzf#vim#with_preview('up:40%', '?'),
+      \   <bang>0)
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " closetag.vim configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
