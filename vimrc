@@ -260,6 +260,10 @@ command! -bang -nargs=* Rg
       \           : fzf#vim#with_preview('up:40%', '?'),
       \   <bang>0)
 
+" Lookup occurrences of the word under the cursor when pressing F8.
+nnoremap <expr> <leader>l ':Rg '. expand('<cword>') .'<CR>'
+vnoremap <expr> <leader>l 'y:<C-U>Rg '. shellescape('<C-R>"') .'<CR>'
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " closetag.vim configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
