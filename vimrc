@@ -263,6 +263,7 @@ command! -bang -nargs=* Rg
 " Lookup occurrences of the word under the cursor when pressing F8.
 nnoremap <expr> <leader>l ':Rg '. expand('<cword>') .'<CR>'
 vnoremap <leader>l "ky:exec 'Rg '. shellescape(escape(@k, '()[]{}?.'))<CR>
+vnoremap <leader>k "ky:exec 'Rg! '. shellescape(escape(@k, '()[]{}?.'))<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " closetag.vim configuration
