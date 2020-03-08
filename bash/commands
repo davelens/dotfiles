@@ -9,27 +9,6 @@ function lowercase()
   fi
 }
 
-# Command used to test rest services that are under development.
-curlrest()
-{
-  method=$1
-  url=$2
-  parameters=$3
-
-  if [[ "$method" == "" ]] || [[ "$url" == "" ]]
-  then
-    echo "usage: curlrest <method> <url> <*parameters>"
-  else
-    if [[ "$parameters" != "" ]]
-    then
-      parameters="--data-urlencode $(echo $parameters | xargs | sed 's/&/ --data-urlencode /g')"
-    fi
-
-    curl -v --globoff --get -X$method $url $parameters
-    echo ""
-  fi
-}
-
 # Returns the active git branch - this is used in rewrite_prompt().
 git_branch()
 {
