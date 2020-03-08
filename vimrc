@@ -202,13 +202,14 @@ nnoremap ]q :cprev<CR>
 nnoremap [q :cnext<CR>
 
 function! QSearchAndReplace(string)
-  let new_value = input('Replace '. shellescape(a:string) .' with: ')
+  let old_value = escape(a:string, '/')
+  let new_value = escape(input('Replace '. shellescape(a:string) .' with: '), '/')
 
   if getqflist() != []
-    cdo exe '%s/'.a:string.'/'.new_value.'/gc'
+    cdo exe '%s/'.old_value.'/'.new_value.'/gc'
     cexpr [] " empty the quickfix list to prevent future replacement mishaps.
   else " because cdo does nothing when the quickfix list is empty
-    exe '%s/'.a:string.'/'.new_value.'/gc'
+    exe '%s/'.old_value.'/'.new_value.'/gc'
   end
 
   wa
