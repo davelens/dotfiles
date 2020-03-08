@@ -211,6 +211,7 @@ function! QSearchAndReplace(string)
     exe '%s/'.a:string.'/'.new_value.'/gc'
   end
 
+  wa
   ccl
 endfunction
 
