@@ -196,6 +196,19 @@ function! AltCommand(path, vim_command)
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Quickfix operations
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap ]q :cprev<CR>
+nnoremap [q :cnext<CR>
+
+function! QSearchAndReplace(string)
+  let old_value = escape(a:string, '<>[]?.')
+  let new_value = input('Replace '. shellescape(old_value) .' with: ')
+  cdo exe '%s/'.old_value.'/'.new_value.'/gc'
+  ccl
+endfunction
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! StripTrailingWhitespace()
@@ -237,6 +250,19 @@ let g:ycm_key_list_select_completion=[]
 let g:ycm_key_list_previous_completion=[]
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Rg configuration
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use a preview window for searches made with ripgrep.
+" I do NOT use shellescape() around q-args because I want arguments like -t
+" to keep working as well.
+command! -bang -nargs=* Rg
+    \ call fzf#vim#grep(
+    \   'rg --column --line-number --no-heading --color=always --smart-case '.<q-args>, 1,
+    \   <bang>0 ? fzf#vim#with_preview('right:50%')
+    \     : fzf#vim#with_preview('up:40%', '?'),
+    \   <bang>0)
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " FZF configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:fzf_action = {
@@ -250,20 +276,37 @@ else
   nnoremap <leader>t :FZF<cr>
 endif
 
-" Use a preview window for searches made with ripgrep.
-" I do NOT use shellescape() around q-args because I want arguments like -t
-" to keep working as well.
-command! -bang -nargs=* Rg
-      \ call fzf#vim#grep(
-      \   'rg --column --line-number --no-heading --color=always --smart-case '.<q-args>, 1,
-      \   <bang>0 ? fzf#vim#with_preview('right:50%')
-      \           : fzf#vim#with_preview('up:40%', '?'),
-      \   <bang>0)
+"*****************
+" FZF + Rg queries
+"*****************
+
+" Quickfix maps to be used in conjunction with Rg queries.
+nmap <leader>k :call RgSearchAndReplace(@k)<CR>
 
 " Lookup occurrences of the word under the cursor when pressing F8.
 nnoremap <expr> <leader>l ':Rg '. expand('<cword>') .'<CR>'
-vnoremap <leader>l "ky:exec 'Rg '. shellescape(escape(@k, '()[]{}?.'))<CR>
-vnoremap <leader>k "ky:exec 'Rg! '. shellescape(escape(@k, '()[]{}?.'))<CR>
+vnoremap <leader>l "ky:exec SavePositionAndRg('Rg', @k)<CR>
+vnoremap <leader>k "ky:exec SavePositionAndRg('Rg!', @k)<CR>
+
+function! SanitizeRgArgument(string)
+  return shellescape(escape(a:string, '()[]{}?.'))
+endfunction
+
+function! SavePositionAndRg(cmd, string)
+  call setreg('l', expand('%'))
+  call setreg('p', getpos('.'))
+
+  exe a:cmd .' '. SanitizeRgArgument(a:string)
+endfunction
+
+function! RgSearchAndReplace(string)
+  call QSearchAndReplace(a:string)
+
+  if @l != ''
+    exe 'b '. @l
+    call setpos('.', @p)
+  endif
+endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " closetag.vim configuration
