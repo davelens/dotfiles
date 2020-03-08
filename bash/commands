@@ -166,15 +166,6 @@ svn_export_changed_files()
   fi
 }
 
-# Compatible secure copy command for Vagrant boxes.
-vscp()
-{
-  [ ! $(pgrep -n "VBoxHeadless") ] && echo "No vagrant VM is running" && return;
-
-  OPTIONS=`vagrant ssh-config | awk -v ORS=' ' ' {print "-o " $1 "=" $2}'`
-  scp ${OPTIONS} "$@" || echo "Transfer failed. Did you use 'default:' as the target?"
-}
-
 # As taken from http://owen.cymru/sf-a-quick-way-to-search-for-some-thing-in-bash-and-edit-it-with-vim-2/
 sf() {
   if [ "$#" -lt 1 ]; then echo "Supply string to search for!"; return 1; fi
