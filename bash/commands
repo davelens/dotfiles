@@ -145,27 +145,6 @@ search_and_replace()
   fi
 }
 
-# Export all changed files between the given revision and HEAD, to a given location.
-svn_export_changed_files()
-{
-  tarfile=$1
-  start_rev=$2
-  end_rev=$3
-
-  if [[ "$end_rev" == "" ]]; then
-    end_rev='HEAD'
-  fi
-
-  if [[ "$tarfile" == "" ]] || [[ "$start_rev" == "" ]]
-  then
-    echo "usage: svn_export_changed_files <tarfile> <start_rev> <*end_rev>"
-  else
-    svn diff -r "$start_rev":"$end_rev" --summarize |
-    awk '{if ($1 != "D") print $2}'|
-    xargs  -I {} tar -rvf "$tarfile" {}
-  fi
-}
-
 export_env_vars_from_file() {
   export $(cat $1 | grep -v ^\# | xargs)
 }
