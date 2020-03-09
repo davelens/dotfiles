@@ -180,6 +180,17 @@ au FileType ruby map <leader>g :call OpenGem()<CR>
 au FileType elixir map <leader>r :call AltCommand(expand('%'), ':e')<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" :terminal
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" The way into :terminal
+command! -nargs=* Terminal exe 'bo sp | res -20 | terminal'
+nnoremap <leader>b :Terminal<CR>
+" The way out of :terminal's insert mode.
+tnoremap <C-[> <C-\><C-n>
+" The way out of :terminal
+tnoremap <leader>x <C-\><C-n>:q!<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Opens alternate files using alt, a CLI tool to help find the "alternate"
 " path of a given path. The most prominent example of this is to find
 " a related test/spec file in code files.
