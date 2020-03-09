@@ -567,9 +567,10 @@ function! RubyTestCommand()
 endfunction
 
 function! RunRubyTests(filename)
-  "let t:ruby_test_command=@ . RubyTestCommand()
   if a:filename == ''
-    exe "silent !tmux send -t 5 '" . RubyTestCommand() . " " . a:filename . "' Enter"
+    " Not calling RubyTestCommand() here because I want the bundled specs to
+    " prevent fringe cases where bin/spring screws up.
+    exe "silent !tmux send -t 5 'bundle exec rspec " . a:filename . "' Enter"
   else
     exe "!" . RubyTestCommand() . " " . a:filename
   end
