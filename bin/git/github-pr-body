@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# This command can be run with `git pr-body` (set in ~/.gitconfig)
+
+# It's purpose is simply to allow you to keep a local version of the GitHub PR
+# body message. I often include todos in there, and it's handy to edit them
+# locally. The command has these features:
+#
+# * It automatically installs Github's CLI tool if you don't have it yet.
+# * It does not require authentication with GitHub's API thanks to `hub`.
+# * It uses the existing PR body as a base for further updates.
+# * It keeps the writing buffer in .git/ so it's automatically ignored by git.
+# * It asks to push the updated body to the GitHub website.
+# * It returns a link to the PR as the command finishes.
+#
+# Note that `hub` will be deprecated somewhere in the future. I'm assuming
+# GitHub's CLI tool will be expanded with API functionality, and I will switch
+# out the current API calls made with `hub` when that time comes.
+
 # Stops further execution after any error.
 set -e
 
@@ -51,7 +68,7 @@ fi
 # to your .gitignore.
 vim ".git/$branch_name.md"
 
-# If for some reason you end up removing the file at this point, we justj exit.
+# If for some reason you end up removing the file at this point, we just exit.
 [ ! -f ".git/$branch_name.md" ] && exit
 
 echo ""
