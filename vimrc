@@ -169,7 +169,7 @@ nnoremap <F6> :set nopaste<CR>
 
 " Leader bindings
 let mapleader = ' '
-map <leader>s <ESC>:w<CR>
+nmap <leader>s <Esc>:w<CR>
 map <leader>id :call GetVimElementID()<CR>
 map <leader>n :call RenameFile()<CR>
 map <leader>json <Esc>:%!python -m json.tool<CR>
