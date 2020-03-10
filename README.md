@@ -26,6 +26,8 @@ In september 2019 I made the switch to Neovim with the release of 0.4. Larger fi
 
 You can still use vim with the same vimrc, but the option is there to use neovim.
 
+As of march 2020 I created a separate [changelog](https://github.com/davelens/dotfiles/blob/master/VIM_CHANGELOG.md) for my `.vimrc` which I'll attempt to maintain, in order to explain some of my reasoning to my future self.
+
 ## Autocompletion
 Vim will use YouCompleteMe (YCM), a plugin that requires a pre-compiled component. [See their installation instructions](https://github.com/Valloric/YouCompleteMe#installation) to get this sorted.
 
