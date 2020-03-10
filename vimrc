@@ -326,16 +326,6 @@ endfunction
 let g:closetag_filenames = "*.html,*.xhtml,*.html.erb,*.tpl"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" When enabled, upon saving a file this refreshes the browser. I use this in
-" a dual monitor setup, with my browser active in the second monitor.
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! SaveAndRefreshFirefox()
-  w
-  silent exec '!osascript ~/.dotfiles/macos/refresh-firefox.scpt'
-  redraw!
-endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " ALE configuration
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ale_fixers = {
@@ -356,12 +346,6 @@ endif
 " allows airline to use the powerline font symbols through a patched font
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#coc#enabled = 1
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" apidock.vim configuration
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" This change allows existing links to open in the default browser
-let g:browser = 'open'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Rename the current file in your buffer
