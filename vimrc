@@ -305,8 +305,8 @@ function! SanitizeRgArgument(string)
 endfunction
 
 function! SavePositionAndRg(cmd, string)
-  call setreg('l', expand('%'))
-  call setreg('p', getpos('.'))
+  call setreg('l', expand('%')) " location
+  call setreg('p', getpos('.')) " position
 
   exe a:cmd .' '. SanitizeRgArgument(a:string)
 endfunction
