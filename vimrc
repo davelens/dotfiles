@@ -557,3 +557,20 @@ function! RunRubyTests(filename)
     exe "!" . RubyTestCommand() . " " . a:filename
   end
 endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Custom Rails and gem projections to be used with vim-{rails,projectionist}.
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:rails_gem_projections = {
+\  "factory_bot": {
+\    "spec/factories/*.rb": {
+\      "command":   "factory",
+\      "affinity":  "collection",
+\      "alternate": "app/models/{singular}.rb",
+\      "related":   "db/schema.rb#{}",
+\      "test":      "spec/models/{singular}_test.rb",
+\      "template":  "FactoryBot.define do\n  factory :{singular} do\n  end\nend",
+\      "keywords":  "factory sequence"
+\    }
+\  }
+\}
