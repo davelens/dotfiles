@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # Stops further execution after any error.
 set -e
@@ -28,18 +28,36 @@ fi
 
 # An easier way to grab the PR URL would be `hub pr show -u`. I chose to use
 # a method using `gh` instead because of hub's pending deprecation.
-pr_url=$(gh pr view -p | grep -o 'View this pull request on GitHub: https://\(.*\)' | sed -e 's/View this pull request on GitHub: //')
-repo_suffix=`echo $pr_url | sed -e 's/https:\/\/github.com//g' -e 's/pull\//pulls\//g'`
+repo_suffix=`git remote get-url origin | sed -e 's/git@github.com://' -e 's/.git//'`
+pr_id=`gh pr list | grep $branch_name | awk '{print $1}'`
+body_file=".git/$branch_name.md"
+
+# Stop here if there's no PR available for the current branch.
+if [ ! $pr_id ]; then
+  echo "No pull requests exist for $repo_suffix."
+  exit
+fi
+
+# Prefill our buffer with the existing PR body.
+if [ ! -f ".git/$branch_name.md" ]; then
+  echo "Creating .git/$branch_name.md"
+  [ -f output.json ] && rm output.json
+  hub api https://api.github.com/repos/$repo_suffix/pulls/$pr_id > output.json
+  ruby -rjson -e 'j = JSON.parse(File.read("output.json"));puts j["body"]' > .git/$branch_name.md
+  rm output.json
+fi
 
 # Storing the PR body locally, using the name of the branch. Commit it or add it
 # to your .gitignore.
-vim "$branch_name.md"
+vim ".git/$branch_name.md"
 
-# If for some reason you end up removing the file after editing it, we exit.
-[ ! -f "$branch_name.md" ] && exit
+# If for some reason you end up removing the file at this point, we justj exit.
+[ ! -f ".git/$branch_name.md" ] && exit
 
-cat $branch_name.md
-
+echo ""
+echo "*********************************<BODY CONTENT>**********************************"
+cat .git/$branch_name.md
+echo "*********************************</BODY CONTENT>*********************************"
 echo ""
 
 while true; do
@@ -48,7 +66,7 @@ while true; do
     # I sort of have to use `hub` here instead of plain `curl` to prevent
     # authenticating every time you call this command. As soon as GitHub CLI
     # supports API calls with built-in auth, I will switch to that.
-    [Yy]* ) echo "" && hub api -X PATCH -F body="$(cat $branch_name.md)" https://api.github.com/repos$repo_suffix > /dev/null && echo "$pr_url"; break;;
+    [Yy]* ) echo "" && hub api -X PATCH -F body="$(cat .git/$branch_name.md)" https://api.github.com/repos/$repo_suffix/pulls/$pr_id >/dev/null && echo "https://github.com/$repo_suffix/pull/$pr_id"; break;;
     [Nn]* ) echo "" && exit;;
     * ) echo "" && echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
   esac
