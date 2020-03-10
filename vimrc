@@ -187,13 +187,15 @@ command! -nargs=* Terminal exe 'bo sp | res -20 | terminal'
 nnoremap <leader>b :Terminal<CR>
 " The way out of :terminal's insert mode.
 tnoremap <C-[> <C-\><C-n>
-" The way out of :terminal
+" The way out of :terminal. Requires insert mode for reasons.
 tnoremap <leader>x <C-\><C-n>:q!<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Opens alternate files using alt, a CLI tool to help find the "alternate"
 " path of a given path. The most prominent example of this is to find
 " a related test/spec file in code files.
+"
+" Dependent on https://github.com/uptech/alt/
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Run a given vim command on the results of alt from a given path.
 " See usage below.
