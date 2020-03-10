@@ -1,0 +1,55 @@
+#/bin/bash
+
+# Stops further execution after any error.
+set -e
+
+if [ ! -d ".git" ]; then
+  echo "EXIT: Local working directory is not a cloned git repo."
+  exit
+fi
+
+# ~/.bash/commands includes my git_branch function.
+[ -f ~/.bash/commands ] && . ~/.bash/commands
+
+if [ $# -eq 0 ]; then
+  # No longer using `which` after reading the following:
+  # https://stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
+  if [ `command -v git_branch` ]; then
+    branch_name=`git_branch`
+  else
+    read -p "For which branch would you like to edit the pull request body? " branch_name
+    [[ ! `git branch | grep $branch_name` ]] && echo "$branch_name is not a git branch." && exit
+  fi
+else
+  branch_name="$1"
+fi
+
+[ ! `command -v gh` ] && brew install github/gh/gh
+
+# An easier way to grab the PR URL would be `hub pr show -u`. I chose to use
+# a method using `gh` instead because of hub's pending deprecation.
+pr_url=$(gh pr view -p | grep -o 'View this pull request on GitHub: https://\(.*\)' | sed -e 's/View this pull request on GitHub: //')
+repo_suffix=`echo $pr_url | sed -e 's/https:\/\/github.com//g' -e 's/pull\//pulls\//g'`
+
+# Storing the PR body locally, using the name of the branch. Commit it or add it
+# to your .gitignore.
+vim "$branch_name.md"
+
+# If for some reason you end up removing the file after editing it, we exit.
+[ ! -f "$branch_name.md" ] && exit
+
+cat $branch_name.md
+
+echo ""
+
+while true; do
+  read -n1 -p "Push to GitHub? (y/n) " yn
+  case $yn in
+    # I sort of have to use `hub` here instead of plain `curl` to prevent
+    # authenticating every time you call this command. As soon as GitHub CLI
+    # supports API calls with built-in auth, I will switch to that.
+    [Yy]* ) echo "" && hub api -X PATCH -F body="$(cat $branch_name.md)" https://api.github.com/repos$repo_suffix > /dev/null && echo "$pr_url"; break;;
+    [Nn]* ) echo "" && exit;;
+    * ) echo "" && echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
+  esac
+done
