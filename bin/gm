@@ -10,29 +10,36 @@ if [ ! -d ".git" ]; then
   exit
 fi
 
-# If you want this cmd to be standalone, just grab the git_branch command from
-# the file below (or use your own method).
-. ~/.bash/commands
+# ~/.bash/commands includes my git_branch function.
+[ -f ~/.bash/commands ] && . ~/.bash/commands
 
-branch=`git_branch`
+# No longer using `which` after reading the following:
+# https://stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
+if [ `command -v git_branch` ]; then
+  branch_name=`git_branch`
+else
+  echo "EXIT: No git_branch command found."
+  echo "You can grab one here: https://github.com/davelens/dotfiles/blob/master/bash/commands#L13"
+  exit
+fi
 
 if [ $# -eq 0 ]; then
-  read -p "To which branch would you like to merge $branch? (default: develop) " target
+  read -p "To which branch would you like to merge $branch_name? (default: develop) " target
   [ ! $target ] && target="develop"
 else
   target="$1"
 fi
 
 git checkout $target
-git merge --no-ff $branch
+git merge --no-ff $branch_name
 
 push_and_clean_up() {
   git push origin $target
   echo "Branch $target pushed to remote."
-  git branch -d $branch
-  echo "Local branch $branch removed."
-  git push origin :$branch
-  echo "Remote branch $branch removed."
+  git branch -d $branch_name
+  echo "Local branch $branch_name removed."
+  git push origin :$branch_name
+  echo "Remote branch $branch_name removed."
 }
 
 while true; do
@@ -44,4 +51,4 @@ while true; do
   esac
 done
 
-echo "$branch merged into $target."
+echo "$branch_name merged into $target."
