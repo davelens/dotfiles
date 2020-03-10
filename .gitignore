@@ -1,5 +1,6 @@
 env
 config/
+bash/completions/*.bash
 bash/private
 vim/.netrwhist
 vim/bundle/**

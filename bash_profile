@@ -13,3 +13,9 @@ unset file;
 OS=`uname -s`
 [ $OS == 'Darwin' ] && . ~/.bash/macos
 [ $OS == 'Linux' ] && . ~/.bash/linux
+
+# Source all downloaded completion files.
+for file in ~/.bash/completions/*.bash; do
+  [ -r "$file" ] && . "$file";
+done;
+unset file;
