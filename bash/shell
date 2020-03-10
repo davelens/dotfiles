@@ -127,10 +127,15 @@ unset available_locales lang locale;
 complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/config)" ssh
 
 # load bash_completion through brew, when installed
-[ -f $BREW_PATH/etc/bash_completion ] && . $BREW_PATH/etc/bash_completion
-
-# Tmuxinator is a tmux session manager
-[ -f ~/.bin/tmuxinator.bash ] && . ~/.bin/tmuxinator.bash
+if type brew &>/dev/null; then
+  if [[ -r "${BREW_PATH}/etc/profile.d/bash_completion.sh" ]]; then
+    source "${BREW_PATH}/etc/profile.d/bash_completion.sh"
+  else
+    for COMPLETION in "${BREW_PATH}/etc/bash_completion.d/"*; do
+      [[ -r "$COMPLETION" ]] && source "$COMPLETION"
+    done
+  fi
+fi
 
 # Alias hub straight into git
 eval "$(hub alias -s)"
