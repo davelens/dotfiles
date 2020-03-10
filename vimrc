@@ -177,7 +177,7 @@ nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
 au FileType ruby map <leader>r :call AltCommand(expand('%'), ':e')<CR>
-au FileType elixir map <leader>r :call AltCommand(expand('%'), ':e')<cr>
+au FileType elixir nmap <leader>r :call AltCommand(expand('%'), ':e')<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " :terminal
@@ -249,7 +249,7 @@ function! ConvertCamelCaseToSnakeCase()
     %s#\C\(\<\u[a-z0-9]\+\|[a-z0-9]\+\)\(\u\)#\l\1_\l\2#g
   call setpos('.', save_cursor)
 endfunction
-nnoremap <leader>_ :call ConvertCamelCaseToSnakeCase()<cr>
+nnoremap <leader>_ :call ConvertCamelCaseToSnakeCase()<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " This shows the vim-ID of an item under the cursor position. This is used
@@ -292,9 +292,9 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 
 if filereadable('.gitignore')
-  nnoremap <leader>t :GFiles --cached --others --exclude-standard<cr>
+  nnoremap <leader>t :GFiles --cached --others --exclude-standard<CR>
 else
-  nnoremap <leader>t :FZF<cr>
+  nnoremap <leader>t :FZF<CR>
 endif
 
 "*****************
@@ -396,7 +396,7 @@ function! PromoteToLet()
   :normal ==
 endfunction
 :command! PromoteToLet :call PromoteToLet()
-:map <leader>p :PromoteToLet<cr>
+:map <leader>p :PromoteToLet<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " For programming languages using a semi colon at the end of statement.
@@ -449,7 +449,7 @@ function! InlineVariable()
     :let @a = l:tmp_a
     :let @b = l:tmp_b
 endfunction
-nnoremap <leader>iv :call InlineVariable()<cr>
+nnoremap <leader>iv :call InlineVariable()<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " EXTRACT VARIABLE (SKETCHY)
@@ -470,7 +470,7 @@ function! ExtractVariable()
     " Paste the original selected text to be the variable value
     normal! $p
 endfunction
-vnoremap <leader>ev :call ExtractVariable()<cr>
+vnoremap <leader>ev :call ExtractVariable()<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Resizes the focused window to a ratio of your choice.
@@ -493,9 +493,9 @@ endfunction
 " Running tests. Original code for Ruby taken from Gary Bernhardt, and slightly
 " modified to support running tests in Rails engine projects and Elixir.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <cr> :call RunTestFile()<cr>
-nnoremap <leader>f :call RunNearestTest()<cr>
-nnoremap <leader>T :call RunTests('')<cr>
+nnoremap <CR> :call RunTestFile()<CR>
+nnoremap <leader>f :call RunNearestTest()<CR>
+nnoremap <leader>T :call RunTests('')<CR>
 
 function! RunTestFile(...)
   if a:0
