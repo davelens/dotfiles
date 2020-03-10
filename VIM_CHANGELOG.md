@@ -22,7 +22,7 @@ of my beloved `.vimrc`.
 ## 2020-03-10
 
 * Added a vim changelog. \o/
-* Replaced `OpenGem()` in favor of Tim Pope's [vim-bundler](https://github.com/tpope/vim-bundler], mapping `<leader>g` to 
+* Replaced `OpenGem()` in favor of Tim Pope's [vim-bundler](https://github.com/tpope/vim-bundler), mapping `<leader>g` to 
 its `:Bopen` command. I now rely on this plugin to do my heavy lifting when browsing gems.
 * Replaced `ConvertCamelCaseToSnakeCase()` function in favor of Time Pope's [vim-abolish](https://github.com/tpope/vim-abolish). Its `crs` motion does the same thing, and I get to use all its  other coercions to convert to any other kind of casing I want. Also, this method name was faulty, as it should've been `ConvertMixedCaseToSnakeCase()` instead.
 * Removed apidock.vim configuration, as it's been gone for a good while now.
