@@ -5,7 +5,7 @@ cutstring="DO NOT EDIT BELOW THIS LINE"
 [ ! -f ] && touch ~/.env
 
 for name in *; do
-  target="$HOME/.$name"
+  target="${HOME}/.$name"
   if [ -e "$target" ]; then
     if [ ! -L "$target" ]; then
       cutline=`grep -n -m1 "$cutstring" "$target" | sed "s/:.*//"`

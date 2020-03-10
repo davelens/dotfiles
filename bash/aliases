@@ -53,7 +53,7 @@ alias mysql-docker='mysql -h localhost -P 3306 --protocol=tcp'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
 alias nano='vim'
 alias redis='redis-server /usr/local/etc/redis.conf'
-alias rsync='rsync --exclude-from=$HOME/.bin/rsync-exclude-list.txt'
+alias rsync='rsync --exclude-from=${HOME}/.bin/rsync-exclude-list.txt'
 alias sar='search_and_replace'
 alias ta='tmux attach'
 alias vim='nvim'

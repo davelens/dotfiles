@@ -7,7 +7,7 @@ servers = {
   'imap.telenet.be' => { port: 993, ssl: true },
 }
 
-netrc = Netrc.read("#{`echo $HOME`.gsub(/\n/, '')}/.netrc")
+netrc = Netrc.read("#{`echo ${HOME}`.gsub(/\n/, '')}/.netrc")
 count = 0
 
 servers.each { |server, options|

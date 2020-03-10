@@ -20,7 +20,7 @@ rewrite_pwd()
 
   pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
 
-  NEW_PWD=${PWD/$HOME/"~"}
+  NEW_PWD=${PWD/${HOME}/"~"}
 
   local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
 

@@ -26,7 +26,7 @@ export RUBY_GC_MALLOC_LIMIT=60000000
 export RUBY_GC_HEAP_FREE_SLOTS=200000
 
 # Go lang work dir
-export GOPATH=$HOME/.go
+export GOPATH=${HOME}/.go
 
 
 ########################################################################
@@ -38,13 +38,13 @@ export BREW_PATH=$(brew --prefix)
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
 # Dotfiles
-$HOME/.bin
+${HOME}/.bin
 # Homebrew
 /usr/local/{,s}bin
-$BREW_PATH/opt/openssl/bin
-$BREW_PATH/opt/imagemagick@6/bin
-$BREW_PATH/opt/qt@5.5/bin
-$BREW_PATH/opt/mysql@5.7/bin
+${BREW_PATH}/opt/openssl/bin
+${BREW_PATH}/opt/imagemagick@6/bin
+${BREW_PATH}/opt/qt@5.5/bin
+${BREW_PATH}/opt/mysql@5.7/bin
 # System
 /{,s}bin
 /usr/{,s}bin
@@ -55,7 +55,7 @@ printf -v PATH "%s:" "${paths_to_add[@]}";
 export PATH="${PATH%:}";
 
 # Fixes installation of mysql2 gem due to missing openssl lib.
-LIBRARY_PATH=$LIBRARY_PATH:$BREW_PATH/opt/openssl/lib/
+LIBRARY_PATH=${LIBRARY_PATH}:${BREW_PATH}/opt/openssl/lib/
 
 # node.js modules path
 export NODE_PATH="/usr/local/share/npm/lib/node_modules"
