@@ -21,6 +21,7 @@ Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-bundler'
 Plug 'elixir-editors/vim-elixir'
 Plug 'slashmili/alchemist.vim' " Autocompletion for elixir projects
 Plug 'MarcWeber/vim-addon-mw-utils' " Snipmate dependency
@@ -176,7 +177,6 @@ nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
 au FileType ruby map <leader>r :call AltCommand(expand('%'), ':e')<CR>
-au FileType ruby map <leader>g :call OpenGem()<CR>
 au FileType elixir map <leader>r :call AltCommand(expand('%'), ':e')<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -405,17 +405,6 @@ function! AppendSemiColon()
     let save_cursor = getpos('.')
     exec("s/$/;/")
     call setpos('.', save_cursor)
-  endif
-endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Opens the specified gem's source code
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! OpenGem()
-  let gem = input('Open which gem?: ')
-  if gem != ''
-    exec ':e `bundle show '. gem .'`'
-    exec ':lcd %:p:h'
   endif
 endfunction
 
