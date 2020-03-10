@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# ************************************
-# This file will only load on Mac OS X
-# ************************************
+# This file will only load on macos.
 
 # iTerm2 shell integration
 if [ ! -f ~/.bash/completions/iterm2_shell_integration.bash ]; then
