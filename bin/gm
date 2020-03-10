@@ -40,6 +40,9 @@ push_and_clean_up() {
   echo "Local branch $branch_name removed."
   git push origin :$branch_name
   echo "Remote branch $branch_name removed."
+
+  # Cleaning up files made by `git pr-body`.
+  [ -f .git/$branch_name.md ] && rm .git/$branch_name.md
 }
 
 while true; do
