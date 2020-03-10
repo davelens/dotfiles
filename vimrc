@@ -301,7 +301,7 @@ vnoremap <leader>l "ky:exec SavePositionAndRg('Rg', @k)<CR>
 vnoremap <leader>k "ky:exec SavePositionAndRg('Rg!', @k)<CR>
 
 function! SanitizeRgArgument(string)
-  return shellescape(escape(a:string, '()[]{}?.'))
+  return shellescape(escape(a:string, '()[]{}?.$'))
 endfunction
 
 function! SavePositionAndRg(cmd, string)
