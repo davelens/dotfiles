@@ -121,11 +121,8 @@ done;
 unset available_locales lang locale;
 
 ########################################################################
-# BASIC AUTOCOMPLETION
+# BASH AUTOCOMPLETION
 ########################################################################
-# adds ~/.ssh/config to the ssh autocomplete
-complete -W "$(awk '/^\s*Host\s*/ { sub(/^\s*Host /, ""); print; }' ~/.ssh/config)" ssh
-
 # load bash_completion through brew, when installed
 if type brew &>/dev/null; then
   if [[ -r "${BREW_PATH}/etc/profile.d/bash_completion.sh" ]]; then
