@@ -22,6 +22,7 @@ Plug 'tpope/vim-rails'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-bundler'
+Plug 'tpope/vim-abolish'
 Plug 'elixir-editors/vim-elixir'
 Plug 'slashmili/alchemist.vim' " Autocompletion for elixir projects
 Plug 'MarcWeber/vim-addon-mw-utils' " Snipmate dependency
@@ -241,16 +242,6 @@ function! StripTrailingWhitespace()
   %s/\s\+$//e
   %s/\($\n\s*\)\+\%$//e
 endfunction
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Global replacement of camelcase to snakecase.
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! ConvertCamelCaseToSnakeCase()
-  let save_cursor = getpos('.')
-    %s#\C\(\<\u[a-z0-9]\+\|[a-z0-9]\+\)\(\u\)#\l\1_\l\2#g
-  call setpos('.', save_cursor)
-endfunction
-nnoremap <leader>_ :call ConvertCamelCaseToSnakeCase()<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " This shows the vim-ID of an item under the cursor position. This is used
