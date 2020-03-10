@@ -176,7 +176,8 @@ map <leader>json <Esc>:%!python -m json.tool<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
-au FileType ruby map <leader>r :call AltCommand(expand('%'), ':e')<CR>
+au FileType ruby nmap <leader>a :A<CR>
+au FileType ruby nmap <leader>r :R<CR>
 au FileType elixir nmap <leader>r :call AltCommand(expand('%'), ':e')<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
