@@ -64,6 +64,9 @@ export NODE_PATH="/usr/local/share/npm/lib/node_modules"
 # RBENV initialization
 eval "$(rbenv init -)"
 
+# Alias hub straight into git
+eval "$(hub alias -s)"
+
 ########################################################################
 # HISTORY
 ########################################################################
@@ -134,6 +137,3 @@ if type brew &>/dev/null; then
     done
   fi
 fi
-
-# Alias hub straight into git
-eval "$(hub alias -s)"
