@@ -184,7 +184,7 @@ au FileType elixir nmap <leader>r :call AltCommand(expand('%'), ':e')<CR>
 " :terminal
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " The way into :terminal
-command! -nargs=* Terminal exe 'bo sp | res -20 | terminal'
+command! -nargs=0 Terminal exe 'bo sp | res -10 | terminal'
 nnoremap <leader>b :Terminal<CR>
 " The way out of :terminal's insert mode.
 tnoremap <C-[> <C-\><C-n>
