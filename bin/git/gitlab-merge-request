@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# mr stands for "merge request", in context of GitLab's Merge Request feature.
-# This is intended to provide a functionality similar to `hub pull-request -b`
-# as seen in GitHub's hub CLI tool.
+# This is intended as a wrapper for GitLab's Merge Request feature.
+# Made to work similarly as `hub pull-request -b` for GitHub's Pull Request feature.
 
 # Stops further execution after any error.
 set -e

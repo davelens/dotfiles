@@ -26,21 +26,21 @@
   puod = pull origin develop
   pom = push origin master
   pod = push origin develop
-  pr-body = "!/bin/bash gpr-body"
+  pr-body = "!/bin/bash ~/.bin/git/github-pr-body"
   prd = pull-request -b develop
   prs = "pr list --format='%pC%>(8)%i%Creset %t%l%n%x09 %U%n'"
   merged-prs = "pr list --format='%pC%>(8)%i%Creset %t%l (%mr)%n%x09 %U%n' -s merged"
-  m = "!/bin/bash gm"
+  m = "!/bin/bash ~/.bin/git/merge"
 
   # GitHub Pull Requests (stolen from https://github.com/pd/dotfiles/blob/e2d2418f96c5d13b4b06e3f2dff78dfb51eeb49c/gitconfig#L47-48)
   # call with the pull request #, it will check out the pr locally
   get-pr = "!f() { remote=${2:-$(git remote|head -1)}; git fetch -fu $remote refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
 
   # GitLab Merge Requests (mainly making use of https://github.com/NARKOZ/gitlab)
-  mr = "!/bin/bash mr"
+  mr = "!/bin/bash ~/.bin/git/gitlab-merge-request"
 
   # Merge into the temp branch
-  mt = "!/bin/bash mt"
+  mt = "!/bin/bash ~/.bin/git/merge-to-temp"
 
   # remove local branches that were created from `git pr`
   pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
