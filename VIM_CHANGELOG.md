@@ -22,28 +22,15 @@ of my beloved `.vimrc`.
 ## 2020-03-10
 
 * Added a vim changelog. \o/
-* Replaced OpenGem() in favor of Tim Pope's vim-bundler, mapping <leader>g to 
-its `:Bopen` command. I now rely on this plugin to do my heavy lifting when
-browsing gems.
-* Replaced ConvertCamelCaseToSnakeCase() function in favor of Time Pope's
-vim-abolish. Its `crs` motion does the same thing, and I get to use all its 
-other coercions to convert to any other kind of casing I want. Also this method
-name was apparently faulty, as it should've been ConvertMixedCaseToSnakeCase().
+* Replaced OpenGem() in favor of Tim Pope's [vim-bundler](https://github.com/tpope/vim-bundler], mapping `<leader>g` to 
+its `:Bopen` command. I now rely on this plugin to do my heavy lifting when browsing gems.
+* Replaced `ConvertCamelCaseToSnakeCase()` function in favor of Time Pope's [vim-abolish](https://github.com/tpope/vim-abolish). Its `crs` motion does the same thing, and I get to use all its  other coercions to convert to any other kind of casing I want. Also, this method name was faulty, as it should've been `ConvertMixedCaseToSnakeCase()` instead.
 * Removed apidock.vim configuration, as it's been gone for a good while now.
-* Removed SaveAndRefreshFirefox(), I haven't used it in years.
-* Removed <leader>r mapping in favor of vim-rails's :A. It offers more useful 
+* Removed `SaveAndRefreshFirefox()`, I haven't used it in years.
+* Removed `<leader>r` mapping in favor of [vim-rails](https://github.com/tpope/vim-rails)'s `:A`. It offers more useful 
 Rails-specific alternatives.
-* Added <leader>a mapping to vim-rails's :A (alternative file)
-* Added <leader>r mapping to vim-rails's :R (relative file)
-* Added g:rails_gem_projects configuration for the factory_bot gem. I'd like to
-take more advantage of file jumps with more identifiers, ideally mapping out
-recurring gems in our company's Gemfiles. I'm planning on adding more when this
-one works well.
-* Replaced the `RubyTestCommand()` call in `RunRubyTests()` with plain 
-`bundle exec rspec`. I had a strange problem with certain tests involving routes
-failing because they added a `?locale=nl` parameter. Running a bundled rspec
-did not (and shouldn't!) throw these errors.
-* Added a :Terminal command that opens up a `:terminal` across the full width at
-the bottom, slightly smaller than your average split. It's mapped to <leader>b 
-(b for "bottom"). I might remap this to <leader>bt ("bottom terminal") if I ever 
-find a better use for "b".
+* Added `<leader>a` mapping to vim-rails's `:A` (alternative file)
+* Added `<leader>r` mapping to vim-rails's `:R` (relative file)
+* Added `g:rails_gem_projections` configuration for the [factory_bot](https://github.com/thoughtbot/factory_bot) gem. I'd like to take more advantage of file jumps with more identifiers, ideally mapping out recurring gems in our company's Gemfiles. I'm planning on adding more when this one works well.
+* Replaced the `RubyTestCommand()` call in `RunRubyTests()` with plain `bundle exec rspec`. I had a strange problem with certain tests involving routes failing because they added a `?locale=nl` parameter. Running a bundled rspec did not (and should not!) throw these errors.
+* Added a `:Terminal` command that opens up a terminal across the full width at the bottom, slightly smaller than your average split. It's mapped to `<leader>b` (b for "bottom"). I might remap this to `<leader>bt` ("bottom terminal") if I ever find a better use for "b".
