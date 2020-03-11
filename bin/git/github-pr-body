@@ -51,7 +51,7 @@ body_file=".git/$branch_name.md"
 
 # Stop here if there's no PR available for the current branch.
 if [ ! $pr_id ]; then
-  echo "No pull requests exist for $repo_suffix."
+  echo "No pull requests exist for branch $branch_name in $repo_suffix."
   exit
 fi
 
