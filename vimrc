@@ -552,7 +552,7 @@ let g:rails_gem_projections = {
 \      "affinity":  "collection",
 \      "alternate": "app/models/{singular}.rb",
 \      "related":   "db/schema.rb#{}",
-\      "test":      "spec/models/{singular}_test.rb",
+\      "test":      "spec/models/{singular}_spec.rb",
 \      "template":  "FactoryBot.define do\n  factory :{singular} do\n  end\nend",
 \      "keywords":  "factory sequence"
 \    }
