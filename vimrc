@@ -556,5 +556,14 @@ let g:rails_gem_projections = {
 \      "template":  "FactoryBot.define do\n  factory :{singular} do\n  end\nend",
 \      "keywords":  "factory sequence"
 \    }
-\  }
+\  },
+\  "draper": {
+\    "app/decorators/*_decorator.rb": {
+\      "command":   "decorator",
+\      "affinity":  "model",
+\      "test":      "spec/decorators/{}_spec.rb",
+\      "related":   "app/models/{}.rb",
+\      "template":  "class {camelcase|capitalize|colons}Decorator < Draper::Decorator\n  delegate_all\nend"
+\    }
+\  },
 \}
