@@ -15,6 +15,12 @@ all my Vim changes as time goes by. This way I can follow the reasoning of past
 Dave and hopefully make appropriate decisions when performing future revisions
 of my beloved `.vimrc`. There are many like it, but this one's mine.
 
+## (n)vim TODOs
+I'll try out GitHub issues to maintain a TODO list [here]( https://github.com/davelens/dotfiles/issues?q=is%3Aopen+label%3Atodo+label%3Avim).
+
+## 2020-03-11
+* Added `g:rails_gem_projections` configuration for the [draper](https://github.com/drapergem/draper) gem. The FactoryBot mappings I made yesterday along with the `:A`/`:R` bindings are an improvement, so I added this after wanting to jump to a decorator file.
+
 ## 2020-03-10
 
 * Added a vim changelog. \o/
