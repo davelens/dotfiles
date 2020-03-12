@@ -1,23 +1,19 @@
 # (n)vim changelog
-> This is my vimrc. There are many like it, but this one is mine.
+> [This is my vimrc](https://github.com/davelens/dotfiles/blob/master/vimrc). There are many like it, but this one is mine.
 > My vimrc is my best friend. It is my life. I must master it as I must master my life.
 > Without me, my vimrc is useless. Without my vimrc, I am useless.
 
 In an average week of work I see several thousands lines of code. I can maintain
 a hyperfocus on certain programmatical problems during my day job and it allows
 me to learn quickly from "new code" as I'm skimming it. Sadly, I'm also somewhat
-forgetful. Much like forgetting what I ate last week, or what day of the month 
-it is, I can often barely remember what code I read and/or wrote the week 
-before. Or what stuff I added to my dotfiles and/or `.vimrc`, and why I did so.
+forgetful of random pieces of information: What I ate the day before, what the current date is, when I worked on a particular feature in a project, etc,...
 
-This is often annoying when a line in my vimrc sits there for years and I can't 
-remember why I put it there. Sometimes I had the good sense to comment a 
-particular obscure line, but more often than not I'm missing some context.
+This is often annoying when an undocumented line in my vimrc sits there for years and I can only vaguely remember why I put it there. 
 
 An experiment then. With this file I hope to keep a contextualized overview of 
 all my Vim changes as time goes by. This way I can follow the reasoning of past 
 Dave and hopefully make appropriate decisions when performing future revisions
-of my beloved `.vimrc`.
+of my beloved `.vimrc`. There are many like it, but this one's mine.
 
 ## 2020-03-10
 
