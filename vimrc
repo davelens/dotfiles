@@ -48,6 +48,14 @@ endif
 
 call plug#end()
 
+" Fix copy/paste from vim registers to system clipboard on WSL.
+if has('wsl')
+  augroup Yank
+    autocmd!
+    autocmd TextYankPost * :call system('clip.exe ',@")
+  augroup END
+endif
+
 filetype plugin indent on
 syntax on
 
