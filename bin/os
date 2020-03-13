@@ -8,4 +8,5 @@ else
   OS=`uname -s`
   [ $OS == 'Darwin' ] && echo 'macos'
   [ $OS == 'Linux' ] && echo 'linux'
+  [ $OS == 'FreeBSD' ] && echo 'freebsd'
 fi

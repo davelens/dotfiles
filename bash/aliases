@@ -1,8 +1,8 @@
 #!/bin/bash
-OS=`uname -s`
+OS=`os`
 
 # Mac commands
-if [[ $OS == 'Darwin' ]]
+if [[ $OS == 'macos' ]]
 then
   alias allow='xattr -d com.apple.quarantine'
   alias ls='ls -G'
@@ -13,7 +13,7 @@ then
 fi
 
 # Linux (Ubuntu, Debian, Mint,...)
-if [[ $OS == 'Linux' ]]
+if [[ $OS == 'linux' ]]
 then
   # di = directory
   # fi = file
