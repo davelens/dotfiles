@@ -10,9 +10,10 @@ done;
 unset file;
 
 # Load OS specific files
-OS=`uname -s`
-[ $OS == 'Darwin' ] && . ~/.bash/macos
-[ $OS == 'Linux' ] && . ~/.bash/linux
+OS=`os`
+[ $OS == 'windows' ] && . ~/.bash/wsl
+[ $OS == 'macos' ] && . ~/.bash/macos
+[ $OS == 'linux' ] && . ~/.bash/linux
 
 # Source all downloaded completion files.
 for file in ~/.bash/completions/*.bash; do

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# This file will only load on WSL.
+alias pbcopy='clip.exe'
+
+export LDFLAGS="-L${BREW_PATH}/opt/mysql@5.7/lib"
+export CPPFLAGS="-I${BREW_PATH}/opt/mysql@5.7/include"
+export PKG_CONFIG_PATH="${BREW_PATH}/opt/mysql@5.7/lib/pkgconfig"
+
+# Start the SSH agent
+eval "$(ssh-agent -s)"
