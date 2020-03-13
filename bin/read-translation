@@ -1,0 +1,33 @@
+#!/usr/bin/ruby
+
+require 'yaml'
+
+unless File.exists?('config.ru')
+  puts 'ERROR: You can only run this from a folder containing a Rails project.'
+  return
+end
+
+def files
+  files ||= Dir.glob('config/locales/*.yml')
+end
+
+def locales
+  files.each_with_object([]) do |file, stack|
+    locale = file.gsub(/config\/locales\/(.*)\.yml/, '\1').split('_').first
+    stack << locale if locale
+    stack
+  end.uniq
+end
+
+def process(hash)
+  values = locales.each_with_object([]) do |locale, stack|
+    keys = ARGV[0].split('.').unshift(locale)
+    value = hash.dig(*keys)
+    stack << locale.concat(': ').concat(value) if value
+    stack
+  end
+
+  puts values if values.any?
+end
+
+files.each { |file| process(YAML.load_file(file)) }

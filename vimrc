@@ -307,6 +307,7 @@ nmap <leader>k :call RgSearchAndReplace(@k)<CR>
 nnoremap <expr> <leader>l ':Rg '. expand('<cword>') .'<CR>'
 vnoremap <leader>l "ky:exec SavePositionAndRg('Rg', @k)<CR>
 vnoremap <leader>k "ky:exec SavePositionAndRg('Rg!', @k)<CR>
+vnoremap <leader>i "ky:echo system("~/.bin/read-translation ". @k)<CR>
 
 function! SanitizeRgArgument(string)
   return shellescape(escape(a:string, '()[]{}?.$'))
