@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null ; then
+  echo 'windows'
+else
+  OS=`uname -s`
+  [ $OS == 'Darwin' ] && echo 'macos'
+  [ $OS == 'Linux' ] && echo 'linux'
+fi
