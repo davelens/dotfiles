@@ -554,6 +554,7 @@ endfunction
 " Various Rails-specific functionality and maps
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 au FileType ruby,eruby vnoremap <leader>i "ky:echo system("~/.bin/rails/lookup-translations ". @k)<CR>
+au FileType ruby nnoremap \ :exe ':Rg "def " "" '. expand('%')<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Custom Rails and gem projections to be used with vim-{rails,projectionist}.
