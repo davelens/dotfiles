@@ -18,6 +18,10 @@ of my beloved `.vimrc`. There are many like it, but this one's mine.
 ## (n)vim TODOs
 I'll try out GitHub issues to maintain a TODO list [here]( https://github.com/davelens/dotfiles/issues?q=is%3Aopen+label%3Atodo+label%3Avim).
 
+## 2020-03-13
+* Added a fix to copy stuff straight into the system clipboard on WSL. I have a Windows desktop at home (my "hobby machine") with WSL installed. I do some programming there on occasion as well, so a similar copy/paste functionality compared to my regular macos setup is handy.
+* Added a way to look up I18n translation strings by their identifier from within Vim. Sometimes I'm coming back to a partial for a refactor or a feature, and knowing what text certain `I18n.t` calls hold without looking them up manually is handy. This approach would make it possible (with some revision) to get a list of untranslated strings across all partials from within Vim, too.
+
 ## 2020-03-11
 * Added `g:rails_gem_projections` configuration for the [draper](https://github.com/drapergem/draper) gem. The FactoryBot mappings I made yesterday along with the `:A`/`:R` bindings are an improvement, so I added this after wanting to jump to a decorator file.
 
