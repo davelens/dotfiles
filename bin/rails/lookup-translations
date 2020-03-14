@@ -5,6 +5,12 @@ unless File.exists?('config.ru')
   return
 end
 
+unless ARGV[0]
+  puts 'ERROR: No translation key given for lookup.'
+  puts 'Usage: ~/.bin/rails/lookup-translations <translation key>'
+  return
+end
+
 require 'yaml'
 
 # As taken from active_support/core_ext/hash/deep_merge.rb
