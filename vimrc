@@ -307,7 +307,6 @@ nmap <leader>k :call RgSearchAndReplace(@k)<CR>
 nnoremap <expr> <leader>l ':Rg '. expand('<cword>') .'<CR>'
 vnoremap <leader>l "ky:exec SavePositionAndRg('Rg', @k)<CR>
 vnoremap <leader>k "ky:exec SavePositionAndRg('Rg!', @k)<CR>
-au FileType ruby,eruby vnoremap <leader>i "ky:echo system("~/.bin/rails/lookup-translations ". @k)<CR>
 
 function! SanitizeRgArgument(string)
   return shellescape(escape(a:string, '()[]{}?.$'))
@@ -550,6 +549,11 @@ function! RunRubyTests(filename)
     exe "!" . RubyTestCommand() . " " . a:filename
   end
 endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Various Rails-specific functionality and maps
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+au FileType ruby,eruby vnoremap <leader>i "ky:echo system("~/.bin/rails/lookup-translations ". @k)<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Custom Rails and gem projections to be used with vim-{rails,projectionist}.
