@@ -18,6 +18,9 @@ of my beloved `.vimrc`. There are many like it, but this one's mine.
 ## (n)vim TODOs
 I'll try out GitHub issues to maintain a TODO list [here]( https://github.com/davelens/dotfiles/issues?q=is%3Aopen+label%3Atodo+label%3Avim).
 
+## 2020-03-23
+* Added `set inccommand=split` to show substitution results in a preview window. A setting I wasn't aware of, but is entirely convenient.
+
 ## 2020-03-14
 * Added a nmap for `\` to trigger a Rg search for Ruby method definitions in the active buffer window. I was planning on making this Ruby agnostic (which you can do by replacing `"def "` with `""` in the map), but it would require you to type `'def '` in the subsequent search field. I tried this out for a colleague and will probably not use it much (I still think typing `/def ` and `n` to cycle through definitions is faster).
 

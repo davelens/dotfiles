@@ -78,6 +78,7 @@ set incsearch
 set laststatus=2
 set foldclose=all
 set foldmethod=marker
+set inccommand=split
 
 " Indentation and whitespace settings
 set smartindent
