@@ -198,8 +198,10 @@ command! -nargs=0 Terminal exe 'bo sp | res -10 | terminal'
 nnoremap <leader>b :Terminal<CR>
 " The way out of :terminal's insert mode.
 tnoremap <C-[> <C-\><C-n>
-" The way out of :terminal. Requires insert mode for reasons.
+" The way out of :terminal while in insert mode.
 tnoremap <leader>x <C-\><C-n>:q!<CR>
+" The way out of anything while in normal mode!
+nnoremap <leader>x :q!<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Opens alternate files using alt, a CLI tool to help find the "alternate"

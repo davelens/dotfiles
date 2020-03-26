@@ -20,6 +20,7 @@ I'll try out GitHub issues to maintain a TODO list [here]( https://github.com/da
 
 ## 2020-03-26
 * Added `<leader>d` in normal+visual mode to trigger definition lookup in Ruby files using `:Rg`. Just for those times when I can't use vim-rails's `gf`.
+* Added `<leader>x` in normal mode to close the current file without saving. The reason I added this is because I had a brainwave and realised why my `tnoremap <leader>x` did not work: Normal mode persists in terminal windows! I was overthinking the window's constraints. So now closing a file or a terminal can benefit from the same mapping.
 
 ## 2020-03-23
 * Added `set inccommand=split` to show substitution results in a preview window. A setting I wasn't aware of, but is entirely convenient.
