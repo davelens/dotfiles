@@ -18,6 +18,9 @@ of my beloved `.vimrc`. There are many like it, but this one's mine.
 ## (n)vim TODOs
 I'll try out GitHub issues to maintain a TODO list [here]( https://github.com/davelens/dotfiles/issues?q=is%3Aopen+label%3Atodo+label%3Avim).
 
+## 2020-03-26
+* Added `<leader>d` in normal+visual mode to trigger definition lookup in Ruby files using `:Rg`. Just for those times when I can't use vim-rails's `gf`.
+
 ## 2020-03-23
 * Added `set inccommand=split` to show substitution results in a preview window. A setting I wasn't aware of, but is entirely convenient.
 

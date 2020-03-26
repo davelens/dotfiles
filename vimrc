@@ -309,6 +309,11 @@ nnoremap <expr> <leader>l ':Rg '. expand('<cword>') .'<CR>'
 vnoremap <leader>l "ky:exec SavePositionAndRg('Rg', @k)<CR>
 vnoremap <leader>k "ky:exec SavePositionAndRg('Rg!', @k)<CR>
 
+" Definition lookup in Ruby files. Same as <leader>l, but prefixes search
+" string with "def ".
+au FileType ruby nnoremap <expr> <leader>d ':Rg -t ruby "def '. expand('<cword>') .'"<CR>'
+au FileType ruby vnoremap <leader>d "ky:exec SavePositionAndRg('Rg -t ruby ', "def ". @k)<CR>
+
 function! SanitizeRgArgument(string)
   return shellescape(escape(a:string, '()[]{}?.$'))
 endfunction
