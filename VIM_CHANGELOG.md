@@ -18,6 +18,9 @@ of my beloved `.vimrc`. There are many like it, but this one's mine.
 ## (n)vim TODOs
 I'll try out GitHub issues to maintain a TODO list [here]( https://github.com/davelens/dotfiles/issues?q=is%3Aopen+label%3Atodo+label%3Avim).
 
+## 2020-03-30
+* Wrapped my `<CR>` nmap for running the tests for the current file in `augroup ruby`. That map was blocking the mapping used by command-line windows to run the command under the cursor. I now explicitly unmap `<CR>` to restore said functionality.
+
 ## 2020-03-26
 * Added `<leader>d` in normal+visual mode to trigger definition lookup in Ruby files using `:Rg`. Just for those times when I can't use vim-rails's `gf`.
 * Added `<leader>x` in normal mode to close the current file without saving. The reason I added this is because I had a brainwave and realised why my `tnoremap <leader>x` did not work: Normal mode persists in terminal windows! I was overthinking the window's constraints. So now closing a file or a terminal can benefit from the same mapping.

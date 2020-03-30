@@ -484,7 +484,15 @@ endfunction
 " Running tests. Original code for Ruby taken from Gary Bernhardt, and slightly
 " modified to support running tests in Rails engine projects and Elixir.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <CR> :call RunTestFile()<CR>
+augroup ruby
+  au!
+  au CmdwinEnter,FileType vim nunmap <CR>
+  " This works, but ideally this would map for ruby filetypes only, and I'm not
+  " exactly sure how to do that.
+  au CmdwinLeave * nmap <CR> :call RunTestFile()<CR>
+  au FileType ruby nmap <CR> :call RunTestFile()<CR>
+augroup END
+
 nnoremap <leader>f :call RunNearestTest()<CR>
 nnoremap <leader>T :call RunTests('')<CR>
 
