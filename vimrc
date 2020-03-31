@@ -78,9 +78,8 @@ set incsearch
 set laststatus=2
 set foldclose=all
 set foldmethod=marker
-
 if has('nvim')
-  set inccommand=split
+  set icm=split
 endif
 
 " Indentation and whitespace settings
