@@ -78,7 +78,10 @@ set incsearch
 set laststatus=2
 set foldclose=all
 set foldmethod=marker
-set inccommand=split
+
+if has('nvim')
+  set inccommand=split
+endif
 
 " Indentation and whitespace settings
 set smartindent
@@ -486,9 +489,8 @@ endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup ruby
   au!
-  au CmdwinEnter,FileType vim nunmap <CR>
-  " This works, but ideally this would map for ruby filetypes only, and I'm not
-  " exactly sure how to do that.
+  " Unmaps <CR> from any source so I can use Enter in command-line mode.
+  au CmdwinEnter * nunmap <CR>
   au CmdwinLeave * nmap <CR> :call RunTestFile()<CR>
   au FileType ruby nmap <CR> :call RunTestFile()<CR>
 augroup END
