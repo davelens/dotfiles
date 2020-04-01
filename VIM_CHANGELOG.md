@@ -17,6 +17,8 @@ I'll try out GitHub issues to maintain a TODO list [here]( https://github.com/da
 
 ## 2020-03-31
 * Slightly adjusted my previous `<CR>` unmapping when entering command-line mode to include `<C-W>p` so my cursor position is retained in the current buffer when running tests.
+* Extended said unmapping to run on both `TermOpen` and `TermClose`. This is so other terminal windows do not receive the `<CR>` override.
+* Prefixed said unmapping to perform silently so that we don't have vim whining about non-existent bindings.
 * Added `DeleteHiddenBuffers()`. Because I'm experimenting with how I expect my terminal windows to behave when triggered by `RunTestFile()`, I looked for a solution that would wipe out all but my currently visible buffers to free up some memory. As an aside it *might* be useful if there are plenty of buffers open and you want to regain some clarity without exiting Vim. To be reviewed on a later date.
 * I actively started documenting specific settings in my vimrc, both as a re-evaluation of why they're there, and as a learning opportunity to dig deeper in their `:help` entries.
 * Added a better configuration to make `autoread` also catch changes made from outside of vim (or in my case specifically; another instance of vim in a tmux session). I was wondering why autoread didn't do what I thought it did, so I read up on it and found a great summary [here](https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044).
