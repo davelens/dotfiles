@@ -196,10 +196,10 @@ au FileType elixir nmap <leader>r :call AltCommand(expand('%'), ':e')<CR>
 " :terminal
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " The way into :terminal
-command! -nargs=0 Terminal exe 'bo sp | res -10 | terminal'
+command! -nargs=0 Terminal exe 'bo sp | term'
 nnoremap <leader>b :Terminal<CR>
 " The way out of :terminal's insert mode.
-tnoremap <C-[> <C-\><C-n>
+tnoremap <silent> <C-[> <C-\><C-n>
 " The way out of :terminal while in insert mode.
 tnoremap <leader>x <C-\><C-n>:q!<CR>
 " The way out of anything while in normal mode!
@@ -488,10 +488,13 @@ endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup ruby
   au!
-  " Unmaps <CR> from any source so I can use Enter in command-line mode.
+  " Unmaps <CR> from any source, and remaps it when leaving command-line mode.
+  " This way I can keep using Enter in command-line mode.
+  "
+  " The <C-W>p is to retain my cursor position when triggering a test.
   au CmdwinEnter * nunmap <CR>
-  au CmdwinLeave * nmap <CR> :call RunTestFile()<CR>
-  au FileType ruby nmap <CR> :call RunTestFile()<CR>
+  au CmdwinLeave * nmap <CR> :call RunTestFile()<CR><C-W>p
+  au FileType ruby nmap <CR> :call RunTestFile()<CR><C-W>p
 augroup END
 
 nnoremap <leader>f :call RunNearestTest()<CR>

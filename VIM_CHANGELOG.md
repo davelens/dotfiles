@@ -18,8 +18,11 @@ of my beloved `.vimrc`. There are many like it, but this one's mine.
 ## (n)vim TODOs
 I'll try out GitHub issues to maintain a TODO list [here]( https://github.com/davelens/dotfiles/issues?q=is%3Aopen+label%3Atodo+label%3Avim).
 
+## 2020-03-31
+* Slightly adjusted my previous `<CR>` unmapping when entering command-line mode to include `<C-W>p` so my cursor position is retained in the current buffer when running tests.
+
 ## 2020-03-30
-* Wrapped my `<CR>` nmap for running the tests for the current file in `augroup ruby`. That map was blocking the mapping used by command-line windows to run the command under the cursor. I now explicitly unmap `<CR>` to restore said functionality.
+* I now unmap `<CR>` (normally mapped to `RunTestFile()`) whenever I enter command-line mode, so I can use `<CR>` to run the command under the cursor. I remap it whenever I leave command-line mode.
 
 ## 2020-03-26
 * Added `<leader>d` in normal+visual mode to trigger definition lookup in Ruby files using `:Rg`. Just for those times when I can't use vim-rails's `gf`.
