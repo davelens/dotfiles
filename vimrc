@@ -497,8 +497,8 @@ function! AutoResizeWindowOnFocus(ratio, axis)
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Running tests. Original code for Ruby taken from Gary Bernhardt, and slightly
-" modified to support running tests in Rails engine projects and Elixir.
+" Running Ruby/Go/Elixir tests.
+" Original RunTestFile() code taken from Gary Bernhardt's dotfiles.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup run_test_file_maps
   au!
@@ -508,6 +508,24 @@ augroup run_test_file_maps
   " Unmaps <CR> when entering Command-Line Mode. Includes terminals.
   " This way I can keep using <CR> in q:
   au FileType vim silent! nunmap <buffer> <CR>
+
+  " This is my alternative to the somewhat sluggish vim-dispatch. The code
+  " below autocloses the terminal window whenever ", 0 failures" was found
+  " in the terminal buffer, but remains open on errors to draw my attention.
+  " This ensures freedom of movement, just like vim-dispatch.
+  "
+  " An important missing feature compared to vim-dispatch is that it does not
+  " populate my quickfix window with test results. I don't currently use
+  " quickfix this way (and would probably like to try in the future), but this
+  " will do for now.
+  if has('nvim')
+    au TermClose term://*
+      \ if (expand('<afile>') !~ "fzf") && (expand('<afile>') !~ "ranger") && (expand('<afile>') !~ "coc") |
+      \   if join(nvim_buf_get_lines(g:terminal_buffer_id, 0, 9999, 0), "\n") =~ ', 0 failures' |
+      \     exe 'bd! '. g:terminal_buffer_id |
+      \   endif |
+      \ endif
+  endif
 augroup END
 
 nnoremap <leader>f :call RunNearestTest()<CR>
@@ -580,6 +598,7 @@ function! RunRubyTests(filename)
     exe "silent !tmux send -t 5 'bundle exec rspec " . a:filename . "' Enter"
   else
     exe "bo sp | res 10 | term ". RubyTestCommand() ." ". a:filename
+    let g:terminal_buffer_id = nvim_get_current_buf()
   end
 endfunction
 
