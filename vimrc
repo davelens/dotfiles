@@ -56,8 +56,8 @@ if has('wsl')
   augroup END
 endif
 
-filetype plugin indent on
-syntax on
+filetype plugin indent on " Loads up ftplugin and indent files, when present.
+syntax on " Enables syntax colorization
 
 set hidden " Keeps buffers in the background when left behind.
 set autowrite " Write file contents for writable buffers
