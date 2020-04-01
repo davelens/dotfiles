@@ -59,12 +59,14 @@ endif
 filetype plugin indent on
 syntax on
 
-" Remember undo's even when buffer has been in the background.
-" Also allows for sending buffers to the background without saving...
-set hidden
-" ... this is where this comes in:
-set autowrite
-set autoread
+set hidden " Keeps buffers in the background when left behind.
+set autowrite " Write file contents for writable buffers
+set autoread " Load in changes made from *outside* vim.
+au FocusGained,BufEnter * :checktime " Load in changes made from *within* vim.
+au FocusLost,WinLeave * :silent! noautocmd w " Write files when leaving buffers.
+" The above autocommands are used in tandem to avoid file conflicts in general.
+" To understand why autoread does not track all changes regardless of source:
+" https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
 
 set encoding=utf-8
 set fileformat=unix
