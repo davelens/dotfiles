@@ -521,8 +521,9 @@ augroup run_test_file_maps
   if has('nvim')
     au TermClose term://*
       \ if (expand('<afile>') !~ "fzf") && (expand('<afile>') !~ "ranger") && (expand('<afile>') !~ "coc") |
-      \   if join(nvim_buf_get_lines(g:terminal_buffer_id, 0, 9999, 0), "\n") =~ ', 0 failures' |
+      \   if (join(nvim_buf_get_lines(g:terminal_buffer_id, 0, 9999, 0), "\n")) =~ ', 0 failures' |
       \     exe 'bd! '. g:terminal_buffer_id |
+      \     unlet g:terminal_buffer_id |
       \   endif |
       \ endif
   endif
@@ -532,6 +533,11 @@ nnoremap <leader>f :call RunNearestTest()<CR>
 nnoremap <leader>T :call RunTests('')<CR>
 
 function! RunTestFile(...)
+  if (exists('g:terminal_buffer_id'))
+    exe 'bd! '. g:terminal_buffer_id
+    unlet g:terminal_buffer_id
+  endif
+
   if a:0
     let command_suffix = a:1
   else
@@ -598,7 +604,9 @@ function! RunRubyTests(filename)
     exe "silent !tmux send -t 5 'bundle exec rspec " . a:filename . "' Enter"
   else
     exe "bo sp | res 10 | term ". RubyTestCommand() ." ". a:filename
-    let g:terminal_buffer_id = nvim_get_current_buf()
+    if (!exists('g:terminal_buffer_id'))
+      let g:terminal_buffer_id = nvim_get_current_buf()
+    endif
   end
 endfunction
 
