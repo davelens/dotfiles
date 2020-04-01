@@ -68,6 +68,10 @@ au FocusLost,WinLeave * :silent! noautocmd w " Write files when leaving buffers.
 " To understand why autoread does not track all changes regardless of source:
 " https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
 
+if has('nvim')
+  set icm=split " Enables real-time substitute previews. Nvim only.
+endif
+
 set encoding=utf-8
 set fileformat=unix
 set linespace=0
@@ -80,9 +84,6 @@ set incsearch
 set laststatus=2
 set foldclose=all
 set foldmethod=marker
-if has('nvim')
-  set icm=split
-endif
 
 " Indentation and whitespace settings
 set smartindent
