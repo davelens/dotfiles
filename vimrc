@@ -585,7 +585,7 @@ function! RunRubyTests(filename)
     " prevent fringe cases where bin/spring screws up.
     exe "silent !tmux send -t 5 'bundle exec rspec " . a:filename . "' Enter"
   else
-    exe "!" . RubyTestCommand() . " " . a:filename
+    exe "bo sp | res 10 | term ". RubyTestCommand() ." ". a:filename
   end
 endfunction
 
