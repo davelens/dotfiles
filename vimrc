@@ -499,15 +499,21 @@ endfunction
 " Running tests. Original code for Ruby taken from Gary Bernhardt, and slightly
 " modified to support running tests in Rails engine projects and Elixir.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-augroup ruby
+augroup run_ruby_test_file
   au!
   " Unmaps <CR> from any source, and remaps it when leaving command-line mode.
   " This way I can keep using Enter in command-line mode.
   "
   " The <C-W>p is to retain my cursor position when triggering a test.
-  au CmdwinEnter * nunmap <CR>
-  au CmdwinLeave * nmap <CR> :call RunTestFile()<CR><C-W>p
-  au FileType ruby nmap <CR> :call RunTestFile()<CR><C-W>p
+  au CmdwinEnter * silent! nunmap <CR>
+  au CmdwinLeave * nmap <CR> :call RunTestFile()<CR>
+
+  if has('nvim')
+    au TermOpen * silent! nunmap <CR>
+    au TermClose * nmap <CR> :call RunTestFile()<CR>
+  endif
+
+  au FileType ruby nmap <CR> :call RunTestFile()<CR>
 augroup END
 
 nnoremap <leader>f :call RunNearestTest()<CR>
