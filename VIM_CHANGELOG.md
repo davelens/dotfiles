@@ -18,6 +18,8 @@ I'll try out GitHub issues to maintain a TODO list [here]( https://github.com/da
 ## 2020-04-02
 * In review of my changes of 31/3, I removed my homebrew testing functionality in favour of `vim-dispatch` and `vim-test`. They work together beautifully.  I realised I wrote the functionality for running a single test file was written mostly because I wanted to get some practice in with vimscript problem solving. In the end, I came up with a solution that was dependent on nvim_* methods. This is OK, as I'm using neovim at the moment because it's faster, but I'm unsure how my stance on neovim will change in the future. Vim has been around for 30 odd years, chances are it'll be here the next 30, too. Not so sure about neovim. Time will tell. Regardless, @tpope is a bonafide genius.
 * Removed my `]q` and `[q` maps in favour of `vim-unimpaired`. I want to make use of its linewise and {en,de}coding maps.
+* Added `:SV`, short for`source ~/.vimrc`. I just do it too much lately.
+* Let `RenameFile()` use `:Grename` whenever a `.git` directory is present.
 
 ## 2020-04-01
 * No jokes.
