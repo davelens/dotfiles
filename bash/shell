@@ -10,7 +10,6 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 
 # Make ls & grep pretty
 export CLICOLOR=1
-#export GREP_OPTIONS='--color=auto'
 
 # PAGER is the path to the program used to list the contents of files through
 export PAGER='less --quit-if-one-screen --no-init --ignore-case --RAW-CONTROL-CHARS --quiet --dumb';
@@ -34,22 +33,23 @@ export GOPATH=${HOME}/.go
 # PATH
 ########################################################################
 
-export BREW_PATH=$(brew --prefix)
+export BREW_PATH=$(/usr/bin/brew --prefix)
 
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
-# Dotfiles
-${HOME}/.bin
-# Homebrew
-/usr/local/{,s}bin
-${BREW_PATH}/opt/openssl/bin
-${BREW_PATH}/opt/imagemagick@6/bin
-${BREW_PATH}/opt/qt@5.5/bin
-${BREW_PATH}/opt/mysql@5.7/bin
-# System
-/{,s}bin
-/usr/{,s}bin
+  ${HOME}/.bin
+  ${BREW_PATH}/{,s}bin
+  /usr/local/{,s}bin
+  /{,s}bin
+  /usr/{,s}bin
 );
+
+if [[ $OS == 'windows' ]]; then
+  paths_to_add+=(
+    /mnt/c/Windows/System32
+    /mnt/c/Windows/SysWOW64
+  )
+fi
 
 # Now implode everything into the new PATH variable.
 printf -v PATH "%s:" "${paths_to_add[@]}";

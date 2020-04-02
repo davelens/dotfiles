@@ -46,7 +46,7 @@ endif
 if has('mac')
   Plug '/usr/local/opt/fzf'
 elseif has('unix')
-  Plug '~/.linuxbrew/opt/fzf'
+  Plug '/home/linuxbrew/.linuxbrew/opt/fzf'
 endif
 
 call plug#end()

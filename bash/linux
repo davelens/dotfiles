@@ -2,8 +2,20 @@
 
 # This file will only load on Linux
 
-# WARNING: This is highly subjective and highly experimental. I will update this
-# file the moment I'm on Linux more frequently.
+# di = directory
+# fi = file
+# ln = symbolic link
+# pi = fifo file
+# so = socket file
+# bd = block (buffered) special file
+# cd = character (unbuffered) special file
+# or = symbolic link pointing to a non-existent file (orphan)
+# mi = non-existent file pointed to by a symbolic link (visible when you type ls -l)
+# ex = file which is executable (ie. has 'x' set in permissions).
+# *.rpm = files with the ending .rpm
+LS_COLORS=$LS_COLORS:'di=0;35:'; export LS_COLORS
+alias lsa='ls -hal --color=tty'
+alias pbcopy='xclip -selection clipboard'
 
 setxkbmap -option altwin:ctrl_win # Switch win/command key with ctrl
 setxkbmap -option ctrl:nocaps # Switch capslock with ctrl
@@ -12,11 +24,3 @@ setxkbmap -option ctrl:nocaps # Switch capslock with ctrl
 if [ -e /usr/share/terminfo/x/xterm-256color ] && [ "$COLORTERM" == "xfce4-terminal" ]; then
   export TERM=xterm-256color
 fi
-
-# Runs albert headless
-# Project link: https://github.com/ManuelSchneid3r/albert
-if [ ! `pgrep -n albert` ]; then
-  nohup albert </dev/null &>/dev/null &
-fi
-
-alias pbcopy='xclip -selection clipboard'
