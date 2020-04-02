@@ -23,6 +23,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-bundler'
 Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-dispatch'
 Plug 'elixir-editors/vim-elixir'
 Plug 'slashmili/alchemist.vim' " Autocompletion for elixir projects
@@ -231,9 +232,6 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Quickfix operations
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap ]q :cprev<CR>
-nnoremap [q :cnext<CR>
-
 function! QSearchAndReplace(string)
   let old_value = escape(a:string, '/')
   let new_value = escape(input('Replace '. shellescape(a:string) .' with: '), '/')
