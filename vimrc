@@ -198,6 +198,9 @@ au FileType ruby nmap <leader>a :A<CR>
 au FileType ruby nmap <leader>r :R<CR>
 au FileType elixir nmap <leader>r :call AltCommand(expand('%'), ':e')<CR>
 
+" Just a quicker vimrc sourcing
+command! SV :source ~/.vimrc
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " :terminal
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
