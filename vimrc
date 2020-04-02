@@ -23,6 +23,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-bundler'
 Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-dispatch'
 Plug 'elixir-editors/vim-elixir'
 Plug 'slashmili/alchemist.vim' " Autocompletion for elixir projects
 Plug 'MarcWeber/vim-addon-mw-utils' " Snipmate dependency
@@ -33,6 +34,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'dense-analysis/ale'
 Plug 'junegunn/fzf.vim'
+Plug 'janko/vim-test'
 
 if has('nvim')
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -497,118 +499,27 @@ function! AutoResizeWindowOnFocus(ratio, axis)
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Running Ruby/Go/Elixir tests.
-" Original RunTestFile() code taken from Gary Bernhardt's dotfiles.
+" vim-test and vim-dispatch
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-augroup run_test_file_maps
-  au!
-  " Reserves <CR> for running the tests of the current Ruby spec file.
-  " The <C-W>p is to retain my cursor position when triggering a test.
-  au FileType ruby nmap <buffer> <CR> :call RunTestFile()<CR><C-W>p
-  " Unmaps <CR> when entering Command-Line Mode. Includes terminals.
-  " This way I can keep using <CR> in q:
-  au FileType vim silent! nunmap <buffer> <CR>
+" vim-test strategies per granularity
+let test#strategy = {
+  \ 'nearest': 'neovim',
+  \ 'file':    'dispatch'
+\}
 
-  " This is my alternative to the somewhat sluggish vim-dispatch. The code
-  " below autocloses the terminal window whenever ", 0 failures" was found
-  " in the terminal buffer, but remains open on errors to draw my attention.
-  " This ensures freedom of movement, just like vim-dispatch.
-  "
-  " An important missing feature compared to vim-dispatch is that it does not
-  " populate my quickfix window with test results. I don't currently use
-  " quickfix this way (and would probably like to try in the future), but this
-  " will do for now.
-  if has('nvim')
-    au TermClose term://*
-      \ if (expand('<afile>') !~ "fzf") && (expand('<afile>') !~ "ranger") && (expand('<afile>') !~ "coc") |
-      \   if (join(nvim_buf_get_lines(g:terminal_buffer_id, 0, 9999, 0), "\n")) =~ ', 0 failures' |
-      \     exe 'bd! '. g:terminal_buffer_id |
-      \     unlet g:terminal_buffer_id |
-      \   endif |
-      \ endif
-  endif
-augroup END
-
-nnoremap <leader>f :call RunNearestTest()<CR>
-nnoremap <leader>T :call RunTests('')<CR>
-
-function! RunTestFile(...)
-  if (exists('g:terminal_buffer_id'))
-    exe 'bd! '. g:terminal_buffer_id
-    unlet g:terminal_buffer_id
-  endif
-
-  if a:0
-    let command_suffix = a:1
-  else
-    let command_suffix = ""
-  endif
-
-  " If we're in a test/spec file, remember the filename. Otherwise, if no prior
-  " tests have run, exit early.
-  if match(expand("%"), '\(.feature\|_spec.rb\|.go\|_test.exs\)$') != -1
-    echo command_suffix
-    call SetTestFile(command_suffix)
-  elseif !exists("t:grb_test_file")
-    return
-  end
-  call RunTests(t:grb_test_file)
-endfunction
-
-function! RunNearestTest()
-  let spec_line_number = line('.')
-  call RunTestFile(":" . spec_line_number)
-endfunction
-
-function! SetTestFile(command_suffix)
-  " Set the spec file that tests will be run for.
-  let t:grb_test_file=@% . a:command_suffix
-endfunction
-
-function! RunTests(filename)
-  " Write the file and run tests for the given filename
-  if expand("%") != ""
-    :silent! w
-  end
-
-  if &filetype == 'ruby' || &filetype == 'eruby'
-    call RunRubyTests(a:filename)
-  elseif &filetype == 'elixir'
-    if a:filename == ''
-      :!mix test
-      return
-    endif
-
-    exec ":Dispatch mix test " . a:filename
-  endif
-endfunction
-
-function! RubyTestCommand()
-  if filereadable('spec/dummy/bin/rspec')
-    return 'bin/spring stop && spec/dummy/bin/rspec'
-  elseif filereadable('bin/rspec')
-    return 'bin/rspec'
-  elseif filereadable('Gemfile') && filereadable('bin/bundle')
-    return 'bin/bundle exec rspec'
-  elseif filereadable('Gemfile')
-    return 'bundle exec rspec'
-  else
-    return 'rspec'
-  endif
-endfunction
-
-function! RunRubyTests(filename)
-  if a:filename == ''
-    " Not calling RubyTestCommand() here because I want the bundled specs to
-    " prevent fringe cases where bin/spring screws up.
-    exe "silent !tmux send -t 5 'bundle exec rspec " . a:filename . "' Enter"
-  else
-    exe "bo sp | res 10 | term ". RubyTestCommand() ." ". a:filename
-    if (!exists('g:terminal_buffer_id'))
-      let g:terminal_buffer_id = nvim_get_current_buf()
-    endif
-  end
-endfunction
+" Using nmap here so <CR> can be remapped when necessary.
+nmap <buffer> <CR> :TestFile<CR>
+nnoremap <leader>f :TestNearest<CR>
+" :TestSuite is cool, but it runs bin/rspec by default for all granularities.
+" I can't seem to figure out how to let nearest/file run bin/rspec, but have
+" the suite granularity run the more 'complete' `bundle exec rspec` to make up
+" for bad juju.
+"
+" Thankfully, vim-dispatch's :Make! ticks all my boxes:
+" * Performs a background dispatch
+" * Fills my quickfix with the triggered errors
+" * Does not use Spring, great for a clean test run.
+nnoremap <leader>T :Make!<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Various Rails-specific functionality and maps

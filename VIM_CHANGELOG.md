@@ -15,6 +15,12 @@ of my beloved `.vimrc`. There are many like it, but this one's mine.
 ## (n)vim TODOs
 I'll try out GitHub issues to maintain a TODO list [here]( https://github.com/davelens/dotfiles/issues?q=is%3Aopen+label%3Atodo+label%3Avim).
 
+## 2020-04-02
+* In review of my changes of 31/3, I removed my homebrew testing functionality in favour of `vim-dispatch` and `vim-test`. They work together beautifully.  I realised I wrote the functionality for running a single test file was written mostly because I wanted to get some practice in with vimscript problem solving. In the end, I came up with a solution that was dependent on nvim_* methods. This is OK, as I'm using neovim at the moment because it's faster, but I'm unsure how my stance on neovim will change in the future. Vim has been around for 30 odd years, chances are it'll be here the next 30, too. Not so sure about neovim. Time will tell. Regardless, @tpope is a bonafide genius.
+
+## 2020-04-01
+* No jokes.
+
 ## 2020-03-31
 * Slightly adjusted my previous `<CR>` unmapping when entering command-line mode to include `<C-W>p` so my cursor position is retained in the current buffer when running tests.
 * Extended said unmapping to run on both `TermOpen` and `TermClose`. This is so other terminal windows do not receive the `<CR>` override.
