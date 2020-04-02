@@ -9,7 +9,7 @@ endif
 
 call plug#begin('~/.vim/bundle')
 Plug 'adelarsq/vim-matchit'
-Plug 'sjl/vitality.vim'
+Plug 'sjl/vitality.vim' " FocusLost and FocusGained support.
 Plug 'altercation/vim-colors-solarized'
 Plug 'scrooloose/nerdcommenter'
 Plug 'jiangmiao/auto-pairs'
