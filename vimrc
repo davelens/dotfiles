@@ -508,9 +508,16 @@ let test#strategy = {
   \ 'file':    'dispatch'
 \}
 
-" Using nmap here so <CR> can be remapped when necessary.
-nmap <buffer> <CR> :TestFile<CR>
-nnoremap <leader>f :TestNearest<CR>
+" :TestFile mapping to Enter, with a fix for Enter in command-line mode.
+augroup conserve_cr_in_cli_mode
+  au!
+  " Reserves <CR> for running a file spec in any buffer with a defined FileType.
+  au FileType * nmap <buffer> <CR> :TestFile<CR>
+  " Unmaps <CR> when entering Command-Line Mode. Includes terminals.
+  " This way I can keep using <CR> in q:
+  au FileType vim silent! nunmap <buffer> <CR>
+augroup END
+
 " :TestSuite is cool, but it runs bin/rspec by default for all granularities.
 " I can't seem to figure out how to let nearest/file run bin/rspec, but have
 " the suite granularity run the more 'complete' `bundle exec rspec` to make up
@@ -521,6 +528,7 @@ nnoremap <leader>f :TestNearest<CR>
 " * Fills my quickfix with the triggered errors
 " * Does not use Spring, great for a clean test run.
 nnoremap <leader>T :Make!<CR>
+nnoremap <leader>f :TestNearest<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Various Rails-specific functionality and maps
