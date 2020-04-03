@@ -266,6 +266,8 @@ endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
+" I know ALE has fixers for removal of trailing lines + whitespace, but
+" I don't know how to let it work on all filetypes except markdown.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! StripTrailingWhitespace()
   " Don't strip on these filetypes
