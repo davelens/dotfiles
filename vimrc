@@ -141,11 +141,7 @@ au BufWritePre * call StripTrailingWhitespace()
 " Close preview windows after autocomplete automatically
 au CompleteDone * pclose
 
-" Disable autoclose for ruby files so vim-endwise works again (temp. fix)
-au FileType html,xhtml,twig,smarty,ruby,eruby :let g:AutoCloseExpandEnterOn=""
-
 " Make Vim able to correctly edit crontabs without tempfile errors.
-" More info: http://calebthompson.io/crontab-and-vim-sitting-in-a-tree
 au FileType crontab setlocal nobackup nowritebackup
 
 " solarized options
