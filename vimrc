@@ -203,6 +203,17 @@ au FileType elixir nmap <leader>r :call AltCommand(expand('%'), ':e')<CR>
 command! SV :source ~/.vimrc
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Custom text objects so I can use stuff like like ci/, va*, di: and so on.
+" Taken from romainl: https://stackoverflow.com/questions/44108563/how-to-delete-or-yank-inside-slashes-and-asterisks/44109750#44109750
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '-', '#' ]
+  execute 'xnoremap i' . char . ' :<C-u>normal! T' . char . 'vt' . char . '<CR>'
+  execute 'onoremap i' . char . ' :normal vi' . char . '<CR>'
+  execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
+  execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
+endfor
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " :terminal
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " The way into :terminal
