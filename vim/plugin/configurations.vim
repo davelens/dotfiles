@@ -21,12 +21,6 @@
   let g:fzf_action = {
     \ 'ctrl-s': 'split',
     \ 'ctrl-v': 'vsplit' }
-
-  if filereadable('.gitignore')
-    nnoremap <leader>t :GFiles --cached --others --exclude-standard<CR>
-  else
-    nnoremap <leader>t :FZF<CR>
-  endif
 "}
 
 " ALE {
@@ -54,28 +48,6 @@
     \ 'nearest': 'neovim',
     \ 'file':    'dispatch'
   \}
-
-  " :TestFile mapping to Enter, with a fix for Enter in command-line mode.
-  augroup conserve_cr_in_cli_mode
-    au!
-    " Reserves <CR> for running a file spec in any buffer with a defined FileType.
-    au FileType * nnoremap <buffer> <CR> :TestFile<CR>
-    " Unmaps <CR> when entering Command-Line Mode. Includes terminals.
-    " This way I can keep using <CR> in q:
-    au FileType vim silent! nunmap <buffer> <CR>
-  augroup END
-
-  " :TestSuite is cool, but it runs bin/rspec by default for all granularities.
-  " I can't seem to figure out how to let nearest/file run bin/rspec, but have
-  " the suite granularity run the more 'complete' `bundle exec rspec` to make up
-  " for bad juju.
-  "
-  " Thankfully, vim-dispatch's :Make! ticks all my boxes:
-  " [x] Performs a background dispatch
-  " [x] Fills my quickfix with the triggered errors
-  " [x] Does not use Spring, great for a clean test run.
-  nnoremap <leader>T :Make!<CR>
-  nnoremap <leader>f :TestNearest<CR>
 "}
 
 " Rails projections to be used with vim-{rails,projectionist} {

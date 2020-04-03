@@ -59,26 +59,9 @@ elseif has('unix')
 endif
 call plug#end()
 
-" Fix copy/paste from vim registers to system clipboard on WSL.
-if has('wsl')
-  augroup Yank
-    autocmd!
-    autocmd TextYankPost * :call system('clip.exe ',@")
-  augroup END
-endif
 set hidden " Keeps buffers in the background when left behind.
 set autowrite " Write file contents for writable buffers
 set autoread " Load in changes made from *outside* vim.
-au FocusGained,BufEnter * :checktime " Load in changes made from *within* vim.
-au FocusLost,WinLeave * :silent! noautocmd w " Write files when leaving buffers.
-" The above autocommands are used in tandem to avoid file conflicts in general.
-" To understand why autoread does not track all changes regardless of source:
-" https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
-
-if has('nvim')
-  set icm=split " Enables real-time substitute previews. Nvim only.
-endif
-
 set encoding=utf-8
 set fileformat=unix
 set linespace=0
@@ -91,6 +74,8 @@ set incsearch
 set laststatus=2
 set foldclose=all
 set foldmethod=marker
+set backspace=indent,eol,start whichwrap+=<,>,[,]
+set directory=~/.vim/swp " The swapfile directory
 
 " Indentation and whitespace defaults
 set smartindent
@@ -108,245 +93,23 @@ set wildmenu
 set completeopt=menu,longest
 set colorcolumn=80
 
-" Not too long or we drop to a virtual stand still when editing
-" large-all-on-one-line-code (like OOo xml files.)
+if has('nvim')
+  set icm=split " Enables real-time substitute previews. Nvim only.
+endif
+
+" The number of chars before syntax coloring fucks off.
+" Setting this too high slows down files with a single, long line of code.
+" (compiled js files, xml files,...)
 set synmaxcol=512
 
-" Let the backspace behave
-set backspace=indent,eol,start whichwrap+=<,>,[,]
-
-" statusline (active file, line+col position, file format+encoding+filetype
+" statusline: active file, line+col position, file format+encoding+filetype
+" I'm using vim-airline, this is here as a fallback if for whatever reason I
+" can't use plugins.
 set statusline=%-25.25(%<%t\ %m%r\%)line\ %l\ of\ %L\ col\ %c%V\ %=%{&ff},%{strlen(&fenc)?&fenc:''}%Y
-
-" Disable the bloody visual bell
-set t_vb=
-
-" Set vim in 256 color-mode
-set t_Co=256
-
-" The swapfile directory
-set directory=~/.vim/swp
-
-" When editing a file, always jump to the last known cursor position.
-au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | execute "normal g`\"" | endif
-
-" Delete trailing whitespaces on saving a file
-au BufWritePre * call StripTrailingWhitespace()
-
-" Close preview windows after autocomplete automatically
-au CompleteDone * pclose
+set t_vb= " Disable the bloody visual bell
+set t_Co=256 " Set vim in 256 color-mode
 
 " solarized options
 let g:solarized_termtrans = 1
 colorscheme solarized
 set background=dark
-" solarized comes with a toggle-background method.
-" Review this later: https://stackoverflow.com/questions/8462114/change-vim-background-and-colorscheme-based-on-iterm-profile
-call togglebg#map("<F4>")
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Various bindings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Do not exit visual mode when shifting
-vnoremap > >gv
-vnoremap < <gv
-
-" Hop from method to method.
-nmap <c-n> ]]
-nmap <c-p> [[
-
-" Copy to/cut/paste from system clipboard
-map <C-y> "+y
-map <C-x> "+x
-map <C-M-p> "+p
-
-" Less finger wrecking window navigation.
-nnoremap <c-j> <c-w>j
-nnoremap <c-k> <c-w>k
-nnoremap <c-h> <c-w>h
-nnoremap <c-l> <c-w>l
-
-" ALE feedback navigation for errors/warnings
-"nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-"nmap <silent> <C-j> <Plug>(ale_next_wrap)
-
-" Giving this a go; ESC remapping in insert mode.
-" Less finger wrecking than C-[, and rare enough not to obstruct while typing.
-inoremap jk <Esc>
-
-" Toggles search highlighting
-nnoremap <F3> :set hlsearch!<CR>
-" Easy paste/nopaste
-nnoremap <F5> :set paste<CR>
-nnoremap <F6> :set nopaste<CR>
-
-" Leader bindings
-let mapleader = ' '
-nmap <leader>s <Esc>:w<CR>
-map <leader>id :call GetVimElementID()<CR>
-map <leader>n :call RenameFile()<CR>
-map <leader>json <Esc>:%!python -m json.tool<CR>
-nmap <silent> <leader>; :call AppendSemiColon()<CR>
-
-" Just a quicker vimrc sourcing
-command! SV :source ~/.vimrc
-
-" Custom text objects so I can use stuff like like ci/, va*, di: and so on.
-" Taken from romainl: https://stackoverflow.com/questions/44108563/how-to-delete-or-yank-inside-slashes-and-asterisks/44109750#44109750
-for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '-', '#' ]
-  execute 'xnoremap i' . char . ' :<C-u>normal! T' . char . 'vt' . char . '<CR>'
-  execute 'onoremap i' . char . ' :normal vi' . char . '<CR>'
-  execute 'xnoremap a' . char . ' :<C-u>normal! F' . char . 'vf' . char . '<CR>'
-  execute 'onoremap a' . char . ' :normal va' . char . '<CR>'
-endfor
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" :terminal
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" The way into :terminal
-command! -nargs=0 Terminal execute 'bo sp | term'
-nnoremap <leader>b :Terminal<CR>
-" The way out of :terminal's insert mode.
-tnoremap <silent> <C-[> <C-\><C-n>
-" The way out of :terminal while in insert mode.
-tnoremap <leader>x <C-\><C-n>:q!<CR>
-" The way out of anything while in normal mode!
-nnoremap <leader>x :q!<CR>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Strips all trailing whitespace, except for the filetypes specified.
-" I know ALE has fixers for removal of trailing lines + whitespace, but
-" I don't know how to let it work on all filetypes except markdown.
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! StripTrailingWhitespace()
-  " Don't strip on these filetypes
-  if &ft =~ 'markdown\|diff'
-    return
-  endif
-  %s/\s\+$//e
-  %s/\($\n\s*\)\+\%$//e
-endfunction
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" This shows the vim-ID of an item under the cursor position. This is used
-" whilst developing colorschemes.
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! GetVimElementID()
-  :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-        \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
-endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Rename the current file in your buffer.
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! RenameFile()
-  let old_name = expand('%')
-  let new_name = input('New file name: ', expand('%'))
-  if new_name != '' && new_name != old_name
-    execute ':saveas ' . new_name
-    execute ':silent !rm ' . old_name
-    redraw!
-  endif
-endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Clean up and wipeout all hidden buffers.
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function DeleteHiddenBuffers()
-    let tpbl=[]
-    call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
-    for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
-        silent execute 'bwipeout' buf
-    endfor
-endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" PROMOTE VARIABLE TO RSPEC LET
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! PromoteToLet()
-  :normal! dd
-  " :execute '?^\s*it\>'
-  :normal! P
-  :.s/\(\w\+\) = \(.*\)$/let(:\1) { \2 }/
-  :normal ==
-endfunction
-:command! PromoteToLet :call PromoteToLet()
-:map <leader>p :PromoteToLet<CR>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" For programming languages using a semi colon at the end of statement.
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" If there isn't one, append a semi colon to the end of the current line.
-function! AppendSemiColon()
-  if getline('.') !~ ';$'
-    let save_cursor = getpos('.')
-    execute("s/$/;/")
-    call setpos('.', save_cursor)
-  endif
-endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" INLINE VARIABLE (SKETCHY)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! InlineVariable()
-    " Copy the variable under the cursor into the 'a' register
-    :let l:tmp_a = @a
-    :normal "ayiw
-    " Delete variable and equals sign
-    :normal 2daW
-    " Delete the expression into the 'b' register
-    :let l:tmp_b = @b
-    :normal "bd$
-    " Delete the remnants of the line
-    :normal dd
-    " Go to the end of the previous line so we can start our search for the
-    " usage of the variable to replace. Doing '0' instead of 'k$' doesn't
-    " work; I'm not sure why.
-    normal k$
-    " Find the next occurence of the variable
-    execute '/\<' . @a . '\>'
-    " Replace that occurence with the text we yanked
-    execute ':.s/\<' . @a . '\>/' . escape(@b, "/")
-    :let @a = l:tmp_a
-    :let @b = l:tmp_b
-endfunction
-nnoremap <leader>iv :call InlineVariable()<CR>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" EXTRACT VARIABLE (SKETCHY)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! ExtractVariable()
-    let name = input("Variable name: ")
-    if name == ''
-        return
-    endif
-    " Enter visual mode (not sure why this is needed since we're already in
-    " visual mode anyway)
-    normal! gv
-
-    " Replace selected text with the variable name
-    execute "normal c" . name
-    " Define the variable on the line above
-    execute "normal! O" . name . " = "
-    " Paste the original selected text to be the variable value
-    normal! $p
-endfunction
-vnoremap <leader>ev :call ExtractVariable()<CR>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Resizes the focused window to a ratio of your choice.
-" The first argument determines the size you want your focused window to be.
-" The second argument lets you choose to set it for horizontal or vertical
-" splits.
-"
-" Example: AutoResizeWindowOnFocus(6, 'v') will resize in a ratio of 60/40,
-" while AutoResizeWindowOnFocus(7, 'v') will resize in a ratio of 70/30.
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! AutoResizeWindowOnFocus(ratio, axis)
-  if a:axis == 'h'
-    let &winheight = &lines * a:ratio / 10
-  else
-    let &winwidth = &columns * a:ratio / 10
-  end
-endfunction
