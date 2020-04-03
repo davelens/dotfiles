@@ -33,7 +33,9 @@ export GOPATH=${HOME}/.go
 # PATH
 ########################################################################
 
-export BREW_PATH=$(/usr/bin/brew --prefix)
+# Homebrew installs in /usr/local/bin/brew, Linuxbrew in /usr/bin/brew.
+[[ -f /usr/local/bin/brew ]] && export BREW_PATH=$(/usr/local/bin/brew --prefix)j
+[[ -f /usr/bin/brew ]] && export BREW_PATH=$(/usr/bin/brew --prefix)
 
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
