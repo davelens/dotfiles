@@ -1,4 +1,6 @@
-set nocompatible
+set nocompatible " No one fully knows the dark magic made by this setting.
+filetype plugin indent on " Loads up ftplugin and indent files, when present.
+syntax on " Enables syntax colorization
 
 " Automatic install of vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -64,10 +66,6 @@ if has('wsl')
     autocmd TextYankPost * :call system('clip.exe ',@")
   augroup END
 endif
-
-filetype plugin indent on " Loads up ftplugin and indent files, when present.
-syntax on " Enables syntax colorization
-
 set hidden " Keeps buffers in the background when left behind.
 set autowrite " Write file contents for writable buffers
 set autoread " Load in changes made from *outside* vim.
@@ -94,7 +92,7 @@ set laststatus=2
 set foldclose=all
 set foldmethod=marker
 
-" Indentation and whitespace settings
+" Indentation and whitespace defaults
 set smartindent
 set cindent
 set autoindent
@@ -103,9 +101,6 @@ set softtabstop=2
 set tabstop=2
 set expandtab
 set smarttab
-
-" Whitespace settings for specific types
-au FileType php setlocal ts=2 sts=2 sw=2 noexpandtab
 
 " Auto-completion
 set wildmode=longest,list,full
@@ -140,9 +135,6 @@ au BufWritePre * call StripTrailingWhitespace()
 
 " Close preview windows after autocomplete automatically
 au CompleteDone * pclose
-
-" Make Vim able to correctly edit crontabs without tempfile errors.
-au FileType crontab setlocal nobackup nowritebackup
 
 " solarized options
 let g:solarized_termtrans = 1
@@ -197,8 +189,6 @@ map <leader>json <Esc>:%!python -m json.tool<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
 " Filetype-specific mappings
-au FileType ruby nmap <leader>a :A<CR>
-au FileType ruby nmap <leader>r :R<CR>
 au FileType elixir nmap <leader>r :call AltCommand(expand('%'), ':e')<CR>
 
 " Just a quicker vimrc sourcing
@@ -288,41 +278,6 @@ function! GetVimElementID()
         \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
 endfunction
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" YouCompleteMe configuration
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ycm_min_num_of_chars_for_completion = 4
-" C-P and C-N still work when emptying these, so why not?
-" Considering another plugin can have conflicting bindings, this is a sane setting.
-let g:ycm_key_list_select_completion=[]
-let g:ycm_key_list_previous_completion=[]
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Rg configuration
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use a preview window for searches made with ripgrep.
-" I do NOT use shellescape() around q-args because I want arguments like -t
-" to keep working as well.
-command! -bang -nargs=* Rg
-    \ call fzf#vim#grep(
-    \   'rg --column --line-number --no-heading --color=always --smart-case '.<q-args>, 1,
-    \   <bang>0 ? fzf#vim#with_preview('right:50%')
-    \     : fzf#vim#with_preview('up:40%', '?'),
-    \   <bang>0)
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" FZF configuration
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:fzf_action = {
-  \ 'ctrl-s': 'split',
-  \ 'ctrl-v': 'vsplit' }
-
-if filereadable('.gitignore')
-  nnoremap <leader>t :GFiles --cached --others --exclude-standard<CR>
-else
-  nnoremap <leader>t :FZF<CR>
-endif
-
 "*****************
 " FZF + Rg queries
 "*****************
@@ -334,11 +289,6 @@ nnoremap <leader>k :call RgSearchAndReplace(@k)<CR>
 nnoremap <expr> <leader>l ':Rg '. expand('<cword>') .'<CR>'
 vnoremap <leader>l "ky:execute SavePositionAndRg('Rg', @k)<CR>
 vnoremap <leader>k "ky:execute SavePositionAndRg('Rg!', @k)<CR>
-
-" Definition lookup in Ruby files. Same as <leader>l, but prefixes search
-" string with "def ".
-au FileType ruby nnoremap <expr> <leader>d ':Rg -t ruby "def '. expand('<cword>') .'"<CR>'
-au FileType ruby vnoremap <leader>d "ky:execute SavePositionAndRg('Rg -t ruby ', "def ". @k)<CR>
 
 function! SanitizeRgArgument(string)
   return shellescape(escape(a:string, '()[]{}?.$'))
@@ -359,33 +309,6 @@ function! RgSearchAndReplace(string)
     call setpos('.', @p)
   endif
 endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" closetag.vim configuration
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:closetag_filenames = "*.html,*.xhtml,*.html.erb,*.tpl"
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" ALE configuration
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_fixers = {
-\   'javascript': ['eslint'],
-\   'ruby': ['rubocop']
-\}
-
-nmap <leader><CR> <Plug>(ale_fix)
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim-airline configuration
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Automatic download of our Powerline font for vim-airline
-if has('mac') && empty(glob('~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf'))
-  silent execute '! curl -fLo ~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf '. shellescape('https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf', 1)
-endif
-
-" allows airline to use the powerline font symbols through a patched font
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#coc#enabled = 1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Rename the current file in your buffer.
@@ -514,66 +437,3 @@ function! AutoResizeWindowOnFocus(ratio, axis)
     let &winwidth = &columns * a:ratio / 10
   end
 endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim-test and vim-dispatch
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim-test strategies per granularity
-let test#strategy = {
-  \ 'nearest': 'neovim',
-  \ 'file':    'dispatch'
-\}
-
-" :TestFile mapping to Enter, with a fix for Enter in command-line mode.
-augroup conserve_cr_in_cli_mode
-  au!
-  " Reserves <CR> for running a file spec in any buffer with a defined FileType.
-  au FileType * nnoremap <buffer> <CR> :TestFile<CR>
-  " Unmaps <CR> when entering Command-Line Mode. Includes terminals.
-  " This way I can keep using <CR> in q:
-  au FileType vim silent! nunmap <buffer> <CR>
-augroup END
-
-" :TestSuite is cool, but it runs bin/rspec by default for all granularities.
-" I can't seem to figure out how to let nearest/file run bin/rspec, but have
-" the suite granularity run the more 'complete' `bundle exec rspec` to make up
-" for bad juju.
-"
-" Thankfully, vim-dispatch's :Make! ticks all my boxes:
-" * Performs a background dispatch
-" * Fills my quickfix with the triggered errors
-" * Does not use Spring, great for a clean test run.
-nnoremap <leader>T :Make!<CR>
-nnoremap <leader>f :TestNearest<CR>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Various Rails-specific functionality and maps
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-au FileType ruby,eruby vnoremap <leader>i "ky:echo system("~/.bin/rails/lookup-translations ". @k)<CR>
-au FileType ruby nnoremap \ :execute ':Rg "def " "" '. expand('%')<CR>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Custom Rails and gem projections to be used with vim-{rails,projectionist}.
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:rails_gem_projections = {
-\  "factory_bot": {
-\    "spec/factories/*.rb": {
-\      "command":   "factory",
-\      "affinity":  "collection",
-\      "alternate": "app/models/{singular}.rb",
-\      "related":   "db/schema.rb#{}",
-\      "test":      "spec/models/{singular}_spec.rb",
-\      "template":  "FactoryBot.define do\n  factory :{singular} do\n  end\nend",
-\      "keywords":  "factory sequence"
-\    }
-\  },
-\  "draper": {
-\    "app/decorators/*_decorator.rb": {
-\      "command":   "decorator",
-\      "affinity":  "model",
-\      "test":      "spec/decorators/{}_spec.rb",
-\      "related":   "app/models/{}.rb",
-\      "template":  "class {camelcase|capitalize|colons}Decorator < Draper::Decorator\n  delegate_all\nend"
-\    }
-\  },
-\}
