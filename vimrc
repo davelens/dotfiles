@@ -127,7 +127,7 @@ set t_Co=256
 set directory=~/.vim/swp
 
 " When editing a file, always jump to the last known cursor position.
-au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
+au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | execute "normal g`\"" | endif
 
 " Delete trailing whitespaces on saving a file
 au BufWritePre * call StripTrailingWhitespace()
@@ -206,7 +206,7 @@ command! SV :source ~/.vimrc
 " :terminal
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " The way into :terminal
-command! -nargs=0 Terminal exe 'bo sp | term'
+command! -nargs=0 Terminal execute 'bo sp | term'
 nnoremap <leader>b :Terminal<CR>
 " The way out of :terminal's insert mode.
 tnoremap <silent> <C-[> <C-\><C-n>
@@ -229,7 +229,7 @@ function! AltCommand(path, vim_command)
   if empty(l:alternate)
     echo "No alternate file for " . a:path . " exists!"
   else
-    exec a:vim_command . " " . l:alternate
+    execute a:vim_command . " " . l:alternate
   endif
 endfunction
 
@@ -241,10 +241,10 @@ function! QSearchAndReplace(string)
   let new_value = escape(input('Replace '. shellescape(a:string) .' with: '), '/')
 
   if getqflist() != []
-    cdo exe '%s/'.old_value.'/'.new_value.'/gc'
+    cdo execute '%s/'.old_value.'/'.new_value.'/gc'
     cexpr [] " empty the quickfix list to prevent future replacement mishaps.
   else " because cdo does nothing when the quickfix list is empty
-    exe '%s/'.old_value.'/'.new_value.'/gc'
+    execute '%s/'.old_value.'/'.new_value.'/gc'
   end
 
   wa
@@ -317,13 +317,13 @@ nnoremap <leader>k :call RgSearchAndReplace(@k)<CR>
 
 " Lookup occurrences of the word under the cursor when pressing F8.
 nnoremap <expr> <leader>l ':Rg '. expand('<cword>') .'<CR>'
-vnoremap <leader>l "ky:exec SavePositionAndRg('Rg', @k)<CR>
-vnoremap <leader>k "ky:exec SavePositionAndRg('Rg!', @k)<CR>
+vnoremap <leader>l "ky:execute SavePositionAndRg('Rg', @k)<CR>
+vnoremap <leader>k "ky:execute SavePositionAndRg('Rg!', @k)<CR>
 
 " Definition lookup in Ruby files. Same as <leader>l, but prefixes search
 " string with "def ".
 au FileType ruby nnoremap <expr> <leader>d ':Rg -t ruby "def '. expand('<cword>') .'"<CR>'
-au FileType ruby vnoremap <leader>d "ky:exec SavePositionAndRg('Rg -t ruby ', "def ". @k)<CR>
+au FileType ruby vnoremap <leader>d "ky:execute SavePositionAndRg('Rg -t ruby ', "def ". @k)<CR>
 
 function! SanitizeRgArgument(string)
   return shellescape(escape(a:string, '()[]{}?.$'))
@@ -333,14 +333,14 @@ function! SavePositionAndRg(cmd, string)
   call setreg('l', expand('%')) " location
   call setreg('p', getpos('.')) " position
 
-  exe a:cmd .' '. SanitizeRgArgument(a:string)
+  execute a:cmd .' '. SanitizeRgArgument(a:string)
 endfunction
 
 function! RgSearchAndReplace(string)
   call QSearchAndReplace(a:string)
 
   if @l != ''
-    exe 'b '. @l
+    execute 'b '. @l
     call setpos('.', @p)
   endif
 endfunction
@@ -365,7 +365,7 @@ nmap <leader><CR> <Plug>(ale_fix)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Automatic download of our Powerline font for vim-airline
 if has('mac') && empty(glob('~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf'))
-  silent exe '! curl -fLo ~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf '. shellescape('https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf', 1)
+  silent execute '! curl -fLo ~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf '. shellescape('https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf', 1)
 endif
 
 " allows airline to use the powerline font symbols through a patched font
@@ -381,10 +381,10 @@ function! RenameFile()
   let new_name = input('New file name: ', expand('%'))
   if new_name != '' && new_name != old_name
     if isdirectory('.git')
-      exec ':Grename '. new_name
+      execute ':Grename '. new_name
     else
-      exec ':saveas ' . new_name
-      exec ':silent !rm ' . old_name
+      execute ':saveas ' . new_name
+      execute ':silent !rm ' . old_name
       redraw!
     end
   endif
@@ -406,7 +406,7 @@ endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! PromoteToLet()
   :normal! dd
-  " :exec '?^\s*it\>'
+  " :execute '?^\s*it\>'
   :normal! P
   :.s/\(\w\+\) = \(.*\)$/let(:\1) { \2 }/
   :normal ==
@@ -421,7 +421,7 @@ endfunction
 function! AppendSemiColon()
   if getline('.') !~ ';$'
     let save_cursor = getpos('.')
-    exec("s/$/;/")
+    execute("s/$/;/")
     call setpos('.', save_cursor)
   endif
 endfunction
@@ -433,9 +433,9 @@ function! OpenChangedFiles()
   only " Close all windows, unless they're modified
   let status = system('git status -s | grep "^ \?\(M\|A\|UU\)" | sed "s/^.\{3\}//"')
   let filenames = split(status, "\n")
-  exec "edit " . filenames[0]
+  execute "edit " . filenames[0]
   for filename in filenames[1:]
-    exec "sp " . filename
+    execute "sp " . filename
   endfor
 endfunction
 command! OpenChangedFiles :call OpenChangedFiles()
@@ -459,9 +459,9 @@ function! InlineVariable()
     " work; I'm not sure why.
     normal k$
     " Find the next occurence of the variable
-    exec '/\<' . @a . '\>'
+    execute '/\<' . @a . '\>'
     " Replace that occurence with the text we yanked
-    exec ':.s/\<' . @a . '\>/' . escape(@b, "/")
+    execute ':.s/\<' . @a . '\>/' . escape(@b, "/")
     :let @a = l:tmp_a
     :let @b = l:tmp_b
 endfunction
@@ -480,9 +480,9 @@ function! ExtractVariable()
     normal! gv
 
     " Replace selected text with the variable name
-    exec "normal c" . name
+    execute "normal c" . name
     " Define the variable on the line above
-    exec "normal! O" . name . " = "
+    execute "normal! O" . name . " = "
     " Paste the original selected text to be the variable value
     normal! $p
 endfunction
@@ -540,7 +540,7 @@ nnoremap <leader>f :TestNearest<CR>
 " Various Rails-specific functionality and maps
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 au FileType ruby,eruby vnoremap <leader>i "ky:echo system("~/.bin/rails/lookup-translations ". @k)<CR>
-au FileType ruby nnoremap \ :exe ':Rg "def " "" '. expand('%')<CR>
+au FileType ruby nnoremap \ :execute ':Rg "def " "" '. expand('%')<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Custom Rails and gem projections to be used with vim-{rails,projectionist}.
