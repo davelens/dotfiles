@@ -313,7 +313,7 @@ endif
 "*****************
 
 " Quickfix maps to be used in conjunction with Rg queries.
-nmap <leader>k :call RgSearchAndReplace(@k)<CR>
+nnoremap <leader>k :call RgSearchAndReplace(@k)<CR>
 
 " Lookup occurrences of the word under the cursor when pressing F8.
 nnoremap <expr> <leader>l ':Rg '. expand('<cword>') .'<CR>'
@@ -518,7 +518,7 @@ let test#strategy = {
 augroup conserve_cr_in_cli_mode
   au!
   " Reserves <CR> for running a file spec in any buffer with a defined FileType.
-  au FileType * nmap <buffer> <CR> :TestFile<CR>
+  au FileType * nnoremap <buffer> <CR> :TestFile<CR>
   " Unmaps <CR> when entering Command-Line Mode. Includes terminals.
   " This way I can keep using <CR> in q:
   au FileType vim silent! nunmap <buffer> <CR>
