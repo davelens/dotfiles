@@ -237,24 +237,6 @@ function! AltCommand(path, vim_command)
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Quickfix operations
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! QSearchAndReplace(string)
-  let old_value = escape(a:string, '/')
-  let new_value = escape(input('Replace '. shellescape(a:string) .' with: '), '/')
-
-  if getqflist() != []
-    cdo execute '%s/'.old_value.'/'.new_value.'/gc'
-    cexpr [] " empty the quickfix list to prevent future replacement mishaps.
-  else " because cdo does nothing when the quickfix list is empty
-    execute '%s/'.old_value.'/'.new_value.'/gc'
-  end
-
-  wa
-  ccl
-endfunction
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
 " I know ALE has fixers for removal of trailing lines + whitespace, but
 " I don't know how to let it work on all filetypes except markdown.
@@ -276,38 +258,6 @@ function! GetVimElementID()
   :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
         \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
         \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
-endfunction
-
-"*****************
-" FZF + Rg queries
-"*****************
-
-" Quickfix maps to be used in conjunction with Rg queries.
-nnoremap <leader>k :call RgSearchAndReplace(@k)<CR>
-
-" Lookup occurrences of the word under the cursor when pressing F8.
-nnoremap <expr> <leader>l ':Rg '. expand('<cword>') .'<CR>'
-vnoremap <leader>l "ky:execute SavePositionAndRg('Rg', @k)<CR>
-vnoremap <leader>k "ky:execute SavePositionAndRg('Rg!', @k)<CR>
-
-function! SanitizeRgArgument(string)
-  return shellescape(escape(a:string, '()[]{}?.$'))
-endfunction
-
-function! SavePositionAndRg(cmd, string)
-  call setreg('l', expand('%')) " location
-  call setreg('p', getpos('.')) " position
-
-  execute a:cmd .' '. SanitizeRgArgument(a:string)
-endfunction
-
-function! RgSearchAndReplace(string)
-  call QSearchAndReplace(a:string)
-
-  if @l != ''
-    execute 'b '. @l
-    call setpos('.', @p)
-  endif
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
