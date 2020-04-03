@@ -8,47 +8,53 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin('~/.vim/bundle')
-Plug 'adelarsq/vim-matchit'
-Plug 'sjl/vitality.vim' " FocusLost and FocusGained support.
-Plug 'altercation/vim-colors-solarized'
-Plug 'scrooloose/nerdcommenter'
-Plug 'jiangmiao/auto-pairs'
-Plug 'kana/vim-textobj-user'
+" Structured and colored vim status bar
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" These provide the `r` block motion in Ruby files.
+Plug 'adelarsq/vim-matchit' " extended matching for %
+Plug 'kana/vim-textobj-user' " allows for custom text object definitions
 Plug 'nelstrom/vim-textobj-rubyblock'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-endwise'
-Plug 'tpope/vim-rails'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-dispatch'
-Plug 'tpope/vim-bundler'
-Plug 'tpope/vim-abolish'
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-dispatch'
-Plug 'elixir-editors/vim-elixir'
-Plug 'slashmili/alchemist.vim' " Autocompletion for elixir projects
+
+" Snippets. # TODO: Replace all three with UltiSnips
 Plug 'MarcWeber/vim-addon-mw-utils' " Snipmate dependency
 Plug 'tomtom/tlib_vim' " Snipmate dependency
 Plug 'garbas/vim-snipmate'
-Plug 'alvan/vim-closetag'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'dense-analysis/ale'
-Plug 'junegunn/fzf.vim'
-Plug 'janko/vim-test'
+
+Plug 'sjl/vitality.vim' " FocusLost and FocusGained support
+Plug 'altercation/vim-colors-solarized' " Pretty colors
+Plug 'dense-analysis/ale' " Syntax checking, linting, refactoring through LSP
+Plug 'scrooloose/nerdcommenter' " Comment toggles
+Plug 'jiangmiao/auto-pairs' " Smart brackets, parens and quotes
+Plug 'tpope/vim-surround' " Maps to manipulate brackets, parens, quotes,..
+Plug 'tpope/vim-repeat' " Extended repeat functionality through `.`
+Plug 'tpope/vim-endwise' " Smart end structures for blocks
+Plug 'tpope/vim-rails' " Pandora's box with Rails workflow features
+Plug 'tpope/vim-fugitive' " Git wrapper for vim
+Plug 'tpope/vim-dispatch' " Async testing toolkit
+Plug 'tpope/vim-bundler' " Maps to help browse gem source code
+Plug 'tpope/vim-abolish' " Case coercions and language corrections
+Plug 'tpope/vim-unimpaired' " Complementary maps for quickfix, lists, options
+Plug 'elixir-editors/vim-elixir' " Pandora's box with Elixir workflow features
+Plug 'slashmili/alchemist.vim' " Intellisense autocompletion for Elixir
+Plug 'alvan/vim-closetag' " vim-endwise for HTML
+Plug 'junegunn/fzf.vim' " Command-line fuzzy finder
+Plug 'janko/vim-test' " Generic, configurable test-wrapper
+Plug 'airblade/vim-localorie' " Maps and functions for Rails I18n interaction
 
 if has('nvim')
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intellisense autocompletion
 else
-  Plug 'Valloric/YouCompleteMe'
+  Plug 'Valloric/YouCompleteMe' " Buffer autocompletion
 endif
 
+" Adds the correct fzf binary to RTP
 if has('mac')
   Plug '/usr/local/opt/fzf'
 elseif has('unix')
   Plug '/home/linuxbrew/.linuxbrew/opt/fzf'
 endif
-
 call plug#end()
 
 " Fix copy/paste from vim registers to system clipboard on WSL.
