@@ -188,16 +188,11 @@ map <leader>n :call RenameFile()<CR>
 map <leader>json <Esc>:%!python -m json.tool<CR>
 nmap <silent> <leader>; :call AppendSemiColon()<CR>
 
-" Filetype-specific mappings
-au FileType elixir nmap <leader>r :call AltCommand(expand('%'), ':e')<CR>
-
 " Just a quicker vimrc sourcing
 command! SV :source ~/.vimrc
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Custom text objects so I can use stuff like like ci/, va*, di: and so on.
 " Taken from romainl: https://stackoverflow.com/questions/44108563/how-to-delete-or-yank-inside-slashes-and-asterisks/44109750#44109750
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 for char in [ '_', '.', ':', ',', ';', '<bar>', '/', '<bslash>', '*', '+', '%', '-', '#' ]
   execute 'xnoremap i' . char . ' :<C-u>normal! T' . char . 'vt' . char . '<CR>'
   execute 'onoremap i' . char . ' :normal vi' . char . '<CR>'
@@ -217,24 +212,6 @@ tnoremap <silent> <C-[> <C-\><C-n>
 tnoremap <leader>x <C-\><C-n>:q!<CR>
 " The way out of anything while in normal mode!
 nnoremap <leader>x :q!<CR>
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Opens alternate files using alt, a CLI tool to help find the "alternate"
-" path of a given path. The most prominent example of this is to find
-" a related test/spec file in code files.
-"
-" Dependent on https://github.com/uptech/alt/
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Run a given vim command on the results of alt from a given path.
-" See usage below.
-function! AltCommand(path, vim_command)
-  let l:alternate = system("alt " . a:path)
-  if empty(l:alternate)
-    echo "No alternate file for " . a:path . " exists!"
-  else
-    execute a:vim_command . " " . l:alternate
-  endif
-endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Strips all trailing whitespace, except for the filetypes specified.
