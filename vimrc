@@ -389,19 +389,14 @@ let g:airline#extensions#coc#enabled = 1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Rename the current file in your buffer.
-" Performs :Grename when a .git dir was found.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! RenameFile()
   let old_name = expand('%')
   let new_name = input('New file name: ', expand('%'))
   if new_name != '' && new_name != old_name
-    if isdirectory('.git')
-      execute ':Grename '. new_name
-    else
-      execute ':saveas ' . new_name
-      execute ':silent !rm ' . old_name
-      redraw!
-    end
+    execute ':saveas ' . new_name
+    execute ':silent !rm ' . old_name
+    redraw!
   endif
 endfunction
 
