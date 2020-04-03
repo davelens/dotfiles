@@ -147,6 +147,7 @@ let g:solarized_termtrans = 1
 colorscheme solarized
 set background=dark
 " solarized comes with a toggle-background method.
+" Review this later: https://stackoverflow.com/questions/8462114/change-vim-background-and-colorscheme-based-on-iterm-profile
 call togglebg#map("<F4>")
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
