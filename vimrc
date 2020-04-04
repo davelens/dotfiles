@@ -1,6 +1,4 @@
 set nocompatible " No one fully knows the dark magic made by this setting.
-filetype plugin indent on " Loads up ftplugin and indent files, when present.
-syntax on " Enables syntax colorization
 
 " Automatic install of vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
