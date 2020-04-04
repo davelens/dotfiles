@@ -25,7 +25,7 @@ Plug 'garbas/vim-snipmate'
 Plug 'sjl/vitality.vim' " FocusLost and FocusGained support
 Plug 'altercation/vim-colors-solarized' " Pretty colors
 Plug 'dense-analysis/ale' " Syntax checking, linting, refactoring through LSP
-Plug 'scrooloose/nerdcommenter' " Comment toggles
+Plug 'preservim/nerdcommenter' " Comment toggles
 Plug 'jiangmiao/auto-pairs' " Smart brackets, parens and quotes
 Plug 'tpope/vim-surround' " Maps to manipulate brackets, parens, quotes,..
 Plug 'tpope/vim-repeat' " Extended repeat functionality through `.`
