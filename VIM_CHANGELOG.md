@@ -71,15 +71,15 @@ a later date.
 re-evaluation of why they're there, and as a learning opportunity to dig deeper
 in their `:help` entries.
 * Added a better configuration to make `autoread` also catch changes made from
-outside of vim (or in my case specifically; another instance of vim in a tmux
-    session). I was wondering why autoread didn't do what I thought it did, so I
+outside of vim (or in my case specifically; another instance of vim in a tmux 
+session). I was wondering why autoread didn't do what I thought it did, so I 
 read up on it and found a great summary
 [here](https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044).
 * Calling `RunTestFile()` with `<CR>` now opens up a terminal at the bottom to
 run my command in. This is an attempt to mimic vim-dispatch's functionality, but
-speedier. It also autocloses the terminal window when no test errors occurred,
-  without losing freedom of movement in my active buffer. It does not place your
-  test errors in quickfix (arguably preferable), but this will do for now.
+speedier. It also autocloses the terminal window when no test errors occurred, 
+without losing freedom of movement in my active buffer. It does not place your
+test errors in quickfix (arguably preferable), but this will do for now.
 
 ## 2020-03-30
 * I now unmap `<CR>` (normally mapped to `RunTestFile()`) whenever I enter
@@ -102,10 +102,10 @@ A setting I wasn't aware of, but is entirely convenient.
 ## 2020-03-14
 * Added a nmap for `\` to trigger a `:Rg` search for Ruby method definitions in the
 active buffer window. I was planning on making this Ruby agnostic (which you can
-    do by replacing `"def "` with `""` in the map), but it would require you to
+do by replacing `"def "` with `""` in the map), but it would require you to
 type `'def '` in the subsequent search field. I tried this out for a colleague
 and will probably not use it much (I still think typing `/def ` and `n` to cycle
-    through definitions is faster).
+through definitions is faster).
 
 ## 2020-03-13
 * Added a fix to copy stuff straight into the system clipboard on WSL. I have a
@@ -114,10 +114,9 @@ programming there on occasion as well, so a similar copy/paste functionality
 compared to my regular macos setup is handy.
 * Added a way to look up I18n translation strings by their identifier from
 within Vim. Sometimes I'm coming back to a partial for a refactor or a feature,
-       and knowing what text certain `I18n.t` calls hold without looking them up
-       manually is handy. This approach would make it possible (with some
-           revision) to get a list of untranslated strings across all partials
-       from within Vim, too.
+and knowing what text certain `I18n.t` calls hold without looking them up
+manually is handy. This approach would make it possible (with some revision) to 
+get a list of untranslated strings across all partials from within Vim, too.
 
 ## 2020-03-11
 * Added `g:rails_gem_projections` configuration for the
