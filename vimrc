@@ -113,3 +113,6 @@ set t_Co=256 " Set vim in 256 color-mode
 let g:solarized_termtrans = 1
 colorscheme solarized
 set background=dark
+
+" My thumbs never leave <Space> when typing, so it seems like the best choice.
+let mapleader = ' '

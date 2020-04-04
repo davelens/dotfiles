@@ -1,7 +1,4 @@
 " vim {
-  " My thumbs never leave <Space> when typing, so it seems like the best choice.
-  let mapleader = ' '
-
   " solarized comes with a toggle-background method.
   call togglebg#map("<F4>")
 
