@@ -20,8 +20,8 @@ all my Vim changes as time goes by. This way I can follow the reasoning of past
 Dave and hopefully make appropriate decisions when performing future revisions
 of my beloved `.vimrc`. There are many like it, but this one's mine.
 
-## (n)vim TODOs I'll try out GitHub issues to maintain a TODO list [here](
-    https://github.com/davelens/dotfiles/issues?q=is%3Aopen+label%3Atodo+label%3Avim).
+## (n)vim TODOs 
+I'll try out GitHub issues to maintain a TODO list [here](https://github.com/davelens/dotfiles/issues?q=is%3Aopen+label%3Atodo+label%3Avim).
 
 ## 2020-04-04
 * Had to move the `mapleader` option back to `vimrc` from the new
@@ -100,7 +100,7 @@ benefit from the same mapping.
 A setting I wasn't aware of, but is entirely convenient.
 
 ## 2020-03-14
-* Added a nmap for `\` to trigger a Rg search for Ruby method definitions in the
+* Added a nmap for `\` to trigger a `:Rg` search for Ruby method definitions in the
 active buffer window. I was planning on making this Ruby agnostic (which you can
     do by replacing `"def "` with `""` in the map), but it would require you to
 type `'def '` in the subsequent search field. I tried this out for a colleague
