@@ -7,15 +7,10 @@ rm ~/.bin
 rm ~/.editrc
 rm ~/.gitconfig
 rm ~/.gitignore_global
-rm ~/.guard.rb
 rm ~/.inputrc
 rm ~/.irssi
 rm ~/.macos
 rm ~/.rspec
-rm ~/.vim
-rm ~/.vimrc
 rm ~/.tmux.conf
-
-rm ~/Library/Fonts/DroidSansMonoForPowerlineNerdFontComplete.otf
 
 echo 'Done.';
