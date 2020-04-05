@@ -8,7 +8,7 @@
 
     cd ~/.dotfiles && ./uninstall.sh
 
-## Things you should change
+## Configuration
 - Your personal info in .dotfiles/gitconfig
 - If you use irssi (or plan to): Your desired servers, channels, highlights and aliases in .dotfiles/irssi/config
 - The take_screenshot command in .dotfiles/bash/macos uploads a screenshot to my webspace and puts the link in my clipboard. If you want to use this as well, just replace my SSH-host with your own.
