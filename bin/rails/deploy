@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Stops further execution after any error.
+set -e
+
+# ~/.bash/commands includes my git_branch function.
+[ -f ~/.bash/commands ] && . ~/.bash/commands
+
+env=production
+
+if [ $# -gt 0 ]; then
+  if [[ $1 =~ "s" ]]; then
+    env=staging
+  fi
+
+  if [[ $1 =~ "b" && -n $2 ]]; then
+    branch_name=$2
+  fi
+fi
+
+if [[ -n $branch_name ]]; then
+  echo "bundle exec cap $env deploy BRANCH=$branch_name"
+else
+  echo "bundle exec cap $env deploy"
+fi
