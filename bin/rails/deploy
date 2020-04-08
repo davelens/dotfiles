@@ -19,7 +19,7 @@ if [ $# -gt 0 ]; then
 fi
 
 if [[ -n $branch_name ]]; then
-  echo "bundle exec cap $env deploy BRANCH=$branch_name"
+  bundle exec cap $env deploy BRANCH=$branch_name
 else
-  echo "bundle exec cap $env deploy"
+  bundle exec cap $env deploy
 fi
