@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [ ! -f config.ru ]; then
+  echo 'ERROR: You can only run this from a folder containing a Rails project.'
+  exit
+fi
+
+function copy_database_config() {
+  while true; do
+    read -n1 -p "Create a copy from $1? (y/n) " yn
+    case $yn in
+      [Yy]* ) cp $1 config/database.yml; break;;
+      [Nn]* ) printf "\nERROR: No config/database.yml present. Aborting.\n" && exit;;
+      * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
+    esac
+  done
+}
+
+if [ ! -f config/database.yml ]; then
+  echo "WARNING: No config/database.yml present!"
+  [ -f config/database.yml.dist ] && copy_database_config config/database.yml.dist
+  [ -f config/database.dist.yml ] && copy_database_config config/database.dist.yml
+
+  if [ ! -f config/database.yml ]; then
+    echo "ERROR: No config/database.yml present. Aborting."
+    exit
+  fi
+fi
+
+function credentials(){
+  echo $(~/.bin/rails/lookup-db-credentials $1 $2)
+}
+
+env=production
+remote_db=$(credentials -p database)
+local_db=$(credentials database)
+ignore_tables=
+
+# TODO: Override user+host
+for i in "$@"
+do
+  case $i in
+    -i=*|--ignore-data=*)
+      ignore_tables="${i#*=}"
+      ;;
+    -l|--local-database=*)
+      local_db="${i#*=}"
+      ;;
+    -t|--test)
+      env=test
+      remote_db=$(credentials -t database)
+      ;;
+    -s|--staging)
+      env=staging
+      remote_db=$(credentials -s database)
+      ;;
+    -p|--production)
+      env=production
+      remote_db=$(credentials -p database)
+      ;;
+    -r=*|--remote-database=*)
+      remote_db="${i#*=}"
+      ;;
+    *)
+      # unknown options
+      echo "ERROR: Unknown option '${i}'"
+      echo "Usage: db-import [-sptrli] [--test] [--staging] [--production]"
+      printf "\t[-l=name] [--local-database=name]\n"
+      printf "\t[-r=name] [--remote-database=name]\n"
+      printf "\t[-i=tables] [--ignore-data=tables]\n"
+      exit
+      ;;
+  esac
+done
+
+if [ -z ${local_db} ]; then
+  echo "ERROR: No local configuration found in config/database.yml. Aborting."
+  exit
+fi
+
+if [ -z ${remote_db} ]; then
+  printf "\nWARNING: No configuration for ${env} found in config/database.yml!\n\n"
+  read -p "Please enter the name of the remote database: (default: website_prod) " remote_db
+  [ ! ${remote_db} ] && remote_db="website_prod"
+fi
+
+readarray -d , -t ignore_tables <<<"$ignore_tables" # Bash 4.x+
+
+ignored_tables_string=""
+for table in "${ignore_tables[@]}"
+do :
+   ignored_tables_string+=" --ignore-table=${remote_db}.${table}"
+done
+
+# There are two ways to extract the host from the deployment config:
+#
+# 1. In config/deploy/<env>.rb:
+#    server '10.13.1.23', user: 'reli', roles: %w{app web db}
+
+user=$(cat config/deploy.rb | grep -o ":user.*'" | sed -e "s/:user, '//" -e "s/'//")
+server=$(cat config/deploy.rb | grep -o ":server.*'" | sed -e "s/:server, '//" -e "s/'//")
+
+# 2. In config/deploy.rb
+#    set :user, 'website'
+#    set :server, 'raamwinkel.blimp.be'
+if [[ -z $user || -z $server ]]; then
+  user=$(cat config/deploy/${env}.rb | grep -o "user: '.*'" | sed -e "s/user: '//" -e "s/'//")
+  server=$(cat config/deploy/${env}.rb | grep -o "server '.*', u" | sed -e "s/server '//" -e "s/', u//")
+fi
+
+echo "[${user}@${server}] Dumping ${remote_db}..."
+(
+ssh ${user}@${server} \
+  "mysqldump ${remote_db} --single-transaction --no-data --routines > dump.sql && \
+   mysqldump ${remote_db} --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']} >> dump.sql && \
+   tar -cvzf dump.sql.tar dump.sql"
+) >/dev/null
+
+echo "[localhost] Downloading ${user}@${server}:dump.sql.tar"
+scp ${user}@${server}:dump.sql.tar .
+
+echo "[localhost] Unpacking dump.sql.tar"
+tar -C . -xvf dump.sql.tar >/dev/null 2>&1
+
+echo "[localhost] Importing dump.sql into ${local_db}"
+mysql ${local_db} < dump.sql
+
+echo "[${user}@${server}] Cleaning up"
+ssh ${user}@${server} 'rm -f dump.sql dump.sql.tar'
+
+echo "[localhost] Cleaning up"
+rm -f dump.sql dump.sql.tar
