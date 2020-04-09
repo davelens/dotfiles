@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 unless File.exists?('config.ru')
   puts 'ERROR: You can only run this from a folder containing a Rails project.'
