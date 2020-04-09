@@ -19,7 +19,19 @@ if [ $# -gt 0 ]; then
 fi
 
 if [[ -n $branch_name ]]; then
-  bundle exec cap $env deploy BRANCH=$branch_name
+  CMD="bundle exec cap $env deploy BRANCH=$branch_name"
 else
-  bundle exec cap $env deploy
+  CMD="bundle exec cap $env deploy"
 fi
+
+while true; do
+  printf "I want to run:\n\n"
+  printf "  ${CMD}\n\n"
+  read -n1 -p "Confirm? (y/n) " yn
+  echo ""
+  case $yn in
+    [Yy]* ) eval $CMD; break;;
+    [Nn]* ) exit;;
+    * ) echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
+  esac
+done
