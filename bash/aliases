@@ -17,6 +17,7 @@ alias gti='git'
 alias gddf='git ls-files --deleted -z | xargs -0 git rm'
 alias gdnf='git_delete_new_files'
 alias list-largest-mysql-tables="mysql -e \"SELECT table_schema AS 'Database', table_name AS 'Table', round(((data_length + index_length) / 1024 / 1024), 2) 'Size in MB' FROM information_schema.TABLES WHERE table_schema NOT IN('sys','information_schema', 'performance_schema', 'mysql') AND round(((data_length + index_length) / 1024 / 1024), 2) >= 5 ORDER BY (data_length + index_length) DESC;\""
+alias lookup-db-credentials="~/.bin/rails/lookup-db-credentials"
 alias migrate='~/.bin/rails/migrate'
 alias mf='move_files'
 alias mr='mysql_replace'
