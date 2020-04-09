@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 if [ -f config/cable.yml ]; then # Rails 5+

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This is intended as a wrapper for GitLab's Merge Request feature.
 # Made to work similarly as `hub pull-request -b` for GitHub's Pull Request feature.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script to convert video files to GIFs using ffmpeg
 
 # Source: https://gist.github.com/rose-m/53b291e56c99c923f945dfa9aa179b74?utm_content=buffer14dc5&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer

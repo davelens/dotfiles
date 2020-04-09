@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This allows you to test different .circleci/config.yml settings without
 # pushing intermediary commits. Keeps your git history clean.

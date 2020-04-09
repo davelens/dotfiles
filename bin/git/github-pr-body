@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This command can be run with `git pr-body` (set in ~/.gitconfig)
 

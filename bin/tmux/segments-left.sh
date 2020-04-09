@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 . ~/.bin/tmux/helpers.sh
 
 segments=''

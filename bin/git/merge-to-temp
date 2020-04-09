@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # mt stands for "merge into temp". The temp branch is a branch I regularly use
 # that gets pushed to staging. It's used to combine features in development

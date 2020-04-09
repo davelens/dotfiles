@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Load up the .env file, if present.
 [ -r ~/.env ] && export $(cat ~/.env | grep -v ^\# | xargs)

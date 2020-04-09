@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 company=$1
 project=$2
