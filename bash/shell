@@ -40,6 +40,7 @@ export GOPATH=${HOME}/.go
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
   ${HOME}/.bin
+  ${BREW_PATH}/opt/gnu-getopt/{,s}bin
   ${BREW_PATH}/{,s}bin
   /usr/local/{,s}bin
   /{,s}bin
