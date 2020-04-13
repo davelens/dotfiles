@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+. ~/.bash/commands
+
+if [[ -z $1 ]]; then
+  echo 'ERROR: No project namespace given.'
+  printf "\tUsage: p <github-user>/<github-repo>"
+fi
+
+destination=~/Sites/$1
+# Clone the git repo, fail with error output from `git clone`.
+[[ ! -d $destination ]] && (bootstrap=1;git clone git@github.com:$1.git $destination || fail)
+tmux setenv TMUX_PATH "$destination"
+
+function rails_windows() {
+  tmux new-window -n db -t $1
+  tmux new-window -n console -t $1
+  tmux new-window -n server -t $1
+
+  tmux send-keys -t $1:db "cd $destination && ~/.bin/rails/lookup-db-credentials database | mysql" C-m
+  tmux send-keys -t $1:console "cd $destination && clear && bin/rails c" C-m
+  tmux send-keys -t $1:server "cd $destination && clear && bin/rails s"
+}
+
+tmux attach -t $1 || (
+  tmux new-session -s $1 -n editor -d
+  tmux send-keys -t $1 "cd $destination && clear && vim" C-m
+
+  if [[ -f $destination/config.ru ]]; then
+    if [[ $bootstrap == 1 ]]; then
+      echo TODO: config/{database,secrets,project}.yml
+    fi
+
+    rails_windows $1
+  fi
+
+  tmux attach -d -t $1
+)
