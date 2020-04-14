@@ -27,6 +27,7 @@ alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transactio
 alias nano='vim'
 alias redis='redis-server /usr/local/etc/redis.conf'
 alias rsync='rsync --exclude-from=${HOME}/.bin/rsync-exclude-list.txt'
+alias rtags='ctags -R --languages=ruby --exclude=.git --exclude=log .' # Optional: add `$(bundle list --paths)` if you don't have gem-ctags.
 alias sar='search_and_replace'
 alias ta='tmux attach'
 alias vim='nvim'
