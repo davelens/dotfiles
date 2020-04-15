@@ -46,6 +46,9 @@
   # remove local branches that were created from `git pr`
   pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
 
+  # Delete git-removed Files
+  ddf = !git ls-files --deleted -z | xargs -0 git rm
+
 [format]
   pretty=format:%C(yellow)%h%Creset | %C(green)%ad (%ar)%Creset | %C(blue)%an%Creset | %s
 
