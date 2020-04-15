@@ -28,7 +28,6 @@ fi
 destination=~/Sites/$1
 # Clone the git repo, fail with error output from `git clone`.
 [[ ! -d $destination ]] && (bootstrap=1;git clone git@github.com:$1.git $destination || fail)
-tmux setenv TMUX_PATH "$destination"
 
 function rails_windows() {
   tmux new-window -n db -t $1
