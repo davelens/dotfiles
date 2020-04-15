@@ -33,7 +33,7 @@ rewrite_pwd()
 
 prompt_branch() {
   if [ -d ".git" ]; then
-    echo "(branch: `git_branch`)"
+    echo "(branch: `git b`)"
   fi
 }
 

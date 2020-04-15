@@ -13,11 +13,11 @@ rev=$1
 
 git_server=$(git remote show origin -n | ruby -ne 'puts /^\s*Fetch.*(:|\/){1}([^\/]+\/[^\/]+).git/.match($_)[2] rescue nil')
 
-echo https://circleci.com/api/v1.1/project/github/$git_server/tree/$(git_branch)
+echo https://circleci.com/api/v1.1/project/github/$git_server/tree/$(git b)
 
 curl --user ${CIRCLE_TOKEN}: \
   --request POST \
   --form revision=$rev \
   --form config=@.circleci/config.yml \
   --form notify=false \
-  https://circleci.com/api/v1.1/project/github/$git_server/tree/$(git_branch)
+  https://circleci.com/api/v1.1/project/github/$git_server/tree/$(git b)

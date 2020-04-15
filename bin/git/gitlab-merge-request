@@ -21,11 +21,7 @@ if [ -z ${GITLAB_API_ENDPOINT} ]; then
   exit
 fi
 
-# If you want this cmd to be standalone, just grab the git_branch command from
-# the file below (or use your own method).
-. ~/.bash/commands
-
-branch=`git_branch`
+branch=$(git b)
 
 if [ $# -eq 0 ]; then
   read -p "Create merge request for which target branch? (default: develop) " target

@@ -10,11 +10,6 @@ function lowercase()
 }
 
 # Returns the active git branch - this is used in rewrite_prompt().
-git_branch()
-{
-  git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
-}
-
 git_delete_new_files()
 {
   for file in $(git st | grep '??' | awk '{print substr($0, 4)}'); do rm -r $file; done
