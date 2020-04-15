@@ -38,7 +38,6 @@ function rails_windows() {
 
   tmux send-keys -t $1:db "clear && mysql \$(~/.bin/rails/lookup-db-credentials database)" C-m
   tmux send-keys -t $1:console "clear && bin/rails c" C-m
-
   tmux send-keys -t $1:server "clear" C-m
 
   case $server in
@@ -48,16 +47,18 @@ function rails_windows() {
   esac
 }
 
-tmux attach -t $1 || (
+tmux attach -t $1 >/dev/null 2>&1 || (
   tmux new-session -s $1 -n editor -c $destination -d
   tmux send-keys -t $1 "vim" C-m
 
   if [[ -f $destination/config.ru ]]; then
     read -n1 -p "Launch local Puma server? (y/n) " server
+    echo ""
 
     if [[ $bootstrap == 1 ]]; then
       # TODO: Make a separate command that bootstraps a Rails project.
       echo TODO: Create missing config/{database,secrets,project}.yml
+      echo TODO: Import database using bin/rails/db-import
     fi
 
     rails_windows $1
