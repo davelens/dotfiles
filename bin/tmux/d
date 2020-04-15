@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 
-. ~/.bash/commands
+# This opens a tmux session with a number of window/pane presets in order to
+# do **d**ev work on a project.
+#
+#   d davelens/dotfiles
+#
+# It assumes a very specific folder structure; a github repository namespace
+# insides the ~/Sites folder. An example:
+#
+#   ~/Sites/<git-org-or-user>/<git-repo>
+#
+# All my dev work-related and personal projects reside on GitHub.  It makes
+# sense for me to follow the same user/repo structure, as it allows me to
+# separate my professional projects from my personal ones.
+#
+# ~/Sites as my top level project folder because I mainly work on webapps, and
+# it's the macos default for them.
+#
+# As an afterthought; Yes, I'm aware of tmuxinator and yes, I've tried it.
+# I don't know, I still like a simple bash script better.
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No project namespace given.'
