@@ -3,9 +3,7 @@
 # Stops further execution after any error.
 set -e
 
-# ~/.bash/commands includes my git_branch function.
-[ -f ~/.bash/commands ] && . ~/.bash/commands
-
+branch_name=$(git b) # `git b` is an alias in my ~/.gitconfig
 env=production
 
 if [ $# -gt 0 ]; then
