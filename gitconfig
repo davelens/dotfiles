@@ -45,6 +45,9 @@
   # remove local branches that were created from `git pr`
   pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
 
+  # Delete git-removed Files
+  ddf = !git ls-files --deleted -z | xargs -0 git rm
+
   # Uses the GitHub API to perform a search query and find repos.
   # Made to fit `~/.bin/tmux/d -n`.
   search-repos = "!/bin/bash ~/.bin/git/github-search-repos"
