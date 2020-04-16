@@ -19,10 +19,11 @@
 #
 # As an afterthought; Yes, I'm aware of tmuxinator and yes, I've tried it.
 # I don't know, I still like a simple bash script better.
+set -e
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No project namespace given.'
-  printf "\tUsage: p <github-user>/<github-repo>"
+  printf "\tUsage: p <github-user>/<github-repo>\n" && exit
 fi
 
 destination=~/Sites/$1
@@ -34,9 +35,10 @@ function rails_windows() {
   tmux new-window -n console -c $destination -t $1
   tmux new-window -n server -c $destination -t $1
 
-  # TODO: Start mysql server if it's not running.
+  if [[ `pgrep -n mysqld` ]]; then
+    tmux send-keys -t $1:db "clear && mysql \$(~/.bin/rails/lookup-db-credentials database)" C-m
+  fi
 
-  tmux send-keys -t $1:db "clear && mysql \$(~/.bin/rails/lookup-db-credentials database)" C-m
   tmux send-keys -t $1:console "clear && bin/rails c" C-m
   tmux send-keys -t $1:server "clear" C-m
 
@@ -52,7 +54,17 @@ tmux attach -t $1 >/dev/null 2>&1 || (
   tmux send-keys -t $1 "vim" C-m
 
   if [[ -f $destination/config.ru ]]; then
-    read -n1 -p "Launch local Puma server? (y/n) " server
+    if [[ ! `pgrep -n mysqld` ]]; then
+      read -n1 -p "Launch local mysql server? (y/n) " mysql
+      echo ""
+      case $mysql in
+        [Yy]* ) mysql.server start;;
+        [Nn]* ) echo "";;
+        * ) echo "" && echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
+      esac
+    fi
+
+    read -n1 -p "Launch local puma server? (y/n) " server
     echo ""
 
     if [[ $bootstrap == 1 ]]; then
