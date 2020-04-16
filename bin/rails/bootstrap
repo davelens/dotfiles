@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+[[ -z $1 ]] && fail "ERROR: No target directory given."
+[[ ! -d $1 ]] && fail "ERROR: Directory $1 is missing."
+[[ ! -f $1/config.ru ]] && fail 'ERROR: You can only run this from a folder containing a Rails project.';
+
+function copy_database_config() {
+  while true; do
+    read -n1 -p "Create a copy from $1? (y/n) " yn
+    case $yn in
+      [Yy]* ) cp $1 $destination/config/database.yml; break;;
+      [Nn]* ) printf "\nERROR: No $destination/config/database.yml present. Aborting.\n" && exit;;
+      * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
+    esac
+  done
+}
+
+destination=$1 # So we can access it in functions.
+
+if [ ! -f $1/config/database.yml ]; then
+  echo "WARNING: No config/database.yml present!"
+  [ -f $1/config/database.yml.dist ] && copy_database_config $1/config/database.yml.dist
+  [ -f $1/config/database.dist.yml ] && copy_database_config $1/config/database.dist.yml
+
+  if [ ! -f $1/config/database.yml ]; then
+    fail "ERROR: No config/database.yml present. Aborting."
+  fi
+fi
