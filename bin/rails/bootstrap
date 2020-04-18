@@ -1,30 +1,35 @@
 #!/usr/bin/env bash
 set -e
-[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[ -f ~/.bash/commands ] && . ~/.bash/commands
 
-[[ -z $1 ]] && fail "ERROR: No target directory given."
+[[ -z $1 ]] && fail 'ERROR: No target directory given.'
 [[ ! -d $1 ]] && fail "ERROR: Directory $1 is missing."
-[[ ! -f $1/config.ru ]] && fail 'ERROR: You can only run this from a folder containing a Rails project.';
+[[ ! -f $1/config.ru ]] && fail 'ERROR: You can only run this from a folder containing a Rails project.'
 
-function copy_database_config() {
+function copy_config() {
+  file=$1;
+
   while true; do
-    read -n1 -p "Create a copy from $1? (y/n) " yn
+    read -n1 -p "Create a copy from $project_root/$file.yml? (y/n) " yn
     case $yn in
-      [Yy]* ) cp $1 $destination/config/database.yml; break;;
-      [Nn]* ) printf "\nERROR: No $destination/config/database.yml present. Aborting.\n" && exit;;
+      [Yy]* ) cp $project_root/$file.yml $project_root/$file.yml; break;;
+      [Nn]* ) printf "\nERROR: No $project_root/$file.yml present. Aborting.\n" && exit;;
       * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
     esac
   done
 }
 
-destination=$1 # So we can access it in functions.
+function check_and_copy() {
+  [ -f $project_root/$1.yml ] && return
 
-if [ ! -f $1/config/database.yml ]; then
-  echo "WARNING: No config/database.yml present!"
-  [ -f $1/config/database.yml.dist ] && copy_database_config $1/config/database.yml.dist
-  [ -f $1/config/database.dist.yml ] && copy_database_config $1/config/database.dist.yml
+  echo "WARNING: No $project_root/$1.yml present!"
+  [ -f $project_root/$1.yml.dist ] && copy_config $1.yml.dist
+  [ -f $project_root/$1.dist.yml ] && copy_config $1.dist.yml
 
-  if [ ! -f $1/config/database.yml ]; then
-    fail "ERROR: No config/database.yml present. Aborting."
-  fi
-fi
+  [ ! -f $project_root/$1.yml ] && fail "ERROR: No $project_root/$1.yml present. Aborting."
+}
+
+project_root=$1 # So we can access it in functions.
+check_and_copy config/database
+check_and_copy config/project
+check_and_copy config/secrets
