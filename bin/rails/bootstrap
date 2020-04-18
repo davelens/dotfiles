@@ -1,35 +1,36 @@
 #!/usr/bin/env bash
 set -e
-[ -f ~/.bash/commands ] && . ~/.bash/commands
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
 [[ -z $1 ]] && fail 'ERROR: No target directory given.'
 [[ ! -d $1 ]] && fail "ERROR: Directory $1 is missing."
 [[ ! -f $1/config.ru ]] && fail 'ERROR: You can only run this from a folder containing a Rails project.'
 
 function copy_config() {
-  file=$1;
+  src=$project_root/$1$2
+  dest=$project_root/$1.yml
 
-  while true; do
-    read -n1 -p "Create a copy from $project_root/$file.yml? (y/n) " yn
-    case $yn in
-      [Yy]* ) cp $project_root/$file.yml $project_root/$file.yml; break;;
-      [Nn]* ) printf "\nERROR: No $project_root/$file.yml present. Aborting.\n" && exit;;
-      * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
-    esac
-  done
+  read -n1 -p "Create a copy from $src? (y/n) " yn
+  case $yn in
+    [Yy]* ) cp $src $dest;;
+    [Nn]* ) printf "\nERROR: No $dest present. Aborting.\n" && exit;;
+    * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
+  esac
 }
 
 function check_and_copy() {
-  [ -f $project_root/$1.yml ] && return
+  [[ -f $project_root/$1.yml ]] && return
 
   echo "WARNING: No $project_root/$1.yml present!"
-  [ -f $project_root/$1.yml.dist ] && copy_config $1.yml.dist
-  [ -f $project_root/$1.dist.yml ] && copy_config $1.dist.yml
+  [[ -f $project_root/$1.yml.dist ]] && copy_config $1 .yml.dist
+  [[ -f $project_root/$1.dist.yml ]] && copy_config $1 .dist.yml
 
-  [ ! -f $project_root/$1.yml ] && fail "ERROR: No $project_root/$1.yml present. Aborting."
+  [[ ! -f $project_root/$1.yml ]] && fail "ERROR: No $project_root/$1.yml present. Aborting."
 }
 
 project_root=$1 # So we can access it in functions.
 check_and_copy config/database
+# TODO: Find out why the script exists after the first check_and_copy
+check_and_copy config/udongo
 check_and_copy config/project
 check_and_copy config/secrets

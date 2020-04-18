@@ -28,7 +28,7 @@ fi
 
 destination=~/Sites/$1
 # Clone the git repo, fail with error output from `git clone`.
-[[ ! -d $destination ]] && (bootstrap=1;git clone git@github.com:$1.git $destination || fail)
+[[ ! -d $destination ]] && bootstrap=1 && (git clone git@github.com:$1.git $destination || fail)
 
 function rails_windows() {
   tmux new-window -n db -c $destination -t $1
@@ -60,18 +60,15 @@ tmux attach -t $1 >/dev/null 2>&1 || (
       case $mysql in
         [Yy]* ) mysql.server start;;
         [Nn]* ) echo "";;
-        * ) echo "" && echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
+        * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
       esac
     fi
 
     read -n1 -p "Launch local puma server? (y/n) " server
     echo ""
 
-    if [[ $bootstrap == 1 ]]; then
-      # TODO: Make a separate command that bootstraps a Rails project.
-      echo TODO: Create missing config/{database,secrets,project}.yml
-      echo TODO: Import database using bin/rails/db-import
-    fi
+    # $() opens a separate shell, so changing directories happens in there.
+    [[ -n $bootstrap ]] && cd $destination && ~/.bin/rails/db-import && cd -
 
     rails_windows $1
   fi
