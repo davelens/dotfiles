@@ -1,33 +1,10 @@
 #!/usr/bin/env bash
 
 set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
-if [ ! -f config.ru ]; then
-  echo 'ERROR: You can only run this from a folder containing a Rails project.'
-  exit
-fi
-
-function copy_database_config() {
-  while true; do
-    read -n1 -p "Create a copy from $1? (y/n) " yn
-    case $yn in
-      [Yy]* ) cp $1 config/database.yml; break;;
-      [Nn]* ) printf "\nERROR: No config/database.yml present. Aborting.\n" && exit;;
-      * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
-    esac
-  done
-}
-
-if [ ! -f config/database.yml ]; then
-  echo "WARNING: No config/database.yml present!"
-  [ -f config/database.yml.dist ] && copy_database_config config/database.yml.dist
-  [ -f config/database.dist.yml ] && copy_database_config config/database.dist.yml
-
-  if [ ! -f config/database.yml ]; then
-    echo "ERROR: No config/database.yml present. Aborting."
-    exit
-  fi
-fi
+[[ ! -f config.ru ]] && fail 'ERROR: You can only run this from a folder containing a Rails project.'
+[[ ! -f config/database.yml ]] && ~/.bin/rails/bootstrap $PWD
 
 function credentials(){
   echo $(~/.bin/rails/lookup-db-credentials $1 $2)
