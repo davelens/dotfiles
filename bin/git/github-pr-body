@@ -46,7 +46,7 @@ fi
 # An easier way to grab the PR URL would be `hub pr show -u`. I chose to use
 # a method using `gh` instead because of hub's pending deprecation.
 repo_suffix=`git remote get-url origin | sed -e 's/git@github.com://' -e 's/.git//'`
-pr_id=`gh pr list | grep $branch_name | awk '{print $1}'`
+pr_id=`gh pr list 2>&1 | grep $branch_name | awk '{print $1}'`
 body_file=".git/$branch_name.md"
 
 # Stop here if there's no PR available for the current branch.
