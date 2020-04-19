@@ -10,7 +10,7 @@
 #
 #   ~/Sites/<git-org-or-user>/<git-repo>
 #
-# All my dev work-related and personal projects reside on GitHub.  It makes
+# All my dev work-related and personal projects reside on GitHub. It makes
 # sense for me to follow the same user/repo structure, as it allows me to
 # separate my professional projects from my personal ones.
 #
@@ -45,7 +45,7 @@ function rails_windows() {
   case $server in
     [Yy]* ) tmux send-keys -t $1:server "bin/rails s" C-m;;
     [Nn]* ) tmux send-keys -t $1:server "bin/rails s";;
-    * ) echo "" && echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
+    * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
   esac
 }
 
@@ -58,7 +58,7 @@ tmux attach -t $1 >/dev/null 2>&1 || (
       read -n1 -p "Launch local mysql server? (y/n) " mysql
       echo ""
       case $mysql in
-        [Yy]* ) mysql.server start;;
+        [Yy]* ) mysql.server start >/dev/null 2>&1;;
         [Nn]* ) echo "";;
         * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
       esac
@@ -68,7 +68,7 @@ tmux attach -t $1 >/dev/null 2>&1 || (
     echo ""
 
     # $() opens a separate shell, so changing directories happens in there.
-    [[ -n $bootstrap ]] && cd $destination && ~/.bin/rails/db-import && cd -
+    [[ -n $bootstrap ]] && cd $destination && ~/.bin/rails/db-import && cd - >/dev/null
 
     rails_windows $1
   fi
