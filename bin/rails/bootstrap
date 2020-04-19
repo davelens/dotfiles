@@ -31,6 +31,7 @@ function check_and_copy() {
   # entirely identify it. Let me know if you know!
   #
   # More info here:
+  # https://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO-10.html
   # https://stackoverflow.com/questions/16325548/nested-function-calls-in-bash
   # https://bash.cyberciti.biz/guide/The_exit_status_of_a_command
   # https://www.cyberciti.biz/faq/bash-get-exit-code-of-command/
