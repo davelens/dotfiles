@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Reads the ruby version from the production machine, using credentials stored
+# in a given config/deploy.rb file.
+
+# There are two ways to extract the host from our deployment config:
+#
+# 1. In config/deploy/<env>.rb:
+#    server '10.13.1.23', user: 'reli', roles: %w{app web db}
+#
+# 2. In config/deploy.rb
+#    set :user, 'website'
+#    set :server, 'raamwinkel.blimp.be'
+#
+# This script will probe both for user/server pairs.
+
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+[[ -z $1 ]] && set -- "config/deploy.rb"
+
+[[ ! -e $1 ]] && fail "ERROR: $1 not found. Check its path."
+
+user=$(cat $1 | grep -o ":user.*'" | sed -e "s/:user, '//" -e "s/'//")
+server=$(cat $1 | grep -o ":server.*'" | sed -e "s/:server, '//" -e "s/'//")
+
+if [[ -z $user || -z $server ]]; then
+  env_file=`echo $1 | sed -e 's/.rb$/\/production.rb/'`
+  user=$(cat $env_file | grep -o "user: '.*'" | sed -e "s/user: '//" -e "s/'//")
+  server=$(cat $env_file | grep -o "server '.*', u" | sed -e "s/server '//" -e "s/', u//")
+fi
+
+[[ -z $user || -z $server ]] && fail "ERROR: No workable user/server pair found. Aborting."
+
+# Expected output of the SSH command is something like:
+#
+#   ruby 2.4.5p335 (2018-10-18 revision 65137) [x86_64-linux]
+#
+# We emit the patch version and just extract this:
+#
+#   2.4.5
+#
+ssh $user@$server 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//'
