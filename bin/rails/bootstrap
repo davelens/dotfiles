@@ -45,7 +45,22 @@ check_and_copy 'config/secrets'
 check_and_copy 'config/udongo'
 check_and_copy 'config/project'
 
-# TODO: Is there a .ruby-version file, and do we have the version it mentions?
+# Expected output of the SSH command is something like:
+#
+#   ruby 2.4.5p335 (2018-10-18 revision 65137) [x86_64-linux]
+#
+# We emit the patch version and just extract this:
+#
+#   2.4.5
+#
+if [[ -e .ruby_version ]]; then
+  ruby_version=cat .ruby_version
+else
+  declare -A ssh_credentials=$(~/.bin/rails/ssh-credentials)
+  ruby_version=`ssh ${ssh_credentials[user]}@${ssh_credentials[server]} 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//'`
+fi
+
+# TODO: Check if there is a Ruby with our desired version installed.
 # TODO: No => Run rbenv to install the ruby version we need.
 
 # TODO: Is bundler installed?

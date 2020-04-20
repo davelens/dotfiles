@@ -71,21 +71,9 @@ do :
    ignored_tables_string+=" --ignore-table=${remote_db}.${table}"
 done
 
-# There are two ways to extract the host from the deployment config:
-#
-# 1. In config/deploy/<env>.rb:
-#    server '10.13.1.23', user: 'reli', roles: %w{app web db}
-
-user=$(cat config/deploy.rb | grep -o ":user.*'" | sed -e "s/:user, '//" -e "s/'//")
-server=$(cat config/deploy.rb | grep -o ":server.*'" | sed -e "s/:server, '//" -e "s/'//")
-
-# 2. In config/deploy.rb
-#    set :user, 'website'
-#    set :server, 'raamwinkel.blimp.be'
-if [[ -z $user || -z $server ]]; then
-  user=$(cat config/deploy/${env}.rb | grep -o "user: '.*'" | sed -e "s/user: '//" -e "s/'//")
-  server=$(cat config/deploy/${env}.rb | grep -o "server '.*', u" | sed -e "s/server '//" -e "s/', u//")
-fi
+declare -A ssh_credentials=$(~/.bin/rails/ssh-credentials)
+user=${ssh_credentials[user]}
+server=${ssh_credentials[server]}
 
 echo "[${user}@${server}] Dumping ${remote_db}..."
 (
