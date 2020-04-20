@@ -40,6 +40,7 @@ function rails_windows() {
   fi
 
   tmux send-keys -t $1:console "clear && bin/rails c" C-m
+  tmux send-keys -t $1:server 'bin/spring server 2>&1 >/dev/null &' C-m
   tmux send-keys -t $1:server "clear" C-m
 
   case $server in
