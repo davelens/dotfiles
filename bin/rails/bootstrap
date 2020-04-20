@@ -5,6 +5,7 @@ set -e
 [[ -z $1 ]] && fail 'ERROR: No target directory given.'
 [[ ! -d $1 ]] && fail "ERROR: Directory $1 is missing."
 [[ ! -f $1/config.ru ]] && fail 'ERROR: You can only run this from a folder containing a Rails project.'
+[[ ! `command -v rbenv` ]] && fail 'ERROR: No rbenv executable found. Check your $PATH or install rbenv with `brew install rbenv`.'
 
 function copy_config() {
   src=$project_root/$1$2
