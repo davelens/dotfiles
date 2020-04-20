@@ -45,35 +45,37 @@ check_and_copy 'config/secrets'
 check_and_copy 'config/udongo'
 check_and_copy 'config/project'
 
-# Expected output of the SSH command is something like:
-#
-#   ruby 2.4.5p335 (2018-10-18 revision 65137) [x86_64-linux]
-#
-# We emit the patch version and just extract this:
-#
-#   2.4.5
-#
-if [[ -e .ruby_version ]]; then
-  ruby_version=cat .ruby_version
-else
-  declare -A ssh_credentials=$(~/.bin/rails/ssh-credentials)
-  ruby_version=`ssh ${ssh_credentials[user]}@${ssh_credentials[server]} 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//'`
+# rbenv requires a .ruby-version to provide a PWD-localized ruby executable.
+if [[ ! -e $project_root/.ruby-version ]]; then
+  declare -A ssh_credentials=$(~/.bin/rails/ssh-credentials $project_root/config/deploy.rb)
+  required_ruby=`ssh ${ssh_credentials[user]}@${ssh_credentials[server]} 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//'`
+  echo $required_ruby >> $project_root/.ruby-version
 fi
 
-# TODO: Check if there is a Ruby with our desired version installed.
-# TODO: No => Run rbenv to install the ruby version we need.
+required_ruby=`cat $project_root/.ruby-version`
 
-# TODO: Is bundler installed?
-# TODO: No => Check the lockfile which bundler version we need, and install.
+# Check if the required ruby version is installed.
+if [[ ! -d ~/.rbenv/versions/$required_ruby ]]; then
+  echo "Installing ruby $required_ruby" && rbenv install $required_ruby
 
-echo 'Installing gems:'
-cd $project_root && bundle install
-
-if [[ $? -gt 0 ]]; then
-  echo ERROR: Gem installation failed, please review:
-  printf "\n\tcd $project_root && bundle install"
-else
-  echo Done!
+  if [[ $? -gt 0 ]]; then
+    echo ERROR: Ruby installation failed, please review:
+    printf "\n\tcd $project_root && rbenv install $required_ruby"
+    exit 1;
+  fi
 fi
 
-cd - >/dev/null
+if [[ ! -f ~/.rbenv/versions/$required_ruby/bin/bundle ]]; then
+  required_bundler=`cat $project_root/Gemfile.lock | tail -1 | sed -e 's/^[[:space:]]*//'`
+
+  if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
+    gem install bundler -v $required_bundler
+    if [[ $? -gt 0 ]]; then
+      echo ERROR: Bundler installation failed, please review:
+      printf "\n\tcd $project_root && gem install bundler -v $required_ruby"
+      exit 1;
+    fi
+  fi
+fi
+
+echo 'Installing gems:' && cd $project_root && bundle install && cd - >/dev/null
