@@ -79,8 +79,7 @@ echo "[${user}@${server}] Dumping ${remote_db}..."
 (
 ssh ${user}@${server} \
   "mysqldump ${remote_db} --single-transaction --no-data --routines > dump.sql && \
-   mysqldump ${remote_db} --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']} >> dump.sql && \
-   tar -cvzf dump.sql.tar dump.sql"
+   mysqldump ${remote_db} --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']} >> dump.sql && tar -cvzf dump.sql.tar dump.sql"
 ) >/dev/null
 
 echo "[localhost] Downloading ${user}@${server}:dump.sql.tar"
@@ -88,6 +87,16 @@ scp ${user}@${server}:dump.sql.tar .
 
 echo "[localhost] Unpacking dump.sql.tar"
 tar -C . -xvf dump.sql.tar >/dev/null 2>&1
+
+function find_or_create_db() {
+  if [[ ! -d $BREW_PATH/var/mysql/$1 ]]; then
+    echo "[localhost] Creating database $1"
+    mysql -e "create database $1"
+  fi
+}
+
+find_or_create_db $local_db
+find_or_create_db $(credentials -t database)
 
 echo "[localhost] Importing dump.sql into ${local_db}"
 mysql ${local_db} < dump.sql
