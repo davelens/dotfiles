@@ -67,7 +67,6 @@ tmux attach -t $1 >/dev/null 2>&1 || (
     read -n1 -p "Launch local puma server? (y/n) " server
     echo ""
     [[ -n $bootstrap ]] && cd $destination && ~/.bin/rails/db-import && cd - >/dev/null
-    (bin/rails db:migrate:status | grep "^\s*down") && bin/rails db:migrate
     rails_windows $1
   fi
 
