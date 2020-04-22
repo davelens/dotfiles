@@ -55,7 +55,7 @@ tmux attach -t $1 >/dev/null 2>&1 || (
   tmux send-keys -t $1 "vim" C-m
 
   if [[ -z `pgrep -n mysqld` ]]; then
-    read -n1 -p "Launch local mysql server? (y/n) " mysql
+    read -n1 -p "[tmux/d] Launch local mysql server? (y/n) " mysql
     echo ""
     case $mysql in
       [Yy]* ) mysql.server start >/dev/null 2>&1;;
@@ -65,7 +65,7 @@ tmux attach -t $1 >/dev/null 2>&1 || (
   fi
 
   if [[ -f $destination/config.ru ]]; then
-    read -n1 -p "Launch local puma server? (y/n) " server
+    read -n1 -p "[tmux/d] Launch local puma server? (y/n) " server
     echo ""
     [[ -n $bootstrap ]] && cd $destination && ~/.bin/rails/db-import && cd - >/dev/null
     rails_windows $1

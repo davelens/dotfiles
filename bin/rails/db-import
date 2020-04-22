@@ -15,7 +15,8 @@ remote_db=$(credentials -p database)
 local_db=$(credentials database)
 ignore_tables=
 
-# TODO: Override user+host
+# TODO: Be able to override user+host.
+
 for i in "$@"
 do
   case $i in
@@ -52,15 +53,12 @@ do
   esac
 done
 
-if [ -z ${local_db} ]; then
-  echo "[rails/db-import] ERROR: No local configuration found in config/database.yml. Aborting."
-  exit
-fi
+[[ -z ${local_db} ]] && fail "[rails/db-import] ERROR: No local configuration found in config/database.yml. Aborting."
 
-if [ -z ${remote_db} ]; then
-  printf "\n[rails/db-import] WARNING: No configuration for ${env} found in config/database.yml!\n\n"
+if [[ -z ${remote_db} ]]; then
+  printf "[rails/db-import] WARNING: No configuration for ${env} found in config/database.yml!\n"
   read -p "[rails/db-import] Please enter the name of the remote database: (default: website_prod) " remote_db
-  [ ! ${remote_db} ] && remote_db="website_prod"
+  [[ -z ${remote_db} ]] && remote_db="website_prod"
 fi
 
 readarray -d , -t ignore_tables <<<"$ignore_tables" # Bash 4.x+
