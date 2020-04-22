@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+# TODO: This will only be useful if we can auth and access private repositories.
+while read -ep "[git/github-search-repos] Query: " -i "$query" query; do
+  curl -s --url https://api.github.com/search/repositories?q=$query | jq -r '.items[] .full_name' | fzf
+done
