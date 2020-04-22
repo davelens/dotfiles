@@ -56,10 +56,10 @@ required_ruby=`cat $project_root/.ruby-version`
 
 # Check if the required ruby version is installed.
 if [[ ! -d ~/.rbenv/versions/$required_ruby ]]; then
-  echo "Installing ruby $required_ruby" && rbenv install $required_ruby
+  echo "[bootstrap] Installing ruby $required_ruby" && rbenv install $required_ruby
 
   if [[ $? -gt 0 ]]; then
-    echo ERROR: Ruby installation failed, please review:
+    echo [bootstrap] ERROR: Ruby installation failed, please review:
     printf "\n\tcd $project_root && rbenv install $required_ruby"
     exit 1;
   fi
@@ -71,11 +71,17 @@ if [[ ! -f ~/.rbenv/versions/$required_ruby/bin/bundle ]]; then
   if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
     gem install bundler -v $required_bundler
     if [[ $? -gt 0 ]]; then
-      echo ERROR: Bundler installation failed, please review:
+      echo [bootstrap] ERROR: Bundler installation failed, please review:
       printf "\n\tcd $project_root && gem install bundler -v $required_ruby"
       exit 1;
     fi
   fi
 fi
 
-echo 'Installing gems:' && cd $project_root && bundle install && cd - >/dev/null
+echo '[bundler] Installing gems:' && cd $project_root && bundle install --quiet && cd - >/dev/null
+
+if [[ $? -gt 0 ]]; then
+  echo [bundler] ERROR: Gem installation failed, please review:
+  printf "\n\tcd $project_root && bundle install --quiet && cd - >/dev/null"
+  exit 1;
+fi
