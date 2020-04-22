@@ -17,14 +17,12 @@
 # GitHub's CLI tool will be expanded with API functionality, and I will switch
 # out the current API calls made with `hub` when that time comes.
 set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
-if [ ! -d ".git" ]; then
+if [[ ! -d ".git" ]]; then
   echo "EXIT: Local working directory is not a cloned git repo."
   exit
 fi
-
-# ~/.bash/commands includes my git_branch function.
-[ -f ~/.bash/commands ] && . ~/.bash/commands
 
 if [ $# -eq 0 ]; then
   # No longer using `which` after reading the following:
