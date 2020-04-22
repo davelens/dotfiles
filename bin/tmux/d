@@ -24,8 +24,8 @@
 # I don't know, I still like a simple bash script better.
 set -e
 
-# TODO: make ~ dynamic and escape forward slashes in path
-ls -d ~/Sites/**/* | sed -e 's/\/Users\/davelens\/Sites\///' | fzf
+# Provide a fuzzy search for my projects so I don't have to type names anymore.
+[[ -z $1 ]] && set -- $(ls -d ~/Sites/**/* | sed -e "s|`echo ~`/Sites/||" | fzf)
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No project namespace given.'
