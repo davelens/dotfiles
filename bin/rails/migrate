@@ -4,7 +4,7 @@ set -e
 
 # TODO: Proper Rails Engine support
 
-[[ ! -f config.ru ]] && fail 'ERROR: You can only run this from a folder containing a Rails project.'
+[[ ! -f config.ru ]] && fail '[rails/migrate] ERROR: You can only run this from a folder containing a Rails project.'
 
 cmd='bundle exec rake'
 task=migrate

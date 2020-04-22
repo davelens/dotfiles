@@ -2,27 +2,27 @@
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
-[[ -z $1 ]] && fail 'ERROR: No target directory given.'
-[[ ! -d $1 ]] && fail "ERROR: Directory $1 is missing."
-[[ ! -f $1/config.ru ]] && fail 'ERROR: You can only run this from a folder containing a Rails project.'
-[[ ! `command -v rbenv` ]] && fail 'ERROR: No rbenv executable found. Check your $PATH or install rbenv with `brew install rbenv`.'
+[[ -z $1 ]] && fail '[rails/bootstrap] ERROR: No target directory given.'
+[[ ! -d $1 ]] && fail "[rails/bootstrap] ERROR: Directory $1 is missing."
+[[ ! -f $1/config.ru ]] && fail '[rails/bootstrap] ERROR: You can only run this from a folder containing a Rails project.'
+[[ ! `command -v rbenv` ]] && fail '[rails/bootstrap] ERROR: No rbenv executable found. Check your $PATH or install rbenv with `brew install rbenv`.'
 
 function copy_config() {
   src=$project_root/$1$2
   dest=$project_root/$1.yml
 
-  read -n1 -p "Create a copy from $src? (y/n) " yn
+  read -n1 -p "[rails/bootstrap] Create a copy from $src? (y/n) " yn
   case $yn in
     [Yy]* ) cp $src $dest;;
-    [Nn]* ) printf "\nERROR: No $dest present. Aborting.\n" && exit;;
-    * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
+    [Nn]* ) printf "\n[rails/bootstrap] ERROR: No $dest present. Aborting.\n" && exit;;
+    * ) printf "\n[rails/bootstrap] Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
   esac
 }
 
 function check_and_copy() {
   [[ -f $project_root/$1.yml ]] && return
 
-  echo "WARNING: No $project_root/$1.yml present!"
+  echo "[rails/bootstrap] WARNING: No $project_root/$1.yml present!"
   [[ -f $project_root/$1.yml.dist ]] && copy_config $1 .yml.dist
   [[ -f $project_root/$1.dist.yml ]] && copy_config $1 .dist.yml
 
@@ -56,10 +56,10 @@ required_ruby=`cat $project_root/.ruby-version`
 
 # Check if the required ruby version is installed.
 if [[ ! -d ~/.rbenv/versions/$required_ruby ]]; then
-  echo "[bootstrap] Installing ruby $required_ruby" && rbenv install $required_ruby
+  echo "[rails/bootstrap] Installing ruby $required_ruby" && rbenv install $required_ruby
 
   if [[ $? -gt 0 ]]; then
-    echo [bootstrap] ERROR: Ruby installation failed, please review:
+    echo [rails/bootstrap] ERROR: Ruby installation failed, please review:
     printf "\n\tcd $project_root && rbenv install $required_ruby"
     exit 1;
   fi
@@ -71,17 +71,17 @@ if [[ ! -f ~/.rbenv/versions/$required_ruby/bin/bundle ]]; then
   if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
     gem install bundler -v $required_bundler
     if [[ $? -gt 0 ]]; then
-      echo [bootstrap] ERROR: Bundler installation failed, please review:
+      echo [rails/bootstrap] ERROR: Bundler installation failed, please review:
       printf "\n\tcd $project_root && gem install bundler -v $required_ruby"
       exit 1;
     fi
   fi
 fi
 
-echo '[bundler] Installing gems:' && cd $project_root && bundle install --quiet && cd - >/dev/null
+echo '[rails/bootstrap:bundler] Installing gems:' && cd $project_root && bundle install --quiet && cd - >/dev/null
 
 if [[ $? -gt 0 ]]; then
-  echo [bundler] ERROR: Gem installation failed, please review:
+  echo [rails/bootstrap:bundler] ERROR: Gem installation failed, please review:
   printf "\n\tcd $project_root && bundle install --quiet && cd - >/dev/null"
   exit 1;
 fi

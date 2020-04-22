@@ -3,7 +3,7 @@
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
-[[ ! -f config.ru ]] && fail 'ERROR: You can only run this from a folder containing a Rails project.'
+[[ ! -f config.ru ]] && fail '[rails/db-import] ERROR: You can only run this from a folder containing a Rails project.'
 [[ ! -f config/database.yml ]] && ~/.bin/rails/bootstrap $PWD
 
 function credentials(){
@@ -42,7 +42,7 @@ do
       ;;
     *)
       # unknown options
-      echo "ERROR: Unknown option '${i}'"
+      echo "[rails/db-import] ERROR: Unknown option '${i}'"
       echo "Usage: db-import [-sptrli] [--test] [--staging] [--production]"
       printf "\t[-l=name] [--local-database=name]\n"
       printf "\t[-r=name] [--remote-database=name]\n"
@@ -53,13 +53,13 @@ do
 done
 
 if [ -z ${local_db} ]; then
-  echo "ERROR: No local configuration found in config/database.yml. Aborting."
+  echo "[rails/db-import] ERROR: No local configuration found in config/database.yml. Aborting."
   exit
 fi
 
 if [ -z ${remote_db} ]; then
-  printf "\nWARNING: No configuration for ${env} found in config/database.yml!\n\n"
-  read -p "Please enter the name of the remote database: (default: website_prod) " remote_db
+  printf "\n[rails/db-import] WARNING: No configuration for ${env} found in config/database.yml!\n\n"
+  read -p "[rails/db-import] Please enter the name of the remote database: (default: website_prod) " remote_db
   [ ! ${remote_db} ] && remote_db="website_prod"
 fi
 
@@ -75,22 +75,22 @@ declare -A ssh_credentials=$(~/.bin/rails/ssh-credentials)
 user=${ssh_credentials[user]}
 server=${ssh_credentials[server]}
 
-echo "[${user}@${server}] Dumping ${remote_db}..."
+echo "[rails/db-import:${user}@${server}] Dumping ${remote_db}..."
 (
 ssh ${user}@${server} \
   "mysqldump ${remote_db} --single-transaction --no-data --routines > dump.sql && \
    mysqldump ${remote_db} --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']} >> dump.sql && tar -cvzf dump.sql.tar dump.sql"
 ) >/dev/null
 
-echo "[localhost] Downloading ${user}@${server}:dump.sql.tar"
+echo "[rails/db-import:localhost] Downloading ${user}@${server}:dump.sql.tar"
 scp ${user}@${server}:dump.sql.tar .
 
-echo "[localhost] Unpacking dump.sql.tar"
+echo "[rails/db-import:localhost] Unpacking dump.sql.tar"
 tar -C . -xvf dump.sql.tar >/dev/null 2>&1
 
 function find_or_create_db() {
   if [[ ! -d $BREW_PATH/var/mysql/$1 ]]; then
-    echo "[localhost] Creating database $1"
+    echo "[rails/db-import:localhost] Creating database $1"
     mysql -e "create database $1"
   fi
 }
@@ -98,11 +98,11 @@ function find_or_create_db() {
 find_or_create_db $local_db
 find_or_create_db $(credentials -t database)
 
-echo "[localhost] Importing dump.sql into ${local_db}"
+echo "[rails/db-import:localhost] Importing dump.sql into ${local_db}"
 mysql ${local_db} < dump.sql
 
-echo "[${user}@${server}] Cleaning up"
+echo "[rails/db-import:${user}@${server}] Cleaning up"
 ssh ${user}@${server} 'rm -f dump.sql dump.sql.tar'
 
-echo "[localhost] Cleaning up"
+echo "[rails/db-import:localhost] Cleaning up"
 rm -f dump.sql dump.sql.tar
