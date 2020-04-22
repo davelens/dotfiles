@@ -23,6 +23,10 @@
 # As an afterthought; Yes, I'm aware of tmuxinator and yes, I've tried it.
 # I don't know, I still like a simple bash script better.
 set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+# Provide a fuzzy search so projects can have an elegant exit.
+[[ $# -eq 1 && $1 == '-x' ]] && tmux kill-session -t $(tmux ls | sed -e 's|:.*||' | fzf) && exit 0
 
 # Provide a fuzzy search for my projects so I don't have to type names anymore.
 [[ -z $1 ]] && set -- $(ls -d ~/Sites/**/* | sed -e "s|`echo ~`/Sites/||" | fzf)
