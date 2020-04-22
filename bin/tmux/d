@@ -3,10 +3,13 @@
 # This opens a tmux session with a number of window/pane presets in order to
 # do **d**ev work on a project.
 #
+# You can use it standalone, which will use fzf to fuzzy find your project in
+# ~/Sites/*, or you can pass in an argument:
+#
 #   d davelens/dotfiles
 #
 # It assumes a very specific folder structure; a github repository namespace
-# insides the ~/Sites folder. An example:
+# inside the ~/Sites folder. An example:
 #
 #   ~/Sites/<git-org-or-user>/<git-repo>
 #
@@ -20,6 +23,9 @@
 # As an afterthought; Yes, I'm aware of tmuxinator and yes, I've tried it.
 # I don't know, I still like a simple bash script better.
 set -e
+
+# TODO: make ~ dynamic and escape forward slashes in path
+ls -d ~/Sites/**/* | sed -e 's/\/Users\/davelens\/Sites\///' | fzf
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No project namespace given.'
