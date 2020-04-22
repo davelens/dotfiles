@@ -16,8 +16,6 @@
 # Note that `hub` will be deprecated somewhere in the future. I'm assuming
 # GitHub's CLI tool will be expanded with API functionality, and I will switch
 # out the current API calls made with `hub` when that time comes.
-
-# Stops further execution after any error.
 set -e
 
 if [ ! -d ".git" ]; then
