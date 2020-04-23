@@ -22,7 +22,7 @@ fi
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No search query namespace given.'
-  printf "\tUsage: github-search-repos user:davelens+user:blimp\n"
+  printf "\tUsage: git search-repos user:davelens+user:blimp\n"
   exit 2
 fi
 
