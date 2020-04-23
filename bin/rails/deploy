@@ -1,28 +1,47 @@
 #!/usr/bin/env bash
 
+# This deploy script is made with a particular workflow in mind. It behaves
+# differently depending on what branch I'm on. Examples:
+#
+# Active branch: feature-specs
+#       Command: deploy
+#        Result: bundle exec cap production deploy BRANCH=feature-specs
+#
+# Active branch: feature-specs
+#       Command: deploy -s
+#        Result: bundle exec cap staging deploy BRANCH=feature-specs
+#
+# Active branch: develop
+#       Command: deploy
+#        Result: bundle exec cap production deploy
+#
+# Active branch: master
+#       Command: deploy
+#        Result: bundle exec cap production deploy
+#
+# Active branch: develop
+#       Command: deploy -b develop
+#        Result: bundle exec cap production deploy BRANCH=develop
+#
+# Active branch: master
+#       Command: deploy -b master
+#        Result: bundle exec cap production deploy BRANCH=master
+
 # Stops further execution after any error.
 set -e
 
-# ~/.bash/commands includes my git_branch function.
-[ -f ~/.bash/commands ] && . ~/.bash/commands
-
+branch_name=$(git b) # `git b` is an alias in my ~/.gitconfig
 env=production
 
-if [ $# -gt 0 ]; then
-  if [[ $1 =~ "s" ]]; then
-    env=staging
-  fi
+[[ $1 =~ "s" ]] && env=staging
 
-  if [[ $1 =~ "b" && -n $2 ]]; then
-    branch_name=$2
-  fi
-fi
-
-if [[ -n $branch_name ]]; then
+if [[ $1 =~ "b" && -n $2 ]]; then
+  CMD="bundle exec cap $env deploy BRANCH=$2"
+elif [[ $branch_name != 'develop' && $branch_name != 'master' ]]; then
   CMD="bundle exec cap $env deploy BRANCH=$branch_name"
-else
-  CMD="bundle exec cap $env deploy"
 fi
+
+[[ -z $CMD ]] && CMD="bundle exec cap $env deploy"
 
 while true; do
   printf "[rails/deploy] I want to run:\n\n"

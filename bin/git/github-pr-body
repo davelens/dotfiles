@@ -25,11 +25,9 @@ if [[ ! -d ".git" ]]; then
 fi
 
 if [ $# -eq 0 ]; then
-  # No longer using `which` after reading the following:
-  # https://stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
-  if [ `command -v git_branch` ]; then
-    branch_name=`git_branch`
-  else
+  branch_name=$(git b) # `git b` is an alias in my ~/.gitconfig
+
+  if [ -z $branch_name ]; then
     read -p "For which branch would you like to edit the pull request body? " branch_name
     [[ ! `git branch | grep $branch_name` ]] && echo "$branch_name is not a git branch." && exit
   fi

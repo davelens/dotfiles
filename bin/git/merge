@@ -10,16 +10,10 @@ if [ ! -d ".git" ]; then
   exit
 fi
 
-# ~/.bash/commands includes my git_branch function.
-[ -f ~/.bash/commands ] && . ~/.bash/commands
-
-# No longer using `which` after reading the following:
-# https://stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
-if [ `command -v git_branch` ]; then
-  branch_name=`git_branch`
-else
-  echo "EXIT: No git_branch command found."
-  echo "You can grab one here: https://github.com/davelens/dotfiles/blob/master/bash/commands#L13"
+branch_name=$(git b) # `git b` is an alias in my ~/.gitconfig
+if [ -z $branch_name ]; then
+  echo "ERROR: No command 'git b' found."
+  echo "Grab it here: https://github.com/davelens/dotfiles/blob/master/gitconfig#L8"
   exit
 fi
 

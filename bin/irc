@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# This command mostly exists to save a respectable amount of typing.
+# "alexandria" is the name of my NAS, on which I run an irssi instance in a
+# separate tmux session.
+
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+if [[ ! `tmux attach -t irssi` ]]; then
+  tmux new-session -s irssi -n chat -c ~/.irssi -d
+  tmux send-keys -t irssi:chat "clear && ssh -t alexandria '/usr/local/bin/tmux attach'" C-m
+  tmux attach -t irssi
+fi
