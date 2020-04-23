@@ -39,7 +39,6 @@ function check_and_copy() {
   # https://stackoverflow.com/questions/16325548/nested-function-calls-in-bash
   # https://bash.cyberciti.biz/guide/The_exit_status_of_a_command
   # https://www.cyberciti.biz/faq/bash-get-exit-code-of-command/
-  #printf "\n"
   printf ""
 }
 
@@ -69,9 +68,10 @@ if [[ ! -d ~/.rbenv/versions/$required_ruby ]]; then
   fi
 fi
 
-if [[ ! -f ~/.rbenv/versions/$required_ruby/bin/bundle ]]; then
-  required_bundler=`cat $project_root/Gemfile.lock | tail -1 | sed -e 's/^[[:space:]]*//'`
+ruby_major=$(echo $required_ruby | sed -E 's/[0-9]{1,2}$/0/')
+required_bundler=`cat $project_root/Gemfile.lock | tail -1 | sed -e 's/^[[:space:]]*//'`
 
+if [[ ! -d ~/.rbenv/versions/$required_ruby/lib/ruby/gems/$ruby_major/gems/bundler-$required_bundler ]]; then
   if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
     gem install bundler -v $required_bundler
     if [[ $? -gt 0 ]]; then
