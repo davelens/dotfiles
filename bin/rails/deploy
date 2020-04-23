@@ -44,9 +44,9 @@ fi
 [[ -z $CMD ]] && CMD="bundle exec cap $env deploy"
 
 while true; do
-  printf "I want to run:\n\n"
+  printf "[rails/deploy] I want to run:\n\n"
   printf "  ${CMD}\n\n"
-  read -n1 -p "Confirm? (y/n) " yn
+  read -n1 -p "[rails/deploy] Confirm? (y/n) " yn
   echo ""
   case $yn in
     [Yy]* ) eval $CMD; break;;

@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+[[ -z $1 ]] && fail '[rails/bootstrap] ERROR: No target directory given.'
+[[ ! -d $1 ]] && fail "[rails/bootstrap] ERROR: Directory $1 is missing."
+[[ ! -f $1/config.ru ]] && fail '[rails/bootstrap] ERROR: You can only run this from a folder containing a Rails project.'
+[[ ! `command -v rbenv` ]] && fail '[rails/bootstrap] ERROR: No rbenv executable found. Check your $PATH or install rbenv with `brew install rbenv`.'
+
+function copy_config() {
+  src=$project_root/$1$2
+  dest=$project_root/$1.yml
+
+  echo "[rails/bootstrap] WARNING: No $project_root/$1.yml present, but found a dist file."
+
+  while true; do
+    read -n1 -p "[rails/bootstrap] Create a copy from $src? (y/n) " yn
+    printf "\n"
+    case $yn in
+      [Yy]* ) cp $src $dest; break;;
+      [Nn]* ) fail "[rails/bootstrap] ERROR: No $dest present. Aborting."; break;;
+      * ) echo "[rails/bootstrap] Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
+    esac
+  done
+}
+
+function check_and_copy() {
+  [[ -f $project_root/$1.yml ]] && return
+  [[ -f $project_root/$1.yml.dist ]] && copy_config $1 .yml.dist
+  [[ -f $project_root/$1.dist.yml ]] && copy_config $1 .dist.yml
+
+  # We need an(y) echo here to prevent this entire script from stopping after
+  # one pass of check_and_copy. I *think* this has to do with function return
+  # statuses in bash. I was able to determine the root of the problem, but not
+  # entirely identify it. Let me know if you know!
+  #
+  # More info here:
+  # https://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO-10.html
+  # https://stackoverflow.com/questions/16325548/nested-function-calls-in-bash
+  # https://bash.cyberciti.biz/guide/The_exit_status_of_a_command
+  # https://www.cyberciti.biz/faq/bash-get-exit-code-of-command/
+  #printf "\n"
+  printf ""
+}
+
+project_root=$1 # So we can access it in functions.
+check_and_copy 'config/database'
+check_and_copy 'config/secrets'
+check_and_copy 'config/udongo'
+check_and_copy 'config/project'
+
+# rbenv requires a .ruby-version to provide a PWD-localized ruby executable.
+if [[ ! -e $project_root/.ruby-version ]]; then
+  declare -A ssh_credentials=$(~/.bin/rails/ssh-credentials $project_root/config/deploy.rb)
+  required_ruby=`ssh ${ssh_credentials[user]}@${ssh_credentials[server]} 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//'`
+  echo $required_ruby >> $project_root/.ruby-version
+fi
+
+required_ruby=`cat $project_root/.ruby-version`
+
+# Check if the required ruby version is installed.
+if [[ ! -d ~/.rbenv/versions/$required_ruby ]]; then
+  echo "[rails/bootstrap] Installing ruby $required_ruby" && rbenv install $required_ruby
+
+  if [[ $? -gt 0 ]]; then
+    echo [rails/bootstrap] ERROR: Ruby installation failed, please review:
+    printf "\n\tcd $project_root && rbenv install $required_ruby"
+    exit 1;
+  fi
+fi
+
+if [[ ! -f ~/.rbenv/versions/$required_ruby/bin/bundle ]]; then
+  required_bundler=`cat $project_root/Gemfile.lock | tail -1 | sed -e 's/^[[:space:]]*//'`
+
+  if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
+    gem install bundler -v $required_bundler
+    if [[ $? -gt 0 ]]; then
+      echo [rails/bootstrap] ERROR: Bundler installation failed, please review:
+      printf "\n\tcd $project_root && gem install bundler -v $required_ruby"
+      exit 1;
+    fi
+  fi
+fi
+
+echo '[rails/bootstrap:bundler] Installing gems:' && cd $project_root && bundle install --quiet && cd - >/dev/null
+
+if [[ $? -gt 0 ]]; then
+  echo [rails/bootstrap:bundler] ERROR: Gem installation failed, please review:
+  printf "\n\tcd $project_root && bundle install --quiet && cd - >/dev/null"
+  exit 1;
+fi

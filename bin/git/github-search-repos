@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[[ ! `command -v jq` ]] && brew install jq
+
+# This command is used to provide suggestions among both my personal as well as
+# my work's public ànd private repositories.
+#
+# To access private repositories you will need a GitHub auth token with the
+# "repo" scope. You can request one here: https://github.com/settings/tokens.
+# Export it to an ENV var called GITHUB_API_TOKEN.
+#
+# The obvious shortcoming here is the fact that the per_page limit has a
+# ceiling of 100.
+
+if [[ -z $GITHUB_API_TOKEN ]]; then
+  echo ERROR: No personalized access token set.
+  printf "\t1. Create one here: https://github.com/settings/tokens\n"
+  printf "\t2. Put 'export GITHUB_API_TOKEN=<access-token>' in your ~/.bash_profile\n"
+  exit 1
+fi
+
+if [[ -z $1 ]]; then
+  echo 'ERROR: No search query namespace given.'
+  printf "\tUsage: git search-repos user:davelens+user:blimp\n"
+  exit 2
+fi
+
+declare query=$1
+declare -i page=1
+declare -a results
+
+search() {
+  local repositories=($(curl -s --header "Authorization: token $GITHUB_API_TOKEN" --url "https://api.github.com/search/repositories?q=$query&per_page=100&page=$page" | jq -r '.items[] .full_name'))
+
+  results=("${results[@]}" "${repositories[@]}")
+
+  if [[ ${#repositories[@]} == 100 ]]; then
+    page+=1
+    search
+  fi
+}
+
+search
+for repo in ${results[@]}; do echo $repo; done | fzf

@@ -16,11 +16,10 @@
 # Note that `hub` will be deprecated somewhere in the future. I'm assuming
 # GitHub's CLI tool will be expanded with API functionality, and I will switch
 # out the current API calls made with `hub` when that time comes.
-
-# Stops further execution after any error.
 set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
-if [ ! -d ".git" ]; then
+if [[ ! -d ".git" ]]; then
   echo "EXIT: Local working directory is not a cloned git repo."
   exit
 fi
@@ -41,7 +40,7 @@ fi
 # An easier way to grab the PR URL would be `hub pr show -u`. I chose to use
 # a method using `gh` instead because of hub's pending deprecation.
 repo_suffix=`git remote get-url origin | sed -e 's/git@github.com://' -e 's/.git//'`
-pr_id=`gh pr list | grep $branch_name | awk '{print $1}'`
+pr_id=`gh pr list 2>&1 | grep $branch_name | awk '{print $1}'`
 body_file=".git/$branch_name.md"
 
 # Stop here if there's no PR available for the current branch.

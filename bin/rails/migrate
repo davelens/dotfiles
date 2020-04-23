@@ -1,25 +1,16 @@
 #!/usr/bin/env bash
 set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
-if [ -f config/cable.yml ]; then # Rails 5+
-  command='bundle exec rails'
-else # Rails < 5
-  command='bundle exec rake'
-fi
+# TODO: Proper Rails Engine support
 
-if [[ $# -eq 1 && $1 == '-r' ]]; then
-  action=rollback
-else
-  action=migrate
-fi
+[[ ! -f config.ru ]] && fail '[rails/migrate] ERROR: You can only run this from a folder containing a Rails project.'
 
-[ -x bin/bundle ] && command=bin/$command
+cmd='bundle exec rake'
+task=migrate
+[[ -f config/cable.yml ]] && cmd='bundle exec rails' # Rails 5+
+[[ $# -eq 1 && $1 == '-r' ]] && task=rollback # Rollback requested by option
+[[ -x bin/bundle ]] && cmd=bin/$cmd
 
-#if [ -x spec/dummy ]; then
-  #pushd spec/dummy >/dev/null # Rails engine support
-  #popd >/dev/null
-#else
-#fi
-
-$command db:$action
-$command db:$action RAILS_ENV=test
+$cmd db:$task
+$cmd db:$task RAILS_ENV=test
