@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 # This opens a tmux session with a number of window/pane presets in order to
-# do **d**ev work on a project.
+# do **d**ev work on a project:
 #
-# You can use it standalone, which will use fzf to fuzzy find your project in
-# ~/Sites/*, or you can pass in an argument:
-#
-#   d davelens/dotfiles
+# * `d`: Will fuzzy find your project in ~/Sites/* using fzf.
+# * `d davelens/dotfiles`: Will search ~/Sites/* for the given namespace.
+# * `d -n`: Query the GitHub API for my desired repo namespaces.
+# * `d -x`: Close opened sessions, using fzf as a selection tool.
 #
 # It assumes a very specific folder structure; a github repository namespace
 # inside the ~/Sites folder. An example:
@@ -25,15 +25,21 @@
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
-# Provide a fuzzy search so projects can have an elegant exit.
-[[ $# -eq 1 && $1 == '-x' ]] && tmux kill-session -t $(tmux ls | sed -e 's|:.*||' | fzf) && exit 0
+# An elegant exit with a fuzzy search to select the namespace to exit.
+if [[ $# -eq 1 && $1 == '-x' ]]; then
+  tmux kill-session -t $(tmux ls | sed -e 's|:.*||' | fzf)
+  exit
+fi
+
+# Requesting to pull in a new project will query GitHub's API for namespaces
+[[ $# -eq 1 && $1 == '-n' ]] && set -- $(~/.bin/git/github-search-repos user:davelens+user:blimp)
 
 # Provide a fuzzy search for my projects so I don't have to type names anymore.
 [[ -z $1 ]] && set -- $(ls -d ~/Sites/**/* | sed -e "s|`echo ~`/Sites/||" | fzf)
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No project namespace given.'
-  printf "\tUsage: d <github-user>/<github-repo>\n" && exit
+  printf "\tUsage: d [-x|-n] [<github-user>/<github-repo>]\n" && exit
 fi
 
 destination=~/Sites/$1
