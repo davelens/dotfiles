@@ -55,6 +55,12 @@ if [[ ! -e $project_root/.ruby-version ]]; then
   echo $required_ruby >> $project_root/.ruby-version
 fi
 
+# Make sure the MYSQL env vars are there for projects who can handle them,
+# and don't already have MYSQL_USER set.
+if [[ ! -f .env || -f .env && -z `cat .env | grep MYSQL_USER` ]]; then
+  echo $'MYSQL_HOST=localhost\nMYSQL_USER=root\nMYSQL_PASSWORD=root' >> $project_root/.env
+fi
+
 required_ruby=`cat $project_root/.ruby-version`
 
 # Check if the required ruby version is installed.
