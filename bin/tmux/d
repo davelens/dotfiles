@@ -84,7 +84,7 @@ tmux attach -t $1 >/dev/null 2>&1 || (
   if [[ -f $destination/config.ru ]]; then
     read -n1 -p "[tmux/d] Launch local puma server? (y/n) " server
     echo ""
-    [[ -n $bootstrap ]] && cd $destination && ~/.bin/rails/db-import && cd - >/dev/null
+    [[ -n $bootstrap ]] && cd $destination && ~/.bin/rails/db-import -i=logs && cd - >/dev/null
     rails_windows $1
   fi
 
