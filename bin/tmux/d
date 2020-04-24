@@ -50,25 +50,26 @@ function rails_windows() {
   tmux new-window -n db -c $destination -t $1
   tmux new-window -n repl -c $destination -t $1
   tmux new-window -n server -c $destination -t $1
+  sleep 1
 
   if [[ -n `pgrep -n mysqld` ]]; then
     tmux send-keys -t $1:db "clear && mysql \$(~/.bin/rails/lookup-db-credentials database)" C-m
   fi
 
-  tmux send-keys -t $1:repl "clear && bin/rails c" C-m
+  tmux send-keys -t $1:server 'export_env_vars_from_file' C-m
   tmux send-keys -t $1:server 'bin/spring server 2>&1 >/dev/null &' C-m
-  tmux send-keys -t $1:server "clear" C-m
+  tmux send-keys -t $1:repl 'export_env_vars_from_file; sleep 2 && clear && bin/rails c' C-m
 
   case $server in
-    [Yy]* ) tmux send-keys -t $1:server "bin/rails s" C-m;;
-    [Nn]* ) tmux send-keys -t $1:server "bin/rails s";;
+    [Yy]* ) tmux send-keys -t $1:server 'clear && bin/rails s' C-m;;
+    [Nn]* ) tmux send-keys -t $1:server 'clear && bin/rails s';;
     * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
   esac
 }
 
 tmux attach -t $1 >/dev/null 2>&1 || (
   tmux new-session -s $1 -n editor -c $destination -d
-  tmux send-keys -t $1 "vim" C-m
+  tmux send-keys -t $1 "export_env_vars_from_file; clear && vim" C-m
 
   if [[ -z `pgrep -n mysqld` ]]; then
     read -n1 -p "[tmux/d] Launch local mysql server? (y/n) " mysql
