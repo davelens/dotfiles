@@ -85,10 +85,12 @@ if [[ ! -d ~/.rbenv/versions/$required_ruby/lib/ruby/gems/$ruby_major/gems/bundl
       printf "\n\tcd $project_root && gem install bundler -v $required_ruby"
       exit 1;
     fi
+    # This usually fixes any issues with the mysql2 gem installation.
+    bundle config --local build.Mysql2 "--with-ldflags=-L/usr/local/opt/openssl/lib --with-cppflags=-I/usr/local/opt/openssl/include"
   fi
 fi
 
-echo '[rails/bootstrap:bundler] Installing gems:' && cd $project_root && bundle install --quiet && cd - >/dev/null
+echo '[rails/bootstrap:bundler] Installing gems' && cd $project_root && bundle install --quiet && cd - >/dev/null
 
 if [[ $? -gt 0 ]]; then
   echo [rails/bootstrap:bundler] ERROR: Gem installation failed, please review:
