@@ -5,7 +5,7 @@
 [color]
   ui = auto
 [alias]
-  b = !git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* //'
+  b = branch --show-current
   m = "!/bin/bash ~/.bin/git/merge"
   s = "!/bin/bash ~/.bin/git/switch-branch"
   pr-body = "!/bin/bash ~/.bin/git/github-pr-body"
