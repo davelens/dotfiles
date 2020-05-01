@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+# Before being pushed into FZF, this list of branches:
+# * Removes excess whitespace in front of the branch names
+# * Removes remote references (Manual `git fetch origin` is needed to checkout)
+# * Filters out our active branch
+# * Filters out the HEAD reference
+# * Filters out duplicates
+# * Is sorted alphabetically
+set -- $(git branch -a | sed -e 's|^  \(remotes/origin/\)\?||' -e "/^$\|^HEAD\|$(git branch --show-current)/d" | sort -r | uniq | fzf)
+[[ -z $1 ]] && fail "Staying on current branch."
+[[ -n $1 ]] && git checkout $1
