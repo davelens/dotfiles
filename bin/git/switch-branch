@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
 
 # Before being pushed into FZF, this list of branches:
 # * Removes excess whitespace in front of the branch names

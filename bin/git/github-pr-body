@@ -18,11 +18,7 @@
 # out the current API calls made with `hub` when that time comes.
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
-
-if [[ ! -d ".git" ]]; then
-  echo "EXIT: Local working directory is not a cloned git repo."
-  exit
-fi
+[[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
 
 if [ $# -eq 0 ]; then
   branch_name=$(git b) # `git b` is an alias in my ~/.gitconfig
