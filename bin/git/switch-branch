@@ -2,6 +2,7 @@
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 [[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
+[[ `command -v gsed` ]] && cmd=gsed || cmd=sed
 
 # Before being pushed into FZF, this list of branches:
 # * Removes excess whitespace in front of the branch names
@@ -10,6 +11,6 @@ set -e
 # * Filters out the HEAD reference
 # * Filters out duplicates
 # * Is sorted alphabetically
-set -- $(git branch -a | sed -e 's|^  \(remotes/origin/\)\?||' -e "/^$\|^HEAD\|$(git branch --show-current)/d" | sort -r | uniq | fzf)
+set -- $(git branch -a | $cmd -e 's|^  \(remotes/origin/\)\?||' -e "/^$\|^HEAD\|$(git branch --show-current)/d" | sort -r | uniq | fzf)
 [[ -z $1 ]] && fail "Staying on current branch."
 [[ -n $1 ]] && git checkout $1
