@@ -6,34 +6,21 @@
 
 # Stops further execution after any error.
 set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
 
-if [ ! -d ".git" ]; then
-  echo "EXIT: Local working directory is not a cloned git repo."
-  exit
-fi
-
-if [ ! `git branch --list temp` ]; then
-  echo "Creating missing temp branch..."
-  git checkout -b temp
-else
-  echo "Switching to temp branch..."
-  git checkout temp
-fi
+# TODO: Warn and fail early when unstaged changes are present.
 
 deploy_to_staging() {
-  if [ ! -f config/deploy/staging.rb ]; then
-    echo "No capistrano staging environment is configured\!" && exit
-  fi
-
+  [[ ! -f config/deploy/staging.rb ]] && fail "No capistrano staging environment is configured\!"
   sed -i -e "s/set :branch, 'develop'/set :branch, ENV['BRANCH'] || 'develop'/g" config/deploy/staging.rb
-
-  echo "Deploying temp branch to staging..."
-  bundle exec cap staging deploy BRANCH=temp
+  ~/.bin/rails/deploy -s
 }
 
 ask_to_push_to_temp() {
   while true; do
-    read -p "Do you want to push to the remote temp branch? " yn
+    read -n1 -p "Do you want to push to the remote temp branch? " yn
+    printf "\n"
     case $yn in
       [Yy]* ) git push origin temp; break;;
       [Nn]* ) break;;
@@ -42,24 +29,23 @@ ask_to_push_to_temp() {
   done
 }
 
-ask_to_deploy() {
-  while true; do
-    read -p "Do you want to deploy the temp branch to staging? " yn
-    case $yn in
-      [Yy]* ) deploy_to_staging; break;;
-      [Nn]* ) break;;
-      * ) echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
-    esac
-  done
-}
-
 post_merge() {
   ask_to_push_to_temp
-  ask_to_deploy
-  git checkout $(git b)
+  deploy_to_staging
+  git checkout $branch
 }
 
 branch=$(git b)
+
+if [[ ! `git branch --list temp` ]]; then
+  echo "Creating missing temp branch..."
+  git checkout -b temp
+else
+  echo "Switching to temp branch..."
+  git checkout temp
+fi
+
 echo "Merging $branch into temp branch..."
 git merge --no-ff $branch && post_merge
-rm config/deploy/staging.rb-e
+# Remove temp files created by sed.
+[[ -f config/deploy/staging.rb-e ]] && rm config/deploy/staging.rb-e
