@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Load up the .env file, if present.
-[ -r ~/.env ] && export $(cat ~/.env | grep -v ^\# | xargs)
+export_env_vars_from_file
 
 # Source the files in the bash folder
 for file in ~/.bash/{shell,commands,prompt,aliases,private}; do
