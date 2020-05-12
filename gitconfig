@@ -6,7 +6,7 @@
   ui = auto
 [alias]
   b = branch --show-current
-  m = "!/bin/bash ~/.bin/git/merge"
+  m = "!/bin/bash ~/.bin/git/merge-branch"
   s = "!/bin/bash ~/.bin/git/switch-branch"
   pr-body = "!/bin/bash ~/.bin/git/github-pr-body"
   merged-prs = "pr list --format='%pC%>(8)%i%Creset %t%l (%mr)%n%x09 %U%n' -s merged"

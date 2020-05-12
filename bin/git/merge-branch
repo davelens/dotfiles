@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# gm stands for `git merge`.
+# gm stands for `git merge-branch`. Beware that this will clean up remaining
+# local and remote branches post-merge if you choose to push the target branch.
 
 # Stops further execution after any error.
 set -e
@@ -8,15 +9,17 @@ set -e
 [[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
 
 branch_name=$(git b) # `git b` is an alias in my ~/.gitconfig
-if [ -z $branch_name ]; then
+if [[ -z $branch_name ]]; then
   echo "ERROR: No command 'git b' found."
   echo "Grab it here: https://github.com/davelens/dotfiles/blob/master/gitconfig#L8"
   exit
 fi
 
-if [ $# -eq 0 ]; then
+git merge
+
+if [[ $# -eq 0 ]]; then
   read -p "To which branch would you like to merge $branch_name? (default: develop) " target
-  [ ! $target ] && target="develop"
+  [[ -z $target ]] && target="develop"
 else
   target="$1"
 fi
@@ -33,7 +36,7 @@ push_and_clean_up() {
   echo "Remote branch $branch_name removed."
 
   # Cleaning up files made by `git pr-body`.
-  [ -f .git/$branch_name.md ] && rm .git/$branch_name.md
+  [[ -f .git/$branch_name.md ]] && rm .git/$branch_name.md
 }
 
 while true; do
