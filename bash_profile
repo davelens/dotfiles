@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Load up the .env file, if present.
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
 export_env_vars_from_file
 
 # Source the files in the bash folder

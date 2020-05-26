@@ -15,8 +15,6 @@ if [[ -z $branch_name ]]; then
   exit
 fi
 
-git merge
-
 if [[ $# -eq 0 ]]; then
   read -p "To which branch would you like to merge $branch_name? (default: develop) " target
   [[ -z $target ]] && target="develop"
@@ -40,7 +38,7 @@ push_and_clean_up() {
 }
 
 while true; do
-  read -p "Do you want to push to the remote $target branch? " yn
+  read -n1 -p "Do you want to push to the remote $target branch? " yn
   case $yn in
     [Yy]* ) push_and_clean_up; break;;
     [Nn]* ) exit;;
