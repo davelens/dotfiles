@@ -39,6 +39,7 @@ push_and_clean_up() {
 
 while true; do
   read -n1 -p "Do you want to push to the remote $target branch? " yn
+  printf "\n"
   case $yn in
     [Yy]* ) push_and_clean_up; break;;
     [Nn]* ) exit;;
