@@ -42,7 +42,7 @@ fi
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No project namespace given.'
-  printf "\tUsage: d [-x|-n] [<github-user>/<github-repo>]\n" && exit
+  printf "\tUsage: d [-x|-q|-c] [<github-user>/<github-repo>]\n" && exit
 fi
 
 destination=~/Sites/$1
