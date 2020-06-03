@@ -35,6 +35,9 @@ env=production
 
 [[ $1 =~ "s" ]] && env=staging
 
+# Make sure ssh-agent adds our default SSH key.
+[[ -z `ssh-add -l` ]] && ssh-add
+
 if [[ $1 =~ "b" && -n $2 ]]; then
   CMD="bundle exec cap $env deploy BRANCH=$2"
 elif [[ $branch_name != 'develop' && $branch_name != 'master' ]]; then
