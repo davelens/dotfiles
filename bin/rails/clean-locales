@@ -22,6 +22,5 @@ end
 files.each do |file|
   puts "[rails/clean-locales] Cleaning #{file}"
   hash = YAML.load_file(file)
-  puts hash.inspect
   File.open(file, 'w') { |f| f.write(deep_sort_hash(hash).to_yaml(line_width: -1)) }
 end
