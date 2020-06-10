@@ -2,31 +2,18 @@
 
 # This file will only load on macos.
 
-alias ss="osascript ~/.macos/hide-terminal.scpt && tss && killall Terminal"
+alias ss="osascript ~/.macos/hide-terminal.scpt && screenshot && killall Terminal"
 alias allow='xattr -d com.apple.quarantine'
 alias ls='ls -G'
 alias lsa='ls -hal'
 alias toggle_desktop='toggle_default finder CreateDesktop'
 alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
-alias tss='take_screenshot'
 
 # iTerm2 shell integration
 if [ ! -f ~/.bash/completions/iterm2_shell_integration.bash ]; then
   curl -L https://iterm2.com/shell_integration/bash \
     -o ~/.bash/completions/iterm2_shell_integration.bash
 fi
-
-# takes a screenshot and uploads it to my hosting
-take_screenshot()
-{
-  filename="$(date +%Y-%m-%d-%H-%M-%S).jpg"
-
-  # TODO: Configure the destination server with ENV vars or something.
-  screencapture -ix ~/Desktop/$filename &&
-    scp ~/Desktop/$filename davelens.be:screenshots/$filename
-  echo "https://www.davelens.be/screenshots/$filename" | pbcopy
-  rm ~/Desktop/$filename
-}
 
 # toggles a boolean setting in the com.apple environment
 toggle_default()

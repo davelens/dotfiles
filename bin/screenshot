@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Stops further execution after any error.
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[[ `os` != 'macos' ]] && fail "ERROR: This command only works on macos, for now. Sorry!"
+# TODO: More explanation what each variable represents.
+[[ -z $SCREENSHOT_HOST ]] && fail "ERROR: No host defined in \$SCREENSHOT_HOST."
+[[ -z $SCREENSHOT_URL ]] && fail "ERROR: No destination URL defined in \$SCREENSHOT_URL."
+[[ -z $SCREENSHOT_REMOTE_PATH ]] && fail "ERROR: No remote path defined in \$SCREENSHOT_REMOTE_PATH."
+
+filename="$(date +%Y-%m-%d-%H-%M-%S).jpg"
+full_path=$TMPDIR/$filename
+
+screencapture -ix $full_path && scp $full_path $SCREENSHOT_HOST:$SCREENSHOT_REMOTE_PATH/$filename
+echo "$SCREENSHOT_URL/$filename" | pbcopy
+rm $full_path
