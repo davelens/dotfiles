@@ -93,6 +93,7 @@ function find_or_create_db() {
   fi
 }
 
+mysql -e "drop database ${local_db}"
 find_or_create_db $local_db
 find_or_create_db $(credentials -t database)
 
