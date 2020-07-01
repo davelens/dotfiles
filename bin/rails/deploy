@@ -30,7 +30,6 @@
 # Stops further execution after any error.
 set -e
 
-cmd="bundle exec cap $env deploy"
 branch_name=$(git b) # `git b` is an alias in my ~/.gitconfig
 lock_users=0
 env=production
@@ -62,6 +61,8 @@ do
       ;;
   esac
 done
+
+cmd="bundle exec cap $env deploy"
 
 [[ $branch_name != 'develop' && $branch_name != 'master' ]] && cmd="${cmd} BRANCH=$branch_name"
 
