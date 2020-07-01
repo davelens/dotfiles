@@ -57,6 +57,7 @@ done
 
 if [[ -z ${remote_db} ]]; then
   printf "[rails/db-import] WARNING: No configuration for ${env} found in config/database.yml!\n"
+  # TODO: Make the default smarter (first 8 chars of project name + "_prod"?).
   read -p "[rails/db-import] Please enter the name of the remote database: (default: website_prod) " remote_db
   [[ -z ${remote_db} ]] && remote_db="website_prod"
 fi
