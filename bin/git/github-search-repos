@@ -14,7 +14,7 @@ set -e
 # ceiling of 100.
 
 if [[ -z $GITHUB_API_TOKEN ]]; then
-  echo ERROR: No personalized access token set.
+  echo "ERROR: No personalized access token set."
   printf "\t1. Create one here: https://github.com/settings/tokens\n"
   printf "\t2. Put 'export GITHUB_API_TOKEN=<access-token>' in your ~/.bash_profile\n"
   exit 1
