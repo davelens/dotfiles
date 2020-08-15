@@ -65,12 +65,6 @@ LIBRARY_PATH=${LIBRARY_PATH}:${BREW_PATH}/opt/openssl/lib/
 # node.js modules path
 export NODE_PATH="/usr/local/share/npm/lib/node_modules"
 
-# RBENV initialization
-eval "$(rbenv init -)"
-
-# Alias hub straight into git
-eval "$(hub alias -s)"
-
 ########################################################################
 # HISTORY
 ########################################################################
