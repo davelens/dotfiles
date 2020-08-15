@@ -21,3 +21,6 @@ for file in ~/.bash/completions/*.bash; do
   [ -r "$file" ] && . "$file";
 done;
 unset file;
+
+eval "$(rbenv init -)"
+eval "$(hub alias -s)" # Alias hub straight into git
