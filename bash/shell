@@ -36,10 +36,12 @@ export GOPATH=${HOME}/.go
 # Homebrew installs in /usr/local/bin/brew, Linuxbrew in /usr/bin/brew.
 [[ -f /usr/local/bin/brew ]] && export BREW_PATH=$(/usr/local/bin/brew --prefix)
 [[ -f /usr/bin/brew ]] && export BREW_PATH=$(/usr/bin/brew --prefix)
+[[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] && export BREW_PATH=$(/home/linuxbrew/.linuxbrew/bin/brew --prefix)
 
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
   ${HOME}/.bin
+  ${BREW_PATH}/opt/openjdk/bin
   ${BREW_PATH}/opt/gnu-getopt/{,s}bin
   ${BREW_PATH}/opt/mysql@5.6/bin
   ${BREW_PATH}/{,s}bin
