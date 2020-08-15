@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /mnt/e/games/Minecraft/servers/1.14.4-forge/
+exec java -Xms4G -Xmx4G -jar forge-server.jar nogui

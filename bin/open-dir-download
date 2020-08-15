@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'open-uri'
+require 'nokogiri'
+
+def open_url(url)
+  curl
+  begin
+    uri = URI.parse(url)
+    uri.open(redirect: false)
+  rescue OpenURI::HTTPRedirect => redirect
+    uri = redirect.uri # assigned from the "Location" response header
+    puts uri
+    open_url(uri)
+  end
+end
+
+def download_from_index(url)
+  html = Nokogiri::HTML.parse(open_url(url))
+
+  html.xpath("//a").each do |a|
+    if a[:href].match(/.*(\.\w+)/)
+      `wget "#{url}/#{a[:href]}"`
+    else
+      # TODO:
+      #html = Nokogiri::HTML.parse(open("#{url}/#{a[:href]}"))
+      #download_from_index(url, html)
+      puts "DIRECTORY: #{url}/#{a[:href]}"
+    end
+  end
+end
+
+download_from_index(ARGV[0])

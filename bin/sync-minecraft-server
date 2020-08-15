@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e
+
+if [ ! $# -eq 1 ]; then exit; fi
+
+minecraft=/mnt/c/Users/micro/AppData/Roaming/.minecraft
+
+to_nas() {
+  cp -r $minecraft/XaeroWaypoints/Multiplayer_localhost/* $minecraft/XaeroWaypoints/Multiplayer_192.168.0.184/
+
+  cp -r $minecraft/XaeroWorldMap/Multiplayer_localhost_DIM-1/* $minecraft/XaeroWorldMap/Multiplayer_192.168.0.184_DIM-1/
+  cp -r $minecraft/XaeroWorldMap/Multiplayer_localhost_null/* $minecraft/XaeroWorldMap/Multiplayer_192.168.0.184_null/
+
+  scp -r /mnt/e/games/Minecraft/servers/1.14.4-forge/Larai/* alexandria:/volume1/docker/minecraft/Larai
+}
+
+to_localhost() {
+  cp -r $minecraft/XaeroWaypoints/Multiplayer_192.168.0.184/* $minecraft/XaeroWaypoints/Multiplayer_localhost/
+
+  cp -r $minecraft/XaeroWorldMap/Multiplayer_192.168.0.184_DIM-1/* $minecraft/XaeroWorldMap/Multiplayer_localhost_DIM-1/
+  cp -r $minecraft/XaeroWorldMap/Multiplayer_192.168.0.184_null/* $minecraft/XaeroWorldMap/Multiplayer_localhost_null/
+
+  scp -r alexandria:/volume1/docker/minecraft/Larai/* /mnt/e/games/Minecraft/servers/1.14.4-forge/Larai/
+}
+
+if [[ $1 == '--to-localhost' ]]; then
+  to_localhost
+elif [[ $1 == '--to-nas' ]]; then
+  to_nas
+else
+  exit
+fi
