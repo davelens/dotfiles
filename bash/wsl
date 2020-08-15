@@ -23,3 +23,6 @@ export PKG_CONFIG_PATH="${BREW_PATH}/opt/mysql@5.7/lib/pkgconfig"
 
 # Start the SSH agent
 eval "$(ssh-agent -s >/dev/null)"
+
+# After an upgrade to Ubuntu 20.04 LTS, brew no longer gets loaded by default.
+eval $(SHELL=/bin/bash /home/linuxbrew/.linuxbrew/bin/brew shellenv)
