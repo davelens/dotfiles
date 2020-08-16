@@ -2,6 +2,7 @@
 
 # Load up the .env file, if present.
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
+OS=`os`
 export_env_vars_from_file
 
 # Source the files in the bash folder
@@ -11,7 +12,6 @@ done;
 unset file;
 
 # Load OS specific files
-OS=`os`
 [ $OS == 'windows' ] && . ~/.bash/wsl
 [ $OS == 'macos' ] && . ~/.bash/macos
 [ $OS == 'linux' ] && . ~/.bash/linux
