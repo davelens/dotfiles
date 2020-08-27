@@ -2,13 +2,18 @@
 
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
-
-[[ ! -f config.ru ]] && fail '[rails/db-import] ERROR: You can only run this from a folder containing a Rails project.'
-[[ ! -f config/database.yml ]] && ~/.bin/rails/bootstrap $PWD
+me=rails/`basename "$0"`
 
 function credentials(){
   echo $(~/.bin/rails/lookup-db-credentials $1 $2)
 }
+
+function spinner() {
+  revolver update "[$me] $1"
+}
+
+[[ ! -f config.ru ]] && fail "[$me] ERROR: You can only run this from a folder containing a Rails project."
+[[ ! -f config/database.yml ]] && ~/.bin/rails/bootstrap $PWD
 
 env=production
 remote_db=$(credentials -p database)
@@ -16,6 +21,8 @@ local_db=$(credentials database)
 ignore_tables=
 
 # TODO: Be able to override user+host.
+
+revolver start "$me "
 
 for i in "$@"
 do
@@ -43,22 +50,23 @@ do
       ;;
     *)
       # unknown options
-      echo "[rails/db-import] ERROR: Unknown option '${i}'"
+      echo "[$me] ERROR: Unknown option '${i}'"
       echo "Usage: db-import [-sptrli] [--test] [--staging] [--production]"
       printf "\t[-l=name] [--local-database=name]\n"
       printf "\t[-r=name] [--remote-database=name]\n"
       printf "\t[-i=tables] [--ignore-data=tables]\n"
+      revolver stop
       exit
       ;;
   esac
 done
 
-[[ -z ${local_db} ]] && fail "[rails/db-import] ERROR: No local configuration found in config/database.yml. Aborting."
+[[ -z ${local_db} ]] && fail "[$me] ERROR: No local configuration found in config/database.yml. Aborting."
 
 if [[ -z ${remote_db} ]]; then
-  printf "[rails/db-import] WARNING: No configuration for ${env} found in config/database.yml!\n"
+  printf "[$me] WARNING: No configuration for ${env} found in config/database.yml!\n"
   # TODO: Make the default smarter (first 8 chars of project name + "_prod"?).
-  read -p "[rails/db-import] Please enter the name of the remote database: (default: website_prod) " remote_db
+  read -p "[$me] Please enter the name of the remote database: (default: website_prod) " remote_db
   [[ -z ${remote_db} ]] && remote_db="website_prod"
 fi
 
@@ -74,22 +82,22 @@ declare -A ssh_credentials=$(~/.bin/rails/ssh-credentials)
 user=${ssh_credentials[user]}
 server=${ssh_credentials[server]}
 
-echo "[rails/db-import:${user}@${server}] Dumping ${remote_db}..."
+spinner "[${user}@${server}] Dumping ${remote_db}..."
 (
 ssh ${user}@${server} \
   "mysqldump ${remote_db} --no-tablespaces --single-transaction --no-data --routines > dump.sql && \
    mysqldump ${remote_db} --no-tablespaces --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']} >> dump.sql && tar -cvzf dump.sql.tar dump.sql"
 ) >/dev/null
 
-echo "[rails/db-import:localhost] Downloading ${user}@${server}:dump.sql.tar"
-scp ${user}@${server}:dump.sql.tar .
+spinner "[${user}@${server}] Downloading dump.sql.tar"
+scp -q ${user}@${server}:dump.sql.tar .
 
-echo "[rails/db-import:localhost] Unpacking dump.sql.tar"
+spinner "Unpacking dump.sql.tar"
 tar -C . -xvf dump.sql.tar >/dev/null 2>&1
 
 function find_or_create_db() {
   if [[ ! -d $BREW_PATH/var/mysql/$1 ]]; then
-    echo "[rails/db-import:localhost] Creating database $1"
+    spinner "Creating database $1"
     mysql -e "create database $1"
   fi
 }
@@ -98,11 +106,11 @@ mysql -e "drop database if exists ${local_db}"
 find_or_create_db $local_db
 find_or_create_db $(credentials -t database)
 
-echo "[rails/db-import:localhost] Importing dump.sql into ${local_db}"
+spinner "Importing dump.sql into ${local_db}"
 mysql ${local_db} < dump.sql
 
-echo "[rails/db-import:${user}@${server}] Cleaning up"
+spinner "[${user}@${server}] Cleaning up"
 ssh ${user}@${server} 'rm -f dump.sql dump.sql.tar'
 
-echo "[rails/db-import:localhost] Cleaning up"
+spinner "Cleaning up"
 rm -f dump.sql dump.sql.tar
