@@ -77,8 +77,8 @@ server=${ssh_credentials[server]}
 echo "[rails/db-import:${user}@${server}] Dumping ${remote_db}..."
 (
 ssh ${user}@${server} \
-  "mysqldump ${remote_db} --single-transaction --no-data --routines > dump.sql && \
-   mysqldump ${remote_db} --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']} >> dump.sql && tar -cvzf dump.sql.tar dump.sql"
+  "mysqldump ${remote_db} --no-tablespaces --single-transaction --no-data --routines > dump.sql && \
+   mysqldump ${remote_db} --no-tablespaces --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']} >> dump.sql && tar -cvzf dump.sql.tar dump.sql"
 ) >/dev/null
 
 echo "[rails/db-import:localhost] Downloading ${user}@${server}:dump.sql.tar"
