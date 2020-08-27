@@ -5,7 +5,7 @@ segments=''
 bgcolor=''
 fgcolor=23
 
-status=`cd $TMUX_PATH && hub ci-status`
+status=`cd $PWD && hub ci-status`
 
 fail() {
   segment "CI: $status" 208 52 'left'
