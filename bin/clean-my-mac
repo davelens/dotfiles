@@ -51,11 +51,10 @@ rm -rf ~/library/Caches/com.apple.helpd/*
 rm ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
 
 # Remove all docker containers and images
-docker ps -q && \
-  docker stop $(docker ps -a -q) && \
-  docker stop $(docker images -a -q) && \
-  docker rm $(docker ps -a -q) && \
-  docker rm $(docker images -a -q)
+docker stop $(docker ps -a -q)
+docker stop $(docker images -a -q)
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -a -q)
 
 # Clean all log files across all my Sites projects.
 # My Sites folder is structured according to git repo structure (user/project).
