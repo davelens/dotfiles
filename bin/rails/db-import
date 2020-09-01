@@ -15,10 +15,14 @@ function spinner() {
 [[ ! -f config.ru ]] && fail "[$me] ERROR: You can only run this from a folder containing a Rails project."
 [[ ! -f config/database.yml ]] && ~/.bin/rails/bootstrap $PWD
 
+[[ ! -d db/dump ]] && mkdir -p db/dump
+
 env=production
 remote_db=$(credentials -p database)
 local_db=$(credentials database)
 ignore_tables=
+docker_prefix=
+mysql='mysql' # TODO: fix a .my.cnf for Docker
 
 # TODO: Be able to override user+host.
 
@@ -29,6 +33,9 @@ do
   case $i in
     -i=*|--ignore-data=*)
       ignore_tables="${i#*=}"
+      ;;
+    --docker)
+      docker_prefix="docker-compose exec -T rails"
       ;;
     -l|--local-database=*)
       local_db="${i#*=}"
@@ -90,27 +97,27 @@ ssh ${user}@${server} \
 ) >/dev/null
 
 spinner "[${user}@${server}] Downloading dump.sql.tar"
-scp -q ${user}@${server}:dump.sql.tar .
+scp ${user}@${server}:dump.sql.tar db/dump/.
 
 spinner "Unpacking dump.sql.tar"
-tar -C . -xvf dump.sql.tar >/dev/null 2>&1
+tar -C db/dump/ -xvf db/dump/dump.sql.tar >/dev/null 2>&1
 
-function find_or_create_db() {
-  if [[ ! -d $BREW_PATH/var/mysql/$1 ]]; then
-    spinner "Creating database $1"
-    mysql -e "create database $1"
-  fi
-}
-
-mysql -e "drop database if exists ${local_db}"
-find_or_create_db $local_db
-find_or_create_db $(credentials -t database)
+$docker_prefix $mysql -e "drop database if exists ${local_db}"
+$docker_prefix $mysql -e "drop database if exists $(credentials -t database)"
+$docker_prefix $mysql -e "create database ${local_db}"
+$docker_prefix $mysql -e "create database $(credentials -t database)"
 
 spinner "Importing dump.sql into ${local_db}"
-mysql ${local_db} < dump.sql
+`$docker_prefix $mysql ${local_db} < db/dump/dump.sql`
+
+spinner "Importing dump.test.sql into $(credentials -t database)"
+$docker_prefix mysqldump --no-data ${local_db} > db/dump/dump.test.sql
+$docker_prefix mysqldump ${local_db} schema_migrations > db/dump/migrations.test.sql
+`$docker_prefix $mysql $(credentials -t database) < db/dump/dump.test.sql`
+`$docker_prefix $mysql $(credentials -t database) < db/dump/migrations.test.sql`
 
 spinner "[${user}@${server}] Cleaning up"
 ssh ${user}@${server} 'rm -f dump.sql dump.sql.tar'
 
 spinner "Cleaning up"
-rm -f dump.sql dump.sql.tar
+rm -f db/dump/*
