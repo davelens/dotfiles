@@ -22,5 +22,7 @@ for file in ~/.bash/completions/*.bash; do
 done;
 unset file;
 
+# Soom tools that need to be hooked before use.
 eval "$(rbenv init -)"
 eval "$(hub alias -s)" # Alias hub straight into git
+[ -f /usr/local/etc/profile.d/z.sh ] && . /usr/local/etc/profile.d/z.sh
