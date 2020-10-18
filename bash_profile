@@ -12,6 +12,7 @@ unset file;
 
 # Load OS specific files
 OS=`os`
+[ -f ~/.aliases ] && . ~/.aliases
 [ $OS == 'windows' ] && . ~/.bash/wsl
 [ $OS == 'macos' ] && . ~/.bash/macos
 [ $OS == 'linux' ] && . ~/.bash/linux
