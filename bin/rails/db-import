@@ -35,6 +35,7 @@ do
       ignore_tables="${i#*=}"
       ;;
     --docker)
+      # See: https://stackoverflow.com/questions/43099116/error-the-input-device-is-not-a-tty
       docker_prefix="docker-compose exec -T rails"
       ;;
     -l|--local-database=*)
