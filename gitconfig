@@ -63,3 +63,10 @@
 [core]
   editor = nvim
   excludesfile = ~/.gitignore_global
+  pager = delta --side-by-side
+
+[delta]
+  syntax-theme = Solarized (dark)
+
+[interactive]
+  diffFilter = delta --color-only
