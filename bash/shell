@@ -28,6 +28,14 @@ export RUBY_GC_OLDMALLOC_LIMIT_MAX=16000100
 # Go lang work dir
 export GOPATH=${HOME}/.go
 
+if [ -f “${HOME}/.gpg-agent-info” ]; then
+  . “${HOME}/.gpg-agent-info”
+  export GPG_AGENT_INFO
+  export SSH_AUTH_SOCK
+fi
+
+# So GPG signing of git commits works.
+export GPG_TTY=$(tty)
 
 ########################################################################
 # PATH

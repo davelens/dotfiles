@@ -1,6 +1,7 @@
 [user]
   name = davelens
   email = github@davelens.be
+  signingkey = 07C7F96B857C4CAA
 [diff]
 [color]
   ui = auto
@@ -70,3 +71,6 @@
 
 [interactive]
   diffFilter = delta --color-only
+
+[commit]
+  gpgsign = true
