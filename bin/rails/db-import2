@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+me=rails/`basename "$0"`
+
+app=.
+env=production
+remote_prod=website_prod # The default on our production databases.
+ignore_tables=
+docker_prefix=
+#mysql='mysql' # TODO: fix a .my.cnf for Docker
+
+for i in "$@"
+do
+  case $i in
+    --app=*)
+      app="${i#*=}"
+      ;;
+    -i=*|--ignore-data=*)
+      ignore_tables="${i#*=}"
+      ;;
+    --docker)
+      docker_prefix="docker-compose run --rm"
+      ;;
+    -l|--local-database=*)
+      local_db="${i#*=}"
+      ;;
+    -t|--test)
+      env=test
+      ;;
+    -s|--staging)
+      env=staging
+      ;;
+    -p|--production)
+      env=production
+      ;;
+    -r=*|--remote-database=*)
+      remote_db="${i#*=}"
+      ;;
+    *)
+      # unknown options
+      echo "[$me] ERROR: Unknown option '${i}'"
+      echo "Usage: db-import [-sptrli] [--test] [--staging] [--production]"
+      printf "\t[--app=path]\n"
+      printf "\t[-l=name] [--local-database=name]\n"
+      printf "\t[-r=name] [--remote-database=name]\n"
+      printf "\t[-i=tables] [--ignore-data=tables]\n"
+      exit
+      ;;
+  esac
+done
+
+[[ -z $remote_db ]] && remote_db=$(~/.bin/rails/lookup-db-credentials -p --key=database --app=$app)
+[[ -z $local_db ]] && local_db=$(~/.bin/rails/lookup-db-credentials --key=database --app=$app)
+echo $app
