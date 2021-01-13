@@ -3,6 +3,8 @@ set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 [[ ! `command -v jq` ]] && brew install jq
 
+# TODO: Probably better to rename this to github-lookup-repos.
+
 # This command is used to provide suggestions among both my personal as well as
 # my work's public ànd private repositories.
 #
