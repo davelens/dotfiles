@@ -7,6 +7,7 @@ alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias ci='git ci-status'
 alias d="~/.bin/tmux/d"
 alias db-import="~/.bin/rails/db-import"
+alias db-import2="~/.bin/rails/db-import2"
 alias deploy='~/.bin/rails/deploy'
 alias dev='~/.bin/./tmux/open_project.sh'
 alias devx='~/.bin/./tmux/close_project.sh'
