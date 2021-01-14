@@ -56,7 +56,7 @@ function rails_windows() {
   sleep 1
 
   if [[ -n `pgrep -n mysqld` ]]; then
-    tmux send-keys -t $1:db "clear && mysql \$(~/.bin/rails/lookup-db-credentials database)" C-m
+    tmux send-keys -t $1:db "clear && mysql \$(~/.bin/rails/lookup-db-credentials --key=database)" C-m
   fi
 
   tmux send-keys -t $1:server 'export_env_vars_from_file' C-m

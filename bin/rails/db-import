@@ -4,54 +4,39 @@ set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 me=rails/`basename "$0"`
 
-function credentials(){
-  echo $(~/.bin/rails/lookup-db-credentials $1 $2)
-}
-
-function spinner() {
-  revolver update "[$me] $1"
-}
-
-[[ ! -f config.ru ]] && fail "[$me] ERROR: You can only run this from a folder containing a Rails project."
-[[ ! -f config/database.yml ]] && ~/.bin/rails/bootstrap $PWD
-
-[[ ! -d db/dump ]] && mkdir -p db/dump
-
+app=.
 env=production
-remote_db=$(credentials -p database)
-local_db=$(credentials database)
 ignore_tables=
 docker_prefix=
 mysql='mysql' # TODO: fix a .my.cnf for Docker
 
-# TODO: Be able to override user+host.
-
-revolver start "$me "
+function spinner() {
+  echo "[$me] $1"
+}
 
 for i in "$@"
 do
   case $i in
+    --app=*)
+      app="${i#*=}"
+      ;;
     -i=*|--ignore-data=*)
       ignore_tables="${i#*=}"
       ;;
     --docker)
-      # See: https://stackoverflow.com/questions/43099116/error-the-input-device-is-not-a-tty
-      docker_prefix="docker-compose exec -T rails"
+      docker_prefix="docker-compose run --rm rails"
       ;;
     -l|--local-database=*)
       local_db="${i#*=}"
       ;;
     -t|--test)
       env=test
-      remote_db=$(credentials -t database)
       ;;
     -s|--staging)
       env=staging
-      remote_db=$(credentials -s database)
       ;;
     -p|--production)
       env=production
-      remote_db=$(credentials -p database)
       ;;
     -r=*|--remote-database=*)
       remote_db="${i#*=}"
@@ -59,17 +44,24 @@ do
     *)
       # unknown options
       echo "[$me] ERROR: Unknown option '${i}'"
-      echo "Usage: db-import [-sptrli] [--test] [--staging] [--production]"
+      echo "Usage: db-import [-sptrli] [--test] [--staging] [--production] [--docker]"
+      printf "\t[--app=path]\n"
       printf "\t[-l=name] [--local-database=name]\n"
       printf "\t[-r=name] [--remote-database=name]\n"
       printf "\t[-i=tables] [--ignore-data=tables]\n"
-      revolver stop
       exit
       ;;
   esac
 done
 
-[[ -z ${local_db} ]] && fail "[$me] ERROR: No local configuration found in config/database.yml. Aborting."
+[[ ! -f $app/config.ru ]] && fail "[$me] ERROR: You can only run this from a folder containing a Rails project."
+[[ ! -f $app/config/database.yml ]] && ~/.bin/rails/bootstrap $app
+
+[[ ! -d $app/db/dump ]] && mkdir -p $app/db/dump
+
+[[ -z ${remote_db} ]] && remote_db=$(~/.bin/rails/lookup-db-credentials -p --key=database --app=$app)
+[[ -z ${local_db} ]] && local_db=$(~/.bin/rails/lookup-db-credentials --key=database --app=$app)
+[[ -z ${local_db} ]] && fail "[$me] ERROR: No local configuration found in $app/config/database.yml. Aborting."
 
 if [[ -z ${remote_db} ]]; then
   printf "[$me] WARNING: No configuration for ${env} found in config/database.yml!\n"
@@ -86,7 +78,7 @@ do :
    ignored_tables_string+=" --ignore-table=${remote_db}.${table}"
 done
 
-declare -A ssh_credentials=$(~/.bin/rails/ssh-credentials)
+declare -A ssh_credentials=$(~/.bin/rails/ssh-credentials $app/config/deploy.rb)
 user=${ssh_credentials[user]}
 server=${ssh_credentials[server]}
 
@@ -98,27 +90,29 @@ ssh ${user}@${server} \
 ) >/dev/null
 
 spinner "[${user}@${server}] Downloading dump.sql.tar"
-scp ${user}@${server}:dump.sql.tar db/dump/.
+scp ${user}@${server}:dump.sql.tar $app/db/dump/.
 
 spinner "Unpacking dump.sql.tar"
-tar -C db/dump/ -xvf db/dump/dump.sql.tar >/dev/null 2>&1
+tar -C $app/db/dump/ -xvf $app/db/dump/dump.sql.tar >/dev/null 2>&1
+
+test_database=$(~/.bin/rails/lookup-db-credentials -t --key=database --app=$app)
 
 $docker_prefix $mysql -e "drop database if exists ${local_db}"
-$docker_prefix $mysql -e "drop database if exists $(credentials -t database)"
+$docker_prefix $mysql -e "drop database if exists $test_database"
 $docker_prefix $mysql -e "create database ${local_db}"
-$docker_prefix $mysql -e "create database $(credentials -t database)"
+$docker_prefix $mysql -e "create database $test_database"
 
 spinner "Importing dump.sql into ${local_db}"
-`$docker_prefix $mysql ${local_db} < db/dump/dump.sql`
+`$docker_prefix $mysql ${local_db} < $app/db/dump/dump.sql`
 
-spinner "Importing dump.test.sql into $(credentials -t database)"
-$docker_prefix mysqldump --no-data ${local_db} > db/dump/dump.test.sql
-$docker_prefix mysqldump ${local_db} schema_migrations > db/dump/migrations.test.sql
-`$docker_prefix $mysql $(credentials -t database) < db/dump/dump.test.sql`
-`$docker_prefix $mysql $(credentials -t database) < db/dump/migrations.test.sql`
+spinner "Importing dump.test.sql into $test_database"
+$docker_prefix mysqldump --no-data ${local_db} > $app/db/dump/dump.test.sql
+$docker_prefix mysqldump ${local_db} schema_migrations > $app/db/dump/migrations.test.sql
+`$docker_prefix $mysql $test_database < $app/db/dump/dump.test.sql`
+`$docker_prefix $mysql $test_database < $app/db/dump/migrations.test.sql`
 
 spinner "[${user}@${server}] Cleaning up"
 ssh ${user}@${server} 'rm -f dump.sql dump.sql.tar'
 
 spinner "Cleaning up"
-rm -f db/dump/*
+rm -f $app/db/dump/*
