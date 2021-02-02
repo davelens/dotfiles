@@ -33,6 +33,7 @@ set -e
 branch_name=$(git b) # `git b` is an alias in my ~/.gitconfig
 lock_users=0
 env=production
+docker_prefix=
 
 # Make sure ssh-agent adds our default SSH key.
 [[ -z `ssh-add -l` ]] && ssh-add
@@ -52,17 +53,22 @@ do
     -b=*|--branch=*)
       branch_name="${i#*=}"
       ;;
+    --docker)
+      eval `ssh-agent -s`
+      ssh-add
+      docker_prefix="docker-compose run --rm -v $SSH_AUTH_SOCK:/tmp/ssh-agent.sock -e SSH_AUTH_SOCK=/tmp/ssh-agent.sock rails"
+      ;;
     *)
       # unknown options
       echo "[rails/deploy] ERROR: Unknown option '${i}'"
-      echo "Usage: deploy [-spbL] [--staging] [--production] [--lock-users]"
+      echo "Usage: deploy [-spbL] [--docker] [--staging] [--production] [--lock-users]"
       printf "\t[-b=branch] [--branch=branch]\n"
       exit
       ;;
   esac
 done
 
-cmd="bundle exec cap $env deploy"
+cmd="$docker_prefix bundle exec cap $env deploy"
 
 [[ $branch_name != 'develop' && $branch_name != 'master' ]] && cmd="${cmd} BRANCH=$branch_name"
 
