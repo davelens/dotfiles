@@ -38,7 +38,6 @@ Thumbs.db
 
 # Custom ignores #
 ##################
-.ruby-version
 .buildpath
 .project
 _backups/
