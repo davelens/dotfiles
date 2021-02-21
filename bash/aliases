@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+alias ac-task='~/.bin/active_collab/task'
+alias ac-task-list='~/.bin/active_collab/task-list'
+alias ac-project-list='~/.bin/active_collab/project-list'
 alias be='bundle exec'
 alias bundle_mysql2_openssl_fix='bundle config --local build.Mysql2 "--with-ldflags=-L/usr/local/opt/openssl/lib --with-cppflags=-I/usr/local/opt/openssl/include"'
 alias bundle_therubyracer_fix='brew info v8@3.15 && bundle config build.therubyracer --with-v8-dir="$(brew --prefix v8@3.15)" --with-v8-include="$(brew --prefix v8@3.15)/include/" --with-v8-lib="$(brew --prefix v8@3.15)/lib/"'
