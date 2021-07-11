@@ -5,7 +5,8 @@
 #
 # * `d`: Will fuzzy find your project in ~/Sites/* using fzf.
 # * `d davelens/dotfiles`: Will search ~/Sites/* for the given namespace.
-# * `d -n`: Query the GitHub API for my desired repo namespaces.
+# * `d -q`: Query GitHub to preload repos with fzf to create a local copy.
+# * `d -c foo/bar`: Create a new repository for user/org foo and repo name bar.
 # * `d -x`: Close opened sessions, using fzf as a selection tool.
 #
 # It assumes a very specific folder structure; a github repository namespace
@@ -22,6 +23,7 @@
 #
 # As an afterthought; Yes, I'm aware of tmuxinator and yes, I've tried it.
 # I don't know, I still like a simple bash script better.
+
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
@@ -34,8 +36,24 @@ fi
 # Requesting to pull in a new project will query GitHub's API for namespaces
 [[ -n $TMUX ]] && fail 'ERROR: No nested tmux sessions allowed. Detach first, then try again.'
 
+function create_repo() {
+  # Check if the repo exists
+  # Read this to learn how to suppress a single error with `set -e` active:
+  # https://stackoverflow.com/questions/11231937/bash-ignoring-error-for-a-particular-command
+
+  git ls-remote git@github.com:$1.git >/dev/null 2>&1
+  if [[ $? -gt 0 ]]; then
+    # TODO: https://stackoverflow.com/questions/28385884/how-to-create-repository-in-github-through-github-api#28385929
+    which blub
+  fi
+
+  # Important because this method gets called in `set --`.
+  echo $1
+}
+
 # Requesting to pull in a new project will query GitHub's API for namespaces
-[[ $# -eq 1 && $1 == '-n' ]] && set -- $(~/.bin/git/github-search-repos user:davelens+user:blimp)
+[[ $# -eq 1 && $1 == '-q' ]] && set -- $(~/.bin/git/github-search-repos user:davelens+user:blimp)
+[[ $# -eq 2 && $1 == '-c' ]] && set -- $(create_repo $2)
 
 # Provide a fuzzy search for my projects so I don't have to type names anymore.
 [[ -z $1 ]] && set -- $(ls -d ~/Sites/**/* | sed -e "s|`echo ~`/Sites/||" | fzf)
