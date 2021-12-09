@@ -37,4 +37,5 @@ alias sar='search_and_replace'
 alias ta='tmux attach'
 alias vim='nvim'
 alias vi='vim'
+alias watson-clear-frames="truncate -s 0 $HOME/Library/Application\ Support/watson/frames"
 alias weer='curl wttr.in/Sint+Gillis+Waas'
