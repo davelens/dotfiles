@@ -104,7 +104,7 @@ export HISTCONTROL=ignoredups;
 export HISTTIMEFORMAT="${FG_BLUE}${FONT_BOLD}%Y/%m/%d %H:%M:%S${FONT_RESET} ";
 
 # let the history ignore the following commands
-export HISTIGNORE="ls:ll:la:pwd:clear:h:j"
+export HISTIGNORE="ls:lsa:ll:la:pwd:clear:h:j"
 
 
 ########################################################################
