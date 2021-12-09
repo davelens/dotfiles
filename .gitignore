@@ -10,3 +10,4 @@ vim/bundle/vundle
 vim/autoload/plug.vim
 vim/ftplugin/go
 node_modules
+bin/active_collab
