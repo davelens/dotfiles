@@ -1,0 +1,18 @@
+#!/bin/bash
+
+. ~/.bin/tmux/helpers.sh
+
+stock_message() {
+  if [[ $(echo $2 | grep 'red error-color') ]] || [[ $(echo $2 | grep 'page-404') ]]; then
+    local fgcolor='52'
+    local check='𐄂'
+  else
+    local fgcolor='40'
+    local check='✓'
+  fi
+
+  printf "$(segment "$1:#[fg=colour$fgcolor]$check")"
+}
+
+#output=$(curl -s https://www.greensweet-stevia.nl/nl/greensweet-sweet-intens-50-gr.html)
+#stock_message 'Stevia' "$output"
