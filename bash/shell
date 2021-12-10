@@ -41,10 +41,16 @@ export GPG_TTY=$(tty)
 # PATH
 ########################################################################
 
-# Homebrew installs in /usr/local/bin/brew, Linuxbrew in /usr/bin/brew.
+# Homebrew's location has changed over the years, and I still have several
+# setups from different eras:
+# On macos with M1 chips, Homebrew is located in /opt/homebrew/bin/brew.
+# Homebrew classic uses /usr/local/bin/brew.
+# Linuxbrew uses /usr/bin/brew.
+# I don't even remember when or where I used /usr/bin/brew.
 [[ -f /usr/local/bin/brew ]] && export BREW_PATH=$(/usr/local/bin/brew --prefix)
 [[ -f /usr/bin/brew ]] && export BREW_PATH=$(/usr/bin/brew --prefix)
 [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] && export BREW_PATH=$(/home/linuxbrew/.linuxbrew/bin/brew --prefix)
+[[ -f /opt/homebrew/bin/brew ]] && export BREW_PATH=$(/opt/homebrew/bin/brew --prefix)
 
 # list the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
