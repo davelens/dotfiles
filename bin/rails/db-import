@@ -103,13 +103,15 @@ $docker_prefix $mysql -e "create database ${local_db}"
 $docker_prefix $mysql -e "create database $test_database"
 
 spinner "Importing dump.sql into ${local_db}"
-`$docker_prefix $mysql ${local_db} < $app/db/dump/dump.sql`
+$docker_prefix $mysql ${local_db} -e "source $app/db/dump/dump.sql"
 
 spinner "Importing dump.test.sql into $test_database"
-$docker_prefix mysqldump --no-data ${local_db} > $app/db/dump/dump.test.sql
-$docker_prefix mysqldump ${local_db} schema_migrations > $app/db/dump/migrations.test.sql
-`$docker_prefix $mysql $test_database < $app/db/dump/dump.test.sql`
-`$docker_prefix $mysql $test_database < $app/db/dump/migrations.test.sql`
+# "db" here will dynamically fill in the service worker's IP address.
+# It resolves to something like 172.18.0.2
+$docker_prefix mysqldump -h db --no-data ${local_db} > $app/db/dump/dump.test.sql
+$docker_prefix mysqldump -h db ${local_db} schema_migrations > $app/db/dump/migrations.test.sql
+$docker_prefix $mysql $test_database -e "source $app/db/dump/dump.test.sql"
+$docker_prefix $mysql $test_database -e "source $app/db/dump/migrations.test.sql"
 
 spinner "[${user}@${server}] Cleaning up"
 ssh ${user}@${server} 'rm -f dump.sql dump.sql.tar'
