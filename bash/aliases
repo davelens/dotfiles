@@ -22,6 +22,8 @@ alias gmdm='git_merge develop master'
 alias gti='git'
 alias gdnf='git_delete_new_files'
 alias httpl='ruby -run -ehttpd . -p3000'
+alias ipv6off='networksetup -setv6off Wi-Fi'
+alias ipv6on='networksetup -setv6automatic Wi-Fi'
 alias mysql-databases-by-size="mysql -e \"SELECT table_schema AS 'Database', table_name AS 'Table', round(((data_length + index_length) / 1024 / 1024), 2) 'Size in MB' FROM information_schema.TABLES WHERE table_schema NOT IN('sys','information_schema', 'performance_schema', 'mysql') AND round(((data_length + index_length) / 1024 / 1024), 2) >= 5 ORDER BY (data_length + index_length) DESC;\""
 alias lookup-db-credentials="~/.bin/rails/lookup-db-credentials"
 alias migrate='~/.bin/rails/migrate'
@@ -37,4 +39,6 @@ alias sar='search_and_replace'
 alias ta='tmux attach'
 alias vim='nvim'
 alias vi='vim'
+# Using >| to temporary override my default noclobber setting.
+alias watson-clear-frames=">| $HOME/Library/Application\ Support/watson/frames"
 alias weer='curl wttr.in/Sint+Gillis+Waas'
