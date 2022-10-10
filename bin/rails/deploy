@@ -68,7 +68,7 @@ do
   esac
 done
 
-cmd="$docker_prefix bundle exec cap $env deploy"
+cmd="$docker_prefix sh -c 'bundle config set --local path .bundle && bundle && bundle exec cap $env deploy'"
 
 [[ $branch_name != 'develop' && $branch_name != 'master' ]] && cmd="${cmd} BRANCH=$branch_name"
 
