@@ -20,6 +20,8 @@ MENUCOLOR=" cursed .* (being worn)"=orange&underline
 OPTIONS=autopickup, time, hitpointbar, color, sortloot:full, !dark_room, !bones
 # Gold, amulets, rings, wands, scrolls, potions, (spell)books.
 OPTIONS=pickup_types:$"=/!?+
+# Replace boulders with O
+OPTIONS=boulder:0
 
 # Ensure status changes will be shown for a few turns after they happen.
 OPTIONS=statushilites:10
