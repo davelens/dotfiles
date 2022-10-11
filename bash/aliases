@@ -41,4 +41,5 @@ alias vim='nvim'
 alias vi='vim'
 # Using >| to temporary override my default noclobber setting.
 alias watson-clear-frames=">| $HOME/Library/Application\ Support/watson/frames"
+alias watson-edit-frames="vim $HOME/Library/Application\ Support/watson/frames"
 alias weer='curl wttr.in/Sint+Gillis+Waas'
