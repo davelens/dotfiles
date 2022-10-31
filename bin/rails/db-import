@@ -9,6 +9,7 @@ env=production
 ignore_tables=
 docker_prefix=
 mysql='mysql' # TODO: fix a .my.cnf for Docker
+mysqldump='mysqldump'
 
 function spinner() {
   echo "[$me] $1"
@@ -25,6 +26,7 @@ do
       ;;
     --docker)
       docker_prefix="docker-compose run --rm rails"
+      mysqldump="mysqldump -h db"
       ;;
     -l|--local-database=*)
       local_db="${i#*=}"
@@ -108,8 +110,8 @@ $docker_prefix $mysql ${local_db} -e "source $app/db/dump/dump.sql"
 spinner "Importing dump.test.sql into $test_database"
 # "db" here will dynamically fill in the service worker's IP address.
 # It resolves to something like 172.18.0.2
-$docker_prefix mysqldump -h db --no-data ${local_db} > $app/db/dump/dump.test.sql
-$docker_prefix mysqldump -h db ${local_db} schema_migrations > $app/db/dump/migrations.test.sql
+$docker_prefix $mysqldump --no-data ${local_db} > $app/db/dump/dump.test.sql
+$docker_prefix $mysqldump ${local_db} schema_migrations > $app/db/dump/migrations.test.sql
 $docker_prefix $mysql $test_database -e "source $app/db/dump/dump.test.sql"
 $docker_prefix $mysql $test_database -e "source $app/db/dump/migrations.test.sql"
 
