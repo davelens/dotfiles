@@ -60,6 +60,7 @@ function rails_windows() {
   fi
 
   tmux send-keys -t $1:server 'export_env_vars_from_file' C-m
+  tmux send-keys -t $1:server 'bin/rails db:environment:set RAILS_ENV=test'
   tmux send-keys -t $1:server 'bin/spring server 2>&1 >/dev/null &' C-m
   tmux send-keys -t $1:repl 'export_env_vars_from_file; sleep 2 && clear && bin/rails c' C-m
 
