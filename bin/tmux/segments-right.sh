@@ -54,4 +54,5 @@ segments+=`song_playing`
 segments+=`mailcount`
 segments+=`battery_info`
 segments+=`product-trackers`
+segments+=`crypto-tracker`
 echo $segments
