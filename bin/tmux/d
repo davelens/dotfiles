@@ -24,6 +24,7 @@
 # I don't know, I still like a simple bash script better.
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
+me=bin/tmux/`basename "$0"`
 
 # An elegant exit with a fuzzy search to select the namespace to exit.
 if [[ $# -eq 1 && $1 == '-x' ]]; then
