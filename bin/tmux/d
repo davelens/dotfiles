@@ -37,12 +37,17 @@ fi
 # Requesting to pull in a new project will query GitHub's API for namespaces
 [[ $# -eq 1 && $1 == '-n' ]] && set -- $(~/.bin/git/github-search-repos user:davelens+user:blimp)
 
+if [[ $# -eq 1 && $1 == '--docker' ]] && [[ ! `pgrep -n docker` ]]; then
+  echo ERROR: You requested to bootstrap the project for docker, but no docker server is running.
+  exit
+fi
+
 # Provide a fuzzy search for my projects so I don't have to type names anymore.
 [[ -z $1 ]] && set -- $(ls -d ~/Sites/**/* | sed -e "s|`echo ~`/Sites/||" | fzf)
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No project namespace given.'
-  printf "\tUsage: d [-x|-q|-c] [<github-user>/<github-repo>]\n" && exit
+  printf "\tUsage: d [-x|-n|--docker] [<github-user>/<github-repo>]\n" && exit
 fi
 
 destination=~/Sites/$1
