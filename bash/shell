@@ -61,6 +61,7 @@ paths_to_add=(
   ${BREW_PATH}/opt/mysql@5.{6,7}/bin
   ${BREW_PATH}/opt/imagemagick@6/bin
   ${BREW_PATH}/{,s}bin
+  ${HOME}/.local/{,s}bin
   /usr/local/{,s}bin
   /{,s}bin
   /usr/{,s}bin
