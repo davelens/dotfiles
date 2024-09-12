@@ -52,7 +52,7 @@ def files
 end
 
 hash = files.each_with_object({}) do |file, stack|
-  stack.deep_merge!(YAML.load_file(file))
+  stack.deep_merge!(YAML.load_file(file, aliases: true))
   stack
 end
 
