@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ~/.bin/tmux/helpers.sh
+. ~/.local/bin/tmux/helpers.sh
 
 stock_message() {
   if [[ $(echo $2 | grep 'red error-color') ]] || [[ $(echo $2 | grep 'page-404') ]]; then

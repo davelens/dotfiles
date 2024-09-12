@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-. ~/.bin/tmux/helpers.sh
+. ~/.local/bin/tmux/helpers.sh
 
 segments=''
 bgcolor=''

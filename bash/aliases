@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
-alias ac-task='~/.bin/active_collab/task'
-alias ac-task-list='~/.bin/active_collab/task-list'
-alias ac-project-list='~/.bin/active_collab/project-list'
+alias ac-task='~/.local/bin/active_collab/task'
+alias ac-task-list='~/.local/bin/active_collab/task-list'
+alias ac-project-list='~/.local/bin/active_collab/project-list'
 alias be='bundle exec'
 alias bundle_mysql2_openssl_fix='bundle config --local build.Mysql2 "--with-ldflags=-L/usr/local/opt/openssl/lib --with-cppflags=-I/usr/local/opt/openssl/include"'
 alias bundle_therubyracer_fix='brew info v8@3.15 && bundle config build.therubyracer --with-v8-dir="$(brew --prefix v8@3.15)" --with-v8-include="$(brew --prefix v8@3.15)/include/" --with-v8-lib="$(brew --prefix v8@3.15)/lib/"'
 alias clearcache='sudo dscacheutil -flushcache'
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias ci='git ci-status'
-alias d="~/.bin/tmux/d"
-alias db-import="~/.bin/rails/db-import"
-alias db-import2="~/.bin/rails/db-import2"
-alias deploy='~/.bin/rails/deploy'
-alias dev='~/.bin/./tmux/open_project.sh'
-alias devx='~/.bin/./tmux/close_project.sh'
+alias d="~/.local/bin/tmux/d"
+alias db-import="~/.local/bin/rails/db-import"
+alias db-import2="~/.local/bin/rails/db-import2"
+alias deploy='~/.local/bin/rails/deploy'
+alias dev='~/.local/bin/tmux/open_project.sh'
+alias devx='~/.local/bin/tmux/close_project.sh'
 alias ds='du -sh */'
 alias fs='get_filesizes'
 alias git-web='git instaweb --httpd=webrick'
@@ -25,15 +25,15 @@ alias httpl='ruby -run -ehttpd . -p3000'
 alias ipv6off='networksetup -setv6off Wi-Fi'
 alias ipv6on='networksetup -setv6automatic Wi-Fi'
 alias mysql-databases-by-size="mysql -e \"SELECT table_schema AS 'Database', table_name AS 'Table', round(((data_length + index_length) / 1024 / 1024), 2) 'Size in MB' FROM information_schema.TABLES WHERE table_schema NOT IN('sys','information_schema', 'performance_schema', 'mysql') AND round(((data_length + index_length) / 1024 / 1024), 2) >= 5 ORDER BY (data_length + index_length) DESC;\""
-alias lookup-db-credentials="~/.bin/rails/lookup-db-credentials"
-alias migrate='~/.bin/rails/migrate'
+alias lookup-db-credentials="~/.local/bin/rails/lookup-db-credentials"
+alias migrate='~/.local/bin/rails/migrate'
 alias mf='move_files'
 alias mr='mysql_replace'
 alias mysql-docker='mysql -h localhost -P 3306 --protocol=tcp'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
 alias nano='vim'
 alias redis='redis-server /usr/local/etc/redis.conf'
-alias rsync='rsync --exclude-from=${HOME}/.bin/rsync-exclude-list.txt'
+alias rsync='rsync --exclude-from=${HOME}/.local/bin/rsync-exclude-list.txt'
 alias rtags='ctags -R --languages=ruby --exclude=.git --exclude=log .' # Optional: add `$(bundle list --paths)` if you don't have gem-ctags.
 alias sar='search_and_replace'
 alias ta='tmux attach'

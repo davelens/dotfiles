@@ -7,7 +7,7 @@ end
 
 unless ARGV[0]
   puts 'ERROR: No translation key given for lookup.'
-  puts 'Usage: ~/.bin/rails/lookup-translations <translation key>'
+  puts 'Usage: ~/.local/bin/rails/lookup-translations <translation key>'
   return
 end
 

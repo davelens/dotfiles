@@ -14,7 +14,7 @@ set -e
 deploy_to_staging() {
   [[ ! -f config/deploy/staging.rb ]] && fail "No capistrano staging environment is configured\!"
   sed -i -e "s/set :branch, 'develop'/set :branch, ENV['BRANCH'] || 'develop'/g" config/deploy/staging.rb
-  ~/.bin/rails/deploy -s
+  ~/.local/bin/rails/deploy -s
 }
 
 ask_to_push_to_temp() {

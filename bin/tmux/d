@@ -36,7 +36,7 @@ fi
 [[ -n $TMUX ]] && fail 'ERROR: No nested tmux sessions allowed. Detach first, then try again.'
 
 # Requesting to pull in a new project will query GitHub's API for namespaces
-[[ $# -eq 1 && $1 == '-n' ]] && set -- $(~/.bin/git/github-search-repos user:davelens+user:blimp)
+[[ $# -eq 1 && $1 == '-n' ]] && set -- $(~/.local/bin/git/github-search-repos user:davelens+user:blimp)
 
 if [[ $# -eq 1 && $1 == '--docker' ]] && [[ ! `pgrep -n docker` ]]; then
   echo ERROR: You requested to bootstrap the project for docker, but no docker server is running.
@@ -62,7 +62,7 @@ function rails_windows() {
   sleep 1
 
   if [[ -n `pgrep -n mysqld` ]]; then
-    tmux send-keys -t $1:db "clear && mysql \$(~/.bin/rails/lookup-db-credentials --key=database)" C-m
+    tmux send-keys -t $1:db "clear && mysql \$(~/.local/bin/rails/lookup-db-credentials --key=database)" C-m
   fi
 
   tmux send-keys -t $1:server 'export_env_vars_from_file' C-m
@@ -94,7 +94,7 @@ tmux attach -t $1 >/dev/null 2>&1 || (
   if [[ -f $destination/config.ru ]]; then
     read -n1 -p "[tmux/d] Launch local puma server? (y/n) " server
     echo ""
-    [[ -n $bootstrap ]] && cd $destination && ~/.bin/rails/db-import -i=logs && cd - >/dev/null
+    [[ -n $bootstrap ]] && cd $destination && ~/.local/bin/rails/db-import -i=logs && cd - >/dev/null
     rails_windows $1
   fi
 

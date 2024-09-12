@@ -10,3 +10,4 @@ vim/swp
 node_modules
 bin/active_collab
 dotbot
+tmux/plugins

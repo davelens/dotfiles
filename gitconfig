@@ -7,9 +7,9 @@
   ui = auto
 [alias]
   b = branch --show-current
-  m = "!/bin/bash ~/.bin/git/merge-branch"
-  s = "!/bin/bash ~/.bin/git/switch-branch"
-  pr-body = "!/bin/bash ~/.bin/git/github-pr-body"
+  m = "!/bin/bash ~/.local/bin/git/merge-branch"
+  s = "!/bin/bash ~/.local/bin/git/switch-branch"
+  pr-body = "!/bin/bash ~/.local/bin/git/github-pr-body"
   merged-prs = "pr list --format='%pC%>(8)%i%Creset %t%l (%mr)%n%x09 %U%n' -s merged"
   prd = pull-request -b develop
   prm = pull-request -b master
@@ -41,10 +41,10 @@
   get-pr = "!f() { remote=${2:-$(git remote|head -1)}; git fetch -fu $remote refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
 
   # GitLab Merge Requests (mainly making use of https://github.com/NARKOZ/gitlab)
-  mr = "!/bin/bash ~/.bin/git/gitlab-merge-request"
+  mr = "!/bin/bash ~/.local/bin/git/gitlab-merge-request"
 
   # Merge into the temp branch
-  mt = "!/bin/bash ~/.bin/git/merge-to-temp"
+  mt = "!/bin/bash ~/.local/bin/git/merge-to-temp"
 
   # remove local branches that were created from `git pr`
   pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
@@ -53,8 +53,8 @@
   ddf = !git ls-files --deleted -z | xargs -0 git rm
 
   # Uses the GitHub API to perform a search query and find repos.
-  # Made to fit `~/.bin/tmux/d -n`.
-  search-repos = "!/bin/bash ~/.bin/git/github-search-repos"
+  # Made to fit `~/.local/bin/tmux/d -n`.
+  search-repos = "!/bin/bash ~/.local/bin/git/github-search-repos"
 
 [format]
   pretty=format:%C(yellow)%h%Creset | %C(green)%ad (%ar)%Creset | %C(blue)%an%Creset | %s
