@@ -25,6 +25,9 @@ export RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.1
 export RUBY_GC_OLDMALLOC_LIMIT=16000100
 export RUBY_GC_OLDMALLOC_LIMIT_MAX=16000100
 
+# Don't force an update of all packages when target upgrading single packages.
+export HOMEBREW_NO_AUTO_UPDATE=1
+
 # Go lang work dir
 export GOPATH=${HOME}/.go
 
