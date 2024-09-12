@@ -79,7 +79,7 @@ function rails_windows() {
 
 tmux attach -t $1 >/dev/null 2>&1 || (
   tmux new-session -s $1 -n editor -c $destination -d
-  tmux send-keys -t $1 "export_env_vars_from_file; clear && vim" C-m
+  tmux send-keys -t $1 "export_env_vars_from_file; clear && dvim" C-m
 
   if [[ -z `pgrep -n mysqld` ]]; then
     read -n1 -p "[tmux/d] Launch local mysql server? (y/n) " mysql
