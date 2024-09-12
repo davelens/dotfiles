@@ -40,18 +40,8 @@ song_playing()
   fi
 }
 
-mailcount()
-{
-  mailcount=`~/.bin/tmux/mailcount.sh`
-
-  if [[ $mailcount > 0 ]]; then
-    echo "$(segment "✉ $mailcount" 229 10)"
-  fi
-}
-
 segments=''
 segments+=`song_playing`
-segments+=`mailcount`
 segments+=`battery_info`
 segments+=`product-trackers`
 segments+=`crypto-tracker`
