@@ -1,13 +1,11 @@
-env
-config/
-bash/completions/*.bash
+./env
+bash/completions
 bash/private
 vim/.netrwhist
 vim/bundle/**
-irssi/config
-irssi/sasl.auth
 vim/bundle/vundle
 vim/autoload/plug.vim
 vim/ftplugin/go
+vim/swp
 node_modules
 bin/active_collab
