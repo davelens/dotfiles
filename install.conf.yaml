@@ -20,6 +20,7 @@
     ~/.inputrc: inputrc
     ~/.nethackrc: nethackrc
     ~/.config/tmux: tmux
+    ~/.config/tmux: tmux
     #~/.Brewfile: Brewfile # TODO:
 
 - shell:
