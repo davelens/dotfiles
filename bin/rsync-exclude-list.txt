@@ -1,5 +1,4 @@
 .svn/
-files/
 cache/
 install/
 .settings/
