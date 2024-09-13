@@ -11,16 +11,16 @@
 - link:
     ~/.ackrc: ackrc
     ~/.bash: bash
-    ~/.bashrc: bashrc
     ~/.bash_profile: bash_profile
+    ~/.bashrc: bashrc
     ~/.config/tmuxinator: tmuxinator
     ~/.editrc: editrc
     ~/.gitconfig: gitconfig
     ~/.gitignore_global: gitignore_global
     ~/.inputrc: inputrc
     ~/.nethackrc: nethackrc
-    ~/.config/tmux: tmux
-    ~/.config/tmux: tmux
+    ~/.rspec: rspec
+    ~/.rubocop: rubocop
     #~/.Brewfile: Brewfile # TODO:
 
 - shell:
