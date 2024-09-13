@@ -20,7 +20,7 @@
     ~/.inputrc: inputrc
     ~/.nethackrc: nethackrc
     ~/.rspec: rspec
-    ~/.rubocop: rubocop
+    ~/.rubocop.yml: rubocop.yml
     #~/.Brewfile: Brewfile # TODO:
 
 - shell:
