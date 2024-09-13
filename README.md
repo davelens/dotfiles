@@ -2,11 +2,11 @@
 #### Install
 
     git clone git@github.com:davelens/dotfiles.git ~/.dotfiles
-    cd ~/.dotfiles && ./install.sh
+    cd ~/.dotfiles && ./install
 
 #### Uninstall
 
-    cd ~/.dotfiles && ./uninstall.sh
+    cd ~/.dotfiles && ./uninstall
 
 ## Configuration
 - Your personal info in .dotfiles/gitconfig

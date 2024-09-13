@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+files=$(sed -n '/- link:/,/^-/p' install.conf.yaml | sed -n '/^    /p')
+
+# Iterate over each line of the result
+while IFS= read -r line; do
+  # Skip lines starting with '#'
+  if [[ "$file_path" =~ ^# ]]; then
+    continue
+  fi
+
+  # Extract the file path before the ':'
+  file_path=$(echo "$line" | awk -F':' '{print $1}' | xargs)  # Removes surrounding spaces
+  
+  # Expand the '~' to the home directory
+  expanded_path="${file_path/#\~/$HOME}"
+
+  # Check if the file exists, then remove it
+  if [ -e "$expanded_path" ]; then
+    echo "Removing file: $expanded_path"
+    rm "$expanded_path"
+  else
+    echo "File not found: $expanded_path"
+  fi
+done <<< "$files"
