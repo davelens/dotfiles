@@ -14,6 +14,8 @@ alias db-import2="~/.local/bin/rails/db-import2"
 alias deploy='~/.local/bin/rails/deploy'
 alias dev='~/.local/bin/tmux/open_project.sh'
 alias devx='~/.local/bin/tmux/close_project.sh'
+alias dotfiles='~/.local/bin/tmux/quickstart dotfiles'
+alias dotvim='~/.local/bin/tmux/quickstart dotvim'
 alias ds='du -sh */'
 alias fs='get_filesizes'
 alias git-web='git instaweb --httpd=webrick'
