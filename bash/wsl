@@ -15,7 +15,8 @@
 # *.rpm = files with the ending .rpm
 LS_COLORS=$LS_COLORS:'di=0;35:'; export LS_COLORS
 alias lsa='ls -hal --color=tty'
-alias pbcopy='clip.exe'
+alias pbcopy="clip.exe"
+alias pbpaste="powershell.exe -command 'Get-Clipboard' | head -n -1"
 
 export LDFLAGS="-L${BREW_PATH}/opt/mysql@5.7/lib"
 export CPPFLAGS="-I${BREW_PATH}/opt/mysql@5.7/include"
