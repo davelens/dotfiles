@@ -72,6 +72,7 @@ paths_to_add=(
 if [[ $OS == 'windows' ]]; then
   paths_to_add+=(
     /mnt/c/Windows/System32
+    /mnt/c/Windows/System32/WindowsPowerShell/v1.0
     /mnt/c/Windows/SysWOW64
   )
 fi
