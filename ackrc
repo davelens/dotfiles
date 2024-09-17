@@ -8,14 +8,8 @@
 --type-set=tpl=.tpl,.twig
 --type-add=html=.tpl,.twig
 
-# PHP includes.
---type-add=php=inc
-
 # Generated documentation.
 --ignore-dir=docs
-
-# Fork CMS cache.
---ignore-dir=compiled_templates
 
 # Rails caches/logs
 --ignore-dir=cache,log
