@@ -25,6 +25,5 @@ unset file;
 
 # Soom tools that need to be hooked before use.
 eval "$(rbenv init -)"
-eval "$(hub alias -s)" # Alias hub straight into git
 eval "$(zoxide init bash)" # zoxide is a "better cd"
 [ -f /usr/local/etc/profile.d/z.sh ] && . /usr/local/etc/profile.d/z.sh
