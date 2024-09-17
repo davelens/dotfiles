@@ -18,9 +18,9 @@ alias lsa='ls -hal --color=tty'
 alias pbcopy="clip.exe"
 alias pbpaste="powershell.exe -command 'Get-Clipboard' | head -n -1"
 
-export LDFLAGS="-L${BREW_PATH}/opt/mysql@5.7/lib"
-export CPPFLAGS="-I${BREW_PATH}/opt/mysql@5.7/include"
-export PKG_CONFIG_PATH="${BREW_PATH}/opt/mysql@5.7/lib/pkgconfig"
+export LDFLAGS="-L${BREW_PATH}/opt/mysql/lib"
+export CPPFLAGS="-I${BREW_PATH}/opt/mysql/include"
+export PKG_CONFIG_PATH="${BREW_PATH}/opt/mysql/lib/pkgconfig"
 
 # Start the SSH agent
 eval "$(ssh-agent -s >/dev/null)"
