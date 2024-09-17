@@ -3,6 +3,10 @@
 ########################################################################
 # GENERAL
 ########################################################################
+# So software can pick up and load this entire config.
+export SHELL=/usr/bin/bash
+
+# dvim is currently the Neovim profile I'm using to port my Vim config to LUA.
 export EDITOR=dvim
 
 # This makes it so `gh` will use a bash shell running my default editor.
