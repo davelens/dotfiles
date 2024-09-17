@@ -56,7 +56,7 @@ fi
 
 # Storing the PR body locally, using the name of the branch. Commit it or add it
 # to your .gitignore.
-vim ".git/$branch_name.md"
+${EDITOR} ".git/$branch_name.md"
 
 # If for some reason you end up removing the file at this point, we just exit.
 [ ! -f ".git/$branch_name.md" ] && exit

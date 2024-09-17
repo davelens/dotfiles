@@ -62,7 +62,7 @@
   tool = vimdiff
 
 [core]
-  editor = nvim
+  editor = ${EDITOR}
   excludesfile = ~/.gitignore_global
   pager = delta --side-by-side
 

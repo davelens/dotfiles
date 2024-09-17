@@ -33,7 +33,7 @@ post: |
 
 windows:
   - editor:
-    - clear && vim
+    - clear && ${EDITOR}
   - database:
     - clear && mysql <%= @args[0] %>_dev
   - shell:

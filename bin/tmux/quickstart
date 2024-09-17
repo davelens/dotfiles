@@ -18,7 +18,7 @@ if ! tmux has-session -t $SESSION_NAME 2>/dev/null; then
   tmux new -s $SESSION_NAME -n "editor" -d
   tmux rename-window -t $SESSION_NAME:1 "editor"
   tmux new-window -t $SESSION_NAME -n "cli"
-  tmux send-keys -t $SESSION_NAME:1 'clear && dvim' C-m
+  tmux send-keys -t $SESSION_NAME:1 "clear && ${EDITOR}" C-m
   tmux select-window -t $SESSION_NAME:1
 fi
 

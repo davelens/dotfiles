@@ -39,7 +39,7 @@ alias rsync='rsync --exclude-from=${HOME}/.local/bin/rsync-exclude-list.txt'
 alias rtags='ctags -R --languages=ruby --exclude=.git --exclude=log .' # Optional: add `$(bundle list --paths)` if you don't have gem-ctags.
 alias sar='search_and_replace'
 alias ta='tmux attach'
-alias vim='nvim'
+alias vim=${EDITOR}
 alias vi='vim'
 # Using >| to temporary override my default noclobber setting.
 alias watson-clear-frames=">| $HOME/Library/Application\ Support/watson/frames"
