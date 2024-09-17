@@ -3,7 +3,8 @@
 ########################################################################
 # GENERAL
 ########################################################################
-export EDITOR=vim
+export EDITOR=dvim
+export GH_EDITOR="bash -c '${EDITOR}'"
 
 # Remove the zsh warning introduced in macos Catalina
 export BASH_SILENCE_DEPRECATION_WARNING=1
