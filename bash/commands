@@ -147,6 +147,6 @@ search_and_replace()
 }
 
 export_env_vars_from_file() {
-  [[ -z $1 ]] && set -- .env
-  [[ -f $1 ]] && export $(cat $1 | grep -v ^\# | xargs)
+  env_file=${1:-.env}
+  [[ -f $env_file ]] && export $(cat $env_file | grep -v ^\# | xargs)
 }
