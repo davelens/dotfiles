@@ -2,7 +2,6 @@
 
 # Load up the .env file, if present.
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
-export_env_vars_from_file
 
 # Load OS specific files
 OS=`os`
