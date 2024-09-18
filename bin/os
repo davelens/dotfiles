@@ -2,7 +2,7 @@
 
 set -e
 
-if [ -f /proc/version ] && [ grep -qEi "(microsoft|WSL)" /proc/version ]; then
+if [ -f /proc/version ] && grep -qEi "(microsoft|WSL)" /proc/version ; then
   echo 'windows'
 else
   OS=`uname -s`
