@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
 
-# Remove the zsh warning introduced in macos Catalina
-export BASH_SILENCE_DEPRECATION_WARNING=1
-
-# Load up the .env file, if present.
-[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[[ -f ~/.bash/shell ]] && . ~/.bash/shell
 
 # Load OS specific files
 OS=`os`
-[ -f ~/.aliases ] && . ~/.aliases
-[ $OS == 'windows' ] && . ~/.bash/wsl
-[ $OS == 'macos' ] && . ~/.bash/macos
-[ $OS == 'linux' ] && . ~/.bash/linux
+[[ $OS == 'windows' ]] && . ~/.bash/wsl
+[[ $OS == 'macos' ]] && . ~/.bash/macos
+[[ $OS == 'linux' ]] && . ~/.bash/linux
 
 # Source the files in the bash folder
-for file in ~/.bash/{shell,commands,prompt,aliases,private}; do
+for file in ~/.bash/{commands,prompt,aliases,private}; do
   [ -r "$file" ] && . "$file";
 done;
 unset file;
