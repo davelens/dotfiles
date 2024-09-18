@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Remove the zsh warning introduced in macos Catalina
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 # Load up the .env file, if present.
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
