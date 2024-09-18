@@ -21,7 +21,6 @@
     ~/.nethackrc: nethackrc
     ~/.rspec: rspec
     ~/.rubocop.yml: rubocop.yml
-    #~/.Brewfile: Brewfile # TODO:
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
