@@ -3,9 +3,6 @@
 ########################################################################
 # GENERAL
 ########################################################################
-# So software can pick up and load this entire config.
-export SHELL=/usr/bin/bash
-
 # dvim is currently the Neovim profile I'm using to port my Vim config to LUA.
 export EDITOR=dvim
 
@@ -87,6 +84,9 @@ export PATH="${PATH%:}";
 
 # Fixes installation of mysql2 gem due to missing openssl lib.
 LIBRARY_PATH=${LIBRARY_PATH}:${BREW_PATH}/opt/openssl/lib/
+
+# So software can pick up and load this entire config.
+export SHELL=${BREW_PATH}/bin/bash
 
 # node.js modules path
 export NODE_PATH="/usr/local/share/npm/lib/node_modules"
