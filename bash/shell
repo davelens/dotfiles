@@ -12,6 +12,9 @@ export EDITOR=dvim
 # This makes it so `gh` will use a bash shell running my default editor.
 export GH_EDITOR="bash -c '${EDITOR}'"
 
+# Remove the zsh warning introduced in macos Catalina
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 # Make ls & grep pretty
 export CLICOLOR=1
 
