@@ -20,7 +20,5 @@ for file in ~/.bash/completions/*.bash; do
 done;
 unset file;
 
-# Soom tools that need to be hooked before use.
+# Some tools that need to be hooked before use.
 eval "$(rbenv init -)"
-eval "$(zoxide init bash)" # zoxide is a "better cd"
-[ -f /usr/local/etc/profile.d/z.sh ] && . /usr/local/etc/profile.d/z.sh
