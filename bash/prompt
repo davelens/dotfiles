@@ -32,6 +32,10 @@ rewrite_pwd()
 }
 
 prompt_branch() {
+  if [ ! git config --get alias.b &>/dev/null ]; then
+    return
+  fi
+
   if [ -d ".git" ]; then
     echo "(branch: `git b`)"
   fi
