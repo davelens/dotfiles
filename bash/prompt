@@ -114,5 +114,12 @@ rewrite_prompt()
   PS1="${G}\u@\h> \${NEW_PWD} ${C}\$(prompt_branch)\${NONE}${NONE}\n$ "
 }
 
+# PROMPT_COMMAND is a special environment variable in Bash. It allows you to 
+# specify a command or function that gets executed just before the Bash prompt 
+# is displayed. I use it to update the active working dir after every cmd.
 PROMPT_COMMAND=rewrite_pwd
+
+# Make sure that whenever our Terminal starts a new session, it sets $NEW_PWD
+# and colorizes the prompt. Subsequent commands will pick up any changes in the
+# same state we initialize here.
 rewrite_prompt
