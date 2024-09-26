@@ -45,12 +45,12 @@ prompt_branch() {
   fi
 }
 
-# rewrites the PS1 bash prompt var
+# Rewrite the prompt with readable color vars and git branch info.
 rewrite_prompt()
 {
-  local NONE='\[\033[0m\]'    # unsets color to term's fg color
+  local NONE='\[\033[0m\]'    # Unsets color to term's fg color
 
-  # regular colors
+  # Regular colors
   local K='\[\033[0;30m\]'    # black
   local R='\[\033[0;31m\]'    # red
   local G='\[\033[0;32m\]'    # green
@@ -60,7 +60,7 @@ rewrite_prompt()
   local C='\[\033[0;36m\]'    # cyan
   local W='\[\033[0;37m\]'    # white
 
-  # empahsized (bolded) colors
+  # Emphasized (bolded) colors
   local EMK='\[\033[1;30m\]'
   local EMR='\[\033[1;31m\]'
   local EMG='\[\033[1;32m\]'
@@ -70,7 +70,7 @@ rewrite_prompt()
   local EMC='\[\033[1;36m\]'
   local EMW='\[\033[1;37m\]'
 
-  # background colors
+  # Background colors
   local BGK='\[\033[40m\]'
   local BGR='\[\033[41m\]'
   local BGG='\[\033[42m\]'
@@ -80,10 +80,11 @@ rewrite_prompt()
   local BGC='\[\033[46m\]'
   local BGW='\[\033[47m\]'
 
-  local UC=$C                 # username's color
-  [ $UID -eq "0" ] && UC=$R   # root's color
+  # If we are in root mode, color our username red.
+  local UC=$C
+  [ $UID -eq "0" ] && UC=$R
 
-  # rewrite prompt
+  # Override the prompt with readable color vars and git branch info.
   PS1="${G}\u@\h> \${NEW_PWD} ${C}\$(prompt_branch)\${NONE}${NONE}\n$ "
 }
 
