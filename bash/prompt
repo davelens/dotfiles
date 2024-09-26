@@ -110,7 +110,7 @@ rewrite_prompt()
   [ $UID -eq "0" ] && UC=$R
 
   # Override the prompt with readable color vars and git branch info.
-  PS1="${G}\u@\h> \${NEW_PWD} ${C}\$(prompt_branch)\${NONE}${NONE}\n$ "
+  PS1="${G}\u@\h> \${NEW_PWD} ${C}\$(prompt_branch)\${NONE}${NONE}\n> "
 }
 
 # PROMPT_COMMAND is a special environment variable in Bash. It allows you to 
