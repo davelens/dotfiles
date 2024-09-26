@@ -16,18 +16,22 @@ rewrite_pwd()
 
   # indicate that there has been dir truncation
   local trunc_symbol=".."
-  local dir=${PWD##*/}
+  local dir=${PWD##*/} # Remove all strings until the last forward slash.
 
+  # Make sure the last dir does not exceed $pwdmaxlen, otherwise take
+  # the length of the last dir as new pwdmaxlen.
   pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
 
+  # Substitute $HOME with ~
   NEW_PWD=${PWD/${HOME}/"~"}
 
+  # Calculate how many characters we have to truncate
   local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
 
-  if [ ${pwdoffset} -gt "0" ]
-  then
+  # If the PWD string is too long, then we will truncate it.
+  if [ ${pwdoffset} -gt "0" ]; then
     NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
-    NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
+    NEW_PWD=${trunc_symbol}/${NEW_PWD#*/} # Remove until the first forward slash
   fi
 }
 
