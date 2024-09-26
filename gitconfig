@@ -6,7 +6,7 @@
 [color]
   ui = auto
 [alias]
-  b = branch --show-current
+  b = rev-parse --abbrev-ref HEAD
   m = "!/bin/bash ~/.local/bin/git/merge-branch"
   s = "!/bin/bash ~/.local/bin/git/switch-branch"
   pr-body = "!/bin/bash ~/.local/bin/git/github-pr-body"

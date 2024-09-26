@@ -35,13 +35,39 @@ rewrite_pwd()
   fi
 }
 
+# Simplified Git branch info formatted for bash prompts.
+# Picks up on `git b` if that alias exists. This way you could inject
+# your own branch logic into the prompt.
 prompt_branch() {
-  if [ ! git config --get alias.b &>/dev/null ]; then
-    return
+  # Only write branch info in actual git repos.
+  [ ! -d ".git" ] && return
+
+  # The default branch retrieval in case `git b` is not available.
+  #
+  # Note that in this repo, `git b` is aliased to the same value as this 
+  # assignment. No other reason, othern than I like having that alias on hand 
+  # regardless of the prompt logic.
+  local cmd="git rev-parse --abbrev-ref HEAD"
+ 
+  # If `git b` exists as an alias, use that instead.
+  if [ git config --get alias.b &>/dev/null ]; then
+    cmd="git b"
   fi
 
-  if [ -d ".git" ]; then
-    echo "(branch: `git b`)"
+  # Get the current branch or detached HEAD state
+  # As an aside; `git b` used to be `git branch --show-current`, which works
+  # fine for basic branch retrieval, but would not work when you're in a
+  # detached HEAD state.
+  current_branch=$($cmd 2>/dev/null)
+
+  if [ "$current_branch" = "HEAD" ]; then # Detached HEAD state
+    echo "(no branch selected)"
+
+  elif [ -n "$current_branch" ]; then # Valid branch is valid
+    echo "(branch: $current_branch)" 
+
+  else # Fallback, should never see this though.
+    echo "(no branch)" 
   fi
 }
 
