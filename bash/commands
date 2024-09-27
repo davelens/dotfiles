@@ -132,6 +132,13 @@ search_and_replace()
   fi
 }
 
+# Because we all want to know how many times we actually typed "gti" instead 
+# of "git".
+timesused()
+{
+  [[ -f ${HOME}/.bash_history ]] && grep -c "^${1}" ${HOME}/.bash_history
+}
+
 export_env_vars_from_file() {
   env_file=${1:-.env}
   [[ -f $env_file ]] && export $(cat $env_file | grep -v ^\# | xargs)
