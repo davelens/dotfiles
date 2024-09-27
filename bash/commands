@@ -1,30 +1,69 @@
 #!/usr/bin/env bash
 
-function fail() {
+# Exports all ENV vars listed in a file. Loads ~/.env by default.
+export_env_vars_from_file() {
+  env_file=${1:-.env}
+  [[ -f $env_file ]] && export $(cat $env_file | grep -v ^\# | xargs)
+}
+
+# Helps us hard stop our custom executables during fails.
+fail() {
   [ `command -v revolver` ] && pgrep revolver && revolver stop
   printf '%s\n' "$1" >&2 # Sends a message to stderr.
   exit "${2-1}" # Returns a code specified by $2 or 1 by default.
 }
 
-function lowercase()
-{
-  if [ -n "$1" ]; then
-    echo "$1" | tr "[:upper:]" "[:lower:]"
-  else
-    cat - | tr "[:upper:]" "[:lower:]"
-  fi
-}
 
-# Returns the active git branch - this is used in rewrite_prompt().
+# Deletes all files in the current git repo that are not tracked by git.
 git_delete_new_files()
 {
   for file in $(git st | grep '??' | awk '{print substr($0, 4)}'); do rm -r $file; done
+}
+
+# Returns information on LOC added/removed for a given git log range and an
+# optional author.
+git_loc()
+{
+  range=$1
+  author=$2
+
+  git log -$1 --author="$2" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }' -
+}
+
+# Shorthand for push/checkout/merge/push/checkout again. Saves some typing.
+git_merge()
+{
+  source_branch=$1
+  target_branch=$2
+
+  if [[ $target_branch == '' ]]; then
+    target_branch='master'
+  fi
+
+  if [[ $source_branch == '' ]];
+  then
+    echo "usage: git_merge <source_branch> '<*target_branch>'"
+  else
+    git push origin $source_branch && \
+      git checkout $target_branch && git merge $source_branch && git push origin $target_branch
+    git checkout $source_branch
+  fi
 }
 
 # Get a list of all filesizes in the current folder ("du -sh *" for files).
 get_filesizes()
 {
   ls -laSh $1 | grep -v ^d | awk '{print $5 "\t" $9}'
+}
+
+# Flattens any string you give it. Made to format user input like Y/N -> y/n.
+lowercase()
+{
+  if [ -n "$1" ]; then
+    echo "$1" | tr "[:upper:]" "[:lower:]"
+  else
+    cat - | tr "[:upper:]" "[:lower:]"
+  fi
 }
 
 # Drops all tables in a specified MySQL database.
@@ -61,37 +100,8 @@ mysql_replace()
   fi
 }
 
-# Returns information on LOC added/removed for a given git log range and an
-# optional author.
-git_loc()
-{
-  range=$1
-  author=$2
-
-  git log -$1 --author="$2" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }' -
-}
-
-# Syncs git production and staging branch with master.
-git_merge()
-{
-  source_branch=$1
-  target_branch=$2
-
-  if [[ $target_branch == '' ]]; then
-    target_branch='master'
-  fi
-
-  if [[ $source_branch == '' ]];
-  then
-    echo "usage: git_merge <source_branch> '<*target_branch>'"
-  else
-    git push origin $source_branch && \
-      git checkout $target_branch && git merge $source_branch && git push origin $target_branch
-    git checkout $source_branch
-  fi
-}
-
 # Attempts to recursively find a match for a given string in the given file(s).
+# TODO: There are modern tools that handle this better. Look into them.
 search()
 {
   string=$1
@@ -112,6 +122,7 @@ search()
 }
 
 # Attempts to recursively search the given range of files for a given perl-compatible regex and replace with a given value.
+# TODO: There are modern tools that handle this better. Look into them.
 search_and_replace()
 {
   search=$1
@@ -137,9 +148,4 @@ search_and_replace()
 timesused()
 {
   [[ -f ${HOME}/.bash_history ]] && grep -c "^${1}" ${HOME}/.bash_history
-}
-
-export_env_vars_from_file() {
-  env_file=${1:-.env}
-  [[ -f $env_file ]] && export $(cat $env_file | grep -v ^\# | xargs)
 }
