@@ -34,6 +34,7 @@
   ra = !git r --all
   s = "!/bin/bash ~/.local/bin/git/switch-branch"
   st = status --short
+  web = instaweb --httpd=webrick
 
   # GitHub Pull Requests (stolen from https://github.com/pd/dotfiles/blob/e2d2418f96c5d13b4b06e3f2dff78dfb51eeb49c/gitconfig#L47-48)
   # call with the pull request #, it will check out the pr locally
