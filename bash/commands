@@ -61,6 +61,7 @@ mysql_replace()
   fi
 }
 
+# TODO: Find out how to cache this value.
 get_ci_status() {
   # Get the SHA of the latest commit
   local latest_commit=$(git rev-parse HEAD)
