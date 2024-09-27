@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # This file will only load on macos.
+# As this grows I might need to split it up into multiple files.
 
 alias ss="osascript ~/.macos/hide-terminal.scpt && screenshot && killall Terminal"
 alias allow='xattr -d com.apple.quarantine'
@@ -8,6 +9,10 @@ alias ls='ls -G'
 alias lsa='ls -hal'
 alias toggle_desktop='toggle_default finder CreateDesktop'
 alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
+
+# Flush the Directory Service cache on macos. Useful for forcing 
+# hostname/user/groups changes to update.
+alias clearcache='sudo dscacheutil -flushcache' 
 
 # Download the iTerm2 shell integration file and place it in the completions dir.
 if [ ! -f ~/.bash/completions/iterm2_shell_integration.bash ]; then
