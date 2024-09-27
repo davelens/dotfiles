@@ -7,15 +7,10 @@
 # locally. The command has these features:
 #
 # * It automatically installs Github's CLI tool if you don't have it yet.
-# * It does not require authentication with GitHub's API thanks to `hub`.
 # * It uses the existing PR body as a base for further updates.
 # * It keeps the writing buffer in .git/ so it's automatically ignored by git.
 # * It asks to push the updated body to the GitHub website.
 # * It returns a link to the PR as the command finishes.
-#
-# Note that `hub` will be deprecated somewhere in the future. I'm assuming
-# GitHub's CLI tool will be expanded with API functionality, and I will switch
-# out the current API calls made with `hub` when that time comes.
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 [[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
@@ -33,8 +28,7 @@ fi
 
 [ ! `command -v gh` ] && brew install github/gh/gh
 
-# An easier way to grab the PR URL would be `hub pr show -u`. I chose to use
-# a method using `gh` instead because of hub's pending deprecation.
+# Grab the PR ID and bootstrap the branch body's cache file.
 repo_suffix=`git remote get-url origin | sed -e 's/git@github.com://' -e 's/.git//'`
 pr_id=`gh pr list 2>&1 | grep $branch_name | awk '{print $1}'`
 body_file=".git/$branch_name.md"
@@ -49,9 +43,10 @@ fi
 if [ ! -f ".git/$branch_name.md" ]; then
   echo "Creating .git/$branch_name.md"
   [ -f output.json ] && rm output.json
-  hub api https://api.github.com/repos/$repo_suffix/pulls/$pr_id > output.json
-  ruby -rjson -e 'j = JSON.parse(File.read("output.json"));puts j["body"]' > .git/$branch_name.md
-  rm output.json
+  gh pr view $pr_id --json body --jq '.body' | tr -d '\r' > .git/$branch_name.md
+  #cat output.json
+  #ruby -rjson -e 'j = JSON.parse(File.read("output.json"));puts j["body"]' > .git/$branch_name.md
+  #rm output.json
 fi
 
 # Storing the PR body locally, using the name of the branch. Commit it or add it
@@ -70,10 +65,7 @@ echo ""
 while true; do
   read -n1 -p "Push to GitHub? (y/n) " yn
   case $yn in
-    # I sort of have to use `hub` here instead of plain `curl` to prevent
-    # authenticating every time you call this command. As soon as GitHub CLI
-    # supports API calls with built-in auth, I will switch to that.
-    [Yy]* ) echo "" && hub api -X PATCH -F body="$(cat .git/$branch_name.md)" https://api.github.com/repos/$repo_suffix/pulls/$pr_id >/dev/null && echo "https://github.com/$repo_suffix/pull/$pr_id"; break;;
+    [Yy]* ) echo "" && gh pr edit "$pr_id" --body "$(cat .git/$branch_name.md)"; break;;
     [Nn]* ) echo "" && exit;;
     * ) echo "" && echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
   esac
