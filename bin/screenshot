@@ -4,6 +4,11 @@
 set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 [[ `os` != 'macos' ]] && fail "ERROR: This command only works on macos, for now. Sorry!"
+
+# Explicitly export all environment variables from the .env file here to make
+# sure we have our $SCREENSHOT_* vars available.
+export_env_vars_from_file
+
 # TODO: More explanation what each variable represents.
 [[ -z $SCREENSHOT_HOST ]] && fail "ERROR: No host defined in \$SCREENSHOT_HOST."
 [[ -z $SCREENSHOT_URL ]] && fail "ERROR: No destination URL defined in \$SCREENSHOT_URL."
