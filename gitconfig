@@ -6,34 +6,34 @@
 [color]
   ui = auto
 [alias]
+  aa = add --all
+  amend = commit --amend
+  ap = add -p
   b = rev-parse --abbrev-ref HEAD
-  m = "!/bin/bash ~/.local/bin/git/merge-branch"
-  s = "!/bin/bash ~/.local/bin/git/switch-branch"
-  pr-body = "!/bin/bash ~/.local/bin/git/github-pr-body"
-  merged-prs = "pr list --format='%pC%>(8)%i%Creset %t%l (%mr)%n%x09 %U%n' -s merged"
-  pr = "!f() { base=${1:-develop}; gh pr create --base \"$base\"; }; f"
-  prs = "pr list --format='%pC%>(8)%i%Creset %t%l%n%x09 %U%n'"
-  puom = pull origin master
-  puod = pull origin develop
-  pom = push origin master
-  pod = push origin develop
-  st = status --short
   ci = commit
   co = checkout
-  di = diff
   dc = diff --cached
-  amend = commit --amend
-  aa = add --all
-  ap = add -p
-  head = !git l -1
-  h = !git head
-  r = !git --no-pager l -20
-  ra = !git r --all
+  di = diff
+  fa = fetch --all
   ff = merge --ff-only
-  pullff = pull --ff-only
+  h = !git head
+  head = !git l -1
   l = log --graph --abbrev-commit --date=relative
   la = !git l --all
-  fa = fetch --all
+  m = "!/bin/bash ~/.local/bin/git/merge-branch"
+  merged-prs = "pr list --format='%pC%>(8)%i%Creset %t%l (%mr)%n%x09 %U%n' -s merged"
+  pod = push origin develop
+  pom = push origin master
+  pr = "!f() { base=${1:-develop}; gh pr create --base \"$base\"; }; f"
+  pr-body = "!/bin/bash ~/.local/bin/git/github-pr-body"
+  prs = "pr list --format='%pC%>(8)%i%Creset %t%l%n%x09 %U%n'"
+  pullff = pull --ff-only
+  puod = pull origin develop
+  puom = pull origin master
+  r = !git --no-pager l -20
+  ra = !git r --all
+  s = "!/bin/bash ~/.local/bin/git/switch-branch"
+  st = status --short
 
   # GitHub Pull Requests (stolen from https://github.com/pd/dotfiles/blob/e2d2418f96c5d13b4b06e3f2dff78dfb51eeb49c/gitconfig#L47-48)
   # call with the pull request #, it will check out the pr locally
