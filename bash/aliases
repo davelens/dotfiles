@@ -9,13 +9,13 @@ alias rsync='rsync --exclude-from=${HOME}/.local/bin/rsync-exclude-list.txt'
 alias vim=${EDITOR}
 alias vi='vim'
 
+# Generic helpers and custom commands
 alias be='bundle exec'
 alias bundle_mysql2_openssl_fix="bundle config --local build.mysql2 '--with-ldflags=-L${BREW_PATH}/opt/openssl/lib --with-cppflags=-I${BREW_PATH}/opt/openssl/include'"
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias ci='git ci-status'
-alias ds='du -sh */'
-alias fs='get_filesizes'
-alias gl-projects='gitlab projects --only=id,name_with_namespace'
+alias ds='du -sh */' # Short for "directory sizes"
+alias fs='get_filesizes' # Short for "file sizes"
 alias gmdm='git_merge develop master'
 alias gti='git' # NOTE: `timesused gti` to find out how many times this is used
 alias gdnf='git_delete_new_files'
@@ -26,7 +26,6 @@ alias mr='mysql_replace'
 alias mysql-docker='mysql -h localhost -P 3306 --protocol=tcp'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
 alias redis='brew services start redis'
-alias rtags='ctags -R --languages=ruby --exclude=.git --exclude=log .' # Optional: add `$(bundle list --paths)` if you don't have gem-ctags.
 alias s='source ${HOME}/.bashrc && echo "${HOME}/.bashrc sourced!"'
 alias sar='search_and_replace'
 alias ta='tmux attach'
