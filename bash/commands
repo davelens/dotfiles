@@ -27,20 +27,6 @@ get_filesizes()
   ls -laSh $1 | grep -v ^d | awk '{print $5 "\t" $9}'
 }
 
-# Recursively moves all files matching the search query to the chosen directory.
-move_files()
-{
-  search=$1
-  destination=$2
-
-  if [[ "$search" == "" ]] || [[ "$destination" == "" ]]
-  then
-    echo "usage: move_files <search> <destination>"
-  else
-    find . -type f -name "$search" -exec mv -fv '{}' "$destination" ';'
-  fi
-}
-
 # Drops all tables in a specified MySQL database.
 mysql_drop_all_tables()
 {
