@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+location=${1:-"Sint Gillis Waas"}
+encoded_location=$(printf '%s' "$location" | jq -sRr @uri)
+curl "wttr.in/$encoded_location"

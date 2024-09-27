@@ -31,7 +31,6 @@ alias ta='tmux attach'
 # Using >| to temporary override my default noclobber setting.
 alias watson-clear-frames='>| ${HOME}/Library/Application\ Support/watson/frames'
 alias watson-edit-frames='vim ${HOME}/Library/Application\ Support/watson/frames'
-alias weer='curl wttr.in/Sint+Gillis+Waas'
 
 # Custom executables in my dotfiles
 alias ac-task='${HOME}/.local/bin/active_collab/task'
