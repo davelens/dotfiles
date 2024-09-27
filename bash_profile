@@ -3,6 +3,7 @@
 OS=`${HOME}/.local/bin/os`
 
 # Load the mandatory shell settings and ENV vars before everything else.
+[[ -f ~/.bash/colors ]] && . ~/.bash/colors
 [[ -f ~/.bash/shell ]] && . ~/.bash/shell
 
 # OS specific settings

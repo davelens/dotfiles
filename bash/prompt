@@ -1,39 +1,5 @@
 #!/usr/bin/env bash
 
-# This rewrites PWD to something more readable.
-#   * The home directory is replaced with a ~
-#   * The last pwdmaxlen characters of the PWD are displayed
-#   * Leading partial directory names are stripped off
-#
-# Example: /home/davelens/Sites/blimp/abcdefghij
-# if pwdmaxlen=25: ~/Sites/blimp/abcdefghij
-# if pwdmaxlen=20: ~/blimp/abcdefghij
-rewrite_pwd()
-{
-  # how many characters of the $PWD should remain visible.
-  local pwdmaxlen=25
-
-  # Indicate that dir truncation took place.
-  local trunc_symbol=".."
-  local dir=${PWD##*/} # Remove all strings until the last forward slash.
-
-  # Make sure the last dir does not exceed $pwdmaxlen, otherwise take
-  # the length of the last dir as new pwdmaxlen.
-  pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
-
-  # Substitute $HOME with ~
-  NEW_PWD=${PWD/${HOME}/"~"}
-
-  # Calculate how many characters we have to truncate
-  local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
-
-  # If the PWD string is too long, then we will truncate it.
-  if [ ${pwdoffset} -gt "0" ]; then
-    NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
-    NEW_PWD=${trunc_symbol}/${NEW_PWD#*/} # Remove until the first forward slash
-  fi
-}
-
 # Simplified Git branch info formatted for bash prompts.
 # Picks up on `git b` if that alias exists. This way you could inject
 # your own branch logic into the prompt.
@@ -70,55 +36,52 @@ prompt_branch() {
   fi
 }
 
-# Rewrite the prompt with readable color vars and git branch info.
-rewrite_prompt()
+# This rewrites PWD to something more readable.
+#   * The home directory is replaced with a ~
+#   * The last pwdmaxlen characters of the PWD are displayed
+#   * Leading partial directory names are stripped off
+#
+# Example: /home/davelens/Sites/blimp/abcdefghij
+# if pwdmaxlen=25: ~/Sites/blimp/abcdefghij
+# if pwdmaxlen=20: ~/blimp/abcdefghij
+rewrite_pwd()
 {
-  local NONE='\[\033[0m\]'    # Unsets color to term's fg color
+  # how many characters of the $PWD should remain visible.
+  local pwdmaxlen=25
 
-  # Regular colors
-  local K='\[\033[0;30m\]'    # black
-  local R='\[\033[0;31m\]'    # red
-  local G='\[\033[0;32m\]'    # green
-  local Y='\[\033[0;33m\]'    # yellow
-  local B='\[\033[0;34m\]'    # blue
-  local M='\[\033[0;35m\]'    # magenta
-  local C='\[\033[0;36m\]'    # cyan
-  local W='\[\033[0;37m\]'    # white
+  # Indicate that dir truncation took place.
+  local trunc_symbol=".."
+  local dir=${PWD##*/} # Remove all strings until the last forward slash.
 
-  # Emphasized (bolded) colors
-  local EMK='\[\033[1;30m\]'
-  local EMR='\[\033[1;31m\]'
-  local EMG='\[\033[1;32m\]'
-  local EMY='\[\033[1;33m\]'
-  local EMB='\[\033[1;34m\]'
-  local EMM='\[\033[1;35m\]'
-  local EMC='\[\033[1;36m\]'
-  local EMW='\[\033[1;37m\]'
+  # Make sure the last dir does not exceed $pwdmaxlen, otherwise take
+  # the length of the last dir as new pwdmaxlen.
+  pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
 
-  # Background colors
-  local BGK='\[\033[40m\]'
-  local BGR='\[\033[41m\]'
-  local BGG='\[\033[42m\]'
-  local BGY='\[\033[43m\]'
-  local BGB='\[\033[44m\]'
-  local BGM='\[\033[45m\]'
-  local BGC='\[\033[46m\]'
-  local BGW='\[\033[47m\]'
+  # Substitute $HOME with ~
+  NEW_PWD=${PWD/${HOME}/"~"}
 
-  # If we are in root mode, color our username red.
-  local UC=$C
-  [ $UID -eq "0" ] && UC=$R
+  # Calculate how many characters we have to truncate
+  local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
 
-  # Override the prompt with readable color vars and git branch info.
-  PS1="${G}\u@\h> \${NEW_PWD} ${C}\$(prompt_branch)\${NONE}${NONE}\n> "
+  # If the PWD string is too long, then we will truncate it.
+  if [ ${pwdoffset} -gt "0" ]; then
+    NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
+    NEW_PWD=${trunc_symbol}/${NEW_PWD#*/} # Remove until the first forward slash
+  fi
 }
 
+# Make sure that whenever our Terminal starts a new session, it sets $NEW_PWD
+# and colorizes the prompt. Subsequent commands will pick up any changes in the
+# same state we initialize here.
+#
 # PROMPT_COMMAND is a special environment variable in Bash. It allows you to 
 # specify a command or function that gets executed just before the Bash prompt 
 # is displayed. I use it to update the active working dir after every cmd.
 PROMPT_COMMAND=rewrite_pwd
 
-# Make sure that whenever our Terminal starts a new session, it sets $NEW_PWD
-# and colorizes the prompt. Subsequent commands will pick up any changes in the
-# same state we initialize here.
-rewrite_prompt
+# Colors the root prompt red.
+UC=$C
+[ $UID -eq "0" ] && UC=$R
+
+# Override the prompt with readable color vars and git branch info.
+PS1="${G}\u@\h> \${NEW_PWD} ${C}\$(prompt_branch)${NONE}\n> "
