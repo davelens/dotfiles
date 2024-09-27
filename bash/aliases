@@ -1,19 +1,8 @@
 #!/usr/bin/env bash
-alias ac-task='~/.local/bin/active_collab/task'
-alias ac-task-list='~/.local/bin/active_collab/task-list'
-alias ac-project-list='~/.local/bin/active_collab/project-list'
 alias be='bundle exec'
 alias bundle_mysql2_openssl_fix="bundle config --local build.mysql2 '--with-ldflags=-L${BREW_PATH}/opt/openssl/lib --with-cppflags=-I${BREW_PATH}/opt/openssl/include'"
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias ci='git ci-status'
-alias d="~/.local/bin/tmux/d"
-alias db-import="~/.local/bin/rails/db-import"
-alias db-import2="~/.local/bin/rails/db-import2"
-alias deploy='~/.local/bin/rails/deploy'
-alias dev='~/.local/bin/tmux/open_project.sh'
-alias devx='~/.local/bin/tmux/close_project.sh'
-alias dotfiles='~/.local/bin/tmux/quickstart dotfiles'
-alias dotvim='~/.local/bin/tmux/quickstart dotvim'
 alias ds='du -sh */'
 alias fs='get_filesizes'
 alias git-web='git instaweb --httpd=webrick'
@@ -25,8 +14,6 @@ alias gdnf='git_delete_new_files'
 # Run a quick & basic local HTTP server
 alias http='ruby -run -ehttpd . -p3000'
 alias mysql-databases-by-size="mysql -e \"SELECT table_schema AS 'Database', table_name AS 'Table', round(((data_length + index_length) / 1024 / 1024), 2) 'Size in MB' FROM information_schema.TABLES WHERE table_schema NOT IN('sys','information_schema', 'performance_schema', 'mysql') AND round(((data_length + index_length) / 1024 / 1024), 2) >= 5 ORDER BY (data_length + index_length) DESC;\""
-alias lookup-db-credentials="~/.local/bin/rails/lookup-db-credentials"
-alias migrate='~/.local/bin/rails/migrate'
 alias mf='move_files'
 alias mr='mysql_replace'
 alias mysql-docker='mysql -h localhost -P 3306 --protocol=tcp'
@@ -44,3 +31,18 @@ alias vi='vim'
 alias watson-clear-frames=">| $HOME/Library/Application\ Support/watson/frames"
 alias watson-edit-frames="vim $HOME/Library/Application\ Support/watson/frames"
 alias weer='curl wttr.in/Sint+Gillis+Waas'
+
+# Custom executables in my dotfiles
+alias ac-task='~/.local/bin/active_collab/task'
+alias ac-task-list='~/.local/bin/active_collab/task-list'
+alias ac-project-list='~/.local/bin/active_collab/project-list'
+alias d="~/.local/bin/tmux/d"
+alias db-import="~/.local/bin/rails/db-import"
+alias db-import2="~/.local/bin/rails/db-import2"
+alias deploy='~/.local/bin/rails/deploy'
+alias dev='~/.local/bin/tmux/open_project.sh'
+alias devx='~/.local/bin/tmux/close_project.sh'
+alias dotfiles='~/.local/bin/tmux/quickstart dotfiles'
+alias dotvim='~/.local/bin/tmux/quickstart dotvim'
+alias lookup-db-credentials="~/.local/bin/rails/lookup-db-credentials"
+alias migrate='~/.local/bin/rails/migrate'
