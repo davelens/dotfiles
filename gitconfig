@@ -30,7 +30,7 @@
   pullff = pull --ff-only
   puod = pull origin develop
   puom = pull origin master
-  r = !git --no-pager l -20
+  r = !git --no-pager l -20 && echo ""
   ra = !git r --all
   s = "!/bin/bash ~/.local/bin/git/switch-branch"
   st = status --short
