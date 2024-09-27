@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+
+# Default command overrides. Generally trying to avoid serious ones, but to
+# my knowledge these are not considered harmful.
+alias ls='ls -G'
+alias nano='vim' # 😬
+alias rm='$(which trash) &>/dev/null && trash' # Puts rm'ed files in the OS trash
+alias rsync='rsync --exclude-from=${HOME}/.local/bin/rsync-exclude-list.txt'
+alias vim=${EDITOR}
+alias vi='vim'
+
 alias be='bundle exec'
 alias bundle_mysql2_openssl_fix="bundle config --local build.mysql2 '--with-ldflags=-L${BREW_PATH}/opt/openssl/lib --with-cppflags=-I${BREW_PATH}/opt/openssl/include'"
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
@@ -8,40 +18,35 @@ alias fs='get_filesizes'
 alias git-web='git instaweb --httpd=webrick'
 alias gl-projects='gitlab projects --only=id,name_with_namespace'
 alias gmdm='git_merge develop master'
-alias gti='git'
+alias gti='git' # NOTE: `timesused gti` to find out how many times this is used
 alias gdnf='git_delete_new_files'
-
-# Run a quick & basic local HTTP server
-alias http='ruby -run -ehttpd . -p3000'
+alias http='ruby -run -ehttpd . -p3000' # Run a quick & basic local HTTP server
+alias lsa='ls -hal'
 alias mysql-databases-by-size="mysql -e \"SELECT table_schema AS 'Database', table_name AS 'Table', round(((data_length + index_length) / 1024 / 1024), 2) 'Size in MB' FROM information_schema.TABLES WHERE table_schema NOT IN('sys','information_schema', 'performance_schema', 'mysql') AND round(((data_length + index_length) / 1024 / 1024), 2) >= 5 ORDER BY (data_length + index_length) DESC;\""
 alias mr='mysql_replace'
 alias mysql-docker='mysql -h localhost -P 3306 --protocol=tcp'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
-alias nano='vim'
 alias redis='brew services start redis'
-alias rsync='rsync --exclude-from=${HOME}/.local/bin/rsync-exclude-list.txt'
 alias rtags='ctags -R --languages=ruby --exclude=.git --exclude=log .' # Optional: add `$(bundle list --paths)` if you don't have gem-ctags.
-alias s='source ~/.bashrc && echo "~/.bashrc sourced!"'
+alias s='source ${HOME}/.bashrc && echo "${HOME}/.bashrc sourced!"'
 alias sar='search_and_replace'
 alias ta='tmux attach'
-alias vim=${EDITOR}
-alias vi='vim'
 # Using >| to temporary override my default noclobber setting.
-alias watson-clear-frames=">| $HOME/Library/Application\ Support/watson/frames"
-alias watson-edit-frames="vim $HOME/Library/Application\ Support/watson/frames"
+alias watson-clear-frames=">| ${HOME}/Library/Application\ Support/watson/frames"
+alias watson-edit-frames="vim ${HOME}/Library/Application\ Support/watson/frames"
 alias weer='curl wttr.in/Sint+Gillis+Waas'
 
 # Custom executables in my dotfiles
-alias ac-task='~/.local/bin/active_collab/task'
-alias ac-task-list='~/.local/bin/active_collab/task-list'
-alias ac-project-list='~/.local/bin/active_collab/project-list'
-alias d="~/.local/bin/tmux/d"
-alias db-import="~/.local/bin/rails/db-import"
-alias db-import2="~/.local/bin/rails/db-import2"
-alias deploy='~/.local/bin/rails/deploy'
-alias dev='~/.local/bin/tmux/open_project.sh'
-alias devx='~/.local/bin/tmux/close_project.sh'
-alias dotfiles='~/.local/bin/tmux/quickstart dotfiles'
-alias dotvim='~/.local/bin/tmux/quickstart dotvim'
-alias lookup-db-credentials="~/.local/bin/rails/lookup-db-credentials"
-alias migrate='~/.local/bin/rails/migrate'
+alias ac-task='${HOME}/.local/bin/active_collab/task'
+alias ac-task-list='${HOME}/.local/bin/active_collab/task-list'
+alias ac-project-list='${HOME}/.local/bin/active_collab/project-list'
+alias d="${HOME}/.local/bin/tmux/d"
+alias db-import="${HOME}/.local/bin/rails/db-import"
+alias db-import2="${HOME}/.local/bin/rails/db-import2"
+alias deploy='${HOME}/.local/bin/rails/deploy'
+alias dev='${HOME}/.local/bin/tmux/open_project.sh'
+alias devx='${HOME}/.local/bin/tmux/close_project.sh'
+alias dotfiles='${HOME}/.local/bin/tmux/quickstart dotfiles'
+alias dotvim='${HOME}/.local/bin/tmux/quickstart dotvim'
+alias lookup-db-credentials="${HOME}/.local/bin/rails/lookup-db-credentials"
+alias migrate='${HOME}/.local/bin/rails/migrate'
