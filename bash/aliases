@@ -29,21 +29,21 @@ alias s='source ${HOME}/.bashrc && echo "${HOME}/.bashrc sourced!"'
 alias sar='search_and_replace'
 alias ta='tmux attach'
 # Using >| to temporary override my default noclobber setting.
-alias watson-clear-frames=">| ${HOME}/Library/Application\ Support/watson/frames"
-alias watson-edit-frames="vim ${HOME}/Library/Application\ Support/watson/frames"
+alias watson-clear-frames='>| ${HOME}/Library/Application\ Support/watson/frames'
+alias watson-edit-frames='vim ${HOME}/Library/Application\ Support/watson/frames'
 alias weer='curl wttr.in/Sint+Gillis+Waas'
 
 # Custom executables in my dotfiles
 alias ac-task='${HOME}/.local/bin/active_collab/task'
 alias ac-task-list='${HOME}/.local/bin/active_collab/task-list'
 alias ac-project-list='${HOME}/.local/bin/active_collab/project-list'
-alias d="${HOME}/.local/bin/tmux/d"
-alias db-import="${HOME}/.local/bin/rails/db-import"
-alias db-import2="${HOME}/.local/bin/rails/db-import2"
+alias d='${HOME}/.local/bin/tmux/d'
+alias db-import='${HOME}/.local/bin/rails/db-import'
+alias db-import2='${HOME}/.local/bin/rails/db-import2'
 alias deploy='${HOME}/.local/bin/rails/deploy'
 alias dev='${HOME}/.local/bin/tmux/open_project.sh'
 alias devx='${HOME}/.local/bin/tmux/close_project.sh'
 alias dotfiles='${HOME}/.local/bin/tmux/quickstart dotfiles'
 alias dotvim='${HOME}/.local/bin/tmux/quickstart dotvim'
-alias lookup-db-credentials="${HOME}/.local/bin/rails/lookup-db-credentials"
+alias lookup-db-credentials='${HOME}/.local/bin/rails/lookup-db-credentials'
 alias migrate='${HOME}/.local/bin/rails/migrate'
