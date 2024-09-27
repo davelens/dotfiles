@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -e
+
+# TODO: Find out how to best cache the resulting value
+
+[[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
+
+# Get the SHA of the latest commit
+latest_commit=$(git rev-parse HEAD)
+
+# Retrieve the latest run's status and conclusion for the latest commit
+status_info=$(gh run list --json status,conclusion,headSha --jq ".[] | select(.headSha == \"$latest_commit\") | {status: .status, conclusion: .conclusion}" | head -n 1)
+
+# If no status info is found, return an error message
+if [ -z "$status_info" ]; then
+  echo "No CI runs found for the latest commit."
+  exit 1
+fi
+
+# Extract the status and conclusion from the JSON output
+status=$(echo "$status_info" | jq -r .status)
+conclusion=$(echo "$status_info" | jq -r .conclusion)
+
+# Determine the CI status based on the conclusion
+if [[ "$status" == "in_progress" || "$status" == "queued" ]]; then
+  echo "pending"
+elif [[ "$conclusion" == "success" ]]; then
+  echo "success"
+elif [[ "$conclusion" == "failure" || "$conclusion" == "cancelled" ]]; then
+  echo "failing"
+else
+  echo "unknown"
+fi

@@ -13,7 +13,6 @@ alias vi='vim'
 alias be='bundle exec'
 alias bundle_mysql2_openssl_fix="bundle config --local build.mysql2 '--with-ldflags=-L${BREW_PATH}/opt/openssl/lib --with-cppflags=-I${BREW_PATH}/opt/openssl/include'"
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
-alias ci='git ci-status'
 alias ds='du -sh */' # Short for "directory sizes"
 alias fs='get_filesizes' # Short for "file sizes"
 alias gmdm='git_merge develop master'

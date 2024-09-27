@@ -11,6 +11,7 @@
   ap = add -p
   b = rev-parse --abbrev-ref HEAD
   ci = commit
+  ci-status = "!/bin/bash ${HOME}/.local/bin/git/ci-status"
   co = checkout
   dc = diff --cached
   di = diff
