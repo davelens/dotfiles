@@ -20,6 +20,7 @@
     ~/.inputrc: inputrc
     ~/.nethackrc: nethackrc
     ~/.rspec: rspec
+    ~/.rsyncignore: rsyncignore
     ~/.rubocop.yml: rubocop.yml
 
 - shell:
