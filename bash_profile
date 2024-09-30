@@ -24,12 +24,12 @@ done;
 unset file;
 
 # rbenv is a Ruby version manager.
-if [ $(which rbenv &>/dev/null) ]; then
+if [ $(which rbenv) &>/dev/null ]; then
   eval "$(rbenv init -)"
 fi
 
 # ASDF is a version manager for multiple languages.
-if [ $(which asdf &>/dev/null) ]; then
+if [ $(which asdf) &>/dev/null ]; then
   source "${BREW_PATH}/opt/asdf/libexec/asdf.sh"
   source "${BREW_PATH}/opt/asdf/etc/bash_completion.d/asdf.bash"
 fi
