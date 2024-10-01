@@ -17,12 +17,6 @@ for file in ~/.bash/{commands,prompt,aliases,private}; do
 done;
 unset file;
 
-# Source all downloaded completion files.
-for file in ~/.bash/completions/*.bash; do
-  [ -r "$file" ] && . "$file";
-done;
-unset file;
-
 # rbenv is a Ruby version manager.
 if [ $(which rbenv) &>/dev/null ]; then
   eval "$(rbenv init -)"

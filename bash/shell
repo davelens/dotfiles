@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 ########################################################################
 # GENERAL
 ########################################################################
@@ -26,12 +27,6 @@ export RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.1
 export RUBY_GC_OLDMALLOC_LIMIT=16000100
 export RUBY_GC_OLDMALLOC_LIMIT_MAX=16000100
 
-# Don't force an update of all packages when target upgrading single packages.
-export HOMEBREW_NO_AUTO_UPDATE=1
-
-# Go lang work dir
-export GOPATH=${HOME}/.go
-
 if [ -f “${HOME}/.gpg-agent-info” ]; then
   . “${HOME}/.gpg-agent-info”
   export GPG_AGENT_INFO
@@ -41,22 +36,30 @@ fi
 # So GPG signing of git commits works.
 export GPG_TTY=$(tty)
 
+
+########################################################################
+# HOMEBREW (the package manager)
+########################################################################
+# Don't force an update of all packages when target upgrading single packages.
+export HOMEBREW_NO_AUTO_UPDATE=1
+
+# Homebrew's location has changed over the years, and I still have several
+# setups from different eras:
+# On macos with M1 chips: /opt/homebrew
+# On macos with Intel chips: /usr/local
+# On *nix using Linuxbrew: /home/linuxbrew/.linuxbrew
+export BREW_PATH=$(brew --prefix)
+#[[ -f /usr/local/bin/brew ]] && export BREW_PATH=$(/usr/local/bin/brew --prefix)
+#[[ -f /usr/bin/brew ]] && export BREW_PATH=$(/usr/bin/brew --prefix)
+#[[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] && export BREW_PATH=$(/home/linuxbrew/.linuxbrew/bin/brew --prefix)
+#[[ -f /opt/homebrew/bin/brew ]] && export BREW_PATH=$(/opt/homebrew/bin/brew --prefix)
+
+
 ########################################################################
 # PATH
 ########################################################################
 
-# Homebrew's location has changed over the years, and I still have several
-# setups from different eras:
-# On macos with M1 chips, Homebrew is located in /opt/homebrew/bin/brew.
-# Homebrew classic uses /usr/local/bin/brew.
-# Linuxbrew uses /usr/bin/brew.
-# I don't even remember when or where I used /usr/bin/brew.
-[[ -f /usr/local/bin/brew ]] && export BREW_PATH=$(/usr/local/bin/brew --prefix)
-[[ -f /usr/bin/brew ]] && export BREW_PATH=$(/usr/bin/brew --prefix)
-[[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] && export BREW_PATH=$(/home/linuxbrew/.linuxbrew/bin/brew --prefix)
-[[ -f /opt/homebrew/bin/brew ]] && export BREW_PATH=$(/opt/homebrew/bin/brew --prefix)
-
-# list the directories we want to add to the PATH variable, if they exist.
+# List the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
   ${BREW_PATH}/opt/openssl@3/bin
   ${BREW_PATH}/opt/openjdk/bin
@@ -91,6 +94,10 @@ export SHELL=${BREW_PATH}/bin/bash
 # node.js modules path
 export NODE_PATH="/usr/local/share/npm/lib/node_modules"
 
+# Go lang work dir
+export GOPATH=${HOME}/.go
+
+
 ########################################################################
 # HISTORY
 ########################################################################
@@ -101,7 +108,7 @@ export NODE_PATH="/usr/local/share/npm/lib/node_modules"
 # correct it.
 shopt -s histreedit;
 
-# append to the history file rather than overwriting
+# Append to the history file rather than overwriting
 shopt -s histappend
 
 # Keep a reasonably long history.
@@ -125,17 +132,17 @@ export HISTIGNORE="ls:lsa:ll:la:pwd:clear:h:j"
 ########################################################################
 # LOCALE AND COMPLETION
 ########################################################################
-# general case-insensitive globbing
+# General case-insensitive globbing
 shopt -s nocaseglob;
 
-# do not autocomplete when accidentally pressing tab on an empty line.
+# Do not autocomplete when accidentally pressing tab on an empty line.
 shopt -s no_empty_cmd_completion;
 
 # Do not overwrite files when redirecting using ">".
 # Note that you can still override this with ">|".
 set -o noclobber;
 
-# prefer English and use UTF-8.
+# Prefer English and use UTF-8.
 printf -v available_locales ' %s ' $(locale -a);
 for lang in en_US en_GB en; do
   for locale in "$lang".{UTF-8,utf8}; do
@@ -148,10 +155,11 @@ for lang in en_US en_GB en; do
 done;
 unset available_locales lang locale;
 
+
 ########################################################################
 # BASH AUTOCOMPLETION
 ########################################################################
-# load bash_completion through brew, when installed
+# Load bash_completion through brew, when installed
 if type brew &>/dev/null; then
   if [[ -r "${BREW_PATH}/etc/profile.d/bash_completion.sh" ]]; then
     source "${BREW_PATH}/etc/profile.d/bash_completion.sh"
@@ -161,3 +169,10 @@ if type brew &>/dev/null; then
     done
   fi
 fi
+
+# Source all downloaded completion files.
+for file in ~/.bash/completions/*.bash; do
+  [ -r "$file" ] && . "$file";
+done;
+unset file;
+
