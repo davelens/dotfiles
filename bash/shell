@@ -165,7 +165,7 @@ if type brew &>/dev/null; then
     source "${BREW_PATH}/etc/profile.d/bash_completion.sh"
   else
     for COMPLETION in "${BREW_PATH}/etc/bash_completion.d/"*; do
-      [[ -r "$COMPLETION" ]] && source "$COMPLETION"
+      [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
     done
   fi
 fi
