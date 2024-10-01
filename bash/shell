@@ -27,6 +27,9 @@ export RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.1
 export RUBY_GC_OLDMALLOC_LIMIT=16000100
 export RUBY_GC_OLDMALLOC_LIMIT_MAX=16000100
 
+# Get rid of the forking errors triggered by spring
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
 if [ -f “${HOME}/.gpg-agent-info” ]; then
   . “${HOME}/.gpg-agent-info”
   export GPG_AGENT_INFO
