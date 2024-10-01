@@ -38,6 +38,7 @@ Thumbs.db
 
 # Custom ignores #
 ##################
+.DS_Store
 .buildpath
 .project
 _backups/
