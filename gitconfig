@@ -65,7 +65,7 @@
 
 [core]
   editor = ${EDITOR}
-  excludesfile = ${HOME}/.gitignore_global
+  excludesfile = ~/.gitignore_global
   pager = delta --side-by-side
 
 [delta]
