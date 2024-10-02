@@ -161,7 +161,7 @@ unset available_locales lang locale;
 # BASH AUTOCOMPLETION
 ########################################################################
 # Load bash_completion through brew, when installed
-if type brew &>/dev/null; then
+if [ `command -v brew` ]; then
   if [[ -r "${BREW_PATH}/etc/profile.d/bash_completion.sh" ]]; then
     source "${BREW_PATH}/etc/profile.d/bash_completion.sh"
   else
@@ -173,7 +173,7 @@ fi
 
 # Source all downloaded completion files.
 for file in ~/.bash/completions/*.bash; do
-  [ -r "$file" ] && . "$file";
+  [ -r "$file" ] && source "$file";
 done;
 unset file;
 
