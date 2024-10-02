@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 ########################################################################
 # GENERAL
 ########################################################################
@@ -51,11 +50,10 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 # On macos with M1 chips: /opt/homebrew
 # On macos with Intel chips: /usr/local
 # On *nix using Linuxbrew: /home/linuxbrew/.linuxbrew
-export BREW_PATH=$(brew --prefix)
-#[[ -f /usr/local/bin/brew ]] && export BREW_PATH=$(/usr/local/bin/brew --prefix)
-#[[ -f /usr/bin/brew ]] && export BREW_PATH=$(/usr/bin/brew --prefix)
-#[[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] && export BREW_PATH=$(/home/linuxbrew/.linuxbrew/bin/brew --prefix)
-#[[ -f /opt/homebrew/bin/brew ]] && export BREW_PATH=$(/opt/homebrew/bin/brew --prefix)
+[[ -f /opt/homebrew/bin/brew ]] && export BREW_PATH=$(/opt/homebrew/bin/brew --prefix)
+[[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] && export BREW_PATH=$(/home/linuxbrew/.linuxbrew/bin/brew --prefix)
+[[ -f /usr/local/bin/brew ]] && export BREW_PATH=$(/usr/local/bin/brew --prefix)
+[[ -f /usr/bin/brew ]] && export BREW_PATH=$(/usr/bin/brew --prefix)
 
 
 ########################################################################
