@@ -98,6 +98,9 @@ export NODE_PATH="/usr/local/share/npm/lib/node_modules"
 # Go lang work dir
 export GOPATH=${HOME}/.go
 
+# This makes sure asdf can configure Erlang with Homebrew's openssl pkg.
+export KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl)"
+
 
 ########################################################################
 # HISTORY
