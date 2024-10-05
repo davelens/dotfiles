@@ -77,6 +77,27 @@ function rails_windows() {
   esac
 }
 
+function phoenix_windows() {
+  tmux new-window -n db -c $destination -t $1
+  tmux new-window -n repl -c $destination -t $1
+  tmux new-window -n server -c $destination -t $1
+  sleep 1
+
+  if [[ -n `pgrep -n mysqld` ]]; then
+    # TODO: Extract database name from config/dev.exs
+    tmux send-keys -t $1:db "clear && mysql" C-m
+  fi
+
+  tmux send-keys -t $1:repl 'iex -S mix' C-m
+  tmux send-keys -t $1:server 'export_env_vars_from_file' C-m
+
+  case $server in
+    [Yy]* ) tmux send-keys -t $1:server 'clear && mix phx.server' C-m;;
+    [Nn]* ) tmux send-keys -t $1:server 'clear && mix phx.server';;
+    * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
+  esac
+}
+
 tmux attach -t $1 >/dev/null 2>&1 || (
   tmux new-session -s $1 -n editor -c $destination -d
   tmux send-keys -t $1 "export_env_vars_from_file; clear && ${EDITOR}" C-m
@@ -96,6 +117,12 @@ tmux attach -t $1 >/dev/null 2>&1 || (
     echo ""
     [[ -n $bootstrap ]] && cd $destination && ~/.local/bin/rails/db-import -i=logs && cd - >/dev/null
     rails_windows $1
+  fi
+
+  if [[ -f $destination/mix.exs ]]; then
+    read -n1 -p "[tmux/d] Launch local phoenix server? (y/n) " server
+    echo ""
+    phoenix_windows $1
   fi
 
   tmux attach -d -t $1:1
