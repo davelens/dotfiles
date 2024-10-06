@@ -5,7 +5,7 @@ set -e
 [[ -z $1 ]] && fail '[rails/bootstrap] ERROR: No target directory given.'
 [[ ! -d $1 ]] && fail "[rails/bootstrap] ERROR: Directory $1 is missing."
 [[ ! -f $1/config.ru ]] && fail '[rails/bootstrap] ERROR: You can only run this from a folder containing a Rails project.'
-[[ ! `command -v rbenv` ]] && fail '[rails/bootstrap] ERROR: No rbenv executable found. Check your $PATH or install rbenv with `brew install rbenv`.'
+[[ ! `command -v asdf` ]] && fail '[rails/bootstrap] ERROR: No asdf executable found. Check your $PATH or install asdf with `brew install asdf`.'
 
 function copy_config() {
   src=$project_root/$1$2
@@ -48,11 +48,11 @@ check_and_copy 'config/secrets'
 check_and_copy 'config/udongo'
 check_and_copy 'config/project'
 
-# rbenv requires a .ruby-version to provide a PWD-localized ruby executable.
-if [[ ! -e $project_root/.ruby-version ]]; then
+# asdf requires a .tool-versions to provide a PWD-localized ruby executable.
+if [[ ! -e $project_root/.tool-versions ]]; then
   declare -A ssh_credentials=$(~/.local/bin/rails/ssh-credentials $project_root/config/deploy.rb)
   required_ruby=`ssh ${ssh_credentials[user]}@${ssh_credentials[server]} 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//'`
-  echo $required_ruby >> $project_root/.ruby-version
+  echo "ruby $required_ruby" >> $project_root/.tool-versions
 fi
 
 # Make sure the MYSQL env vars are there for projects who can handle them,
@@ -64,12 +64,12 @@ fi
 required_ruby=`cat $project_root/.ruby-version`
 
 # Check if the required ruby version is installed.
-if [[ ! -d ~/.rbenv/versions/$required_ruby ]]; then
-  echo "[rails/bootstrap] Installing ruby $required_ruby" && rbenv install $required_ruby
+if [[ ! -d ~/.asdf/installs/ruby/$required_ruby ]]; then
+  echo "[rails/bootstrap] Installing Ruby $required_ruby" && asdf plugin add ruby && asdf install ruby $required_ruby
 
   if [[ $? -gt 0 ]]; then
     echo [rails/bootstrap] ERROR: Ruby installation failed, please review:
-    printf "\n\tcd $project_root && rbenv install $required_ruby"
+    printf "\n\tcd $project_root && asdf plugin add ruby && asdf install ruby $required_ruby"
     exit 1;
   fi
 fi
@@ -77,7 +77,7 @@ fi
 ruby_major=$(echo $required_ruby | sed -E 's/[0-9]{1,2}$/0/')
 required_bundler=`cat $project_root/Gemfile.lock | tail -1 | sed -e 's/^[[:space:]]*//'`
 
-if [[ ! -d ~/.rbenv/versions/$required_ruby/lib/ruby/gems/$ruby_major/gems/bundler-$required_bundler ]]; then
+if [[ ! -d ~/.asdf/installs/ruby/$required_ruby/lib/ruby/gems/$ruby_major/gems/bundler-$required_bundler ]]; then
   if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
     gem install bundler -v $required_bundler
     if [[ $? -gt 0 ]]; then
