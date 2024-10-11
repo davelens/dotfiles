@@ -35,6 +35,14 @@ fail() {
   exit "${2-1}" # Returns a code specified by $2 or 1 by default.
 }
 
+# Find the process ID of a given command. Note that you can use regex as well.
+# 
+#   pid '/d$/' 
+#
+# Would find pids of all processes with names ending in 'd'
+pid() { 
+  lsof -t -c "$@"
+}
 
 # Deletes all files in the current git repo that are not tracked by git.
 git_delete_new_files()
