@@ -16,14 +16,3 @@ for file in ~/.bash/{commands,prompt,aliases,private}; do
   [ -r "$file" ] && . "$file";
 done;
 unset file;
-
-# rbenv is a Ruby version manager.
-if command -v rbenv &> /dev/null; then
-  eval "$(rbenv init -)"
-fi
-
-# ASDF is a version manager for multiple languages.
-if command -v asdf &> /dev/null; then
-  source "${BREW_PATH}/opt/asdf/libexec/asdf.sh"
-  source "${BREW_PATH}/opt/asdf/etc/bash_completion.d/asdf.bash"
-fi
