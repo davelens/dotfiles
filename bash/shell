@@ -62,14 +62,7 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 
 # List the directories we want to add to the PATH variable, if they exist.
 paths_to_add=(
-  ${BREW_PATH}/opt/openssl@3/bin
-  ${BREW_PATH}/opt/openjdk/bin
-  ${BREW_PATH}/opt/gnu-getopt/{,s}bin
-  ${BREW_PATH}/opt/mysql@{5.{6,7},8.4}/bin
-  ${BREW_PATH}/opt/imagemagick@6/bin
-  ${BREW_PATH}/opt/bison/bin
-  ${BREW_PATH}/opt/libiconv/bin
-  ${BREW_PATH}/opt/m4/bin
+  ${BREW_PATH}/opt/*/bin
   ${BREW_PATH}/{,s}bin
   ${HOME}/.local/{,s}bin
   /usr/local/{,s}bin
