@@ -67,6 +67,9 @@ paths_to_add=(
   ${BREW_PATH}/opt/gnu-getopt/{,s}bin
   ${BREW_PATH}/opt/mysql@{5.{6,7},8.4}/bin
   ${BREW_PATH}/opt/imagemagick@6/bin
+  ${BREW_PATH}/opt/bison/bin
+  ${BREW_PATH}/opt/libiconv/bin
+  ${BREW_PATH}/opt/m4/bin
   ${BREW_PATH}/{,s}bin
   ${HOME}/.local/{,s}bin
   /usr/local/{,s}bin
@@ -85,6 +88,13 @@ fi
 # Now implode everything into the new PATH variable.
 printf -v PATH "%s:" "${paths_to_add[@]}";
 export PATH="${PATH%:}";
+
+# Necessary for some software to find the libraries installed by Homebrew
+# during compilation.
+# Both bison and libiconv are required for PHP to compile with ASDF.
+export LDFLAGS="-L${BREW_PATH}/opt/bison/lib"
+LDFLAGS="${LDFLAGS} -L${BREW_PATH}/opt/libiconv/lib"
+export CPPFLAGS="-I${BREW_PATH}/opt/libiconv/include"
 
 # Fixes installation of mysql2 gem due to missing openssl lib.
 LIBRARY_PATH=${LIBRARY_PATH}:${BREW_PATH}/opt/openssl/lib/
