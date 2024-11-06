@@ -11,7 +11,7 @@ if [ $# -lt 2 ]; then
 fi
 
 # Define the base directory for scripts
-BASE_DIR="${HOME}/.bin/$BASENAME-scripts"
+BASE_DIR="./bin/$BASENAME-scripts"
 
 # Extract the category and command arguments
 CATEGORY="$1"
