@@ -21,6 +21,9 @@ shift 2  # Shift off category and command, leaving any remaining arguments
 # Construct the path to the script
 SCRIPT_PATH="$BASE_DIR/$CATEGORY/$COMMAND"
 
+# So subscripts can access this information
+export DAVE_COMMAND="$CATEGORY/$COMMAND"
+
 # Check if the script exists and is executable
 if [ -x "$SCRIPT_PATH" ]; then
   "$SCRIPT_PATH" "$@"  # Execute the script with remaining arguments
