@@ -6,7 +6,7 @@ _dave_completions() {
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     # Define the root directory for the scripts
-    local dave_root="./bin/dave-scripts"
+    local dave_root="${HOME}/.dotfiles/bin/dave-scripts"
 
     # If this is the first argument after "dave", we list the subfolders
     if [[ $COMP_CWORD -eq 1 ]]; then

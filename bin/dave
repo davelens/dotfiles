@@ -11,18 +11,22 @@ if [ $# -lt 2 ]; then
 fi
 
 # Define the base directory for scripts
-BASE_DIR="./bin/$BASENAME-scripts"
-
-# Extract the category and command arguments
+BASE_DIR="${HOME}/.dotfiles/bin/$BASENAME-scripts"
 CATEGORY="$1"
 COMMAND="$2"
-shift 2  # Shift off category and command, leaving any remaining arguments
+
+# Extract the full dave command prompt for use in subscripts
+export DAVE_FULL_COMMAND="$BASENAME $@"
+export DAVE_BASE_COMMAND="$BASENAME $CATEGORY $COMMAND"
+
+# Shift off category and command, leaving any remaining arguments
+shift 2
+
+# Extract the category and command arguments for use in subscripts
+export DAVE_SUBSCRIPT="$CATEGORY/$COMMAND"
 
 # Construct the path to the script
 SCRIPT_PATH="$BASE_DIR/$CATEGORY/$COMMAND"
-
-# So subscripts can access this information
-export DAVE_COMMAND="$CATEGORY/$COMMAND"
 
 # Check if the script exists and is executable
 if [ -x "$SCRIPT_PATH" ]; then

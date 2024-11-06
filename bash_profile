@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-OS=`${HOME}/.local/bin/os`
+export OS=`${HOME}/.local/bin/os`
 
 # Load the mandatory shell settings and ENV vars before everything else.
 [[ -f ~/.bash/colors ]] && . ~/.bash/colors

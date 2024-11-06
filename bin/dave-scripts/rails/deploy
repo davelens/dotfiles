@@ -60,7 +60,7 @@ do
       ;;
     *)
       # unknown options
-      echo "[rails/deploy] ERROR: Unknown option '${i}'"
+      echo "[rails/$0] ERROR: Unknown option '${i}'"
       echo "Usage: deploy [-spbL] [--docker] [--staging] [--production] [--lock-users]"
       printf "\t[-b=branch] [--branch=branch]\n"
       exit
@@ -79,9 +79,9 @@ fi
 [[ $lock_users == 1 ]] && cmd="${cmd} LOCK_USERS=1"
 
 while true; do
-  printf "[rails/deploy] I want to run:\n\n"
+  printf "[rails/$0] I want to run:\n\n"
   printf "  ${cmd}\n\n"
-  read -n1 -p "[rails/deploy] Confirm? (y/n) " yn
+  read -n1 -p "[rails/$0] Confirm? (y/n) " yn
   echo ""
   case $yn in
     [Yy]* ) eval $cmd; break;;

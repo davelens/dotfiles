@@ -4,10 +4,7 @@ set -e
 
 # TODO: Proper Rails Engine support
 
-# So we know what command was run. $DAVE_COMMAND is set in bin/dave.
-CMD="${DAVE_COMMAND:-$(basename "$0")}"
-
-[[ ! -f config.ru && ! -f spec/dummy/config.ru ]] && fail "[$CMD] ERROR: You can only run this from a folder containing a Rails project."
+[[ ! -f config.ru && ! -f spec/dummy/config.ru ]] && fail "[rails/$0] ERROR: You can only run this from a folder containing a Rails project."
 
 cmd='bundle exec rake'
 task=migrate
