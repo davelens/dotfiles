@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Stops further execution after any error.
+set -e
+BASENAME=`basename $0`
+
+# Ensure we have at least two arguments
+if [ $# -lt 2 ]; then
+  echo "Usage: $BASENAME <category> <command> [<args>...]"
+  exit 1
+fi
+
+# Define the base directory for scripts
+BASE_DIR="${HOME}/.bin/$BASENAME-scripts"
+
+# Extract the category and command arguments
+CATEGORY="$1"
+COMMAND="$2"
+shift 2  # Shift off category and command, leaving any remaining arguments
+
+# Construct the path to the script
+SCRIPT_PATH="$BASE_DIR/$CATEGORY/$COMMAND"
+
+# Check if the script exists and is executable
+if [ -x "$SCRIPT_PATH" ]; then
+  "$SCRIPT_PATH" "$@"  # Execute the script with remaining arguments
+else
+  echo "Error: Script '$COMMAND' not found in '$BASE_DIR/$CATEGORY' or not executable."
+  exit 1
+fi

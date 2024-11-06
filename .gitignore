@@ -1,6 +1,6 @@
 .DS_Store
 .env
-bash/completions
+bash/completions/iterm2_shell_integration.bash
 bash/private
 vim/.netrwhist
 vim/bundle/**
