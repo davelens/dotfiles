@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+[[ ! -d .git ]] && fail "[git/loc] ERROR: No .git repository folder found."
+
+# Check if the correct number of arguments is provided
+[[ $# -lt 1 ]] && fail "Usage: dave git `basename $0` <range> [<author>]"
+
+# Returns information on LOC added/removed for a given git log range and an
+# optional author.
+range=$1
+author=${2:-"$USER"}
+
+base_cmd="git log -$range"
+
+if [[ -n $author ]]; then
+  base_cmd="$base_cmd --author=\"$author\""
+fi
+
+base_cmd="$base_cmd --pretty=tformat: --numstat"
+
+eval $base_cmd | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }'

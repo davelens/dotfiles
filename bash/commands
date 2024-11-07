@@ -44,48 +44,6 @@ pid() {
   lsof -t -c "$@"
 }
 
-# Deletes all files in the current git repo that are not tracked by git.
-git_delete_new_files()
-{
-  for file in $(git st | grep '??' | awk '{print substr($0, 4)}'); do rm -r $file; done
-}
-
-# Returns information on LOC added/removed for a given git log range and an
-# optional author.
-git_loc()
-{
-  range=$1
-  author=$2
-
-  git log -$1 --author="$2" --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s, removed lines: %s, total lines: %s\n", add, subs, loc }' -
-}
-
-# Shorthand for push/checkout/merge/push/checkout again. Saves some typing.
-git_merge()
-{
-  source_branch=$1
-  target_branch=$2
-
-  if [[ $target_branch == '' ]]; then
-    target_branch='master'
-  fi
-
-  if [[ $source_branch == '' ]];
-  then
-    echo "usage: git_merge <source_branch> '<*target_branch>'"
-  else
-    git push origin $source_branch && \
-      git checkout $target_branch && git merge $source_branch && git push origin $target_branch
-    git checkout $source_branch
-  fi
-}
-
-# Get a list of all filesizes in the current folder ("du -sh *" for files).
-get_filesizes()
-{
-  ls -laSh $1 | grep -v ^d | awk '{print $5 "\t" $9}'
-}
-
 # Flattens any string you give it. Made to format user input like Y/N -> y/n.
 lowercase()
 {
