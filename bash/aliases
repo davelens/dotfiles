@@ -32,9 +32,6 @@ alias watson-clear-frames='>| ${HOME}/Library/Application\ Support/watson/frames
 alias watson-edit-frames='vim ${HOME}/Library/Application\ Support/watson/frames'
 
 # Custom executables in my dotfiles
-alias ac-task='${HOME}/.local/bin/active_collab/task'
-alias ac-task-list='${HOME}/.local/bin/active_collab/task-list'
-alias ac-project-list='${HOME}/.local/bin/active_collab/project-list'
 alias d='${HOME}/.local/bin/tmux/d'
 alias dev='${HOME}/.local/bin/tmux/open_project.sh'
 alias devx='${HOME}/.local/bin/tmux/close_project.sh'
