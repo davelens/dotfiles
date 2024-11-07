@@ -96,26 +96,6 @@ lowercase()
   fi
 }
 
-# Replaces a local mysql database with the specified one.
-mysql_replace()
-{
-  database=$1
-  sql_file=$2
-
-  if [[ "$database" == "" ]] || [[ "$sql_file" == "" ]]
-  then
-    echo "usage: mysql_replace <database> <sql_file>"
-  else
-    echo "Dropping and re-creating database '$database'"
-    mysql $database -e "drop database $database; create database $database;"
-
-    echo "Importing $sql_file ..."
-    mysql $database < $sql_file
-
-    echo "Done."
-  fi
-}
-
 # Attempts to recursively find a match for a given string in the given file(s).
 # TODO: There are modern tools that handle this better. Look into them.
 search()
