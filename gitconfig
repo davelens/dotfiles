@@ -14,32 +14,29 @@
   ci-status = "!/bin/bash ${HOME}/.local/bin/git/ci-status"
   co = checkout
   dc = diff --cached
+
+  # Delete git-Deleted Files
+  ddf = "!git ls-files --deleted -z | xargs -0 git rm"
+
   di = diff
+
+  # Delete New Files
+  dnf = "!for file in $(git st | grep '??' | awk '{print substr($0, 4)}'); do rm -r $file; done"
+
   fa = fetch --all
   ff = merge --ff-only
   h = !git head
   head = !git l -1
   l = log --graph --abbrev-commit --date=relative
   la = !git l --all
-  m = "!/bin/bash ${HOME}/.local/bin/git/merge-branch"
-  merged-prs = "pr list --format='%pC%>(8)%i%Creset %t%l (%mr)%n%x09 %U%n' -s merged"
-  pod = push origin develop
-  pom = push origin master
-  pr = "!f() { base=${1:-develop}; gh pr create --base \"$base\"; }; f"
-  pr-body = "!/bin/bash ${HOME}/.local/bin/git/github-pr-body"
-  prs = "pr list --format='%pC%>(8)%i%Creset %t%l%n%x09 %U%n'"
-  pullff = pull --ff-only
-  puod = pull origin develop
-  puom = pull origin master
-  r = !git --no-pager l -20 && echo ""
-  ra = !git r --all
-  s = "!/bin/bash ${HOME}/.local/bin/git/switch-branch"
-  st = status --short
-  web = instaweb --httpd=webrick
+  loc = "!/bin/bash ${HOME}/.local/bin/git/loc"
 
-  # GitHub Pull Requests (stolen from https://github.com/pd/dotfiles/blob/e2d2418f96c5d13b4b06e3f2dff78dfb51eeb49c/gitconfig#L47-48)
-  # call with the pull request #, it will check out the pr locally
-  get-pr = "!f() { remote=${2:-$(git remote|head -1)}; git fetch -fu $remote refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
+  # Extensive Merge script. 
+  # Checkout -> no fast-forward merge -> push -> remove local/remote branches.
+  m = "!/bin/bash ${HOME}/.local/bin/git/merge-branch"
+
+  # push + Merge Develop into Master
+  mdm = "!f() { git push origin develop && git checkout master && git merge develop && git push origin master && git checkout develop; }; f"
 
   # GitLab Merge Requests (mainly making use of https://github.com/NARKOZ/gitlab)
   mr = "!/bin/bash ${HOME}/.local/bin/git/gitlab-merge-request"
@@ -47,15 +44,24 @@
   # Merge into the temp branch
   mt = "!/bin/bash ${HOME}/.local/bin/git/merge-to-temp"
 
+  pod = push origin develop
+  pom = push origin master
+  pr = "!f() { base=${1:-develop}; gh pr create --base \"$base\"; }; f"
+
   # remove local branches that were created from `git pr`
   pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
 
-  # Delete git-removed Files
-  ddf = !git ls-files --deleted -z | xargs -0 git rm
+  pr-body = "!/bin/bash ${HOME}/.local/bin/git/github-pr-body"
+  pullff = pull --ff-only
+  r = !git --no-pager l -20 && echo ""
+  s = "!/bin/bash ${HOME}/.local/bin/git/switch-branch"
 
   # Uses the GitHub API to perform a search query and find repos.
   # Made to fit `${HOME}/.local/bin/tmux/d -n`.
   search-repos = "!/bin/bash ${HOME}/.local/bin/git/github-search-repos"
+
+  st = status --short
+  web = instaweb --httpd=webrick
 
 [format]
   pretty=format:%C(yellow)%h%Creset | %C(green)%ad (%ar)%Creset | %C(blue)%an%Creset | %s

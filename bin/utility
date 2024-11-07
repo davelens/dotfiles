@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Stops further execution after any error.
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+BASENAME=`basename $0`
+
+# Ensure we have at least two arguments
+[[ $# -lt 2 ]] && fail "Usage: $BASENAME <category> <command> [<args>...]"
+
+# Define the base directory for scripts
+BASE_DIR="${HOME}/.dotfiles/bin/utilities"
+CATEGORY="$1"
+COMMAND="$2"
+
+# Extract the full dave command prompt for use in subscripts
+export UTILITY_FULL_COMMAND="$BASENAME $@"
+export UTILITY_BASE_COMMAND="$BASENAME $CATEGORY $COMMAND"
+
+# Shift off category and command, leaving any remaining arguments
+shift 2
+
+# Extract the category and command arguments for use in subscripts
+export UTILITY_SUBSCRIPT="$CATEGORY/$COMMAND"
+
+# Construct the path to the script
+SCRIPT_PATH="$BASE_DIR/$CATEGORY/$COMMAND"
+
+# Check if the script exists and is executable
+if [ -x "$SCRIPT_PATH" ]; then
+  "$SCRIPT_PATH" "$@"  # Execute the script with remaining arguments
+else
+  echo "Error: Script '$COMMAND' not found in '$BASE_DIR/$CATEGORY' or not executable."
+  exit 1
+fi

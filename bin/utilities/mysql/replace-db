@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+# Check if the correct number of arguments is provided
+[[ $# -ne 2 ]] && fail "Usage: utility mysql `basename $0` <database> <.sql file path>"
+
+database="$1"
+sql_file="$2"
+
+echo "Dropping and re-creating database '$database'"
+mysql $database -e "drop database $database; create database $database;"
+
+echo "Importing $sql_file ..."
+mysql $database < $sql_file
+
+echo "Done."

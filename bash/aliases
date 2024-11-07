@@ -5,44 +5,42 @@
 alias ls='ls -G'
 alias nano='vim' # 😬
 alias rsync='rsync --exclude-from=${HOME}/.rsyncignore'
-alias vim=${EDITOR}
+alias vim=${EDITOR} # My usecase here is that I use `dvim` as my Neovim profile.
 alias vi='vim'
 
-# Generic helpers and custom commands
+# Spelling corrections
+# NOTE: `timesused <alias>` to find out how many times you made a mistake.
+alias gti='git' 
+alias sl='ls'
+
+# Shortcuts
 alias be='bundle exec'
-alias bundle_mysql2_openssl_fix="bundle config --local build.mysql2 '--with-ldflags=-L${BREW_PATH}/opt/openssl/lib --with-cppflags=-I${BREW_PATH}/opt/openssl/include'"
-alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias ds='du -sh */' # Short for "directory sizes"
-alias fs='get_filesizes' # Short for "file sizes"
-alias gmdm='git_merge develop master'
-alias gti='git' # NOTE: `timesused gti` to find out how many times this is used
-alias gdnf='git_delete_new_files'
-alias http='ruby -run -ehttpd . -p3000' # Run a quick & basic local HTTP server
+alias fs="ls -laSh $1 | grep -v ^d | awk '{print $5 "\t" $9}'"
 alias lsa='ls -hal'
-alias mysql-largest-db-tables="mysql -e \"SELECT table_schema AS 'Database', table_name AS 'Table', round(((data_length + index_length) / 1024 / 1024), 2) 'Size in MB' FROM information_schema.TABLES WHERE table_schema NOT IN('sys','information_schema', 'performance_schema', 'mysql') AND round(((data_length + index_length) / 1024 / 1024), 2) >= 5 ORDER BY (data_length + index_length) DESC;\""
-alias mr='mysql_replace'
-alias mysql-docker='mysql -h localhost -P 3306 --protocol=tcp'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
 alias redis='brew services start redis'
 alias s='source ${HOME}/.bashrc && echo "${HOME}/.bashrc sourced!"'
-alias sar='search_and_replace'
 alias ta='tmux attach'
-alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
-# Using >| to temporary override my default noclobber setting.
-alias watson-clear-frames='>| ${HOME}/Library/Application\ Support/watson/frames'
-alias watson-edit-frames='vim ${HOME}/Library/Application\ Support/watson/frames'
+alias u='utility'
 
-# Custom executables in my dotfiles
-alias ac-task='${HOME}/.local/bin/active_collab/task'
-alias ac-task-list='${HOME}/.local/bin/active_collab/task-list'
-alias ac-project-list='${HOME}/.local/bin/active_collab/project-list'
-alias d='${HOME}/.local/bin/tmux/d'
-alias db-import='${HOME}/.local/bin/rails/db-import'
-alias db-import2='${HOME}/.local/bin/rails/db-import2'
-alias deploy='${HOME}/.local/bin/rails/deploy'
-alias dev='${HOME}/.local/bin/tmux/open_project.sh'
-alias devx='${HOME}/.local/bin/tmux/close_project.sh'
+# Jumpstart aliases for specific projects.
 alias dotfiles='${HOME}/.local/bin/tmux/quickstart dotfiles'
 alias dotvim='${HOME}/.local/bin/tmux/quickstart dotvim'
-alias lookup-db-credentials='${HOME}/.local/bin/rails/lookup-db-credentials'
-alias migrate='${HOME}/.local/bin/rails/migrate'
+
+# Generic helpers and custom commands
+alias bundle_mysql2_openssl_fix="bundle config --local build.mysql2 '--with-ldflags=-L${BREW_PATH}/opt/openssl/lib --with-cppflags=-I${BREW_PATH}/opt/openssl/include'"
+alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
+#
+# NOTE: As `d` gets refactored, it might be a good idea to finally step down
+# from the Sites folder of macos and move on to the more generic "Repositories".
+#
+# `utility dev repo` -> Open FZF list of repositories pointing to ~/Repositories/*
+# `utility dev repo davelens/foobar` -> Framework-aware bootstrap in ~/Repositories/davelens/foobar
+#
+alias d='${HOME}/.local/bin/tmux/d' # TODO: Extract to `utility dev repo`
+alias http='ruby -run -ehttpd . -p3000' # Run a quick & basic local HTTP server
+alias mysql-largest-db-tables="mysql -e \"SELECT table_schema AS 'Database', table_name AS 'Table', round(((data_length + index_length) / 1024 / 1024), 2) 'Size in MB' FROM information_schema.TABLES WHERE table_schema NOT IN('sys','information_schema', 'performance_schema', 'mysql') AND round(((data_length + index_length) / 1024 / 1024), 2) >= 5 ORDER BY (data_length + index_length) DESC;\"" # TODO: Extract to `utility mysql list-tables-by-size`
+alias mysql-docker='mysql -h localhost -P 3306 --protocol=tcp'
+alias sar='search_and_replace' # TODO: Extract to `utility files search-and-replace`
+alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+[[ ! $(which watson) ]] && fail "ERROR: Watson is not installed. Aborting."
+
+if [ $OS == 'macos' ]; then
+  frames_file="${HOME}/Library/Application Support/watson/frames"
+else
+  frames_file="${HOME}/.config/watson/frames"
+fi
+
+[[ ! -f $frames_file ]] && fail "ERROR: Watson frames file not found. Aborting."
+
+${EDITOR} "$frames_file"
