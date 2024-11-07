@@ -11,7 +11,7 @@ _dave_completions() {
     # If this is the first argument after "dave", we list the subfolders
     if [[ $COMP_CWORD -eq 1 ]]; then
       # List all subdirectories within ~/.bin/dave-scripts
-      subfolders=$(find "$dave_root" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+      subfolders=$(find -L "$dave_root" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
       COMPREPLY=( $(compgen -W "$subfolders" -- "$cur") )
       return 0
     fi
@@ -20,7 +20,7 @@ _dave_completions() {
     local folder_path="$dave_root/${COMP_WORDS[1]}"
     if [[ -d "$folder_path" && $COMP_CWORD -eq 2 ]]; then
       # List all files within the specified subfolder
-      scripts=$(find "$folder_path" -type f -exec basename {} \;)
+      scripts=$(find -L "$folder_path" -type f -exec basename {} \;)
       COMPREPLY=( $(compgen -W "$scripts" -- "$cur") )
       return 0
     fi
