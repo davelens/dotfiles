@@ -8,6 +8,11 @@ alias rsync='rsync --exclude-from=${HOME}/.rsyncignore'
 alias vim=${EDITOR} # My usecase here is that I use `dvim` as my Neovim profile.
 alias vi='vim'
 
+# Spelling corrections
+# NOTE: `timesused <alias>` to find out how many times you made a mistake.
+alias gti='git' 
+alias sl='ls'
+
 # Shortcuts
 alias be='bundle exec'
 alias ds='du -sh */' # Short for "directory sizes"
@@ -18,21 +23,27 @@ alias redis='brew services start redis'
 alias s='source ${HOME}/.bashrc && echo "${HOME}/.bashrc sourced!"'
 alias ta='tmux attach'
 
-# Spelling corrections
-# NOTE: `timesused <alias>` to find out how many times you made a mistake.
-alias gti='git' 
-alias sl='ls'
+# Jumpstart aliases for specific projects.
+alias dotfiles='${HOME}/.local/bin/tmux/quickstart dotfiles'
+alias dotvim='${HOME}/.local/bin/tmux/quickstart dotvim'
 
 # Generic helpers and custom commands
 alias bundle_mysql2_openssl_fix="bundle config --local build.mysql2 '--with-ldflags=-L${BREW_PATH}/opt/openssl/lib --with-cppflags=-I${BREW_PATH}/opt/openssl/include'"
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
+#
+# NOTE: As `d` gets refactored, it might be a good idea to finally step down
+# from the Sites folder of macos and move on to the more generic "Repositories".
+#
+# Additionally my wife suggested renaming `dave` to `utility`, which is genious.
+# I could then alias `utility` to `u` and keep using `d` as an alias for 
+# `utility dev repo`.
+#
+# `utility dev repo` -> Open FZF list of repositories pointing to ~/Repositories/*
+# `utility dev repo davelens/foobar` -> Framework-aware bootstrap in ~/Repositories/davelens/foobar
+#
+alias d='${HOME}/.local/bin/tmux/d' # TODO: Extract to `dave dev repo`
 alias http='ruby -run -ehttpd . -p3000' # Run a quick & basic local HTTP server
 alias mysql-largest-db-tables="mysql -e \"SELECT table_schema AS 'Database', table_name AS 'Table', round(((data_length + index_length) / 1024 / 1024), 2) 'Size in MB' FROM information_schema.TABLES WHERE table_schema NOT IN('sys','information_schema', 'performance_schema', 'mysql') AND round(((data_length + index_length) / 1024 / 1024), 2) >= 5 ORDER BY (data_length + index_length) DESC;\"" # TODO: Extract
 alias mysql-docker='mysql -h localhost -P 3306 --protocol=tcp'
-alias sar='search_and_replace' # TODO: Extract
+alias sar='search_and_replace' # TODO: Extract to `dave files search-and-replace`
 alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
-
-# Custom executables in my dotfiles
-alias d='${HOME}/.local/bin/tmux/d'
-alias dotfiles='${HOME}/.local/bin/tmux/quickstart dotfiles'
-alias dotvim='${HOME}/.local/bin/tmux/quickstart dotvim'
