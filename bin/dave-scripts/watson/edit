@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+[[ ! $(which watson) ]] && fail "ERROR: Watson is not installed. Aborting."
+
+frames_file="${HOME}/Library/Application Support/watson/frames"
+[[ ! -f $frames_file ]] && fail "ERROR: Watson frames file not found. Aborting."
+
+${EDITOR} "$frames_file"

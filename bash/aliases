@@ -27,9 +27,6 @@ alias s='source ${HOME}/.bashrc && echo "${HOME}/.bashrc sourced!"'
 alias sar='search_and_replace'
 alias ta='tmux attach'
 alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
-# Using >| to temporary override my default noclobber setting.
-alias watson-clear-frames='>| ${HOME}/Library/Application\ Support/watson/frames'
-alias watson-edit-frames='vim ${HOME}/Library/Application\ Support/watson/frames'
 
 # Custom executables in my dotfiles
 alias d='${HOME}/.local/bin/tmux/d'

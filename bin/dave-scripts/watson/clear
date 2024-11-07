@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -e
+[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+
+[[ ! $(which watson) ]] && fail "ERROR: Watson is not installed. Aborting."
+
+frames_file="${HOME}/Library/Application Support/watson/frames"
+echo $frames_file
+[[ ! -f $frames_file ]] && fail "ERROR: Watson frames file not found. Aborting."
+
+# Wipe the file clean; Using >| to override my default noclobber setting.
+>| "$frames_file"
