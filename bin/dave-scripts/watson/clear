@@ -4,8 +4,12 @@ set -e
 
 [[ ! $(which watson) ]] && fail "ERROR: Watson is not installed. Aborting."
 
-frames_file="${HOME}/Library/Application Support/watson/frames"
-echo $frames_file
+if [ $OS == 'macos' ]; then
+  frames_file="${HOME}/Library/Application Support/watson/frames"
+else
+  frames_file="${HOME}/.config/watson/frames"
+fi
+
 [[ ! -f $frames_file ]] && fail "ERROR: Watson frames file not found. Aborting."
 
 # Wipe the file clean; Using >| to override my default noclobber setting.
