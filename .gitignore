@@ -2,6 +2,9 @@
 .env
 bash/completions/iterm2_shell_integration.bash
 bash/private
+# bin/dave-scripts/ac is a symlink to my ActiveCollab commands, which live
+# and are maintained in a private repo.
+bin/dave-scripts/ac
 vim/.netrwhist
 vim/bundle/**
 vim/bundle/vundle
@@ -9,7 +12,6 @@ vim/autoload/plug.vim
 vim/ftplugin/go
 vim/swp
 node_modules
-bin/active_collab
 tmux/plugins
 tmux/resurrect/last
 tmux/resurrect/tmux_resurrect_*.txt
