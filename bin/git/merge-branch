@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# gm stands for `git merge-branch`. Beware that this will clean up remaining
-# local and remote branches post-merge if you choose to push the target branch.
+# Beware that this will clean up remaining local and remote branches 
+# post-merge if you choose to push the target branch.
 
 # Stops further execution after any error.
 set -e
