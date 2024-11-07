@@ -96,20 +96,6 @@ lowercase()
   fi
 }
 
-# Drops all tables in a specified MySQL database.
-mysql_drop_all_tables()
-{
-  user=$1
-  database=$2
-
-  if [[ "$user" == "" ]] || [[ "$database" == "" ]]
-  then
-    echo "usage: mysql_drop_all_tables <user> <database>"
-  else
-    mysqldump -u $user -p $database --add-drop-table --no-data | grep ^DROP | mysql -u $user -p $database
-  fi
-}
-
 # Replaces a local mysql database with the specified one.
 mysql_replace()
 {

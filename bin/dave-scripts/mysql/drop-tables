@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+# Check if the correct number of arguments is provided
+if [ $# -ne 2 ]; then
+  echo "Usage: dave mysql `basename $0` <username> <database>"
+  exit 1
+fi
+
+user="$1"
+database="$2"
+
+mysqldump -u $user -p $database --add-drop-table --no-data | grep ^DROP | mysql -u $user -p $database
