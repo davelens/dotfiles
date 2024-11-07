@@ -54,6 +54,35 @@ lowercase()
   fi
 }
 
+# A basic spinner that rotations a line to indicate a process is running.
+#
+# Example usage:
+# (sleep 5) &
+# pid=$!
+# spinner $pid "Processing your request..."
+# wait $pid  # Halts the script until the process is done
+#
+spinner() {
+  local pid=$1
+  local delay=0.1
+  local spinstr='|/-\'
+  local msg="$2"
+
+  # Display spinner while process with PID $pid is running
+  echo -n "$msg "
+
+  while [ -d /proc/$pid ]; do
+    local temp=${spinstr#?}
+    printf " [%c]  " "$spinstr"
+    local spinstr=$temp${spinstr%"$temp"}
+    sleep $delay
+    printf "\b\b\b\b\b\b"
+  done
+
+  printf "    \b\b\b\b"  # Clear spinner once done
+}
+
+
 # Because we all want to know how many times we actually typed "gti" instead 
 # of "git".
 timesused()

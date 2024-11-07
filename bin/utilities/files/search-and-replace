@@ -31,4 +31,3 @@ rg --files-with-matches "$query" $files | while read -r file; do
 done
 
 echo "Replacement complete. Backups of original files have '.bak' extension."
-
