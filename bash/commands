@@ -54,28 +54,6 @@ lowercase()
   fi
 }
 
-# Attempts to recursively search the given range of files for a given perl-compatible regex and replace with a given value.
-# TODO: There are modern tools that handle this better. Look into them.
-search_and_replace()
-{
-  search=$1
-  replace=$2
-  files=$3
-
-  if [[ $search == '' ]] || [[ $replace == '' ]];
-  then
-    echo "usage: search_and_replace <search> <replace <*glob_expansion>"
-    echo "	Make sure the glob expansion is in quotes!"
-  else
-    if [[ $files == '' ]];
-    then
-      sudo find . -type f -exec perl -pi -e "s/$search/$replace/g" {} \;
-    else
-      sudo find . -type f -name "$files" -exec perl -pi -e "s/$search/$replace/g" {} \;
-    fi
-  fi
-}
-
 # Because we all want to know how many times we actually typed "gti" instead 
 # of "git".
 timesused()

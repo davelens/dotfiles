@@ -40,4 +40,3 @@ alias dotvim='${HOME}/.local/bin/tmux/quickstart dotvim'
 # Generic helpers and custom commands
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias http='ruby -run -ehttpd . -p3000' # Run a quick & basic local HTTP server
-alias sar='search_and_replace' # TODO: Extract to `utility files search-and-replace`
