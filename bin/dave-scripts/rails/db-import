@@ -57,12 +57,12 @@ do
 done
 
 [[ ! -f $app/config.ru ]] && fail "[$me] ERROR: You can only run this from a folder containing a Rails project."
-[[ ! -f $app/config/database.yml ]] && ~/.local/bin/rails/bootstrap $app
+[[ ! -f $app/config/database.yml ]] && dave rails bootstrap $app
 
 [[ ! -d $app/db/dump ]] && mkdir -p $app/db/dump
 
-[[ -z ${remote_db} ]] && remote_db=$(~/.local/bin/rails/lookup-db-credentials -p --key=database --app=$app)
-[[ -z ${local_db} ]] && local_db=$(~/.local/bin/rails/lookup-db-credentials --key=database --app=$app)
+[[ -z ${remote_db} ]] && remote_db=$(dave rails lookup-db-credentials -p --key=database --app=$app)
+[[ -z ${local_db} ]] && local_db=$(dave rails lookup-db-credentials --key=database --app=$app)
 [[ -z ${local_db} ]] && fail "[$me] ERROR: No local configuration found in $app/config/database.yml. Aborting."
 
 if [[ -z ${remote_db} ]]; then
@@ -80,7 +80,7 @@ do :
    ignored_tables_string+=" --ignore-table=${remote_db}.${table}"
 done
 
-declare -A ssh_credentials=$(~/.local/bin/rails/ssh-credentials $app/config/deploy.rb)
+declare -A ssh_credentials=$(dave rails ssh-credentials $app/config/deploy.rb)
 user=${ssh_credentials[user]}
 server=${ssh_credentials[server]}
 
@@ -97,7 +97,7 @@ scp ${user}@${server}:dump.sql.tar $app/db/dump/.
 spinner "Unpacking dump.sql.tar"
 tar -C $app/db/dump/ -xvf $app/db/dump/dump.sql.tar >/dev/null 2>&1
 
-test_database=$(~/.local/bin/rails/lookup-db-credentials -t --key=database --app=$app)
+test_database=$(dave rails lookup-db-credentials -t --key=database --app=$app)
 
 $docker_prefix $mysql -e "drop database if exists ${local_db}"
 $docker_prefix $mysql -e "drop database if exists $test_database"
