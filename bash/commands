@@ -54,27 +54,6 @@ lowercase()
   fi
 }
 
-# Attempts to recursively find a match for a given string in the given file(s).
-# TODO: There are modern tools that handle this better. Look into them.
-search()
-{
-  string=$1
-  files=$2
-
-  if [[ $string == '' ]];
-  then
-    echo "usage: search <search> '<*glob_expansion>'"
-    echo "	Make sure the glob expansion is in quotes!"
-  else
-    if [[ $files == '' ]];
-    then
-      find . -type f -exec grep -l "$string" {} +
-    else
-      find . -type f -name "$files" -exec grep -l "$string" {} +
-    fi
-  fi
-}
-
 # Attempts to recursively search the given range of files for a given perl-compatible regex and replace with a given value.
 # TODO: There are modern tools that handle this better. Look into them.
 search_and_replace()
