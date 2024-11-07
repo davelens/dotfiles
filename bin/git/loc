@@ -5,7 +5,7 @@ set -e
 [[ ! -d .git ]] && fail "[git/loc] ERROR: No .git repository folder found."
 
 # Check if the correct number of arguments is provided
-[[ $# -lt 1 ]] && fail "Usage: dave git `basename $0` <range> [<author>]"
+[[ $# -lt 1 ]] && fail "Usage: utility git `basename $0` <range> [<author>]"
 
 # Returns information on LOC added/removed for a given git log range and an
 # optional author.

@@ -4,7 +4,7 @@ bash/completions/iterm2_shell_integration.bash
 bash/private
 # bin/dave-scripts/ac is a symlink to my ActiveCollab commands, which live
 # and are maintained in a private repo.
-bin/dave-scripts/ac
+bin/utilities/ac
 vim/.netrwhist
 vim/bundle/**
 vim/bundle/vundle

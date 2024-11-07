@@ -3,7 +3,7 @@ set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
 # Check if the correct number of arguments is provided
-[[ $# -ne 2 ]] && fail "Usage: dave mysql `basename $0` <database> <.sql file path>"
+[[ $# -ne 2 ]] && fail "Usage: utility mysql `basename $0` <database> <.sql file path>"
 
 database="$1"
 sql_file="$2"

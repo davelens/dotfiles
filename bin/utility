@@ -10,19 +10,19 @@ BASENAME=`basename $0`
 [[ $# -lt 2 ]] && fail "Usage: $BASENAME <category> <command> [<args>...]"
 
 # Define the base directory for scripts
-BASE_DIR="${HOME}/.dotfiles/bin/$BASENAME-scripts"
+BASE_DIR="${HOME}/.dotfiles/bin/utilities"
 CATEGORY="$1"
 COMMAND="$2"
 
 # Extract the full dave command prompt for use in subscripts
-export DAVE_FULL_COMMAND="$BASENAME $@"
-export DAVE_BASE_COMMAND="$BASENAME $CATEGORY $COMMAND"
+export UTILITY_FULL_COMMAND="$BASENAME $@"
+export UTILITY_BASE_COMMAND="$BASENAME $CATEGORY $COMMAND"
 
 # Shift off category and command, leaving any remaining arguments
 shift 2
 
 # Extract the category and command arguments for use in subscripts
-export DAVE_SUBSCRIPT="$CATEGORY/$COMMAND"
+export UTILITY_SUBSCRIPT="$CATEGORY/$COMMAND"
 
 # Construct the path to the script
 SCRIPT_PATH="$BASE_DIR/$CATEGORY/$COMMAND"
