@@ -41,6 +41,5 @@ alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias d='${HOME}/.local/bin/tmux/d' # TODO: Extract to `utility dev repo`
 alias http='ruby -run -ehttpd . -p3000' # Run a quick & basic local HTTP server
 alias mysql-largest-db-tables="mysql -e \"SELECT table_schema AS 'Database', table_name AS 'Table', round(((data_length + index_length) / 1024 / 1024), 2) 'Size in MB' FROM information_schema.TABLES WHERE table_schema NOT IN('sys','information_schema', 'performance_schema', 'mysql') AND round(((data_length + index_length) / 1024 / 1024), 2) >= 5 ORDER BY (data_length + index_length) DESC;\"" # TODO: Extract to `utility mysql list-tables-by-size`
-alias mysql-docker='mysql -h localhost -P 3306 --protocol=tcp'
 alias sar='search_and_replace' # TODO: Extract to `utility files search-and-replace`
 alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
