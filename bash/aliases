@@ -29,7 +29,6 @@ alias dotfiles='${HOME}/.local/bin/tmux/quickstart dotfiles'
 alias dotvim='${HOME}/.local/bin/tmux/quickstart dotvim'
 
 # Generic helpers and custom commands
-alias bundle_mysql2_openssl_fix="bundle config --local build.mysql2 '--with-ldflags=-L${BREW_PATH}/opt/openssl/lib --with-cppflags=-I${BREW_PATH}/opt/openssl/include'"
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 #
 # NOTE: As `d` gets refactored, it might be a good idea to finally step down
