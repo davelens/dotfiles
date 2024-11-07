@@ -30,7 +30,5 @@ alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
 
 # Custom executables in my dotfiles
 alias d='${HOME}/.local/bin/tmux/d'
-alias dev='${HOME}/.local/bin/tmux/open_project.sh'
-alias devx='${HOME}/.local/bin/tmux/close_project.sh'
 alias dotfiles='${HOME}/.local/bin/tmux/quickstart dotfiles'
 alias dotvim='${HOME}/.local/bin/tmux/quickstart dotvim'
