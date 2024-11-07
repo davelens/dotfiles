@@ -18,6 +18,10 @@ I use an abundant number of macOS setting overrides. These are subjective, so so
 
 	source ~/.dotfiles/macos/defaults-overrides
 
+## Custom bash scripts
+You can call custom bash scripts using the `utility` command, which features autocompletion to lead you to the right category and desired script.
+I'm currently still in the process of moving these from `bin/` to `bin/utilities`, which is why `bin/` is still mostly a mess right now.
+
 ## Tmux statusline
 ### Powerline symbols
 If you're a tmux + iTerm2 user, you'll want to set a non-ASCII text custom font to display powerline symbols in tmux's status bar. Download such a font [here](https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf), then in your ITerm2 profile settings in the Text tab, look for ```Use a different font for non-ASCII text``` and select the desired font in the dropdown. I haven't tried this in other terminals yet, so YMMV.
