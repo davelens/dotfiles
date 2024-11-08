@@ -4,7 +4,7 @@ name: blimp/<%= @args[0] %>
 root: ~/Sites/blimp/<%= @args[0] %>
 pre: |
   # TODO: creating project if it doesn't exist in ~/Sites/blimp/
-  . ~/.bash/commands
+  . ${DOTFILES_PATH}/bash/commands
 
   if [ ! `pgrep -n mysqld` ]; then
     echo "$(tput setaf 11)MySQL is not running. Would you like to start it? $(tput sgr0)$(tput bold)(y/n)$(tput sgr0)$(tput setaf 11):$(tput sgr0) "
@@ -20,7 +20,7 @@ pre: |
   fi
 attach: false
 post: |
-  . ~/.bash/commands
+  . ${DOTFILES_PATH}/bash/commands
 
   echo "$(tput setaf 11)Do you want to attach to the $(tput sgr0)$(tput bold)blimp/<%= @args[0] %>$(tput sgr0)$(tput setaf 11) session? $(tput sgr0)$(tput bold)(y/n)$(tput sgr0)$(tput setaf 11):$(tput sgr0) "
   read switchToSession

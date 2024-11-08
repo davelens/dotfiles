@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[[ -f ${DOTFILES_PATH}/bash/commands ]] && . ${DOTFILES_PATH}/bash/commands
 [[ ! `command -v jq` ]] && brew install jq
 
 # TODO: Probably better to rename this to github-lookup-repos.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[[ -f ${DOTFILES_PATH}/bash/commands ]] && . ${DOTFILES_PATH}/bash/commands
 me=rails/`basename "$0"`
 
 app=.

@@ -12,7 +12,7 @@
 # * It asks to push the updated body to the GitHub website.
 # * It returns a link to the PR as the command finishes.
 set -e
-[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[[ -f ${DOTFILES_PATH}/bash/commands ]] && . ${DOTFILES_PATH}/bash/commands
 [[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
 
 if [ $# -eq 0 ]; then

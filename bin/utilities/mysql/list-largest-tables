@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[[ -f ${DOTFILES_PATH}/bash/commands ]] && . ${DOTFILES_PATH}/bash/commands
 
 # Check if the correct number of arguments is provided
 pid mysqld &> /dev/null || fail "ERROR: MySQL is not running."

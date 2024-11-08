@@ -10,10 +10,8 @@
 # Requires 4 space indentation or it will fail
 - link:
     ~/.ackrc: ackrc
-    ~/.bash: bash
     ~/.bash_profile: bash_profile
     ~/.bashrc: bashrc
-    ~/.config/tmuxinator: tmuxinator
     ~/.editrc: editrc
     ~/.gitconfig: gitconfig
     ~/.gitignore_global: gitignore_global
@@ -22,9 +20,7 @@
     ~/.rspec: rspec
     ~/.rsyncignore: rsyncignore
     ~/.rubocop.yml: rubocop.yml
+    ~/.local/bin/utility: bin/utility
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
-  # This will copy all contents from my bin/* folder to ~/.local/bin
-  # I use ~/.local/bin as a generic dump where other scripts will end up in.
-  - for file in bin/*; do ln -sf "$PWD/$file" ~/.local/bin/; done

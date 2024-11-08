@@ -22,7 +22,7 @@ alias be='bundle exec'
 # `utility dev repo` -> Open FZF list of repositories pointing to ~/Repositories/*
 # `utility dev repo davelens/foobar` -> Framework-aware bootstrap in ~/Repositories/davelens/foobar
 #
-alias d='${HOME}/.local/bin/tmux/d' # TODO: Extract to `utility dev repo`
+alias d="${DOTFILES_PATH}/bin/tmux/d" # TODO: Extract to `utility dev repo`
 alias ds='du -sh */' # Short for "directory sizes"
 alias fs="ls -laSh $1 | grep -v ^d | awk '{print $5 "\t" $9}'"
 alias lsa='ls -hal'
@@ -34,8 +34,8 @@ alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
 alias u='utility'
 
 # Jumpstart aliases for specific projects.
-alias dotfiles='${HOME}/.local/bin/tmux/quickstart dotfiles'
-alias dotvim='${HOME}/.local/bin/tmux/quickstart dotvim'
+alias dotfiles="${DOTFILES_PATH}/bin/tmux/quickstart dotfiles"
+alias dotvim="${DOTFILES_PATH}/bin/tmux/quickstart dotvim"
 
 # Generic helpers and custom commands
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'

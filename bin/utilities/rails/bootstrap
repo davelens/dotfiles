@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-[[ -f ~/.bash/commands ]] && . ~/.bash/commands
+[[ -f ${DOTFILES_PATH}/bash/commands ]] && . ${DOTFILES_PATH}/bash/commands
 
 [[ -z $1 ]] && fail '[rails/bootstrap] ERROR: No target directory given.'
 [[ ! -d $1 ]] && fail "[rails/bootstrap] ERROR: Directory $1 is missing."

@@ -219,7 +219,7 @@ if [ `command -v brew` ]; then
 fi
 
 # Source all downloaded completion files.
-for file in ~/.bash/completions/*.bash; do
+for file in "${DOTFILES_PATH}/bash/completions/*.bash"; do
   [ -r "$file" ] && source "$file"
 done
 unset file

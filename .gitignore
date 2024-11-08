@@ -1,5 +1,6 @@
 .DS_Store
 .env
+.install_path
 bash/completions/iterm2_shell_integration.bash
 bash/private
 # bin/dave-scripts/ac is a symlink to my ActiveCollab commands, which live
