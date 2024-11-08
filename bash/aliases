@@ -15,10 +15,6 @@ alias sl='ls'
 
 # Shortcuts
 alias be='bundle exec'
-#
-# NOTE: As `d` gets refactored, it might be a good idea to finally step down
-# from the Sites folder of macos and move on to the more generic "Repositories".
-#
 alias d="utility tmux repo"
 alias ds='du -sh */' # Short for "directory sizes"
 alias fs="ls -laSh $1 | grep -v ^d | awk '{print $5 "\t" $9}'"
