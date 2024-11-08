@@ -32,11 +32,11 @@ set -e
 [[ -f ~/.bash/commands ]] && . ~/.bash/commands
 
 if [[ ! -f config.ru && ! -f spec/dummy/config.ru ]]; then
-  fail "[rails/migrate] ERROR: You can only run this from a folder containing a Rails project."
+  fail "[rails/deploy] ERROR: You can only run this from a folder containing a Rails project."
 fi
 
-if [[ ! -f Capfile ]]; then
-  fail "[rails/migrate] ERROR: No Capfile found."
+if [[ ! -f Capfile && ! -f Capfile.rb ]]; then
+  fail "[rails/deploy] ERROR: No Capfile found."
 fi
 
 branch_name=$(git b) # `git b` is an alias in my ~/.gitconfig
