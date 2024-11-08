@@ -13,7 +13,7 @@ export OS="${DOTFILES_PATH}/bin/os"
 [[ $OS == 'linux' ]] && . "${DOTFILES_PATH}/bash/linux"
 
 # Source the files in the bash folder
-for file in "${DOTFILES_PATH}/bash/{commands,prompt,aliases,private}"; do
+for file in ${DOTFILES_PATH}/bash/{commands,prompt,aliases,private}; do
   [ -r "$file" ] && . "$file";
 done;
 unset file;
