@@ -11,7 +11,7 @@
   ap = add -p
   b = rev-parse --abbrev-ref HEAD
   ci = commit
-  ci-status = "!/bin/bash ${HOME}/.local/bin/git/ci-status"
+  ci-status = "!utility github ci-status"
   co = checkout
   dc = diff --cached
 
@@ -29,20 +29,20 @@
   head = !git l -1
   l = log --graph --abbrev-commit --date=relative
   la = !git l --all
-  loc = "!/bin/bash ${HOME}/.local/bin/git/loc"
+  loc = "!utility git loc"
 
   # Extensive Merge script. 
   # Checkout -> no fast-forward merge -> push -> remove local/remote branches.
-  m = "!/bin/bash ${HOME}/.local/bin/git/merge-branch"
+  m = "!utility git merge-branch"
 
   # push + Merge Develop into Master
   mdm = "!f() { git push origin develop && git checkout master && git merge develop && git push origin master && git checkout develop; }; f"
 
   # GitLab Merge Requests (mainly making use of https://github.com/NARKOZ/gitlab)
-  mr = "!/bin/bash ${HOME}/.local/bin/git/gitlab-merge-request"
+  mr = "!utility gitlab merge-request"
 
   # Merge into the temp branch
-  mt = "!/bin/bash ${HOME}/.local/bin/git/merge-to-temp"
+  mt = "!utility git merge-to-temp"
 
   pod = push origin develop
   pom = push origin master
@@ -51,14 +51,14 @@
   # remove local branches that were created from `git pr`
   pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
 
-  pr-body = "!/bin/bash ${HOME}/.local/bin/git/github-pr-body"
+  pr-body = "!utility github pr-body"
   pullff = pull --ff-only
   r = !git --no-pager l -20 && echo ""
-  s = "!/bin/bash ${HOME}/.local/bin/git/switch-branch"
+  s = "!utility git switch-branch"
 
   # Uses the GitHub API to perform a search query and find repos.
-  # Made to fit `${HOME}/.local/bin/tmux/d -n`.
-  search-repos = "!/bin/bash ${HOME}/.local/bin/git/github-search-repos"
+  # Made to fit `utility tmux repo -n`.
+  search-repos = "!utility github search-repos"
 
   st = status --short
   web = instaweb --httpd=webrick

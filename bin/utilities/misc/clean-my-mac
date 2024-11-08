@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -e
+[[ -f ${DOTFILES_PATH}/bash/commands ]] && . ${DOTFILES_PATH}/bash/commands
+
 # This command was made to clean up unused, cached crap from most of the heavy
 # hitter apps on my machine. Inspired by CleanMyMac which, however useful and
 # efficient as it may be, costs money.
@@ -51,9 +54,10 @@ rm -rf ~/library/Caches/com.apple.helpd/*
 rm ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
 
 # Remove all docker containers and images
-${HOME}/.local/bin/docker-reset
+utility docker reset
 
 # Clean all log files across all my Sites projects.
-# My Sites folder is structured according to git repo structure (user/project).
+# My ${REPO_NAMESPACE} folder (`Sites` by default) is structured according to 
+# git repo structure (user/project).
 # The ls check will fail silently if you don't have a similar structure.
-ls ~/Sites/*/**/log/* 2>/dev/null && rm ~/Sites/*/**/log/*
+ls ~/${REPO_NAMESPACE}/*/**/log/* 2>/dev/null && rm ~/${REPO_NAMESPACE}/*/**/log/*

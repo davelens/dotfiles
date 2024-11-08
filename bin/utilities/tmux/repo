@@ -3,28 +3,33 @@
 # This opens a tmux session with a number of window/pane presets in order to
 # do **d**ev work on a project:
 #
-# * `d`: Will fuzzy find your project in ~/Sites/* using fzf.
-# * `d davelens/dotfiles`: Will search ~/Sites/* for the given namespace.
+# * `d`: Will fuzzy find your project in ~/${REPO_NAMESPACE}/* using fzf.
+# * `d davelens/dotfiles`: Will search ~/${REPO_NAMESPACE}/* for the given namespace.
 # * `d -n`: Query the GitHub API for my desired repo namespaces.
 # * `d -x`: Close opened sessions, using fzf as a selection tool.
 #
 # It assumes a very specific folder structure; a github repository namespace
-# inside the ~/Sites folder. An example:
+# inside the ~/${REPO_NAMESPACE} folder. An example:
 #
-#   ~/Sites/<git-org-or-user>/<git-repo>
+#   ~/${REPO_NAMESPACE}/<git-org-or-user>/<git-repo>
 #
 # All my dev work-related and personal projects reside on GitHub. It makes
 # sense for me to follow the same user/repo structure, as it allows me to
 # separate my professional projects from my personal ones.
 #
-# ~/Sites as my top level project folder because I mainly work on webapps, and
+# ~/${REPO_NAMESPACE} as my top level project folder because I mainly work on webapps, and
 # it's the macos default for them.
 #
 # As an afterthought; Yes, I'm aware of tmuxinator and yes, I've tried it.
 # I don't know, I still like a simple bash script better.
 set -e
 [[ -f ${DOTFILES_PATH}/bash/commands ]] && . ${DOTFILES_PATH}/bash/commands
+
+# Loading ENV vars enables us to pick up REPO_NAMESPACE.
+export_env_vars_from_file ${HOME}/.env
+
 me=bin/tmux/`basename "$0"`
+namespace=${REPO_NAMESPACE:-"Sites"}
 
 # An elegant exit with a fuzzy search to select the namespace to exit.
 if [[ $# -eq 1 && $1 == '-x' ]]; then
@@ -44,14 +49,14 @@ if [[ $# -eq 1 && $1 == '--docker' ]] && [[ ! `pgrep -n docker` ]]; then
 fi
 
 # Provide a fuzzy search for my projects so I don't have to type names anymore.
-[[ -z $1 ]] && set -- $(ls -d ~/Sites/**/* | sed -e "s|`echo ~`/Sites/||" | fzf)
+[[ -z $1 ]] && set -- $(ls -d ~/$namespace/**/* | sed -e "s|`echo ~`/$namespace/||" | fzf)
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No project namespace given.'
   printf "\tUsage: d [-x|-n|--docker] [<github-user>/<github-repo>]\n" && exit
 fi
 
-destination=~/Sites/$1
+destination=~/$namespace/$1
 # Clone the git repo, fail with error output from `git clone`.
 [[ ! -d $destination ]] && bootstrap=1 && (git clone git@github.com:$1.git $destination || fail)
 
