@@ -55,6 +55,11 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 [[ -f /usr/local/bin/brew ]] && export BREW_PATH=$(/usr/local/bin/brew --prefix)
 [[ -f /usr/bin/brew ]] && export BREW_PATH=$(/usr/bin/brew --prefix)
 
+# Load in all necessary brew env vars, because bash completion for `brew` won't 
+# work. It specifically needs HOMEBREW_REPOSITORY, but I load in the entire 
+# shellenv just in case. See: https://github.com/orgs/Homebrew/discussions/4227
+eval "$(${BREW_PATH}/bin/brew shellenv)"
+
 
 ########################################################################
 # PATH
