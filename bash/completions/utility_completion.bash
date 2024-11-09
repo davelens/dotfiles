@@ -6,7 +6,7 @@ _utility_completions() {
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     # Define the root directory for the scripts
-    local utilities_root="${HOME}/.dotfiles/bin/utilities"
+    local utilities_root="${DOTFILES_PATH}/bin/utilities"
 
     # If this is the first argument after "utility", we list the subfolders
     if [[ $COMP_CWORD -eq 1 ]]; then

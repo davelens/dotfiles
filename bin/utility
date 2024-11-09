@@ -10,7 +10,7 @@ BASENAME=`basename $0`
 [[ $# -lt 2 ]] && fail "Usage: $BASENAME <category> <command> [<args>...]"
 
 # Define the base directory for scripts
-BASE_DIR="${HOME}/.dotfiles/bin/utilities"
+BASE_DIR="${DOTFILES_PATH}/bin/utilities"
 CATEGORY="$1"
 COMMAND="$2"
 
