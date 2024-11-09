@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 export DOTFILES_PATH=$(<~/.local/.dotfiles_path)
-export OS="${DOTFILES_PATH}/bin/os"
+export OS=`${DOTFILES_PATH}/bin/os`
 
 # Load the mandatory shell settings and ENV vars before everything else.
 [[ -f "${DOTFILES_PATH}/bash/colors" ]] && . "${DOTFILES_PATH}/bash/colors"

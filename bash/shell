@@ -214,17 +214,20 @@ unset available_locales lang locale
 ########################################################################
 # Load bash_completion through brew, when installed
 if [ `command -v brew` ]; then
-  if [[ -r "${BREW_PATH}/etc/profile.d/bash_completion.sh" ]]; then
+  if [ -r "${BREW_PATH}/etc/profile.d/bash_completion.sh" ]; then
     source "${BREW_PATH}/etc/profile.d/bash_completion.sh"
-  else
-    for COMPLETION in "${BREW_PATH}/etc/bash_completion.d/"*; do
-      [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
+  fi
+
+  if [ -d "${BREW_PATH}/etc/bash_completion.d/" ]; then
+    for completion in "${BREW_PATH}/etc/bash_completion.d/"*; do
+      [ -r "${completion}" ] && source "${completion}"
     done
+    unset completion
   fi
 fi
 
 # Source all downloaded completion files.
-for file in ${DOTFILES_PATH}/bash/completions/*.bash; do
+for file in "${DOTFILES_PATH}/bash/completions/"*.bash; do
   [ -r "$file" ] && source "$file"
 done
 unset file
