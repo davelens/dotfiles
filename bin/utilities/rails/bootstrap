@@ -50,7 +50,7 @@ check_and_copy 'config/project'
 
 # asdf requires a .tool-versions to provide a PWD-localized ruby executable.
 if [[ ! -e $project_root/.tool-versions ]]; then
-  declare -A ssh_credentials=$(~/.local/bin/rails/ssh-credentials $project_root/config/deploy.rb)
+  declare -A ssh_credentials=$(utility rails ssh-credentials $project_root/config/deploy.rb)
   required_ruby=`ssh ${ssh_credentials[user]}@${ssh_credentials[server]} 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//'`
   echo "ruby $required_ruby" >> $project_root/.tool-versions
 fi
