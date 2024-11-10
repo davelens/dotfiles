@@ -37,6 +37,13 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+  // Check if CTRL+C was pressed to exit immediately
+  if keyMsg, ok := msg.(tea.KeyMsg); ok {
+    if keyMsg.String() == "ctrl+c" {
+      return m, tea.Quit
+    }
+  }
+
   switch m.step {
   case stepGitHubUsername:
     return m.updateGitHubUsername(msg)
@@ -249,9 +256,6 @@ func writeEnvFile(m model) error {
       }
     }
   }
-
-  // Debug: Print the values to confirm they are being captured correctly
-  fmt.Printf("Writing to .env:\nGITHUB_USERNAME=%s\nGITHUB_EMAIL=%s\nGPG_SIGNING_KEY=%s\n", m.username, m.email, m.signingKey)
 
   return nil
 }
