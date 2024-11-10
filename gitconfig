@@ -1,7 +1,7 @@
 [user]
-  name = davelens
-  email = github@davelens.be
-  signingkey = 07C7F96B857C4CAA
+  name = ${GITHUB_USERNAME}
+  email = ${GITHUB_EMAIL}
+  signingkey = ${GPG_SIGNING_KEY}
 [diff]
 [color]
   ui = auto
