@@ -4,6 +4,7 @@ import (
   "fmt"
   "log"
   "os"
+  "strings"
 
   tea "github.com/charmbracelet/bubbletea"
   "github.com/charmbracelet/bubbles/textinput"
@@ -187,31 +188,65 @@ func main() {
   }
 }
 
+
 func writeEnvFile(m model) error {
-  // Ensure ~/.env exists
+  // Determine the path to the .env file
   home, err := os.UserHomeDir()
   if err != nil {
     return fmt.Errorf("could not find home directory: %w", err)
   }
   envPath := home + "/.env"
 
-  // Open the file (or create it if it doesn't exist)
-  file, err := os.OpenFile(envPath, os.O_RDWR|os.O_CREATE, 0755)
+  // Read the existing file contents, if it exists
+  fileData, err := os.ReadFile(envPath)
+  if err != nil && !os.IsNotExist(err) {
+    return fmt.Errorf("could not read .env file: %w", err)
+  }
+
+  // Split the file data into lines
+  lines := strings.Split(string(fileData), "\n")
+
+  // Open the file for writing (truncate it to overwrite the entire content)
+  file, err := os.OpenFile(envPath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
   if err != nil {
     return fmt.Errorf("could not open .env file: %w", err)
   }
   defer file.Close()
 
-  // Write the environment variables to the file
-  _, err = fmt.Fprintf(file, "GITHUB_USERNAME=%s\nGITHUB_EMAIL=%s\n", m.username, m.email)
-  if err != nil {
-    return fmt.Errorf("could not write GITHUB_USERNAME and GITHUB_EMAIL to .env: %w", err)
+  // Remove any existing GITHUB_USERNAME, GITHUB_EMAIL, and GPG_SIGNING_KEY entries
+  var newLines []string
+  for _, line := range lines {
+    // Skip lines that match the environment variables we are updating
+    if strings.HasPrefix(line, "GITHUB_USERNAME=") ||
+      strings.HasPrefix(line, "GITHUB_EMAIL=") ||
+      strings.HasPrefix(line, "GPG_SIGNING_KEY=") {
+      continue
+    }
+    newLines = append(newLines, line)
   }
 
-  if m.useGPG {
-    _, err = fmt.Fprintf(file, "GPG_SIGNING_KEY=%s\n", m.signingKey)
-    if err != nil {
-      return fmt.Errorf("could not write GPG_SIGNING_KEY to .env: %w", err)
+  // Add the updated environment variables (without a trailing newline)
+  if m.username != "" {
+    newLines = append(newLines, fmt.Sprintf("GITHUB_USERNAME=%s", m.username))
+  }
+  if m.email != "" {
+    newLines = append(newLines, fmt.Sprintf("GITHUB_EMAIL=%s", m.email))
+  }
+  if m.useGPG && m.signingKey != "" {
+    newLines = append(newLines, fmt.Sprintf("GPG_SIGNING_KEY=%s", m.signingKey))
+  }
+
+  // Write everything back to the file (overwrite)
+  for i, line := range newLines {
+    // Don't add an extra newline after the last line
+    if i == len(newLines)-1 {
+      if _, err := file.WriteString(line); err != nil {
+        return fmt.Errorf("could not write to .env file: %w", err)
+      }
+    } else {
+      if _, err := file.WriteString(line + "\n"); err != nil {
+        return fmt.Errorf("could not write to .env file: %w", err)
+      }
     }
   }
 
@@ -220,4 +255,3 @@ func writeEnvFile(m model) error {
 
   return nil
 }
-
