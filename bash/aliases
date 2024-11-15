@@ -12,6 +12,7 @@ alias vi='vim'
 # NOTE: `timesused <alias>` to find out how many times you made a mistake.
 alias gti='git' 
 alias sl='ls'
+alias docker-compose='docker compose' # They changed it. -.-
 
 # Shortcuts
 alias be='bundle exec'
