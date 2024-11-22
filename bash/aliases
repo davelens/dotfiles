@@ -17,6 +17,7 @@ alias docker-compose='docker compose' # They changed it. -.-
 # Shortcuts
 alias be='bundle exec'
 alias d="utility tmux repo"
+alias dc='docker compose'
 alias ds='du -sh */' # Short for "directory sizes"
 alias fs="ls -laSh $1 | grep -v ^d | awk '{print $5 "\t" $9}'"
 alias lsa='ls -hal'
