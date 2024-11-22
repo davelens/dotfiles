@@ -30,6 +30,7 @@ export_env_vars_from_file ${HOME}/.env
 
 me=bin/tmux/`basename "$0"`
 namespace=${REPO_NAMESPACE:-"Sites"}
+lockfile=/tmp/mix-done.lock
 
 # An elegant exit with a fuzzy search to select the namespace to exit.
 if [[ $# -eq 1 && $1 == '-x' ]]; then
@@ -92,6 +93,17 @@ function phoenix_windows() {
     # TODO: Extract database name from config/dev.exs
     tmux send-keys -t $1:db "clear && mysql" C-m
   fi
+
+  # We need this before running both REPL and server.
+  # TODO: There is something called "tmux wait" that might be useful here, but
+  # the simple example I tried did not work. Try again later when time permits.
+  tmux send-keys -t $1:repl "mix do deps.get, deps.compile && touch $lockfile" C-m
+
+  # Wait for the lock file to be created, indicating the commands are complete
+  while [ ! -f "$lockfile" ]; do
+    sleep 1
+  done
+  rm $lockfile
 
   tmux send-keys -t $1:repl 'iex -S mix' C-m
   tmux send-keys -t $1:server 'export_env_vars_from_file' C-m
