@@ -26,6 +26,9 @@ export RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.1
 export RUBY_GC_OLDMALLOC_LIMIT=16000100
 export RUBY_GC_OLDMALLOC_LIMIT_MAX=16000100
 
+# Erlang history settings to have a cmd history in iex sessions.
+export ERL_AFLAGS="-kernel shell_history enabled"
+
 # Get rid of the forking errors triggered by spring
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
