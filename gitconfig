@@ -61,6 +61,7 @@
   search-repos = "!utility github search-repos"
 
   st = status --short
+  tree = "!git ls-tree -r --name-only HEAD | tree --fromfile"
   web = instaweb --httpd=webrick
 
 [format]
