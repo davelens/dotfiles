@@ -2,6 +2,11 @@
 
 # This file will only load on WSL.
 
+# The mimemagic gem requires this file, which is installed via a homebrew pkg
+# called shared-mime-info. On Linuxbrew however we need to explicitly set this
+# path.
+export FREEDESKTOP_MIME_TYPES_PATH="${BREW_PATH}/share/mime/packages/freedesktop.org.xml"
+
 # di = directory
 # fi = file
 # ln = symbolic link
