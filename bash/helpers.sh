@@ -1,6 +1,6 @@
 # Exports all ENV vars listed in a file. Loads ~/.env by default.
 export-env-vars-from-file() {
-  env_file=${1:-.env}
+  env_file=${1:-~/.env}
   [[ -f $env_file ]] && export $(cat $env_file | grep -v ^\# | xargs)
 }
 
@@ -81,8 +81,11 @@ spinner() {
 
 # Bootstrap an ssh-agent and add your default key to it.
 ssh-agent-bootstrap() {
-  # Start the SSH agent unless it's already running.
-  [ ! -n "$SSH_AUTH_SOCK" ] && eval $(ssh-agent -s) >/dev/null
+  if [ $(pgrep -x ssh-agent) ]; then
+    export SSH_AUTH_SOCK=$(find /tmp -type s -name "agent.*" 2>/dev/null)
+  else
+    eval $(ssh-agent -s) >/dev/null
+  fi
 
   # Only add our key if it's not already added.
   ssh-add -l | grep -q ~/.ssh/id_rsa || ssh-add ~/.ssh/id_rsa >/dev/null 2>&1
