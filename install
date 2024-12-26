@@ -16,4 +16,3 @@ git submodule update --init --recursive "${DOTBOT_DIR}"
 
 # Cache the installation directory string so we can reference it in subscripts.
 echo "${BASEDIR}" > ~/.local/.dotfiles_path 
-
