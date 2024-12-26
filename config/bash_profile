@@ -1,4 +1,7 @@
-export DOTFILES_PATH=$(<~/.local/.dotfiles_path)
+# The installation script will have made a ~/.env file contining the value for
+# DOTFILES_PATH, so we're sourcing it here at the earliest point.
+source ~/.env
+
 export OS=`${DOTFILES_PATH}/bin/os`
 
 # Load the mandatory shell settings and ENV vars before everything else.

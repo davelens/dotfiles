@@ -5,8 +5,8 @@ set -e
 if [ -f /proc/version ] && grep -qEi "(microsoft|WSL)" /proc/version ; then
   echo 'windows'
 else
-  OS=`uname -s`
-  [ $OS == 'Darwin' ] && echo 'macos'
-  [ $OS == 'Linux' ] && echo 'linux'
-  [ $OS == 'FreeBSD' ] && echo 'freebsd'
+  readonly os=`uname -s`
+  [ $os == 'Darwin' ] && echo 'macos'
+  [ $os == 'Linux' ] && echo 'linux'
+  [ $os == 'FreeBSD' ] && echo 'freebsd'
 fi

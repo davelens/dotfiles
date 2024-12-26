@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
-files=$(sed -n '/- link:/,/^-/p' "$BASEDIR/install.conf.yaml" | sed -n '/^    /p')
+readonly basedir="$(dirname "${BASH_SOURCE[0]}")"
+readonly files=$(sed -n '/- link:/,/^-/p' "$basedir/install.conf.yaml" | sed -n '/^    /p')
 
 # Iterate over each line of the result
 while IFS= read -r line; do
