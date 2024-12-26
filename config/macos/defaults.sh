@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 ####################################################################
 # This is a slightly modified version of Mathias Bynens' macos defaults:
 # https://raw.githubusercontent.com/mathiasbynens/dotfiles/master/.macos
