@@ -1,6 +1,9 @@
-#!/usr/bin/env bash
-
 # This file will only load on WSL.
+
+# The mimemagic gem requires this file, which is installed via a homebrew pkg
+# called shared-mime-info. On Linuxbrew however we need to explicitly set this
+# path.
+export FREEDESKTOP_MIME_TYPES_PATH="${BREW_PATH}/share/mime/packages/freedesktop.org.xml"
 
 # di = directory
 # fi = file
@@ -18,8 +21,11 @@ alias lsa='ls -hal --color=tty'
 alias pbcopy="clip.exe"
 alias pbpaste="powershell.exe -command 'Get-Clipboard' | head -n -1"
 
-# Start the SSH agent
-eval "$(ssh-agent -s >/dev/null)"
+# Start the SSH agent unless it's already running.
+[ ! -n "$SSH_AUTH_SOCK" ] && eval $(ssh-agent -s) >/dev/null
+
+# Only add our key if it's not already added.
+ssh-add -l | grep -q ~/.ssh/id_rsa || ssh-add ~/.ssh/id_rsa >/dev/null 2>&1
 
 # After an upgrade to Ubuntu 20.04 LTS, brew no longer gets loaded by default.
 #eval $(SHELL=/bin/bash /home/linuxbrew/.linuxbrew/bin/brew shellenv)

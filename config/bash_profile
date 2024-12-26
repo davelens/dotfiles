@@ -1,0 +1,17 @@
+export DOTFILES_PATH=$(<~/.local/.dotfiles_path)
+export OS=`${DOTFILES_PATH}/bin/os`
+
+# Load the mandatory shell settings and ENV vars before everything else.
+[[ -f "${DOTFILES_PATH}/bash/colors.sh" ]] && source "${DOTFILES_PATH}/bash/colors.sh"
+[[ -f "${DOTFILES_PATH}/bash/shell.sh" ]] && source "${DOTFILES_PATH}/bash/shell.sh"
+
+# OS specific settings
+[[ $OS == 'windows' ]] && source "${DOTFILES_PATH}/bash/wsl.sh"
+[[ $OS == 'macos' ]] && source "${DOTFILES_PATH}/bash/macos.sh"
+[[ $OS == 'linux' ]] && source "${DOTFILES_PATH}/bash/linux.sh"
+
+# Source the files in the bash folder
+for file in ${DOTFILES_PATH}/bash/{commands,aliases,prompt,private}.sh; do
+  [ -r "$file" ] && source "$file";
+done;
+unset file;

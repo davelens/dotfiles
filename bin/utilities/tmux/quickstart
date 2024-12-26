@@ -4,25 +4,27 @@ set -e
 
 # Check if a parameter is provided
 if [ $# -ne 1 ]; then
-  echo "Usage: $0 <session_name>"
+  echo "Usage: $0 <path-to-folder>"
   exit 1
 fi
 
-# Define the name of the tmux session from the parameter
-SESSION_NAME="$1"
+TARGET_PATH=$(realpath "$1")
+SESSION_NAME=$(basename "$TARGET_PATH" | sed 's/^\.//')
 
-cd ~/.$SESSION_NAME/
-
-# Check if the session already exists
-if ! tmux has-session -t $SESSION_NAME 2>/dev/null; then
-  tmux new -s $SESSION_NAME -n "editor" -d
-  tmux rename-window -t $SESSION_NAME:1 "editor"
-  tmux new-window -t $SESSION_NAME -n "cli"
-  tmux send-keys -t $SESSION_NAME:1 "clear && ${EDITOR}" C-m
-  tmux select-window -t $SESSION_NAME:1
+# Check if the path is valid and accessible
+if [ ! -d "$TARGET_PATH" ]; then
+  echo "Error: '$TARGET_PATH' is not a valid directory."
+  exit 1
 fi
 
-cd - > /dev/null 2>&1
+# Check if the session already exists
+if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+  tmux new -s "$SESSION_NAME" -n "editor" -d
+  tmux rename-window -t "$SESSION_NAME:1" "editor"
+  tmux send-keys -t "$SESSION_NAME:1" "cd '$TARGET_PATH' && clear && ${EDITOR}" C-m
+  tmux new-window -t "$SESSION_NAME" -n "cli"
+  tmux send-keys -t "$SESSION_NAME:2" "cd '$TARGET_PATH' && clear" C-m
+  tmux select-window -t "$SESSION_NAME:1"
+fi
 
 tmux attach -t $SESSION_NAME
-

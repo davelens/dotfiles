@@ -1,40 +1,48 @@
+# dotfiles
+
+My own personal, highly subjective set of tools to help me do my dev work.
+
+As for context: I've been (mostly) a backend developer for web apps in my career. At some point I turned my terminal into an IDE of sorts, and never looked back.
+
+## History
+* [Est. 2011](https://github.com/davelens/dotfiles/commits/master/?since=2011-05-27&until=2011-05-31)
+* Started on macos, now used on both macos and WSL2 (currently Arch) instances
+* My professional dev work shifted over the years from PHP, to Ruby, to Elixir
+* Included my Vim setup until 2020, when I moved it to [a separate repository](https://github.com/davelens/dotvim)
+
 ## Installation
-#### Install
+All steps assume you'll clone the repo into `~/.dotfiles`:
+```bash
+git clone git@github.com:davelens/dotfiles.git ~/.dotfiles
+~/.dotfiles/setup/install
+```
 
-    git clone git@github.com:davelens/dotfiles.git ~/.dotfiles
-    cd ~/.dotfiles && ./install
+### Uninstall
+```bash
+~/.dotfiles/setup/uninstall
+```
 
-#### Uninstall
+### Additional configuration
+At the top of `~/.gitconfig` you'll have to edit the `[user]` section with your GitHub user and e-mail address (and optionally your GPG signing key).
 
-    cd ~/.dotfiles && ./uninstall
-
-## Configuration
-- Your personal info in .dotfiles/gitconfig
-- If you use irssi (or plan to): Your desired servers, channels, highlights and aliases in .dotfiles/irssi/config
-- The take_screenshot command in .dotfiles/bash/macos uploads a screenshot to my webspace and puts the link in my clipboard. If you want to use this as well, just replace my SSH-host with your own.
-
-## macOS defaults
-I use an abundant number of macOS setting overrides. These are subjective, so some might seem odd, strange or unwanted for you. That is why it requires a separate install instruction. A big credit here should be given to [@mathiasbynens](http://github.com/mathiasbynens), as he keeps maintaining his list for every major macOS release. If you want to give it a go, just copy-paste the line below in your shell. Use at your own discretion though, there is no reset:
-
-	source ~/.dotfiles/macos/defaults-overrides
+Somewhere in the future this information will be read from ENV vars, but for now just edit that file and you should be set.
 
 ## Custom bash scripts
-You can call custom bash scripts using the `utility` command, which features autocompletion to lead you to the right category and desired script.
-I'm currently still in the process of moving these from `bin/` to `bin/utilities`, which is why `bin/` is still mostly a mess right now.
+You can call custom bash scripts using the `utility` command, which is also aliased to `u`:
+```bash
+Usage: utility <category> <command> [<args>...]
+```
+It comes with autocompletion on both category and command to help you find what you're looking for.
 
-## Tmux statusline
-### Powerline symbols
-If you're a tmux + iTerm2 user, you'll want to set a non-ASCII text custom font to display powerline symbols in tmux's status bar. Download such a font [here](https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf), then in your ITerm2 profile settings in the Text tab, look for ```Use a different font for non-ASCII text``` and select the desired font in the dropdown. I haven't tried this in other terminals yet, so YMMV.
+### Linking your own homebrew scripts
+You can symlink a directory with some of your personal scripts into `bin/utilities/`, and `utility` will pick them up automagically.
 
-### "Segments"
-My tmux config now parses small bits of information to the left of the date in the status-right section. They are inspired by and/or stolen from the (now unmaintained) [tmux-powerline repo](https://github.com/erikw/tmux-powerline):
+## macos defaults
+`config/macos/defaults.sh` is a large file full of subjective macos system settings and overrides. All credit here should be given to [@mathiasbynens](https://mths.be/macos), who painstakingly compiled and maintains it.
 
-* Laptop battery status. Done with [richo/battery](https://github.com/richo/battery)
-* Unread e-mail count. Caveats:
-  * Reads user/pass from your ```.netrc```.
-  * You need to configure which servers to check [here](https://github.com/davelens/dotfiles/blob/master/bin/tmux/mailcount.sh#L6).
-* Current track playing in Spotify. Taken from [jdxcode/tmux-spotify-info](https://github.com/jdxcode/tmux-spotify-info)
+**Disclaimer**: There is no revert option, so use this at your own discretion:
 
-## No vimrc?
-In april 2020 I finally took the proper time to move my vim setup to a separate
-repository, to be found [here](https://github.com/davelens/dotvim).
+```bash
+source ~/.dotfiles/config/macos/defaults.sh
+```
+

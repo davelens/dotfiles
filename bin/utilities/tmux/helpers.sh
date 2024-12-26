@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 segment()
 {
   text=$1

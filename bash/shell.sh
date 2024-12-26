@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 ########################################################################
 # GENERAL
 ########################################################################
@@ -26,11 +24,14 @@ export RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.1
 export RUBY_GC_OLDMALLOC_LIMIT=16000100
 export RUBY_GC_OLDMALLOC_LIMIT_MAX=16000100
 
+# Erlang history settings to have a cmd history in iex sessions.
+export ERL_AFLAGS="-kernel shell_history enabled"
+
 # Get rid of the forking errors triggered by spring
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 if [ -f “${HOME}/.gpg-agent-info” ]; then
-  . “${HOME}/.gpg-agent-info”
+  source “${HOME}/.gpg-agent-info”
   export GPG_AGENT_INFO
   export SSH_AUTH_SOCK
 fi
@@ -178,6 +179,9 @@ export HISTTIMEFORMAT="${FG_BLUE}${FONT_BOLD}%Y/%m/%d %H:%M:%S${FONT_RESET} "
 
 # let the history ignore the following commands
 export HISTIGNORE="ls:lsa:ll:la:pwd:clear:h:j"
+
+# Set up fzf key bindings and fuzzy completion
+[[ ! $(which fzf) ]] && eval "$(fzf --bash)"
 
 
 ########################################################################

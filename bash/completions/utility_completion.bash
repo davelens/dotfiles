@@ -1,5 +1,3 @@
-#!/bin/bash
-
 _utility_completions() {
   local cur prev subfolders scripts
   cur="${COMP_WORDS[COMP_CWORD]}"

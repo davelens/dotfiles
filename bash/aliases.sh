@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # Default command overrides. Generally trying to avoid serious ones, but to
 # my knowledge these are not considered harmful.
 alias ls='ls -G'
@@ -12,10 +10,12 @@ alias vi='vim'
 # NOTE: `timesused <alias>` to find out how many times you made a mistake.
 alias gti='git' 
 alias sl='ls'
+alias docker-compose='docker compose' # They changed it. -.-
 
 # Shortcuts
 alias be='bundle exec'
 alias d="utility tmux repo"
+alias dc='docker compose'
 alias ds='du -sh */' # Short for "directory sizes"
 alias fs="ls -laSh $1 | grep -v ^d | awk '{print $5 "\t" $9}'"
 alias lsa='ls -hal'
@@ -27,8 +27,8 @@ alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
 alias u='utility'
 
 # Jumpstart aliases for specific projects.
-alias dotfiles="utility tmux quickstart dotfiles"
-alias dotvim="utility tmux quickstart dotvim"
+alias dotfiles="utility tmux quickstart ~/.dotfiles"
+alias dotvim="utility tmux quickstart ~/.dotvim"
 
 # Generic helpers and custom commands
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'

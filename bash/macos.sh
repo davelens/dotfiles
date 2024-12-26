@@ -1,11 +1,9 @@
-#!/usr/bin/env bash
-
 # This file will only load on macos.
 # As this grows I might need to split it up into multiple files.
 
 alias allow='xattr -d com.apple.quarantine'
 alias rm='$(which trash) &>/dev/null && trash' # Puts rm'ed files in the OS trash
-alias ss="osascript ${DOTFILES_PATH}/macos/hide-terminal.scpt && screenshot && killall Terminal"
+alias ss="osascript ${DOTFILES_PATH}/config/macos/hide-terminal.scpt && utility misc screenshot && killall Terminal"
 alias toggle_desktop='toggle_default finder CreateDesktop'
 alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
 
