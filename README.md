@@ -38,11 +38,11 @@ It comes with autocompletion on both category and command to help you find what 
 You can symlink a directory with some of your personal scripts into `bin/utilities/`, and `utility` will pick them up automagically.
 
 ## macos defaults
-`macos/defaults` is a large file full of subjective macos system settings and overrides. All credit here should be given to [@mathiasbynens](https://mths.be/macos), who painstakingly compiled and maintains it.
+`config/macos/defaults.sh` is a large file full of subjective macos system settings and overrides. All credit here should be given to [@mathiasbynens](https://mths.be/macos), who painstakingly compiled and maintains it.
 
 **Disclaimer**: There is no revert option, so use this at your own discretion:
 
 ```bash
-source ~/.dotfiles/macos/defaults
+source ~/.dotfiles/config/macos/defaults.sh
 ```
 

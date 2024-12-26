@@ -9,17 +9,17 @@
 
 # Requires 4 space indentation or it will fail
 - link:
-    ~/.ackrc: ackrc
-    ~/.bash_profile: bash_profile
-    ~/.bashrc: bashrc
-    ~/.editrc: editrc
-    ~/.gitconfig: gitconfig
-    ~/.gitignore_global: gitignore_global
-    ~/.inputrc: inputrc
-    ~/.nethackrc: nethackrc
-    ~/.rspec: rspec
-    ~/.rsyncignore: rsyncignore
-    ~/.rubocop.yml: rubocop.yml
+    ~/.ackrc: config/ackrc
+    ~/.bash_profile: config/bash_profile
+    ~/.bashrc: config/bashrc
+    ~/.editrc: config/editrc
+    ~/.gitconfig: config/gitconfig
+    ~/.gitignore_global: config/gitignore_global
+    ~/.inputrc: config/inputrc
+    ~/.nethackrc: config/nethackrc
+    ~/.rspec: config/rspec
+    ~/.rsyncignore: config/rsyncignore
+    ~/.rubocop.yml: config/rubocop.yml
     ~/.local/bin/utility: bin/utility
 
 - shell:
