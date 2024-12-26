@@ -4,8 +4,7 @@
 dotbot
 bash/completions/iterm2_shell_integration.bash
 bash/private
-# bin/dave-scripts/ac is a symlink to my ActiveCollab commands, which live
-# and are maintained in a private repo.
+# ac is a symlink to my ActiveCollab commands, which live in a private repo.
 bin/utilities/ac
 vim/.netrwhist
 vim/bundle/**
@@ -15,5 +14,3 @@ vim/ftplugin/go
 vim/swp
 node_modules
 tmux/plugins
-tmux/resurrect/last
-tmux/resurrect/tmux_resurrect_*.txt
