@@ -87,3 +87,12 @@ timesused()
 {
   [[ -f ${HOME}/.bash_history ]] && grep -c "^${1}" ${HOME}/.bash_history
 }
+
+# Bootstrap an ssh-agent and add your default key to it.
+ssh-agent-bootstrap() {
+  # Start the SSH agent unless it's already running.
+  [ ! -n "$SSH_AUTH_SOCK" ] && eval $(ssh-agent -s) >/dev/null
+
+  # Only add our key if it's not already added.
+  ssh-add -l | grep -q ~/.ssh/id_rsa || ssh-add ~/.ssh/id_rsa >/dev/null 2>&1
+}
