@@ -23,7 +23,7 @@
 # As an afterthought; Yes, I'm aware of tmuxinator and yes, I've tried it.
 # I don't know, I still like a simple bash script better.
 set -e
-[[ -f ${DOTFILES_PATH}/bash/commands.sh ]] && source ${DOTFILES_PATH}/bash/commands.sh
+[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 # Loading ENV vars enables us to pick up REPO_NAMESPACE.
 export-env-vars-from-file ${HOME}/.env

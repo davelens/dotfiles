@@ -4,7 +4,7 @@ set -e
 # This command wipes the slate clean by stopping all containers, removing all 
 # images and pruning the volumes/networks/... You name it, it's gone.
 
-[[ -f ${DOTFILES_PATH}/bash/commands.sh ]] && source ${DOTFILES_PATH}/bash/commands.sh
+[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 [ ! `command -v docker` ] && fail "ERROR: Docker is not installed."
 docker info &> /dev/null || fail "ERROR: Docker is not running."
