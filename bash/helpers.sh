@@ -52,7 +52,7 @@ pid() {
   lsof -t -c "$@"
 }
 
-# A basic spinner that rotations a line to indicate a process is running.
+# A basic spinner to indicate a process is running.
 #
 # Example usage:
 # (sleep 5) &
