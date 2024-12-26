@@ -9,7 +9,7 @@ rev=$1
 
 [[ "$rev" == "" ]] && echo 'Please provide a commit hash to send to CircleCI' && exit;
 
-. ${DOTFILES_PATH}/bash/commands
+source ${DOTFILES_PATH}/bash/commands.sh
 
 git_server=$(git remote show origin -n | ruby -ne 'puts /^\s*Fetch.*(:|\/){1}([^\/]+\/[^\/]+).git/.match($_)[2] rescue nil')
 

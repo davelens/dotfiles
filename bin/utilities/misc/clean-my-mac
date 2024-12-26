@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-[[ -f ${DOTFILES_PATH}/bash/commands ]] && . ${DOTFILES_PATH}/bash/commands
+[[ -f ${DOTFILES_PATH}/bash/commands.sh ]] && source ${DOTFILES_PATH}/bash/commands.sh
 
 # This command was made to clean up unused, cached crap from most of the heavy
 # hitter apps on my machine. Inspired by CleanMyMac which, however useful and

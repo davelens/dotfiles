@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # Default command overrides. Generally trying to avoid serious ones, but to
 # my knowledge these are not considered harmful.
 alias ls='ls -G'

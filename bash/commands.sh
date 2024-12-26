@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # Exports all ENV vars listed in a file. Loads ~/.env by default.
 export_env_vars_from_file() {
   env_file=${1:-.env}
