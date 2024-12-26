@@ -2,6 +2,7 @@
 
 # Stops further execution after any error.
 set -e
+[[ -f ~/.env ]] && export $(cat ~/.env | grep -v ^\# | xargs)
 [[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 BASENAME=`basename $0`
