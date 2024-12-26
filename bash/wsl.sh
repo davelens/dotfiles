@@ -1,6 +1,6 @@
 # This file will only load on WSL.
 
-[[ -f ${DOTFILES_PATH}/bash/commands.sh ]] && source ${DOTFILES_PATH}/bash/commands.sh
+[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 # The mimemagic gem requires this file, which is installed via a homebrew pkg
 # called shared-mime-info. On Linuxbrew however we need to explicitly set this
