@@ -26,7 +26,7 @@ set -e
 [[ -f ${DOTFILES_PATH}/bash/commands.sh ]] && source ${DOTFILES_PATH}/bash/commands.sh
 
 # Loading ENV vars enables us to pick up REPO_NAMESPACE.
-export_env_vars_from_file ${HOME}/.env
+export-env-vars-from-file ${HOME}/.env
 
 me=bin/tmux/`basename "$0"`
 namespace=${REPO_NAMESPACE:-"Sites"}
@@ -71,10 +71,10 @@ function rails_windows() {
     tmux send-keys -t $1:db "clear && mysql \$(utility rails lookup-db-credentials --key=database)" C-m
   fi
 
-  tmux send-keys -t $1:server 'export_env_vars_from_file' C-m
+  tmux send-keys -t $1:server 'export-env-vars-from-file' C-m
   tmux send-keys -t $1:server 'bin/rails db:environment:set RAILS_ENV=test' C-m
   tmux send-keys -t $1:server 'bin/spring server 2>&1 >/dev/null &' C-m
-  tmux send-keys -t $1:repl 'export_env_vars_from_file; sleep 2 && clear && bin/rails c' C-m
+  tmux send-keys -t $1:repl 'export-env-vars-from-file; sleep 2 && clear && bin/rails c' C-m
 
   case $server in
     [Yy]* ) tmux send-keys -t $1:server 'clear && bin/rails s' C-m;;
@@ -106,7 +106,7 @@ function phoenix_windows() {
   rm $lockfile
 
   tmux send-keys -t $1:repl 'iex -S mix' C-m
-  tmux send-keys -t $1:server 'export_env_vars_from_file' C-m
+  tmux send-keys -t $1:server 'export-env-vars-from-file' C-m
 
   case $server in
     [Yy]* ) tmux send-keys -t $1:server 'clear && mix phx.server' C-m;;
@@ -117,7 +117,7 @@ function phoenix_windows() {
 
 tmux attach -t $1 >/dev/null 2>&1 || (
   tmux new-session -s $1 -n editor -c $destination -d
-  tmux send-keys -t $1 "export_env_vars_from_file; clear && ${EDITOR}" C-m
+  tmux send-keys -t $1 "export-env-vars-from-file; clear && ${EDITOR}" C-m
 
   if [[ -z `pgrep -n mysqld` ]]; then
     read -n1 -p "[tmux/d] Launch local mysql server? (y/n) " mysql

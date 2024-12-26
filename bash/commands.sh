@@ -1,5 +1,5 @@
 # Exports all ENV vars listed in a file. Loads ~/.env by default.
-export_env_vars_from_file() {
+export-env-vars-from-file() {
   env_file=${1:-.env}
   [[ -f $env_file ]] && export $(cat $env_file | grep -v ^\# | xargs)
 }
@@ -33,15 +33,6 @@ fail() {
   exit "${2-1}" # Returns a code specified by $2 or 1 by default.
 }
 
-# Find the process ID of a given command. Note that you can use regex as well.
-# 
-#   pid '/d$/' 
-#
-# Would find pids of all processes with names ending in 'd'
-pid() { 
-  lsof -t -c "$@"
-}
-
 # Flattens any string you give it. Made to format user input like Y/N -> y/n.
 lowercase()
 {
@@ -50,6 +41,15 @@ lowercase()
   else
     cat - | tr "[:upper:]" "[:lower:]"
   fi
+}
+
+# Find the process ID of a given command. Note that you can use regex as well.
+# 
+#   pid '/d$/' 
+#
+# Would find pids of all processes with names ending in 'd'
+pid() { 
+  lsof -t -c "$@"
 }
 
 # A basic spinner that rotations a line to indicate a process is running.
@@ -80,14 +80,6 @@ spinner() {
   printf "    \b\b\b\b"  # Clear spinner once done
 }
 
-
-# Because we all want to know how many times we actually typed "gti" instead 
-# of "git".
-timesused()
-{
-  [[ -f ${HOME}/.bash_history ]] && grep -c "^${1}" ${HOME}/.bash_history
-}
-
 # Bootstrap an ssh-agent and add your default key to it.
 ssh-agent-bootstrap() {
   # Start the SSH agent unless it's already running.
@@ -95,4 +87,11 @@ ssh-agent-bootstrap() {
 
   # Only add our key if it's not already added.
   ssh-add -l | grep -q ~/.ssh/id_rsa || ssh-add ~/.ssh/id_rsa >/dev/null 2>&1
+}
+
+# Because we all want to know how many times we actually typed "gti" instead 
+# of "git".
+timesused()
+{
+  [[ -f ${HOME}/.bash_history ]] && grep -c "^${1}" ${HOME}/.bash_history
 }
