@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # This file will only load on macos.
 # As this grows I might need to split it up into multiple files.
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # Simplified Git branch info formatted for bash prompts.
 # Picks up on `git b` if that alias exists. This way you could inject
 # your own branch logic into the prompt.

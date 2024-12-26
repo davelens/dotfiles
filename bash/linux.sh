@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # This file will only load on Linux
 
 # The mimemagic gem requires this file, which is installed via a homebrew pkg
