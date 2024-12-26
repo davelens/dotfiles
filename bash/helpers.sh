@@ -28,7 +28,6 @@ extract() {
 
 # Helps us hard stop our custom executables during fails.
 fail() {
-  [ `command -v revolver` ] && pgrep revolver && revolver stop
   printf '%s\n' "$1" >&2 # Sends a message to stderr.
   exit "${2-1}" # Returns a code specified by $2 or 1 by default.
 }
