@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-files=$(sed -n '/- link:/,/^-/p' install.conf.yaml | sed -n '/^    /p')
+BASEDIR="$(dirname "${BASH_SOURCE[0]}")"
+files=$(sed -n '/- link:/,/^-/p' "$BASEDIR/install.conf.yaml" | sed -n '/^    /p')
 
 # Iterate over each line of the result
 while IFS= read -r line; do
@@ -11,7 +12,7 @@ while IFS= read -r line; do
 
   # Extract the file path before the ':'
   file_path=$(echo "$line" | awk -F':' '{print $1}' | xargs)  # Removes surrounding spaces
-  
+
   # Expand the '~' to the home directory
   expanded_path="${file_path/#\~/$HOME}"
 
