@@ -1,5 +1,9 @@
 # dotfiles
 
+My own personal, highly subjective set of tools to help me do my dev work.
+
+As for context: I've been (mostly) a backend developer for web apps in my career. At some point I turned my terminal into an IDE of sorts, and never looked back.
+
 ## History
 * [Est. 2011](https://github.com/davelens/dotfiles/commits/master/?since=2011-05-27&until=2011-05-31)
 * Started on macos, now used on both macos and WSL2 (currently Arch) instances
