@@ -31,7 +31,7 @@ export ERL_AFLAGS="-kernel shell_history enabled"
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 if [ -f “${HOME}/.gpg-agent-info” ]; then
-  . “${HOME}/.gpg-agent-info”
+  source “${HOME}/.gpg-agent-info”
   export GPG_AGENT_INFO
   export SSH_AUTH_SOCK
 fi

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ${DOTFILES_PATH}/bin/utilities/tmux/helpers.sh
+source ${DOTFILES_PATH}/bin/utilities/tmux/helpers.sh
 
 [[ ! -d ~/.local/state/tmux ]] && mkdir ~/.local/state/tmux
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-. ${DOTFILES_PATH}/bin/utilities/tmux/helpers.sh
+source ${DOTFILES_PATH}/bin/utilities/tmux/helpers.sh
 
 battery_info()
 {
