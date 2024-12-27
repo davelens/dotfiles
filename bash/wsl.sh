@@ -24,7 +24,7 @@ alias pbcopy="clip.exe"
 alias pbpaste="powershell.exe -command 'Get-Clipboard' | head -n -1"
 
 # Make sure an ssh-agent is running with our default key active.
-ssh-agent-bootstrap
+#ssh-agent-bootstrap
 
 # After an upgrade to Ubuntu 20.04 LTS, brew no longer gets loaded by default.
 #eval $(SHELL=/bin/bash /home/linuxbrew/.linuxbrew/bin/brew shellenv)

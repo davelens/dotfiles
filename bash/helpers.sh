@@ -80,14 +80,20 @@ spinner() {
 }
 
 # Bootstrap an ssh-agent and add your default key to it.
-# TODO: Fix this, I know it can be done.
-ssh-agent-bootstrap() {
-  # Start the SSH agent unless it's already running.
-  [ ! -n "$SSH_AUTH_SOCK" ] && eval $(ssh-agent -s) >/dev/null
+#ssh-agent-bootstrap() {
+  #if ! pgrep -u "$USER" ssh-agent > /dev/null 2>&1; then
+    #echo "Starting a new ssh-agent..."
+    #eval "$(ssh-agent -s)"
+  #else
+    #export SSH_AUTH_SOCK=$(find /tmp/ -type s -user "$USER" -name "agent.*" 2>/dev/null | head -n 1)
 
-  # Only add our key if it's not already added.
-  ssh-add -l | grep -q ~/.ssh/id_rsa || ssh-add ~/.ssh/id_rsa >/dev/null 2>&1
-}
+    #if [[ -n $SSH_AUTH_SOCK ]]; then
+      #echo "Found existing ssh-agent. SSH_AUTH_SOCK set to $SSH_AUTH_SOCK"
+    #else
+      #echo "No valid SSH_AUTH_SOCK found. You may need to restart the ssh-agent."
+    #fi
+  #fi
+#}
 
 # Because we all want to know how many times we actually typed "gti" instead 
 # of "git".
