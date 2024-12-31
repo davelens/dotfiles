@@ -80,7 +80,7 @@ spinner() {
 }
 
 # Bootstrap an ssh-agent and add your default key to it.
-#ssh-agent-bootstrap() {
+ssh-agent-bootstrap() {
   #if ! pgrep -u "$USER" ssh-agent > /dev/null 2>&1; then
     #echo "Starting a new ssh-agent..."
     #eval "$(ssh-agent -s)"
@@ -93,7 +93,20 @@ spinner() {
       #echo "No valid SSH_AUTH_SOCK found. You may need to restart the ssh-agent."
     #fi
   #fi
-#}
+
+  #if [ -z "$SSH_AUTH_SOCK" ]; then
+    #export SSH_AUTH_SOCK="/tmp/ssh-agent.socket"
+    #eval $(ssh-agent -s -a "$SSH_AUTH_SOCK")
+    #ssh-add
+  #fi
+
+  if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    export SSH_AUTH_SOCK=/tmp/ssh-agent.socket
+    [ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"
+    eval $(ssh-agent -s -a $SSH_AUTH_SOCK)
+    ssh-add
+  fi
+}
 
 # Because we all want to know how many times we actually typed "gti" instead 
 # of "git".
