@@ -1,6 +1,6 @@
 # Exports all ENV vars listed in a file. Loads ~/.env by default.
 export-env-vars-from-file() {
-  env_file=${1:-.env}
+  env_file=${1:-~/.env}
   [[ -f $env_file ]] && export $(cat $env_file | grep -v ^\# | xargs)
 }
 
@@ -81,11 +81,31 @@ spinner() {
 
 # Bootstrap an ssh-agent and add your default key to it.
 ssh-agent-bootstrap() {
-  # Start the SSH agent unless it's already running.
-  [ ! -n "$SSH_AUTH_SOCK" ] && eval $(ssh-agent -s) >/dev/null
+  #if ! pgrep -u "$USER" ssh-agent > /dev/null 2>&1; then
+    #echo "Starting a new ssh-agent..."
+    #eval "$(ssh-agent -s)"
+  #else
+    #export SSH_AUTH_SOCK=$(find /tmp/ -type s -user "$USER" -name "agent.*" 2>/dev/null | head -n 1)
 
-  # Only add our key if it's not already added.
-  ssh-add -l | grep -q ~/.ssh/id_rsa || ssh-add ~/.ssh/id_rsa >/dev/null 2>&1
+    #if [[ -n $SSH_AUTH_SOCK ]]; then
+      #echo "Found existing ssh-agent. SSH_AUTH_SOCK set to $SSH_AUTH_SOCK"
+    #else
+      #echo "No valid SSH_AUTH_SOCK found. You may need to restart the ssh-agent."
+    #fi
+  #fi
+
+  #if [ -z "$SSH_AUTH_SOCK" ]; then
+    #export SSH_AUTH_SOCK="/tmp/ssh-agent.socket"
+    #eval $(ssh-agent -s -a "$SSH_AUTH_SOCK")
+    #ssh-add
+  #fi
+
+  if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    export SSH_AUTH_SOCK=/tmp/ssh-agent.socket
+    [ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"
+    eval $(ssh-agent -s -a $SSH_AUTH_SOCK)
+    ssh-add
+  fi
 }
 
 # Because we all want to know how many times we actually typed "gti" instead 
