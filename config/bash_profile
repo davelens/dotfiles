@@ -1,6 +1,6 @@
-# The installation script will have made a ~/.env file contining the value for
+# The installation script will have made a ~/.env file containing the value for
 # DOTFILES_PATH, so we're sourcing it here at the earliest point.
-source ~/.env
+export $(cat ~/.env | grep -v ^\# | xargs)
 
 export OS=`${DOTFILES_PATH}/bin/os`
 
@@ -14,7 +14,7 @@ export OS=`${DOTFILES_PATH}/bin/os`
 [[ $OS == 'linux' ]] && source "${DOTFILES_PATH}/bash/linux.sh"
 
 # Source the files in the bash folder
-for file in ${DOTFILES_PATH}/bash/{commands,aliases,prompt,private}.sh; do
+for file in ${DOTFILES_PATH}/bash/{helpers,aliases,prompt,private}.sh; do
   [ -r "$file" ] && source "$file";
 done;
 unset file;
