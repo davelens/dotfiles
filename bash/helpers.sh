@@ -81,25 +81,6 @@ spinner() {
 
 # Bootstrap an ssh-agent and add your default key to it.
 ssh-agent-bootstrap() {
-  #if ! pgrep -u "$USER" ssh-agent > /dev/null 2>&1; then
-    #echo "Starting a new ssh-agent..."
-    #eval "$(ssh-agent -s)"
-  #else
-    #export SSH_AUTH_SOCK=$(find /tmp/ -type s -user "$USER" -name "agent.*" 2>/dev/null | head -n 1)
-
-    #if [[ -n $SSH_AUTH_SOCK ]]; then
-      #echo "Found existing ssh-agent. SSH_AUTH_SOCK set to $SSH_AUTH_SOCK"
-    #else
-      #echo "No valid SSH_AUTH_SOCK found. You may need to restart the ssh-agent."
-    #fi
-  #fi
-
-  #if [ -z "$SSH_AUTH_SOCK" ]; then
-    #export SSH_AUTH_SOCK="/tmp/ssh-agent.socket"
-    #eval $(ssh-agent -s -a "$SSH_AUTH_SOCK")
-    #ssh-add
-  #fi
-
   if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent > /dev/null; then
     export SSH_AUTH_SOCK=/tmp/ssh-agent.socket
     [ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"
