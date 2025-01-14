@@ -28,3 +28,6 @@ ssh-agent-bootstrap
 
 # After an upgrade to Ubuntu 20.04 LTS, brew no longer gets loaded by default.
 #eval $(SHELL=/bin/bash /home/linuxbrew/.linuxbrew/bin/brew shellenv)
+
+# Makes sure that the terminal is cleared when pressing Ctrl+l in tmux in WSL.
+bind -x $'"\C-l":clear;'
