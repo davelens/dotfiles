@@ -56,8 +56,9 @@ rm ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
 # Remove all docker containers and images
 utility docker reset
 
-# Clean all log files across all my Sites projects.
-# My ${REPO_NAMESPACE} folder (`Sites` by default) is structured according to 
+# Clean all log files across all my local repositories, assuming they have a
+# folder named "log" in their working directory.
+# My ${REPO_NAMESPACE} folder (`~/Repositories` by default) is structured according to 
 # git repo structure (user/project).
 # The ls check will fail silently if you don't have a similar structure.
-ls ~/${REPO_NAMESPACE}/*/**/log/* 2>/dev/null && rm ~/${REPO_NAMESPACE}/*/**/log/*
+ls ${REPO_NAMESPACE}/*/**/log/* 2>/dev/null && rm ${REPO_NAMESPACE}/*/**/log/*

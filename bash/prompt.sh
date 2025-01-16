@@ -39,8 +39,8 @@ prompt_branch() {
 #   * The last pwdmaxlen characters of the PWD are displayed
 #   * Leading partial directory names are stripped off
 #
-# Example: /home/davelens/${REPO_NAMESPACE}/blimp/abcdefghij
-# if pwdmaxlen=25: ~/${REPO_NAMESPACE}/blimp/abcdefghij
+# Example: ${REPO_NAMESPACE}/blimp/abcdefghij
+# if pwdmaxlen=25: ${REPO_NAMESPACE}/blimp/abcdefghij
 # if pwdmaxlen=20: ~/blimp/abcdefghij
 rewrite_pwd()
 {

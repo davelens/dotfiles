@@ -10,40 +10,77 @@ prompt() {
   echo "${input:-$default_value}"
 }
 
-# Make sure we have the necessary tools in our environment.
-[[ ! `command -v jq` ]] && brew install jq
-[[ ! `command -v bw` ]] && brew install bitwarden-cli
+ask_for_bitwarden() {
+  read -n1 -p "Would you like to use Bitwarden to retrieve your environment variables? (y/n) " bitwarden
+  echo ""
+  case $bitwarden in
+    [Yy]* ) return 0;;
+    [Nn]* ) return 1;;
+    * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
+  esac
+}
 
-# Check if Bitwarden CLI is logged in
-if ! bw status | grep -q "locked"; then
-  echo "Bitwarden is locked or not logged in. Please run 'bw unlock' before continuing."
-  exit 1
-fi
-
-# Load existing .env if available
-env_file="${HOME}/.env"
-if [[ -f $env_file ]]; then
-  source "$env_file"
-  echo "Loaded existing environment variables from $env_file."
-fi
-
-# Collect data
-REPO_NAMESPACE=$(prompt "REPO_NAMESPACE" "Where do you keep your local Git(hub) repos?" "${REPO_NAMESPACE}")
-GITHUB_USERNAME=$(prompt "GITHUB_USERNAME" "Enter your GitHub username" "${GITHUB_USERNAME}")
-GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter your GitHub email address" "${GITHUB_EMAIL}")
-GPG_SIGNING_KEY=$(prompt "GPG_KEY" "Enter your GPG signing key" "${GPG_SIGNING_KEY}")
-
-# Retrieve GitHub API token using Bitwarden
-echo "Retrieving GitHub API token from Bitwarden..."
-GITHUB_API_TOKEN=$(bw get item "github@davelens.be" | jq -r '.fields[] | select(.name == "Github API Token") | .value')
-if [[ -z $GITHUB_API_TOKEN ]]; then
-  echo "Failed to retrieve GitHub API token. Please ensure it exists in Bitwarden."
-  exit 1
-fi
+echo "### This script will help you set up your environment variables."
+echo "### Press Enter to confirm suggested values."
+echo "### Press Ctrl + c at any time to abort."
+echo ""
 
 # Derive the dotfiles' absolute path so we always have a sensible default for 
 # the ~/.env file.
 dotfiles_derived_path=$(dirname $(dirname $(realpath "$0")))
+env_file="${HOME}/.env"
+
+# Load existing .env if available
+if [[ -f $env_file ]]; then
+  # TODO: This assumes all vars are accounted for with values.
+  # Probably need to check every individual var instead.
+  source "$env_file"
+  echo "Loaded existing environment variables from $env_file."
+else
+  if ask_for_bitwarden; then
+    # Make sure we have the necessary tools in our environment.
+    [[ ! `command -v jq` ]] && brew install jq
+    [[ ! `command -v bw` ]] && brew install bitwarden-cli
+
+    echo "### This script will assume you have two different entries in Bitwarden:"
+    echo "###"
+    echo "### 1. An item of the Identity type, named after your full name, containing:"
+    echo "###    a A custom field entry named 'GPG signing key'"
+    echo "###"
+    echo '### 2. An item of the Login type, named "Github", containing:'
+    echo '###    a The Username login credential that matches your Github e-mail address'
+    echo "###    b A custom field entry named 'Public username'"
+    echo "###    c A custom field entry named 'Github API Token'"
+    echo "###"
+
+    # Check if Bitwarden CLI is logged in
+    if ! bw status | grep -q "locked"; then
+      echo "Bitwarden is locked or not logged in. Please run 'bw unlock' before continuing."
+      exit 1
+    fi
+
+    OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
+    GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
+
+    echo "Loading Bitwarden data ..."
+    owner_data=$(bw list items --search "$OWNER_NAME" | jq '.[] | select(.identity != null)')
+    bitwarden_data=$(bw get item "$GITHUB_EMAIL")
+
+    GITHUB_USERNAME="$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Public username").value')"
+    GITHUB_API_TOKEN=$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Github API Token") | .value')
+    GPG_SIGNING_KEY=$(echo $owner_data | jq -r '.fields[] | select(.name == "GPG signing key").value')
+  else
+    echo "Skipping Bitwarden."
+  fi
+fi
+
+# Present the rest of the data to confirm.
+DOTFILES_PATH=$(prompt "DOTFILES_PATH" "Confirm the root folder of the dotfiles" "${DOTFILES_PATH:-$dotfiles_derived_path}")
+REPO_NAMESPACE=$(prompt "REPO_NAMESPACE" "Where do you keep your local Git(hub) repos?" "${REPO_NAMESPACE:-$HOME/Repositories}")
+[[ -z $GITHUB_API_TOKEN ]] && GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
+GITHUB_USERNAME=$(prompt "GITHUB_USERNAME" "Enter your public Github username" "${GITHUB_USERNAME}")
+GITHUB_API_TOKEN=$(prompt "GITHUB_API_TOKEN" "Enter your Github API Token" "${GITHUB_API_TOKEN}")
+GPG_SIGNING_KEY=$(prompt "GPG_SIGNING_KEY" "Enter your GPG signing key" "${GPG_SIGNING_KEY}")
 
 # Write to .env
 cat > "$env_file" <<EOF
@@ -51,9 +88,9 @@ cat > "$env_file" <<EOF
 # If you add your own global ENV vars below, remember to backport them to it.
 REPO_NAMESPACE="$(realpath -m "${REPO_NAMESPACE/#\~/$HOME}")"
 DOTFILES_PATH="$dotfiles_derived_path"
-GITHUB_API_TOKEN=$GITHUB_API_TOKEN
-GITHUB_USERNAME=$GITHUB_USERNAME
 GITHUB_EMAIL=$GITHUB_EMAIL
+GITHUB_USERNAME=$GITHUB_USERNAME
+GITHUB_API_TOKEN=$GITHUB_API_TOKEN
 GPG_SIGNING_KEY=$GPG_SIGNING_KEY
 EOF
 
