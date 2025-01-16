@@ -1,6 +1,6 @@
 # The installation script will have made a ~/.env file containing the value for
 # DOTFILES_PATH, so we're sourcing it here at the earliest point.
-export $(cat ~/.env | grep -v ^\# | xargs)
+source ~/.env
 
 export OS=`${DOTFILES_PATH}/bin/os`
 

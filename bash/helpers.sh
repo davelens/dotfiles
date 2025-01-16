@@ -1,7 +1,7 @@
 # Exports all ENV vars listed in a file. Loads ~/.env by default.
 export-env-vars-from-file() {
-  env_file=${1:-~/.env}
-  [[ -f $env_file ]] && export $(cat $env_file | grep -v ^\# | xargs)
+  local env_file=${1:-~/.env}
+  [[ -f $env_file ]] && source "$env_file"
 }
 
 # One generic command to extract most compressed files.
