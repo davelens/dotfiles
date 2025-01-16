@@ -131,6 +131,8 @@ export SHELL=${BREW_PATH}/bin/bash
 
 # node.js modules path
 export NODE_PATH="/usr/local/share/npm/lib/node_modules"
+# This is to prevent punycode deprecation logging to stderr, in particular.
+export NODE_OPTIONS="--no-deprecation"
 
 # Go lang work dir
 export GOPATH=${HOME}/.go
