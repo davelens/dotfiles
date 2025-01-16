@@ -13,6 +13,8 @@ git submodule update --init --recursive "${DOTBOT_DIR}"
 # Activate dotbot with the install configuration
 "${DOTFILES_PATH}/${DOTBOT_DIR}/bin/dotbot" -d "${DOTFILES_PATH}" -c "setup/install.conf.yaml" "${@}"
 
+[[ ! -f ~/.env ]] && $DOTFILES_PATH/setup/env_wizard
+
 # Cache the installation directory string so we can reference it in subscripts.
 # I don't use an ENV var directly because we need this *before* the shell loads
 # the .bash_profile file.
