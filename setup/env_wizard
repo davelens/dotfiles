@@ -102,7 +102,6 @@ else
 fi
 
 # Present the rest of the data to confirm.
-DOTFILES_PATH=$(prompt "DOTFILES_PATH" "Confirm the root folder of the dotfiles" "${DOTFILES_PATH:-$dotfiles_derived_path}")
 REPO_NAMESPACE=$(prompt "REPO_NAMESPACE" "Where do you keep your local Git(hub) repos?" "${REPO_NAMESPACE:-$HOME/Repositories}")
 [[ -z $OWNER_NAME ]] && OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
 [[ -z $GITHUB_EMAIL ]] && GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
