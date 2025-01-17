@@ -30,7 +30,6 @@ export-env-vars-from-file ${HOME}/.env
 
 me=bin/tmux/`basename "$0"`
 namespace=${REPO_NAMESPACE:-"$HOME/Sites"}
-echo $namespace
 lockfile=/tmp/mix-done.lock
 
 # An elegant exit with a fuzzy search to select the namespace to exit.
