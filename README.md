@@ -11,7 +11,7 @@ As for context: I've been (mostly) a backend developer for web apps in my career
 * Included my Vim setup until 2020, when I moved it to [a separate repository](https://github.com/davelens/dotvim)
 
 ## Installation
-All steps assume you'll clone the repo into `~/.dotfiles`:
+You can clone this repo wherever you want, but this assumes you'll save the files in `~/.dotfiles`:
 ```bash
 git clone git@github.com:davelens/dotfiles.git ~/.dotfiles
 ~/.dotfiles/setup/install
