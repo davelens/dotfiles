@@ -4,7 +4,13 @@
 # This is because it exports the BW_SESSION variable to the current shell.
 
 # Gracefully handle Ctrl-C to get out of this thing.
-trap 'printf "\nAborted.\n"; return 1' SIGINT
+handle_interrupt() {
+  if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
+    printf "\nAborted.\n"
+    exit 1
+  fi
+}
+trap handle_interrupt SIGINT
 
 # This only needs to be shown once. The recursive bit just tries to unlock
 # until successful.

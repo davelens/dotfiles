@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
 # Gracefully handle Ctrl-C to get out of this thing.
-trap 'printf "\nAborted.\n"; exit 1' SIGINT
+handle_interrupt() {
+  if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    printf "\nAborted.\n"
+    exit 1
+  fi
+}
+trap handle_interrupt SIGINT
 
 # Function to prompt for input with a default value
 prompt() {
@@ -64,7 +70,7 @@ else
     echo ""
 
     # Check if Bitwarden CLI is logged in
-    source $setup_path/unlock_bw
+    source $setup_path/unlock_bw || exit 1
 
     # We repeat the check for the session var, because if we don't have it here
     # something went wrong.
