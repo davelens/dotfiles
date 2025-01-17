@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# TODO: Would be better to switch most of my ENV vars I don't need in $PATH
+# to live in a config/config.toml file or something.
+
 # Gracefully handle Ctrl-C to get out of this thing.
 handle_interrupt() {
   if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
