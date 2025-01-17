@@ -20,9 +20,12 @@ ask_for_bitwarden() {
   esac
 }
 
+echo ""
+echo "###"
 echo "### This script will help you set up your environment variables."
 echo "### Press Enter to confirm suggested values."
 echo "### Press Ctrl + c at any time to abort."
+echo "###"
 echo ""
 
 # Derive the dotfiles' absolute path so we always have a sensible default for 
@@ -42,7 +45,9 @@ else
     [[ ! `command -v jq` ]] && brew install jq
     [[ ! `command -v bw` ]] && brew install bitwarden-cli
 
-    echo "### This script will assume you have two different entries in Bitwarden:"
+    echo ""
+    echo "###"
+    echo "### You need the following two items ready in Bitwarden:"
     echo "###"
     echo "### 1. An item of the Identity type, named after your full name, containing:"
     echo "###    a A custom field entry named 'GPG signing key'"
@@ -52,19 +57,27 @@ else
     echo "###    b A custom field entry named 'Public username'"
     echo "###    c A custom field entry named 'Github API Token'"
     echo "###"
+    echo ""
 
     # Check if Bitwarden CLI is logged in
+    printf "Checking Bitwarden status ... "
     if ! bw status | grep -q "locked"; then
       echo "Bitwarden is locked or not logged in. Please run 'bw unlock' before continuing."
       exit 1
     fi
+    printf "OK!"
+    echo ""
+    echo ""
 
     OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
     GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
 
-    echo "Loading Bitwarden data ..."
+    printf "Grabbing Bitwarden data ... "
     owner_data=$(bw list items --search "$OWNER_NAME" | jq '.[] | select(.identity != null)')
     bitwarden_data=$(bw get item "$GITHUB_EMAIL")
+    printf "OK!"
+    echo ""
+    echo ""
 
     GITHUB_USERNAME="$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Public username").value')"
     GITHUB_API_TOKEN=$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Github API Token") | .value')
@@ -75,9 +88,9 @@ else
 fi
 
 # Present the rest of the data to confirm.
-[[ -z $OWNER_NAME ]] && OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
 DOTFILES_PATH=$(prompt "DOTFILES_PATH" "Confirm the root folder of the dotfiles" "${DOTFILES_PATH:-$dotfiles_derived_path}")
 REPO_NAMESPACE=$(prompt "REPO_NAMESPACE" "Where do you keep your local Git(hub) repos?" "${REPO_NAMESPACE:-$HOME/Repositories}")
+[[ -z $OWNER_NAME ]] && OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
 [[ -z $GITHUB_EMAIL ]] && GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
 GITHUB_USERNAME=$(prompt "GITHUB_USERNAME" "Enter your public Github username" "${GITHUB_USERNAME}")
 GITHUB_API_TOKEN=$(prompt "GITHUB_API_TOKEN" "Enter your Github API Token" "${GITHUB_API_TOKEN}")
