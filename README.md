@@ -16,16 +16,15 @@ All steps assume you'll clone the repo into `~/.dotfiles`:
 git clone git@github.com:davelens/dotfiles.git ~/.dotfiles
 ~/.dotfiles/setup/install
 ```
+### User-specific configuration and Bitwarden
+Because [Bitwarden](https://bitwarden.com/) is my password manager of choice, I tailored the installer to ask you if you want to use Bitwarden to retrieve some data related to your Github account and `~/.gitconfig` using `bitwarden-cli`.
+
+This is entirely **optional**; you will still get prompted to enter the data manually.
 
 ### Uninstall
 ```bash
 ~/.dotfiles/setup/uninstall
 ```
-
-### Additional configuration
-At the top of `~/.gitconfig` you'll have to edit the `[user]` section with your GitHub user and e-mail address (and optionally your GPG signing key).
-
-Somewhere in the future this information will be read from ENV vars, but for now just edit that file and you should be set.
 
 ## Custom bash scripts
 You can call custom bash scripts using the `utility` command, which is also aliased to `u`:
