@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# NOTE: This command is meant to be SOURCED, not executed directly.
+# This is because it exports the BW_SESSION variable to the current shell.
+
+# Gracefully handle Ctrl-C to get out of this thing.
+trap 'printf "\nAborted.\n"; return 1' SIGINT
+
+# This only needs to be shown once. The recursive bit just tries to unlock
+# until successful.
+printf "Checking Bitwarden status ... "
+if [[ -z "$BW_SESSION" || $(bw status | grep -q ':"locked"'; echo $?) -eq 0 ]]; then
+  printf "It's locked!\n"
+else
+  printf "OK!\n"
+  echo $BW_SESSION
+  return 0
+fi
+
+check_bitwarden() {
+  printf "Unlocking Bitwarden ... \n"
+
+  BW_ERRORS=$(bw unlock --raw)
+  EXIT_CODE=$?
+
+  if [[ -z $BW_ERRORS || $EXIT_CODE -ne 0 ]]; then
+    check_bitwarden
+  else
+    # Unlock succeeded, export the session
+    export BW_SESSION="$BW_ERRORS"
+    return 0
+  fi
+}
+
+check_bitwarden
