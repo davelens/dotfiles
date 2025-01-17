@@ -13,7 +13,6 @@ if [[ -z "$BW_SESSION" || $(bw status | grep -q ':"locked"'; echo $?) -eq 0 ]]; 
   printf "It's locked!\n"
 else
   printf "OK!\n"
-  echo $BW_SESSION
   return 0
 fi
 
