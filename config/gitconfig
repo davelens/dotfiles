@@ -1,7 +1,11 @@
 [user]
-  name = davelens
-  email = github@davelens.be
-  signingkey = 07C7F96B857C4CAA
+  name = ""
+  email = ""
+  signingkey = ""
+
+[include]
+  path = ~/.gitconfig.env
+
 [diff]
 [color]
   ui = auto
