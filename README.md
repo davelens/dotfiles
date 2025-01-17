@@ -17,7 +17,7 @@ git clone git@github.com:davelens/dotfiles.git ~/.dotfiles
 ~/.dotfiles/setup/install
 ```
 ### User-specific configuration and Bitwarden
-Because [Bitwarden](https://bitwarden.com/) is my password manager of choice, I tailored the installer to ask you if you want to use Bitwarden to retrieve some data related to your Github account and `~/.gitconfig` using `bitwarden-cli`.
+Because [Bitwarden](https://bitwarden.com/) is my password manager of choice, I tailored the installer to ask you if you want to use `bitwarden-cli` to retrieve some data related to your Github account and `~/.gitconfig`.
 
 This is entirely **optional**; you will still get prompted to enter the data manually.
 
