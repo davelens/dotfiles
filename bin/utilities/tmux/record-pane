@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
+
+if [ -n "$TMUX_PANE" ] && [ "$TMUX_PANE_LOGGING" != "1" ]; then
+  export TMUX_PANE_LOGGING=1
+else
+  fail 'ERROR: This command can only be run from within a tmux session.'
+fi
+
+LOGS=$HOME/.local/share/tmux/logs && mkdir -p $LOGS
+LOG_PATH="$LOGS/$(date +%Y%m%d%H%M%S).pane${TMUX_PANE//[^0-9]/}.log"
+
+tmux pipe-pane -t "${TMUX_PANE}" "exec cat - >> $LOG_PATH"
