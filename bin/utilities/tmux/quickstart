@@ -55,9 +55,8 @@ SESSION_NAME=$(basename "$TARGET_PATH" | sed 's/^\.//')
 
 # Check if the session already exists
 if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-  # This is a little trick. If we get tmux errors, we can retrieve the correct
-  # errors by failing quickstart silently, and calling tmux with the options
-  # at hand.
+  # A little trick: If we get errors we can simulate how tmux itself would 
+  # respond by failing silently, and calling tmux with the options at hand.
   if ! tmux "${TMUX_OPTIONS[@]}" new-session -s "$SESSION_NAME" -n "editor" -d 2>/dev/null; then
     # Directly invoke tmux with the options to replicate the native behavior
     tmux "${TMUX_OPTIONS[@]}" 2>&1
