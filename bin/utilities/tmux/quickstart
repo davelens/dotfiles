@@ -1,25 +1,68 @@
 #!/usr/bin/env bash
 
 set -e
+[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
-# Check if a parameter is provided
-if [ $# -ne 1 ]; then
-  echo "Usage: $0 <path-to-folder>"
-  exit 1
-fi
+usage() {
+  echo "Usage: $0 [-h|--help] [tmux-options] <path-to-folder>"
+  echo ""
+  echo "Arguments:"
+  echo "  -h|--help         Show this help message and exit."
+  echo "  [tmux-options]    Any valid tmux options or flags (such as -f, -v,...)."
+  echo "  <path-to-folder>  Target directory to start the session in."
+  exit 0
+}
 
-TARGET_PATH=$(realpath "$1")
+# Parse options and target path
+TMUX_OPTIONS=()
+TARGET_PATH=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      usage
+      ;;
+    --)
+      shift
+      TARGET_PATH="$1"
+      shift
+      break
+      ;;
+    -*)
+      TMUX_OPTIONS+=("$1")
+      if [[ $# -gt 1 && ! "$2" =~ ^- ]]; then
+        TMUX_OPTIONS+=("$2")
+        shift
+      fi
+      shift
+      ;;
+    *)
+      TARGET_PATH="$1"
+      shift
+      ;;
+  esac
+done
+
+# Assure the target path is given.
+[[ -z "$TARGET_PATH" ]] && fail "Error: <path-to-folder> is required."
+
+# Sanitize the input for use in the tmux command(s).
+TARGET_PATH=$(realpath "$TARGET_PATH")
 SESSION_NAME=$(basename "$TARGET_PATH" | sed 's/^\.//')
 
-# Check if the path is valid and accessible
-if [ ! -d "$TARGET_PATH" ]; then
-  echo "Error: '$TARGET_PATH' is not a valid directory."
-  exit 1
-fi
+# Assure the target path exists.
+[[ ! -d "$TARGET_PATH" ]] && fail "Error: '$TARGET_PATH' is not a valid directory."
 
 # Check if the session already exists
 if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-  tmux new -s "$SESSION_NAME" -n "editor" -d
+  # This is a little trick. If we get tmux errors, we can retrieve the correct
+  # errors by failing quickstart silently, and calling tmux with the options
+  # at hand.
+  if ! tmux "${TMUX_OPTIONS[@]}" new-session -s "$SESSION_NAME" -n "editor" -d 2>/dev/null; then
+    # Directly invoke tmux with the options to replicate the native behavior
+    tmux "${TMUX_OPTIONS[@]}" 2>&1
+    exit 1
+  fi
   tmux rename-window -t "$SESSION_NAME:1" "editor"
   tmux send-keys -t "$SESSION_NAME:1" "cd '$TARGET_PATH' && clear && ${EDITOR}" C-m
   tmux new-window -t "$SESSION_NAME" -n "cli"

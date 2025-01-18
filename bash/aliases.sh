@@ -30,8 +30,8 @@ alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
 alias u='utility'
 
 # Jumpstart aliases for specific projects.
-alias dotfiles="utility tmux quickstart ~/.dotfiles"
-alias dotvim="utility tmux quickstart ~/.dotvim"
+alias dotfiles='bash -c "utility tmux quickstart \"\$@\" -- ~/.dotfiles" --'
+alias dotfiles='bash -c "utility tmux quickstart \"\$@\" -- ~/.dotvim" --'
 
 # Generic helpers and custom commands
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
