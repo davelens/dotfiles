@@ -93,7 +93,7 @@ else
     bitwarden_data=$(bw get item "$GITHUB_EMAIL")
 
     GITHUB_USERNAME="$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Public username").value')"
-    GITHUB_API_TOKEN=$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Github API Token") | .value')
+    GITHUB_PERSONAL_ACCESS_TOKEN=$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Github API Token") | .value')
     GPG_SIGNING_KEY=$(echo $owner_data | jq -r '.fields[] | select(.name == "GPG signing key").value')
     printf "OK!\n\n"
   else
@@ -106,7 +106,7 @@ REPO_NAMESPACE=$(prompt "REPO_NAMESPACE" "Where do you keep your local Git(hub) 
 [[ -z $OWNER_NAME ]] && OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
 [[ -z $GITHUB_EMAIL ]] && GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
 GITHUB_USERNAME=$(prompt "GITHUB_USERNAME" "Enter your public Github username" "${GITHUB_USERNAME}")
-GITHUB_API_TOKEN=$(prompt "GITHUB_API_TOKEN" "Enter your Github API Token" "${GITHUB_API_TOKEN}")
+GITHUB_PERSONAL_ACCESS_TOKEN=$(prompt "GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github API Token" "${GITHUB_PERSONAL_ACCESS_TOKEN}")
 GPG_SIGNING_KEY=$(prompt "GPG_SIGNING_KEY" "Enter your GPG signing key" "${GPG_SIGNING_KEY}")
 
 # Check if the REPO_NAMESPACE path exists, and create it if not.
@@ -127,7 +127,7 @@ REPO_NAMESPACE="$(grealpath -m "${REPO_NAMESPACE/#\~/$HOME}")"
 DOTFILES_PATH="$dotfiles_derived_path"
 GITHUB_EMAIL=$GITHUB_EMAIL
 GITHUB_USERNAME=$GITHUB_USERNAME
-GITHUB_API_TOKEN=$GITHUB_API_TOKEN
+GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_PERSONAL_ACCESS_TOKEN
 GPG_SIGNING_KEY=$GPG_SIGNING_KEY
 EOF
 
