@@ -31,7 +31,7 @@ alias u='utility'
 
 # Jumpstart aliases for specific projects.
 alias dotfiles='bash -c "utility tmux quickstart \"\$@\" -- ~/.dotfiles" --'
-alias dotfiles='bash -c "utility tmux quickstart \"\$@\" -- ~/.dotvim" --'
+alias dotvim='bash -c "utility tmux quickstart \"\$@\" -- ~/.dotvim" --'
 
 # Generic helpers and custom commands
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
