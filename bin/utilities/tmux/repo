@@ -54,7 +54,7 @@ fi
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No project namespace given.'
-  printf "\tUsage: d [-x|-n|--docker] [<github-user>/<github-repo>]\n" && exit
+  echo "  Usage: d [-x|-n|--docker] [<github-user>/<github-repo>]" && exit
 fi
 
 destination=$namespace/$1
