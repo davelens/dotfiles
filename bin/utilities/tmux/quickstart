@@ -4,14 +4,17 @@ set -e
 [[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 usage() {
-  echo "Usage: $0 [-h|--help] [tmux-options] <path-to-folder>"
+  echo "Usage: $(basename $0) [-h|--help] [tmux-options --] <path-to-folder>"
   echo ""
   echo "Arguments:"
-  echo "  -h|--help         Show this help message and exit."
-  echo "  [tmux-options]    Any valid tmux options or flags (such as -f, -v,...)."
-  echo "  <path-to-folder>  Target directory to start the session in."
+  echo "  -h|--help            Show this help message and exit."
+  echo "  [tmux-options --]    Any valid tmux options or flags (such as -f, -v,...)."
+  echo "  <path-to-folder>     Target directory to start the session in."
   exit 0
 }
+
+# Fail early if no arguments are given.
+[[ $# -eq 0 ]] && usage
 
 # Parse options and target path
 TMUX_OPTIONS=()
