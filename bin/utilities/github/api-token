@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-set -e
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
-
-[[ ! `command -v bw` ]] && fail 'Bitwarden CLI is required for this script to work.'
-[[ ! `command -v jq` ]] && fail 'jq is required for this script to work.'
-
-NODE_OPTIONS="--no-deprecation" bw get item "Github" | 
-  jq -r '.fields[] | select(.name == "Github API Token") | .value'
