@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-unless File.exists?('config.ru')
+unless File.exist?('config.ru')
   puts 'ERROR: You can only run this from a folder containing a Rails project.'
   return
 end
