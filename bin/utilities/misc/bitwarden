@@ -93,23 +93,6 @@ function handle_session_save() {
   echo "Unlocked!"
 }
 
-function ask_password() {
-  local password
-
-  if check_session; then
-    return 0
-  fi
-
-  if command -v systemd-ask-password &>/dev/null; then
-    password=$(systemd-ask-password "Password: ")
-  else
-    read -s -p "Password [hidden]: " password
-    echo
-  fi
-
-  handle_session_save
-}
-
 function load_items() {
   local search_term="$1"
   echo "Loading items..."
