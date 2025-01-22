@@ -16,7 +16,7 @@ usage() {
   echo "  update        Updates dotfiles to the most recent version."
   echo ""
   echo "Options:"
-  echo "  -h, --help    Show this help message and exit."
+  echo "  -h|--help    Show this help message and exit."
   exit 0
 }
 

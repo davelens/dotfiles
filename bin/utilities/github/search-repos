@@ -32,7 +32,7 @@ fi
 usage() {
   echo "Usage: utility github $(basename $0) <qualifier>"
   echo ""
-  echo "Arguments:"
+  echo "Options:"
   echo "  -h|--help            Show this help message and exit."
   echo "  -v|--verbose         Enable verbose output for curl calls."
   echo "  <qualifier>          The Github-specific search qualifier to filter the results."
