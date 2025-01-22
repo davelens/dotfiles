@@ -5,7 +5,7 @@ set -e
 
 usage() {
   echo "Usage: $(basename $0) [-h|--help] [tmux-options --] <path-to-folder>"
-  echo ""
+  echo
   echo "Options:"
   echo "  -h|--help            Show this help message and exit."
   echo "  [tmux-options --]    Any valid tmux options or flags (such as -f, -v,...)."

@@ -90,7 +90,7 @@ while true; do
   printf "[rails/deploy] I want to run:\n\n"
   printf "  ${cmd}\n\n"
   read -n1 -p "[rails/deploy] Confirm? (y/n) " yn
-  echo ""
+  echo
   case $yn in
     [Yy]* ) eval $cmd; break;;
     [Nn]* ) exit;;

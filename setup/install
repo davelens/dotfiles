@@ -30,6 +30,6 @@ if [ ! -f $dots_path ]; then
   chmod +x $dots_path
   echo "$(check) dots command installed."
   echo "    From now on you can use 'dots update' anywhere to pull in the latest dotfiles."
-  echo ""
+  echo
   echo "Please source ~/.bashrc or restart your shell to apply changes."
 fi

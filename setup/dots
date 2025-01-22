@@ -10,11 +10,11 @@ log_file="${DOTFILES_STATE_PATH}/dots.log"
 
 usage() {
   echo "Usage: $(basename $0) [-h|--help] <command>"
-  echo ""
+  echo
   echo "Commands:"
   echo "  logs          Opens the logfile in read-only vim."
   echo "  update        Updates dotfiles to the most recent version."
-  echo ""
+  echo
   echo "Options:"
   echo "  -h|--help    Show this help message and exit."
   exit 0
@@ -31,7 +31,7 @@ update() {
   show_status "pending" "Pulling in changes ..."
   cd "$DOTFILES_PATH" && git pull origin master &>> "$log_file" || error_occurred=1
   show_status "ok" "Files updated to latest version"
-  echo ""
+  echo
 
   # Run the installer if no errors occurred
   if [[ $error_occurred -eq 0 ]]; then
@@ -42,10 +42,10 @@ update() {
   # Handle final status
   if [[ $error_occurred -eq 0 ]]; then
     show_status "ok" "Update complete"
-    echo ""
+    echo
   else
     show_status "error" "Update failed"
-    echo ""
+    echo
     echo "    Logs available at $log_file"
     exit 1
   fi

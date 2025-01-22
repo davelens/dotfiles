@@ -24,7 +24,7 @@ prompt() {
 
 ask_for_bitwarden() {
   read -n1 -p "Would you like to use Bitwarden to retrieve your environment variables? (y/n) " bitwarden
-  echo ""
+  echo
   case $bitwarden in
     [Yy]* ) return 0;;
     [Nn]* ) return 1;;
@@ -32,13 +32,13 @@ ask_for_bitwarden() {
   esac
 }
 
-echo ""
+echo
 echo "###"
 echo "### This script will help you set up your environment variables."
 echo "### Press Enter to confirm suggested values."
 echo "### Press Ctrl + c at any time to abort."
 echo "###"
-echo ""
+echo
 
 # Derive the dotfiles' absolute path so we always have a sensible default for 
 # the ~/.env file.
@@ -59,7 +59,7 @@ else
     [[ ! `command -v jq` ]] && brew install jq
     [[ ! `command -v bw` ]] && brew install bitwarden-cli
 
-    echo ""
+    echo
     echo "###"
     echo "### You need the following two items ready in Bitwarden:"
     echo "###"
@@ -71,7 +71,7 @@ else
     echo "###    b A custom field entry named 'Public username'"
     echo "###    c A custom field entry named 'Github API Token'"
     echo "###"
-    echo ""
+    echo
 
     # Check if Bitwarden CLI is logged in
     source $setup_path/unlock_bw || exit 1
@@ -83,7 +83,7 @@ else
     else
       printf "Syncing with Bitwarden vaults ... "
       bw sync
-      echo ""
+      echo
     fi
 
     OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")

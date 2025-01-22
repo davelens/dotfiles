@@ -18,31 +18,31 @@ trap handle_interrupt SIGINT
 # "repo" scope.
 if [[ -z $GITHUB_PERSONAL_ACCESS_TOKEN ]]; then
   echo "ERROR: No Github personal access token set."
-  echo ""
+  echo
   echo "  1. Create one here: https://github.com/settings/tokens"
   echo ""
   echo "  2. Make sure the token has access to the 'repo' scope."
   echo "     (This means full read-only access to private repositories)"
-  echo ""
+  echo
   echo "  3. Store it in GITHUB_PERSONAL_ACCESS_TOKEN and make sure it's available."
-  echo ""
+  echo
   exit 1
 fi
 
 usage() {
   echo "Usage: utility github $(basename $0) <qualifier>"
-  echo ""
+  echo
   echo "Options:"
   echo "  -h|--help            Show this help message and exit."
   echo "  -v|--verbose         Enable verbose output for curl calls."
   echo "  <qualifier>          The Github-specific search qualifier to filter the results."
   echo "                       (e.g. 'Phoenix Framework', 'author:johndoe', 'user:johndoe+user:maryjane', ...)"
-  echo ""
-  echo ""
+  echo
+  echo
   echo "You can read up on Github search qualifiers for repositories here:"
-  echo ""
+  echo
   echo "  https://github.com/github/docs/blob/main/content/search-github/searching-on-github/searching-for-repositories.md"
-  echo ""
+  echo
   exit 0
 }
 

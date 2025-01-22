@@ -3,7 +3,7 @@
 # Flattens any string you give it. Made to format user input like Y/N -> y/n.
 function usage() {
   echo "Usage: $(basename $0) [-h|--help] <text>"
-  echo ""
+  echo
   echo "Arguments:"
   echo "  -h, --help          Show this help message and exit."
   exit 0
