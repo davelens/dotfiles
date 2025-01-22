@@ -19,7 +19,7 @@ _dots_completions() {
   case "$prev" in
     logs)
       # Suggest log file path as completion
-      COMPREPLY=( $(compgen -f "$DOTFILES_LOG_PATH/dots.log") )
+      COMPREPLY=( $(compgen -f "$DOTFILES_STATE_PATH/dots.log") )
       ;;
     update)
       # No additional arguments for "update"
