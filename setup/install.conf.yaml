@@ -6,6 +6,7 @@
 
 - create:
     - ~/.local/bin
+    - ~/Library/Application Support/iTerm2/DynamicProfiles
 
 # Requires 4 space indentation or it will fail
 - link:
@@ -21,6 +22,7 @@
     ~/.rsyncignore: config/rsyncignore
     ~/.rubocop.yml: config/rubocop.yml
     ~/.local/bin/utility: bin/utility
+    ~/Library/Application Support/iTerm2/DynamicProfiles/iterm2-profiles.json: setup/iterm2-profiles.json
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
