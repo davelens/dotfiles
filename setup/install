@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-
 set -e
 
 readonly DOTBOT_DIR="dotbot"
 readonly DOTFILES_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+[[ -f $DOTFILES_PATH/setup/helpers.sh ]] && source $DOTFILES_PATH/setup/helpers.sh
 
 # Get dotbot installed
 cd "${DOTFILES_PATH}"
@@ -20,3 +20,16 @@ git submodule update --init --recursive "${DOTBOT_DIR}"
 # the .bash_profile file.
 [[ -f ~/.env ]] && touch ~/.env
 grep -q 'DOTFILES_PATH' ~/.env || echo "DOTFILES_PATH=${DOTFILES_PATH}" >> ~/.env
+echo "$(check) Loaded environment variables."
+
+# Create an executable that allows us to update our dotfiles, among other 
+# things.
+dots_path="${HOME}/.local/bin/dots"
+if [ ! -f $dots_path ]; then
+  ln -s "${DOTFILES_PATH}/setup/dots" $dots_path
+  chmod +x $dots_path
+  echo "$(check) dots command installed."
+  echo "    From now on you can use 'dots update' anywhere to pull in the latest dotfiles."
+  echo ""
+  echo "Please source ~/.bashrc or restart your shell to apply changes."
+fi
