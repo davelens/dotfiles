@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Function to display status updates
 show_status() {
   local status="$1"
@@ -59,5 +61,5 @@ yellow() {
 }
 
 colorize() {
-  echo "$(tput setaf $1)$2$(tput sgr0)"
+  echo "$(tput setaf "$1")$2$(tput sgr0)"
 }

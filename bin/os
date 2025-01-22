@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
-
 set -e
 
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
+
 if [ -f /proc/version ] && grep -qEi "(microsoft|WSL)" /proc/version ; then
-  echo 'windows'
+  succeed 'windows'
 else
-  readonly os=`uname -s`
-  [ $os == 'Darwin' ] && echo 'macos'
-  [ $os == 'Linux' ] && echo 'linux'
-  [ $os == 'FreeBSD' ] && echo 'freebsd'
+  case "$(uname -s)" in
+    Darwin) succeed 'macos' ;;
+    Linux) succeed 'linux' ;;
+    FreeBSD) succeed 'freebsd' ;;
+  esac
+
 fi
