@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# Flattens any string you give it. Made to format user input like Y/N -> y/n.
+function usage() {
+  echo "Usage: $(basename $0) [-h|--help] <text>"
+  echo ""
+  echo "Arguments:"
+  echo "  -h, --help          Show this help message and exit."
+  exit 0
+}
+
+text=""
+
+function main() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help)
+        usage
+        ;;
+      *)
+        text="$*"
+        break
+        ;;
+    esac
+  done
+
+  if [ -n "$text" ]; then
+    echo "$text" | tr "[:upper:]" "[:lower:]"
+  elif [[ ! -t 0 ]]; then # Read from stdin when piped
+    tr "[:upper:]" "[:lower:]"
+  else
+    echo "Error: No input provided." >&2
+    usage
+  fi
+}
+
+main "$@"

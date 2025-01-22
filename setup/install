@@ -3,7 +3,7 @@ set -e
 
 readonly DOTBOT_DIR="dotbot"
 readonly DOTFILES_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
-[[ -f $DOTFILES_PATH/setup/helpers.sh ]] && source $DOTFILES_PATH/setup/helpers.sh
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 
 # Get dotbot installed
 cd "${DOTFILES_PATH}"
