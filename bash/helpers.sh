@@ -49,12 +49,12 @@ show_status() {
 # To help us centralize how errors look throughout our scripts.
 error_handler() {
   local exit_code=$?
-  echo "$(error) An error occurred. Check the log file for details: $LOG_FILE"
+  echo "$(cross) An error occurred. Check the log file for details: $DOTFILES_STATE_PATH/dots.log"
   exit $exit_code
 }
 
 interrupt_handler() {
-  echo "$(error) Aborted."
+  echo "$(cross) Aborted."
   exit 1
 }
 
