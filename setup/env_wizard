@@ -44,6 +44,7 @@ echo ""
 # the ~/.env file.
 setup_path="$(dirname $(realpath "$0"))"
 dotfiles_derived_path=$(dirname $setup_path)
+dotfiles_log_path="${HOME}/.local/state/dots"
 env_file="${HOME}/.env"
 
 # Load existing .env if available
@@ -125,6 +126,7 @@ cat > "$env_file" <<EOF
 OWNER_NAME="$OWNER_NAME"
 REPO_NAMESPACE="$(grealpath -m "${REPO_NAMESPACE/#\~/$HOME}")"
 DOTFILES_PATH="$dotfiles_derived_path"
+DOTFILES_LOG_PATH="$(grealpath -m "${dotfiles_log_path/#\~/$HOME}")"
 GITHUB_EMAIL=$GITHUB_EMAIL
 GITHUB_USERNAME=$GITHUB_USERNAME
 GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_PERSONAL_ACCESS_TOKEN

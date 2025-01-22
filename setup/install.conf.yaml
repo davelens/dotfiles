@@ -6,6 +6,7 @@
 
 - create:
     - ~/.local/bin
+    - ~/.local/state/dots
 
 # Requires 4 space indentation or it will fail
 - link:
