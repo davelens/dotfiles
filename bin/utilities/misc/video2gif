@@ -17,8 +17,9 @@ FULLPATH=
 function usage() {
     echo "Usage: $0 [-f|--fps <fps>] [-s|--scale <scale>] file"
     echo
-    echo "Arguments:"
+    echo "Commands:"
     echo "      file            File to convert to GIF"
+    echo
     echo "Options:"
     echo "      -h|--help       Print this help"
     echo "      -f|--fps        Framerate (FPS) to use for GIF (default: 10)"

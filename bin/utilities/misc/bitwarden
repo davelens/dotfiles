@@ -7,14 +7,14 @@ set -e
 trap 'error_handler' ERR
 
 usage() {
-  echo "Usage: $(basename $0) <options>"
-  echo
-  echo "Arguments:"
-  echo "  -h|--help            Show this help message and exit."
-  echo "  -f|--filter          Provide a query to use as an fzf filter."
+  echo "Usage: $(basename $0) [-h|--help] <command>"
   echo
   echo "Commands:"
   echo "  session-token        Returns a usable Bitwarden session token."
+  echo
+  echo "Options:"
+  echo "  -h|--help            Show this help message and exit."
+  echo "  -f|--filter          Provide a query to use as an fzf filter."
 }
 
 function bootstrap_session_token() {

@@ -4,8 +4,8 @@
 function usage() {
   echo "Usage: $(basename $0) [-h|--help] <text>"
   echo
-  echo "Arguments:"
-  echo "  -h, --help          Show this help message and exit."
+  echo "Options:"
+  echo "  -h|--help          Show this help message and exit."
   exit 0
 }
 
