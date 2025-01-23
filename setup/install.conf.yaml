@@ -21,6 +21,7 @@
     ~/.rspec: config/rspec
     ~/.rsyncignore: config/rsyncignore
     ~/.rubocop.yml: config/rubocop.yml
+    ~/.local/bin/os: bin/os
     ~/.local/bin/utility: bin/utility
     ~/Library/Application Support/iTerm2/DynamicProfiles/iterm2-profiles.json:
       create: true
