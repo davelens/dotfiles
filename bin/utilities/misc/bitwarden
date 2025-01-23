@@ -92,6 +92,12 @@ function main() {
     --prompt="$(basename $0) -> " \
     --preview-window='right:50%' \
     --preview='
+        function print_key_value() {
+          key="$1"
+          value=$(eval echo "\$"$key"")
+          [ $key != "null" ] && echo "${EM}${C}$key:${NONE} $value"
+        }
+
         if [[ "{}" == "HELP" ]]; then
           echo "$HELP_TEXT"
         else
@@ -103,8 +109,7 @@ function main() {
           notes=$(echo "$item" | jq -r ".notes // empty | @sh")
           creationDate=$(echo "$item" | jq -r ".creationDate | @sh")
           revisionDate=$(echo "$item" | jq -r ".revisionDate | @sh")
-          uris=$(echo "$item" | jq -r ".login.uris[].uri | @sh" | sed "s/^/- /")
-
+          uris=$(echo "$item" | jq -r "if .login.uris? then .login.uris[].uri | @sh else null end" | sed "s/^/- /")
           totp_available=$(echo "$item" | jq -r ".login.totp != null")
 
           if [ "$totp_available" = "true" ]; then
@@ -119,18 +124,13 @@ function main() {
             totp="No TOTP available for this login."
           fi
 
-          bold=$(tput bold)
-          normal=$(tput sgr0)
-          cyan=$(tput setaf 6)
-          red=$(tput setaf 1)
-
-          printf "${bold}${cyan}username:${normal} %s\n" "$username"
-          printf "${bold}${cyan}password:${normal} %s\n" "${red}$password${normal}"
-          printf "${bold}${cyan}totp:${normal} %s\n" "$totp"
-          printf "${bold}${cyan}notes:${normal} %s\n" "$notes"
-          printf "${bold}${cyan}creationDate:${normal} %s\n" "$creationDate"
-          printf "${bold}${cyan}revisionDate:${normal} %s\n" "$revisionDate"
-          printf "${bold}${cyan}uris:${normal}\n%s" "$uris"
+          print_key_value "username"
+          print_key_value "password"
+          print_key_value "totp"
+          print_key_value "notes"
+          print_key_value "creationDate"
+          print_key_value "revisionDate"
+          print_key_value "uris"
         fi
       '
 }
