@@ -69,7 +69,7 @@ function load_env_data_from_bitwarden() {
   vault_requirements
 
   # Check if Bitwarden CLI is logged in
-  $setup_path/unlock_bw || exit 1
+  $("$DOTFILES_PATH/bin/utilities/misc/bitwarden" unlock) || exit 1
 
   BW_SESSION=$(cat "$DOTFILES_STATE_PATH/bw-session")
 

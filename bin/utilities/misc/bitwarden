@@ -11,6 +11,7 @@ usage() {
   echo
   echo "Commands:"
   echo "  session-token        Returns a usable Bitwarden session token."
+  echo "  unlock               Unlocks your vault(s) with your master password."
   echo
   echo "Options:"
   echo "  -h|--help            Show this help message and exit."
@@ -73,6 +74,10 @@ function main() {
       ;;
     session-token)
       echo $(cat "$DOTFILES_STATE_PATH/bw-session")
+      exit 0
+      ;;
+    unlock)
+      bootstrap_session_token
       exit 0
       ;;
     *)
