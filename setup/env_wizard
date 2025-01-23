@@ -3,149 +3,200 @@
 # TODO: Would be better to switch most of my ENV vars I don't need in $PATH
 # to live in a config/config.toml file or something.
 
-# Gracefully handle Ctrl-C to get out of this thing.
-handle_interrupt() {
-  if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    printf "\nAborted.\n"
-    exit 1
-  fi
-}
-trap handle_interrupt SIGINT
+# Derive the dotfiles' absolute path so we always have a sensible default for 
+# the ~/.env file.
+env_file="${HOME}/.env"
+setup_path="$(dirname $(realpath "$0"))"
+export DOTFILES_PATH=$(dirname $setup_path)
+export DOTFILES_STATE_PATH="${HOME}/.local/state/dots"
+
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
+trap interrupt_handler SIGINT
 
 # Function to prompt for input with a default value
-prompt() {
+function prompt() {
   local var_name="$1"
   local prompt_text="$2"
   local default_value="$3"
   local input
-  read -rp "${prompt_text} [${default_value}]: " input
+  read -p "$(pending) ${prompt_text} [${default_value}]: " input
   echo "${input:-$default_value}"
 }
 
-ask_for_bitwarden() {
-  read -n1 -p "Would you like to use Bitwarden to retrieve your environment variables? (y/n) " bitwarden
+function ask_for_bitwarden() {
+  printf "$(pending) "
+
+  while true; do
+    read -n1 -p "Would you like to use Bitwarden to retrieve your environment variables? (y/n) " bitwarden
+
+    case $bitwarden in
+      [Yy]* ) show_status "ok" "Using Bitwarden." && echo && return 0;;
+      [Nn]* ) show_status "error" "Not using Bitwarden." && echo && return 1;;
+      * ) clear_line && show_status "pending" "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o. ";;
+    esac
+  done
+
   echo
-  case $bitwarden in
-    [Yy]* ) return 0;;
-    [Nn]* ) return 1;;
-    * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
-  esac
 }
 
-echo
-echo "###"
-echo "### This script will help you set up your environment variables."
-echo "### Press Enter to confirm suggested values."
-echo "### Press Ctrl + c at any time to abort."
-echo "###"
-echo
+function intro() {
+  echo
+  echo "    |"
+  echo "    | This script will help you set up your environment variables."
+  echo "    | Press Enter to confirm suggested values."
+  echo "    | Press Ctrl + c at any time to abort."
+  echo "    |"
+  echo
+}
 
-# Derive the dotfiles' absolute path so we always have a sensible default for 
-# the ~/.env file.
-setup_path="$(dirname $(realpath "$0"))"
-dotfiles_derived_path=$(dirname $setup_path)
-dotfiles_state_path="${HOME}/.local/state/dots"
-env_file="${HOME}/.env"
+function vault_requirements() {
+  echo
+  echo "    |"
+  echo "    | You need the following two items ready in Bitwarden:"
+  echo "    |"
+  echo "    | 1. An item of the Identity type, named after your full name, containing:"
+  echo "    |    a A custom field entry named 'GPG signing key'"
+  echo "    |"
+  echo '    | 2. An item of the Login type, named "Github", containing:'
+  echo "    |    a The Username login credential that matches your Github e-mail address"
+  echo "    |    b A custom field entry named 'Public username'"
+  echo "    |    c A custom field entry named 'Personal access token'"
+  echo "    |"
+  echo
+}
 
-# Load existing .env if available
-if [[ -f $env_file ]]; then
-  # TODO: This assumes all vars are accounted for with values.
-  # Probably need to check every individual var instead.
-  source "$env_file"
-  echo "Loaded existing environment variables from $env_file."
-else
-  if ask_for_bitwarden; then
-    # Make sure we have the necessary tools in our environment.
-    [[ ! `command -v jq` ]] && brew install jq
-    [[ ! `command -v bw` ]] && brew install bitwarden-cli
+function load_env_data_from_bitwarden() {
+  vault_requirements
 
+  # Check if Bitwarden CLI is logged in
+  $setup_path/unlock_bw || exit 1
+
+  BW_SESSION=$(cat "$DOTFILES_STATE_PATH/bw-session")
+
+  # We repeat the check for the session var, because if we don't have it here
+  # something went wrong.
+  if [[ -n $BW_SESSION ]]; then
+    show_status "pending" "Syncing with Bitwarden vaults ... "
+    bw sync --quiet
+    show_status "ok" "Bitwarden vaults synced."
     echo
-    echo "###"
-    echo "### You need the following two items ready in Bitwarden:"
-    echo "###"
-    echo "### 1. An item of the Identity type, named after your full name, containing:"
-    echo "###    a A custom field entry named 'GPG signing key'"
-    echo "###"
-    echo '### 2. An item of the Login type, named "Github", containing:'
-    echo '###    a The Username login credential that matches your Github e-mail address'
-    echo "###    b A custom field entry named 'Public username'"
-    echo "###    c A custom field entry named 'Github API Token'"
-    echo "###"
-    echo
-
-    # Check if Bitwarden CLI is logged in
-    source $setup_path/unlock_bw || exit 1
-
-    # We repeat the check for the session var, because if we don't have it here
-    # something went wrong.
-    if [[ -z $BW_SESSION ]]; then
-      echo "Bitwarden unlock unsuccessful, proceeding without Bitwarden ..."
-    else
-      printf "Syncing with Bitwarden vaults ... "
-      bw sync
-      echo
-    fi
-
-    OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
-    GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
-
-    printf "Fetching Bitwarden data ... "
-    owner_data=$(bw list items --search "$OWNER_NAME" | jq '.[] | select(.identity != null)')
-    bitwarden_data=$(bw get item "$GITHUB_EMAIL")
-
-    GITHUB_USERNAME="$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Public username").value')"
-    GITHUB_PERSONAL_ACCESS_TOKEN=$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Github API Token") | .value')
-    GPG_SIGNING_KEY=$(echo $owner_data | jq -r '.fields[] | select(.name == "GPG signing key").value')
-    printf "OK!\n\n"
-  else
-    echo "Skipping Bitwarden."
   fi
-fi
 
-# Present the rest of the data to confirm.
-REPO_NAMESPACE=$(prompt "REPO_NAMESPACE" "Where do you keep your local Git(hub) repos?" "${REPO_NAMESPACE:-$HOME/Repositories}")
-[[ -z $OWNER_NAME ]] && OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
-[[ -z $GITHUB_EMAIL ]] && GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
-GITHUB_USERNAME=$(prompt "GITHUB_USERNAME" "Enter your public Github username" "${GITHUB_USERNAME}")
-GITHUB_PERSONAL_ACCESS_TOKEN=$(prompt "GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github API Token" "${GITHUB_PERSONAL_ACCESS_TOKEN}")
-GPG_SIGNING_KEY=$(prompt "GPG_SIGNING_KEY" "Enter your GPG signing key" "${GPG_SIGNING_KEY}")
+  export OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
+  clear_prompt_line
 
-# Check if the REPO_NAMESPACE path exists, and create it if not.
-if [[ ! -d $REPO_NAMESPACE ]]; then
-  printf "\n$REPO_NAMESPACE does not exist yet. Creating ... "
-  # You want to use `grealpath` here to correctly resolve the tilde in the path
-  # and prevent bash from creating a directory named "~". -.-
-  mkdir -p "$(grealpath $REPO_NAMESPACE)"
-  printf "OK!\n"
-fi
+  export GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
+  clear_prompt_line
 
-# Write to .env
-cat > "$env_file" <<EOF
-# This file is generated by $dotfiles_derived_path/setup/env_wizard.
+  show_status "pending" "Preparing data from vault(s) ... "
+  owner_data=$(bw list items --session "$BW_SESSION" --search "$OWNER_NAME" | jq '.[] | select(.identity != null)')
+  bitwarden_data=$(bw get item --session "$BW_SESSION" "$GITHUB_EMAIL")
+
+  # TODO: At this point, if you don't have a good value for $OWNER_NAME,
+  # you will see "Not found" and the script will break.
+  # Catch the error after every bw call, or use fzf to get the right values.
+  #if [[ $? -gt 0 ]]; then
+    #clear_prompt_line
+  #fi
+
+  GITHUB_USERNAME="$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Public username").value')"
+  GITHUB_PERSONAL_ACCESS_TOKEN=$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Personal access token") | .value')
+  GPG_SIGNING_KEY=$(echo $owner_data | jq -r '.fields[] | select(.name == "GPG signing key").value')
+  show_status "ok" "Vault data prepared. "
+  echo
+}
+
+function prompt_bitwarden() {
+  REPO_NAMESPACE=$(prompt "REPO_NAMESPACE" "Where do you keep your local Git(hub) repos?" "${REPO_NAMESPACE:-$HOME/Repositories}")
+  clear_prompt_line
+
+  if [[ -z $OWNER_NAME ]]; then 
+    OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
+    clear_prompt_line
+  fi
+
+  if [[ -z $GITHUB_EMAIL ]]; then
+    GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
+    clear_prompt_line
+  fi
+
+  GITHUB_USERNAME=$(prompt "GITHUB_USERNAME" "Enter your public Github username" "${GITHUB_USERNAME}")
+  clear_prompt_line
+
+  GITHUB_PERSONAL_ACCESS_TOKEN=$(prompt "GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github Personal access token" "${GITHUB_PERSONAL_ACCESS_TOKEN}")
+  clear_prompt_line
+
+  GPG_SIGNING_KEY=$(prompt "GPG_SIGNING_KEY" "Enter your GPG signing key" "${GPG_SIGNING_KEY}")
+  clear_prompt_line
+
+  # Check if the REPO_NAMESPACE path exists, and create it if not.
+  if [[ ! -d $REPO_NAMESPACE ]]; then
+    show_status "pending" "Creating $REPO_NAMESPACE ... "
+    # You want to use `grealpath` here to correctly resolve the tilde in the path
+    # and prevent bash from creating a directory named "~". -.-
+    #mkdir -p "$(grealpath $REPO_NAMESPACE)"
+    show_status "ok" "Created $REPO_NAMESPACE."
+    echo
+  fi
+}
+
+function write_env_files() {
+  cat > "$env_file" <<EOF
+# This file is generated by $DOTFILES_PATH/setup/env_wizard.
 # If you add your own global ENV vars below, remember to backport them to that script.
 OWNER_NAME="$OWNER_NAME"
-REPO_NAMESPACE="$(grealpath -m "${REPO_NAMESPACE/#\~/$HOME}")"
-DOTFILES_PATH="$dotfiles_derived_path"
-DOTFILES_STATE_PATH="$(grealpath -m "${dotfiles_state_path/#\~/$HOME}")"
+REPO_NAMESPACE="$REPO_NAMESPACE"
+DOTFILES_PATH="$DOTFILES_PATH"
+DOTFILES_STATE_PATH="$DOTFILES_STATE_PATH"
 GITHUB_EMAIL=$GITHUB_EMAIL
 GITHUB_USERNAME=$GITHUB_USERNAME
 GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_PERSONAL_ACCESS_TOKEN
 GPG_SIGNING_KEY=$GPG_SIGNING_KEY
 EOF
 
-# Write to ~/.gitconfig.env so we can keep our gitconfig user-agnostic.
-gitconfig_env_file="$HOME/.gitconfig.env"
-cat > "$gitconfig_env_file" <<EOF
-# This file is generated by $dotfiles_derived_path/setup/env_wizard.
+  # Write to ~/.gitconfig.env so we can keep our gitconfig user-agnostic.
+  gitconfig_env_file="$HOME/.gitconfig.env"
+  cat > "$gitconfig_env_file" <<EOF
+# This file is generated by $DOTFILES_PATH/setup/env_wizard.
 # If you add your own global ENV vars below, remember to backport them to that script.
 [user]
   name = "$GITHUB_USERNAME"
   email = "$GITHUB_EMAIL"
   signingkey = "$GPG_SIGNING_KEY"
 EOF
+}
 
-# CTA to source the bash ENV.
-printf "\nEnvironment variables written to these files:\n"
-echo   "  $gitconfig_env_file"
-printf "  $env_file\n\n"
-echo "Please source ~/.bashrc or restart your shell to apply changes."
+function main() {
+  intro
+
+  if [[ -f $env_file ]]; then
+    # TODO: This assumes all vars are accounted for with values.
+    # Probably need to check every individual var instead.
+    source "$env_file"
+    show_status "ok" "Loaded environment variables from $env_file."
+    echo
+  else
+    if ask_for_bitwarden; then
+      # Make sure we have the necessary tools in our environment.
+      [[ ! `command -v jq` ]] && brew install jq
+      [[ ! `command -v bw` ]] && brew install bitwarden-cli
+
+      load_env_data_from_bitwarden
+    fi
+  fi
+
+  prompt_bitwarden
+  write_env_files
+
+  show_status "ok" "All done!"
+  echo
+  echo
+  echo "Environment variables written to these files:"
+  echo "  $gitconfig_env_file"
+  echo "  $env_file"
+  echo
+  echo "Please source ~/.bashrc or restart your shell to apply changes."
+  echo
+}
+
+main "$@"

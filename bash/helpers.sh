@@ -23,7 +23,7 @@ function timesused() {
 }
 
 # Function to display status updates
-show_status() {
+function show_status() {
   local status="$1"
   local message="$2"
   local symbol=""
@@ -39,61 +39,84 @@ show_status() {
       symbol="$(cross)"  # Symbol for failure (cross)
       ;;
     *)
-      symbol="[?]"  # Default symbol for unknown status
+      symbol="$(cross)"  # Default symbol for unknown status
       ;;
   esac
 
-  printf "\r\033[K\r%s %s" "$symbol" "$message"
+  # The first part clears the line before appending the symbol/message combo.
+  clear_line
+  printf "$symbol $message"
+}
+
+function clear_line() {
+  printf "\r\033[K\r"
+}
+
+function clear_prompt_line() {
+  printf "\033[1A\r\033[K"
 }
 
 # To help us centralize how errors look throughout our scripts.
-error_handler() {
+function error_handler() {
   local exit_code=$?
   echo "$(cross) An error occurred. Check the log file for details: $DOTFILES_STATE_PATH/dots.log"
   exit $exit_code
 }
 
-interrupt_handler() {
-  echo "$(cross) Aborted."
+function interrupt_handler() {
+  show_status "canceled" "Aborted."
+  echo
   exit 1
 }
 
-check() {
+function check() {
   echo "[$(green ✓)]"
 }
 
-cross() {
+function cross() {
   echo "[$(red x)]"
 }
 
-pending() {
+function pending() {
   echo "[$(yellow \~)]"
 }
 
-red() {
+function red() {
   colorize 1 "$1"
 }
 
-green() {
+function green() {
   colorize 2 "$1"
 }
 
-yellow() {
+function yellow() {
   colorize 3 "$1"
 }
 
-colorize() {
+function colorize() {
   echo "$(tput setaf "$1")$2$(tput sgr0)"
 }
 
 # Helps us hard stop our custom executables during fails.
-fail() {
+function fail() {
   printf '%s\n' "$1" >&2 # Sends a message to stderr.
   exit "${2-1}" # Returns a code specified by $2 or 1 by default.
 }
 
-succeed() {
+function succeed() {
   echo "$1" # Sends a message to stderr.
   exit 0
 }
 
+function ensure_brew_dependency() {
+  package=$1
+  command=$2
+  [[ -z $2 ]] && command=$package
+
+  if [[ ! `command -v $command` ]]; then
+    show_status "pending" "Installing $package ..."
+    brew install --quiet $package
+    show_status "ok" "Installed $package."
+    echo
+  fi
+}
