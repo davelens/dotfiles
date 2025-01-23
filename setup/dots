@@ -29,7 +29,7 @@ update() {
 
   # Pull the latest changes
   show_status "pending" "Pulling in changes ..."
-  cd "$DOTFILES_PATH" && git pull origin master &>> "$log_file" || error_occurred=1
+  cd "$DOTFILES_PATH" && git pull origin "$(git b)" &>> "$log_file" || error_occurred=1
   show_status "ok" "Files updated to latest version"
   echo
 
