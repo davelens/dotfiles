@@ -27,6 +27,7 @@ function bootstrap_session_token() {
   if find "$session_file" -type f -mmin +60 | grep -q .; then
     rm $session_file
     bootstrap_session_token
+    return
   fi
 }
 
