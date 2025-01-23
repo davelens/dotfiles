@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 set -e
 
+#
+# A hub for my custom bitwarden utilities.
+#
+# TODO:
+# - The default functionality is a global fuzzy search.
+#   Refactor that shit into separate commands 
+#   search <term> -> new function search()
+#   unlock -> bootstrap_session_token() basically
+#
+# - Add a way to copy a password straight to the clipboard
+#
+# - Smart item search so I can use it in the env_wizard
+#
+
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'error_handler' ERR
-
-ITEMS=
-TEMP_ITEMS_FILE=
-FILTER=""
 
 usage() {
   echo "Usage: $(basename $0) <options>"
@@ -28,6 +38,7 @@ function bootstrap_session_token() {
 
   if find "$session_file" -type f -mmin +60 | grep -q .; then
     rm $session_file
+    bootstrap_session_token
   fi
 }
 
@@ -35,9 +46,10 @@ function session_token() {
   echo $(cat "$DOTFILES_STATE_PATH/bw-session")
 }
 
-function load_items() {
+function write_vault_items_to_temp_file() {
   local filter="$1"
-  TEMP_ITEMS_FILE=$(mktemp)
+  ITEMS=
+  export TEMP_ITEMS_FILE=$(mktemp)
 
   show_status "pending" "Loading items from vault(s) ... "
 
@@ -84,7 +96,10 @@ function main() {
 
   ensure_brew_dependency "fzf"
   bootstrap_session_token
-  load_items "$FILTER"
+  write_vault_items_to_temp_file "$filter"
+
+  # So the preview code knows where to look.
+  export SCRIPT_PATH="$(dirname $(realpath $0))"
 
   jq -r '.[] | "\(.name) (\(.id)) \(.login.username)"' "$TEMP_ITEMS_FILE" | 
     FZF_PREVIEW_FILE="$TEMP_ITEMS_FILE" fzf \
@@ -92,46 +107,11 @@ function main() {
     --prompt="$(basename $0) -> " \
     --preview-window='right:50%' \
     --preview='
-        function print_key_value() {
-          key="$1"
-          value=$(eval echo "\$"$key"")
-          [ $key != "null" ] && echo "${EM}${C}$key:${NONE} $value"
-        }
-
-        if [[ "{}" == "HELP" ]]; then
-          echo "$HELP_TEXT"
-        else
-          item_id=$(echo {} | sed -n "s/.*(\(.*\)).*/\1/p")
-          item=$(jq -r --arg id "$item_id" ".[] | select(.id == \$id)" "$FZF_PREVIEW_FILE")
-
-          username=$(echo "$item" | jq -r ".login.username | @sh")
-          password=$(echo "$item" | jq -r ".login.password | @sh")
-          notes=$(echo "$item" | jq -r ".notes // empty | @sh")
-          creationDate=$(echo "$item" | jq -r ".creationDate | @sh")
-          revisionDate=$(echo "$item" | jq -r ".revisionDate | @sh")
-          uris=$(echo "$item" | jq -r "if .login.uris? then .login.uris[].uri | @sh else null end" | sed "s/^/- /")
-          totp_available=$(echo "$item" | jq -r ".login.totp != null")
-
-          if [ "$totp_available" = "true" ]; then
-            clear
-            totp_secret=$(echo "$item" | jq -r ".login.totp")
-            if command -v oathtool &> /dev/null; then
-              totp=$(oathtool --totp -b "$totp_secret")
-            else
-              totp=$(bw get totp "$item_id")
-            fi
-          else
-            totp="No TOTP available for this login."
-          fi
-
-          print_key_value "username"
-          print_key_value "password"
-          print_key_value "totp"
-          print_key_value "notes"
-          print_key_value "creationDate"
-          print_key_value "revisionDate"
-          print_key_value "uris"
-        fi
+      # You need to set the jq queries here in order to get a preview to work.
+      # It does a funky thing with how it extracts data.
+      item_id=$(echo {} | sed -n "s/.*(\(.*\)).*/\1/p")
+      item=$(jq -r --arg id "$item_id" ".[] | select(.id == \$id)" "$FZF_PREVIEW_FILE")
+      source $SCRIPT_PATH/bitwarden_preview.sh
       '
 }
 
