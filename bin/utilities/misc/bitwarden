@@ -1,19 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-#
 # A hub for my custom bitwarden utilities.
-#
-# TODO:
-# - The default functionality is a global fuzzy search.
-#   Refactor that shit into separate commands 
-#   search <term> -> new function search()
-#   unlock -> bootstrap_session_token() basically
-#
-# - Add a way to copy a password straight to the clipboard
-#
-# - Smart item search so I can use it in the env_wizard
-#
 
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'error_handler' ERR
