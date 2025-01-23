@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
-
 if [ -f /proc/version ] && grep -qEi "(microsoft|WSL)" /proc/version ; then
-  succeed 'windows'
+  echo 'windows'
 else
   case "$(uname -s)" in
-    Darwin) succeed 'macos' ;;
-    Linux) succeed 'linux' ;;
-    FreeBSD) succeed 'freebsd' ;;
+    Darwin) echo 'macos' ;;
+    Linux) echo 'linux' ;;
+    FreeBSD) echo 'freebsd' ;;
   esac
-
 fi
