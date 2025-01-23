@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+function block_unless_sourced() {
+  if [[ "$1" == "${0}" ]]; then
+    echo "$(cross) This script is meant to be sourced, not executed directly." >&2
+    return 1
+  fi
+
+  return 0
+}
+
 # Exports all ENV vars listed in a file. Loads ~/.env by default.
 function export-env-vars-from-file() {
   local env_file=${1:-~/.env}
