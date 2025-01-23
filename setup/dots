@@ -21,7 +21,7 @@ usage() {
 }
 
 logs() {
-  [[ "$EDITOR" == *vim* ]] && $EDITOR -R "$log_file" || $EDITOR "$log_file"
+  [[ "$EDITOR" == *vim* ]] && $EDITOR -R + "$log_file" || $EDITOR "$log_file"
 }
 
 update() {
