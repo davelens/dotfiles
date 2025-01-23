@@ -9,6 +9,7 @@ env_file="${HOME}/.env"
 setup_path="$(dirname $(realpath "$0"))"
 export DOTFILES_PATH=$(dirname $setup_path)
 export DOTFILES_STATE_PATH="${HOME}/.local/state/dots"
+bitwarden_cmd="$DOTFILES_PATH/bin/utilities/misc/bitwarden"
 
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap interrupt_handler SIGINT
@@ -82,10 +83,22 @@ function load_env_data_from_bitwarden() {
     echo
   fi
 
-  export OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "")
+  #OWNER_NAME="$(
+    #echo $(bw list items --session "$BW_SESSION" |
+        #jq -r '.[] | select(.identity != null) | .identity.firstName + " " + .identity.lastName'
+    #) | fzf --prompt "Who are you? "
+  #)"
+
+  export OWNER_NAME=$(prompt "OWNER_NAME" "Enter your first and last name" "$OWNER_NAME")
   clear_prompt_line
 
-  export GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the email address you log into Github with" "")
+  #GITHUB_EMAIL="$(
+    #echo $(bw get item --session "$BW_SESSION" --search "Github" |
+        #jq -r '.[] | select(.login.username != null) | .login.username'
+    #) | fzf --prompt "Select the e-mail address you log into Github with: "
+  #)"
+
+  export GITHUB_EMAIL=$(prompt "GITHUB_EMAIL" "Enter the e-mail address you log into Github with" "$GITHUB_EMAIL")
   clear_prompt_line
 
   show_status "pending" "Preparing data from vault(s) ... "
