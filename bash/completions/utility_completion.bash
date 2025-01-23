@@ -29,7 +29,7 @@ _utility_completions() {
   local folder_path="$utilities_root/${COMP_WORDS[1]}"
   if [[ -d "$folder_path" && $COMP_CWORD -eq 2 ]]; then
     # List all files within the specified subfolder
-    scripts=$(find -L "$folder_path" -type f -exec basename {} \;)
+    scripts=$(find -L "$folder_path" -type f ! -name "_*" ! -name "*.sh" -exec basename {} \;)
     COMPREPLY=( $(compgen -W "$scripts" -- "$cur") )
     return 0
   fi

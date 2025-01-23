@@ -1,40 +1,60 @@
 #!/usr/bin/env bash
+set -e
 
-# NOTE: This command is meant to be SOURCED, not executed directly.
-# This is because it exports the BW_SESSION variable to the current shell.
+[[ -f ~/.env ]] && source ~/.env
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
+trap 'error_handler' ERR
+trap 'interrupt_handler' SIGINT
 
-# Gracefully handle Ctrl-C to get out of this thing.
-handle_interrupt() {
-  if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
-    printf "\nAborted.\n"
-    exit 1
-  fi
-}
-trap handle_interrupt SIGINT
+bw_session_file="$DOTFILES_STATE_PATH/bw-session"
 
-# This only needs to be shown once. The recursive bit just tries to unlock
-# until successful.
-printf "Checking Bitwarden status ... "
-if [[ -z "$BW_SESSION" || $(bw status | grep -q ':"locked"'; echo $?) -eq 0 ]]; then
-  printf "It's locked!\n"
-else
-  printf "OK!\n"
-  return 0
-fi
-
-check_bitwarden() {
-  printf "Unlocking Bitwarden ... \n"
-
-  BW_ERRORS=$(bw unlock --raw)
-  EXIT_CODE=$?
-
-  if [[ -z $BW_ERRORS || $EXIT_CODE -ne 0 ]]; then
-    check_bitwarden
-  else
-    # Unlock succeeded, export the session
-    export BW_SESSION="$BW_ERRORS"
-    return 0
-  fi
+function prompt_password() {
+  check_bw_session && return 0
+  read -s -p "$(pending) Enter your Bitwarden master password [hidden]: " password
+  handle_session_save
 }
 
-check_bitwarden
+function check_bw_session() {
+  if [[ -n "$bw_session_file" ]]; then
+    if bw unlock --check --quiet 2>/dev/null; then
+      show_status "ok" "Loaded Bitwarden session from environment."
+      echo && return 0
+    fi
+  fi
+
+  if [[ -f "$bw_session_file" ]]; then
+    export BW_SESSION=$(cat "$bw_session_file")
+    if bw unlock --check --quiet 2>/dev/null; then
+      show_status "ok" "Loaded Bitwarden session from file."
+      echo && return 0
+    fi
+  fi
+
+  return 1
+}
+
+function handle_session_save() {
+  show_status "pending" "Saving Bitwarden session ..."
+  local session=$(echo "$password" | bw unlock --raw 2>/dev/null)
+
+  if [[ -z "$session" ]]; then
+    show_status "error" "Could not unlock vault. Try again or press Ctrl+c to exit."
+    echo
+    prompt_password # Recurse until it works or user exits.
+    return # Exit to prevent execution for every time the unlock failed.
+  fi
+
+  echo "$session" >"$bw_session_file"
+  export BW_SESSION="$session"
+  show_status "ok" "Bitwarden session saved."
+  echo
+}
+
+function main() {
+  ensure_brew_dependency "bitwarden-cli" "bw"
+  ensure_brew_dependency "jq"
+  prompt_password
+}
+
+# main() is isolated to allow for readability and easier testing.
+main "$@"

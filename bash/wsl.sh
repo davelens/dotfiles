@@ -2,6 +2,16 @@
 
 [[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
+# Bootstrap an ssh-agent and add your default key to it.
+function ssh-agent-bootstrap() {
+  if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    export SSH_AUTH_SOCK=/tmp/ssh-agent.socket
+    [ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"
+    eval "$(ssh-agent -s -a $SSH_AUTH_SOCK)"
+    ssh-add
+  fi
+}
+
 # The mimemagic gem requires this file, which is installed via a homebrew pkg
 # called shared-mime-info. On Linuxbrew however we need to explicitly set this
 # path.

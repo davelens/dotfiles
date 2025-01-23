@@ -121,24 +121,24 @@ tmux attach -t $1 >/dev/null 2>&1 || (
 
   if [[ -z `pgrep -n mysqld` ]]; then
     read -n1 -p "[tmux/d] Launch local mysql server? (y/n) " mysql
-    echo ""
+    echo
     case $mysql in
       [Yy]* ) mysql.server start >/dev/null 2>&1;;
-      [Nn]* ) echo "";;
+      [Nn]* ) echo;;
       * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
     esac
   fi
 
   if [[ -f $destination/config.ru ]]; then
     read -n1 -p "[tmux/d] Launch local puma server? (y/n) " server
-    echo ""
+    echo
     [[ -n $bootstrap ]] && cd $destination && utility rails db-import -i=logs && cd - >/dev/null
     rails_windows $1
   fi
 
   if [[ -f $destination/mix.exs ]]; then
     read -n1 -p "[tmux/d] Launch local phoenix server? (y/n) " server
-    echo ""
+    echo
     phoenix_windows $1
   fi
 
