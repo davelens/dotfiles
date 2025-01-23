@@ -54,13 +54,13 @@ function vault_requirements() {
   echo "    |"
   echo "    | You need the following two items ready in Bitwarden:"
   echo "    |"
-  echo "    | 1. An item of the Identity type, named after your full name, containing:"
-  echo "    |    a A custom field entry named 'GPG signing key'"
+  echo "    | 1. An item of the Identity type, containing your first and last name."
+  echo "    |    a. A custom field entry on the Identity item named 'GPG signing key'"
   echo "    |"
   echo '    | 2. An item of the Login type, named "Github", containing:'
-  echo "    |    a The Username login credential that matches your Github e-mail address"
-  echo "    |    b A custom field entry named 'Public username'"
-  echo "    |    c A custom field entry named 'Personal access token'"
+  echo "    |    a. The Username login credential that matches your Github e-mail address"
+  echo "    |    b. A custom field entry named 'Public username'"
+  echo "    |    c. A custom field entry named 'Personal access token'"
   echo "    |"
   echo
 }
@@ -69,9 +69,9 @@ function load_env_data_from_bitwarden() {
   vault_requirements
 
   # Check if Bitwarden CLI is logged in
-  $("$DOTFILES_PATH/bin/utilities/misc/bitwarden" unlock) || exit 1
+  $bitwarden_cmd unlock || exit 1
 
-  BW_SESSION=$(cat "$DOTFILES_STATE_PATH/bw-session")
+  BW_SESSION="$($bitwarden_cmd session-token)"
 
   # We repeat the check for the session var, because if we don't have it here
   # something went wrong.
