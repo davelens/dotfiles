@@ -29,7 +29,7 @@ function uri_values() {
 
 function main() {
   username=$(echo "$item" | jq -r ".login.username")
-  password=$(echo "$item" | jq -r ".login.password")
+  password=$(echo "$item" | jq -r ".login.password" | sed 's/./*/g')
   notes=$(echo "$item" | jq -r ".notes")
   creationDate=$(echo "$item" | jq -r ".creationDate")
   revisionDate=$(echo "$item" | jq -r ".revisionDate")
