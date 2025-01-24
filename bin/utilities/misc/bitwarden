@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
+#
 # A hub for my custom bitwarden utilities.
+#
+# Original idea blatantly stolen from ... someone. I rewrote it to fit better
+# with what I want to do with my dotfiles, but can't remember or find the 
+# original source. My apologies to the original author, you rock.
+#
 
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'error_handler' ERR
