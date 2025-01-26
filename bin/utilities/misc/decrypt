@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
+trap 'error_handler' ERR
+
+usage() {
+  echo "Usage: $(basename $0) [-h|--help] -i <input> -o <output>"
+  echo
+  echo "Options:"
+  echo "  -h|--help                 Show this help message and exit."
+  echo "  -i|--in <string>          Provide a value to decrypt."
+  echo "  -f|--file                 Process -i as file path instead of text."
+  echo "  -o|--out <file>           Write output to file"
+}
+
+function main() {
+  file=0
+  input=""
+  output=""
+
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -f | --file)
+      file=1
+      shift
+      ;;
+    -i | --in)
+      shift
+      input="$1"
+      shift
+      ;;
+    -o | --out)
+      shift
+      output="$1"
+      shift
+      ;;
+    *)
+      if [[ -z $input ]]; then
+        input="$1"
+      else
+        show_status "error" "Invalid option: $1\n"
+        usage
+        exit 1
+      fi
+      shift
+      ;;
+    esac
+  done
+
+  if [[ -z $input ]]; then
+    if [[ -p /dev/stdin ]]; then
+      input=$(cat /dev/stdin)
+    else
+      show_status "error" "You need to provide an input string to decrypt.\n"
+      usage
+      exit 1
+    fi
+  fi
+
+  if [[ $file -eq 1 ]] && [[ ! -f $input ]]; then
+    show_status "error" "Input file not found: $input\n"
+    usage
+    exit 1
+  fi
+
+  # No output file provided = always print to stdout
+  if [[ -n $output ]]; then 
+
+    if [[ $file -eq 1 ]]; then
+      openssl aes-256-cbc -a -d -pbkdf2 -k "$USER" -in $input -out $output
+    else
+      echo $(printf $input | openssl aes-256-cbc -a -d -pbkdf2 -k "$USER") > $output
+    fi
+
+  else
+
+    if [[ $file -eq 1 ]]; then
+      printf "$(cat "$input" | openssl aes-256-cbc -a -d -pbkdf2 -k "$USER")"
+    else
+      echo $input | openssl aes-256-cbc -a -d -pbkdf2 -k "$USER"
+    fi
+
+  fi
+}
+
+main "$@"
