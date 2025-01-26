@@ -9,6 +9,7 @@ log_file="${DOTFILES_STATE_PATH}/dots.log"
 [ ! -f "$log_file" ] && touch "$log_file"
 
 usage() {
+  echo
   echo "Usage: $(basename $0) [-h|--help] <command>"
   echo
   echo "Commands:"
@@ -26,6 +27,15 @@ logs() {
 
 update() {
   error_occurred=0
+
+  # Check for uncommitted changes and exit gracefully if so.
+  if ! git diff-files --quiet; then
+    show_status "error" "There are uncommitted changes in your dotfiles. Please commit or stash them before updating."
+    echo
+    echo
+    echo "$(cd $DOTFILES_PATH && git st)"
+    exit 1
+  fi
 
   # Pull the latest changes
   show_status "pending" "Pulling in changes ..."
