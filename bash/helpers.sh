@@ -59,17 +59,29 @@ function show_status() {
 # Function to clear output starting from the current line upwards
 #
 # TODO: 
-# - [ ] Extract to executable file in bin/utilities. 
 # - [ ] Add support for clearing multiple lines
 # - [ ] Make '\033[J' optional
 #
 function clear_line() {
+  printf "\r\033[K\r"
+  printf "\033[J"
+}
+
+function clear_line() {
+  local lines=1 clear_below=true
+
+  while [[ $1 ]]; do
+    [[ $1 == -n ]] && lines=$2 && shift
+    [[ $1 == -b ]] && clear_below=false
+    shift
+  done
+
   # 1. Move cursor to the front of the line (\r)
   # 2. Clear everything from the cursor to the end of the line (\033[K)
   # 3. Move cursor back to the front of the line (\r)
+  for ((i = 0; i < $lines; i++)); do printf "\033[F\033[K"; done
   # 4. Clear everything from this line downwards to prevent ghosting (\033[J)
-  printf "\r\033[K\r"
-  printf '\033[J'
+  $clear_below && printf "\033[J"
 }
 
 function clear_prompt_line() {
