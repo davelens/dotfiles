@@ -44,11 +44,10 @@ usage() {
   echo
   echo "  https://github.com/github/docs/blob/main/content/search-github/searching-on-github/searching-for-repositories.md"
   echo
-  exit 0
 }
 
 # Fail early if no arguments are given.
-[[ $# -eq 0 ]] && usage
+[[ $# -eq 0 ]] && usage && exit 1
 
 verbal=false
 query=""
@@ -58,7 +57,7 @@ results=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
-      usage
+      usage && exit 0
       ;;
     -v|--verbal)
       verbal=true
@@ -72,7 +71,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # No query, no results.
-[[ -z $query ]] && usage
+[[ -z $query ]] && usage && exit 1
 
 # Sanitize the query for use in the Github API call. 
 # Only spaces are a problem, for now.

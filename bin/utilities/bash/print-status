@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+# command that displays status updates prefixed with an icon
+
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
+trap 'error_handler' ERR
+
+usage() {
+  echo
+  echo "Usage: $(basename $0) [-h|--help] <options> <message>"
+  echo
+  echo "Options:"
+  echo "  -h|--help                   Show this help message and exit."
+  echo "  -i|--icon <name>            A prefix icon between square brackets."
+  echo "                              Can be anything, but has some presets:"
+  echo "                              - $(check) -> 'ok'"
+  echo "                              - $(cross) -> 'error'"
+  echo "                              - $(pending) -> 'pending'"
+  echo "  -ni|--no-icon               Leaves out the status symbol."
+  echo "  -p|--prefix <string>        Any output to print before the icon."
+  echo "  -n                          Do not print the trailing newline character."
+  echo "  -nc|--no-clear              Does not clear the line before output."
+}
+
+# Fail early if no arguments are given.
+[[ $# -eq 0 ]] && usage && exit 1
+
+function icon() {
+  case "$icon" in
+    pending)  symbol="$(pending)";;
+    ok)       symbol="$(check)";;
+    error)    symbol="$(cross)";;
+    *)        symbol="\[$icon\]";;
+  esac
+
+  echo "$symbol"
+}
+
+function newline() {
+  [[ $newline -eq 1 ]] && echo "\n"
+}
+
+function main() {
+  local newline=1 clearline=1 icon="pending" message prefix
+
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -i | --icon)
+      shift
+      icon="$1"
+      shift
+      ;;
+    -ni | --no-icon)
+      icon=
+      shift
+      ;;
+    -p | --prefix)
+      shift
+      prefix="$1"
+      shift
+      ;;
+    -n)
+      shift
+      newline=0
+      ;;
+    -nc | --no-clear)
+      shift
+      clearline=0
+      ;;
+    *)
+      if [[ -z $message ]]; then
+        message="$1"
+      else
+        basename "error" "Invalid option: $1\n"
+        usage
+        exit 1
+      fi
+      shift
+      ;;
+    esac
+  done
+
+  [[ $clearline -eq 1 ]] && clear_line
+  printf "$prefix$(icon) $message$(newline)"
+}
+
+main "$@"

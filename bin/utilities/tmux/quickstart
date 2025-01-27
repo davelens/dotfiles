@@ -11,11 +11,10 @@ usage() {
   echo "  -h|--help            Show this help message and exit."
   echo "  [tmux-options --]    Any valid tmux options or flags (such as -f, -v,...)."
   echo "  <path-to-folder>     Target directory to start the session in."
-  exit 0
 }
 
 # Fail early if no arguments are given.
-[[ $# -eq 0 ]] && usage
+[[ $# -eq 0 ]] && usage && exit 1
 
 # Parse options and target path
 TMUX_OPTIONS=()
@@ -24,7 +23,7 @@ TARGET_PATH=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
-      usage
+      usage && exit 0
       ;;
     --)
       shift

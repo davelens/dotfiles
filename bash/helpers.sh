@@ -31,39 +31,6 @@ function timesused() {
   [[ -f "$HOME/.bash_history" ]] && grep -c "^${1}" "$HOME/.bash_history"
 }
 
-# Function to display status updates on the same line.
-#
-# TODO: Probably wise to extract this to bin/utilities/bash/status-message
-#
-function show_status() {
-  local status="$1"
-  local message="$2"
-  local icon="$3"
-
-  if [[ -z "$status" ]] || [[ -z "$message" ]]; then
-    echo "ERROR: Both status and message are required."
-    return 1
-  fi
-
-  case "$status" in
-    pending)
-      symbol="$(pending)"  # Symbol for pending
-      ;;
-    ok)
-      symbol="$(check)"  # Symbol for success (check mark)
-      ;;
-    error)
-      symbol="$(cross)"  # Symbol for failure (cross)
-      ;;
-    *)
-      symbol="$(cross)"  # Default symbol for unknown status
-      ;;
-  esac
-
-  clear_line # Clear the line before displaying the status.
-  printf "$symbol $message"
-}
-
 # Function to clear output starting from the current line upwards
 function clear_line() {
   local lines=1 clear_below=true
@@ -95,7 +62,7 @@ function error_handler() {
 }
 
 function interrupt_handler() {
-  show_status "canceled" "Aborted.\n"
+  utility bash print-status -i error "Aborted."
   exit 1
 }
 
@@ -146,14 +113,13 @@ function ensure_brew_dependency() {
     [[ -z $command || $command == $package ]] && command=$name
 
     if [[ ! `command -v $command` ]]; then
-      show_status "pending" "Installing $package ... "
+      utility bash print-status -n "Installing $package ... "
       output=$(HOMEBREW_COLOR=1 brew install --quiet $name 2>&1 >/dev/null)
 
       if [[ $? -gt 0 ]]; then
-        show_status "error" "Failed to install package '$package': $output"
+        utility bash print-status -n -i error "Failed to install package '$package': $output"
       else
-        show_status "ok" "Installed $package."
-        echo
+        utility bash print-status -i ok "Installed $package."
       fi
     fi
   done
