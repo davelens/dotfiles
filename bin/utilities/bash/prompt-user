@@ -59,7 +59,7 @@ function masked() {
 
 function prompt_line() {
   local string=""
-  [[ -n "$question" ]] && string+="$question "
+  [[ -n "$question" ]] && string+="$(echo $question | xargs) "
   [[ -n "$default" ]] && string+="[${default}] "
   printf "$string"
 }
