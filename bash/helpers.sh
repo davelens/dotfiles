@@ -32,10 +32,18 @@ function timesused() {
 }
 
 # Function to display status updates on the same line.
+#
+# TODO: Probably wise to extract this to bin/utilities/bash/status-message
+#
 function show_status() {
   local status="$1"
   local message="$2"
-  local symbol=""
+  local icon="$3"
+
+  if [[ -z "$status" ]] || [[ -z "$message" ]]; then
+    echo "ERROR: Both status and message are required."
+    return 1
+  fi
 
   case "$status" in
     pending)
@@ -57,16 +65,6 @@ function show_status() {
 }
 
 # Function to clear output starting from the current line upwards
-#
-# TODO: 
-# - [ ] Add support for clearing multiple lines
-# - [ ] Make '\033[J' optional
-#
-function clear_line() {
-  printf "\r\033[K\r"
-  printf "\033[J"
-}
-
 function clear_line() {
   local lines=1 clear_below=true
 
@@ -79,9 +77,9 @@ function clear_line() {
   # 1. Move cursor to the front of the line (\r)
   # 2. Clear everything from the cursor to the end of the line (\033[K)
   # 3. Move cursor back to the front of the line (\r)
-  for ((i = 0; i < $lines; i++)); do printf "\033[F\033[K"; done
+  for ((i = 0; i < $lines; i++)); do printf "\r\033[K\r"; done
   # 4. Clear everything from this line downwards to prevent ghosting (\033[J)
-  $clear_below && printf "\033[J"
+  printf "\033[J"
 }
 
 function clear_prompt_line() {
@@ -97,8 +95,7 @@ function error_handler() {
 }
 
 function interrupt_handler() {
-  show_status "canceled" "Aborted."
-  echo
+  show_status "canceled" "Aborted.\n"
   exit 1
 }
 
@@ -156,9 +153,8 @@ function ensure_brew_dependency() {
         show_status "error" "Failed to install package '$package': $output"
       else
         show_status "ok" "Installed $package."
+        echo
       fi
-
-      echo
     fi
   done
 }

@@ -8,16 +8,15 @@ usage() {
   echo "Usage: $(basename $0) [-h|--help] -i <input> -o <output>"
   echo
   echo "Options:"
-  echo "  -h|--help                 Show this help message and exit."
-  echo "  -i|--in <string>          Provide a value to encrypt."
-  echo "  -f|--file                 Process -i as file path instead of text."
-  echo "  -o|--out <file>           Write output to file"
+  echo "  -h|--help                   Show this help message and exit."
+  echo "  -i|--in <string>            Provide a value to encrypt."
+  echo "  -f|--file                   Process -i as file path instead of text."
+  echo "  -o|--out <file>             Write output to file"
+  echo "  -p|--passphrase <string>    Provide a passphrase to encrypt with."
 }
 
 function main() {
-  file=0
-  input=""
-  output=""
+  local file=0 input output passphrase
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -37,6 +36,11 @@ function main() {
     -o | --out)
       shift
       output="$1"
+      shift
+      ;;
+    -p | --passphrase)
+      shift
+      passphrase="$1"
       shift
       ;;
     *)
@@ -68,21 +72,28 @@ function main() {
     exit 1
   fi
 
+  local cmd="openssl aes-256-cbc -a -e -pbkdf2"
+
+  if [[ -n "$passphrase" ]]; then
+    cmd+=" -k '$passphrase'"
+  fi
+
   # No input/output file provided = always print to stdout
   if [[ -n $output ]]; then 
 
     if [[ $file -eq 1 ]]; then
-      openssl aes-256-cbc -a -e -pbkdf2 -k "$USER" -in $input -out $output
+      cmd+=" -in $input -out $output"
+      $cmd
     else
-      echo $(printf $input | openssl aes-256-cbc -a -e -pbkdf2 -k "$USER") > $output
+      echo $(printf $input | $cmd) > $output
     fi
 
   else
 
     if [[ $file -eq 1 ]]; then
-      echo "$(cat "$input" | openssl aes-256-cbc -a -e -pbkdf2 -k "$USER")"
+      echo "$(cat "$input" | $cmd)"
     else
-      echo $input | openssl aes-256-cbc -a -e -pbkdf2 -k "$USER"
+      echo $input | $cmd 
     fi
 
   fi

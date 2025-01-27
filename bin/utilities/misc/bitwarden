@@ -39,14 +39,24 @@ function bootstrap_session_token() {
   fi
 }
 
+function items_cache_file() {
+  echo $(cat "$DOTFILES_STATE_PATH/bw-items-cache")
+}
+
 function session_token() {
   echo $(cat "$DOTFILES_STATE_PATH/bw-session")
 }
 
-function write_vault_items_to_temp_file() {
+#
+# openssl aes-256-cbc -pbkdf2 -e -a -k pras3Awr -in foo.txt -out foo.enc
+# openssl aes-256-cbc -pbkdf2 -d -a -k pras3Awr -in foo.enc
+# 
+# openssl rand -base64 128
+#
+function cache_vault_items() {
   local filter="$1"
   ITEMS=
-  export TEMP_ITEMS_FILE=$(mktemp)
+  export ITEMS_CACHE_FILE=$(mktemp)
 
   show_status "pending" "Loading items from vault(s) ... "
 
@@ -63,7 +73,8 @@ function write_vault_items_to_temp_file() {
   fi
 
   show_status "ok" "Items loaded from vault(s)."
-  echo "$ITEMS" >"$TEMP_ITEMS_FILE"
+  echo "$ITEMS" >"$ITEMS_CACHE_FILE"
+  openssl aes-256-cbc -a -salt -pbkdf2 -in $ITEMS_CACHE_FILE -out $ITEMS_CACHE_FILE.enc -k $DOTFILES_ENCRYPTION_KEY
   echo
 }
 
@@ -88,7 +99,7 @@ function main() {
       exit 0
       ;;
     *)
-      echo "$(cross) Invalid option: $1"
+      show_status "error" "Invalid option: $1"
       usage
       exit 1
       ;;
@@ -97,19 +108,21 @@ function main() {
 
   ensure_brew_dependency "fzf"
   bootstrap_session_token
-  write_vault_items_to_temp_file "$filter"
+  cache_vault_items "$filter"
 
   # So the preview code knows where to look.
   export SCRIPT_PATH="$(dirname $(realpath $0))"
 
-  jq -r '.[] | "\(.name) (\(.id)) \(.login.username)"' "$TEMP_ITEMS_FILE" | 
-    FZF_PREVIEW_FILE="$TEMP_ITEMS_FILE" fzf \
+  # You need to pass the jq queries for $item_id and $item here in order to
+  # get the preview to work. It executes in a subshell, so it doesn't have
+  # context of the variables you've set in the main shell.
+  jq -r '.[] | "\(.name)\t(\(.id))\t\(.login.username)"' "$ITEMS_CACHE_FILE" | 
+    awk '$0=(NR>1?" ":"")$1":"$2' ORS= |
+    FZF_PREVIEW_FILE="$ITEMS_CACHE_FILE" fzf \
     --cycle --inline-info --ansi --no-mouse --layout=reverse \
     --prompt="$(basename $0) -> " \
     --preview-window='right:50%' \
     --preview='
-      # You need to set the jq queries here in order to get a preview to work.
-      # It does a funky thing with how it extracts data.
       item_id=$(echo {} | sed -n "s/.*(\(.*\)).*/\1/p")
       item=$(jq -r --arg id "$item_id" ".[] | select(.id == \$id)" "$FZF_PREVIEW_FILE")
       source $SCRIPT_PATH/bitwarden_preview.sh
