@@ -47,9 +47,8 @@ function main() {
       if [[ -z $input ]]; then
         input="$1"
       else
-        show_status "error" "Invalid option: $1\n"
-        usage
-        exit 1
+        utility bash print-status -i error "Invalid option: $1"
+        usage && exit 1
       fi
       shift
       ;;
@@ -60,16 +59,14 @@ function main() {
     if [[ -p /dev/stdin ]]; then
       input=$(cat /dev/stdin)
     else
-      show_status "error" "You need to provide an input string to decrypt.\n"
-      usage
-      exit 1
+      utility bash print-status -i error "You need to provide an input string to decrypt."
+      usage && exit 1
     fi
   fi
 
   if [[ $file -eq 1 ]] && [[ ! -f $input ]]; then
-    show_status "error" "Input file not found: $input\n"
-    usage
-    exit 1
+    utility bash print-status -i error "Input file not found: $input"
+    usage && exit 1
   fi
 
   local cmd="openssl aes-256-cbc -a -d -pbkdf2"

@@ -17,16 +17,16 @@ function prompt_password() {
 function check_bw_session() {
   if [[ -n "$bw_session_file" ]]; then
     if bw unlock --check --quiet 2>/dev/null; then
-      show_status "ok" "Loaded Bitwarden session from environment."
-      echo && return 0
+      utility bash print-status -i ok "Loaded Bitwarden session from environment."
+      return 0
     fi
   fi
 
   if [[ -f "$bw_session_file" ]]; then
     export BW_SESSION=$(cat "$bw_session_file")
     if bw unlock --check --quiet 2>/dev/null; then
-      show_status "ok" "Loaded Bitwarden session from file."
-      echo && return 0
+      utility bash print-status -i ok "Loaded Bitwarden session from file."
+      return 0
     fi
   fi
 
@@ -34,20 +34,18 @@ function check_bw_session() {
 }
 
 function handle_session_save() {
-  show_status "pending" "Saving Bitwarden session ..."
+  utility bash print-status -n "Saving Bitwarden session ..."
   local session=$(echo "$password" | bw unlock --raw 2>/dev/null)
 
   if [[ -z "$session" ]]; then
-    show_status "error" "Could not unlock vault. Try again or press Ctrl+c to exit."
-    echo
+    utility bash print-status -i error "Could not unlock vault. Try again or press Ctrl+c to exit."
     prompt_password # Recurse until it works or user exits.
     return # Exit to prevent execution for every time the unlock failed.
   fi
 
   echo "$session" >"$bw_session_file"
   export BW_SESSION="$session"
-  show_status "ok" "Bitwarden session saved."
-  echo
+  utility bash print-status -i ok "Bitwarden session saved."
 }
 
 function main() {

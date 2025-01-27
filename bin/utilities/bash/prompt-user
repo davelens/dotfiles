@@ -88,9 +88,8 @@ function main() {
       if [[ -z $question ]]; then
         question="$1"
       else
-        show_status "error" "Invalid option: $1\n"
-        usage
-        exit 1
+        utility bash print-status -i error "Invalid option: $1"
+        usage && exit 1
       fi
       shift
       ;;
@@ -98,9 +97,8 @@ function main() {
   done
 
   if [[ -z $question ]]; then
-    show_status "error" "You need to provide a question to ask.\n"
-    usage
-    exit 1
+    utility bash print-status -i error "You need to provide a question to ask."
+    usage && exit 1
   fi
 
   eval $prompt_function

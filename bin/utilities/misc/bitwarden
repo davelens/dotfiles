@@ -58,21 +58,21 @@ function cache_vault_items() {
   ITEMS=
   export ITEMS_CACHE_FILE=$(mktemp)
 
-  show_status "pending" "Loading items from vault(s) ... "
+  utility bash print-status -n "Loading items from vault(s) ... "
 
   if [[ -n "$filter" ]]; then
     if ! ITEMS=$(bw list items --search "$filter" --session "$(session_token)" 2>/dev/null); then
-      show_status "error" "Could not load items or operation timed out."
-      echo && exit 1
+      utility bash print-status -i error "Could not load items or operation timed out."
+      exit 1
     fi
   else
     if ! ITEMS=$(bw list items --session "$(session_token)" 2>/dev/null); then
-      show_status "error" "Could not load items or operation timed out."
-      echo && exit 1
+      utility bash print-status -i error "Could not load items or operation timed out."
+      exit 1
     fi
   fi
 
-  show_status "ok" "Items loaded from vault(s)."
+  utility bash print-status -n -i ok "Items loaded from vault(s)."
   echo "$ITEMS" >"$ITEMS_CACHE_FILE"
   openssl aes-256-cbc -a -salt -pbkdf2 -in $ITEMS_CACHE_FILE -out $ITEMS_CACHE_FILE.enc -k $DOTFILES_ENCRYPTION_KEY
   echo
@@ -99,9 +99,8 @@ function main() {
       exit 0
       ;;
     *)
-      show_status "error" "Invalid option: $1"
-      usage
-      exit 1
+      utility bash print-status -i error "Invalid option: $1"
+      usage && exit 1
       ;;
     esac
   done
