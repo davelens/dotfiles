@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
+trap 'error_handler' ERR
+
+usage() {
+  echo
+  echo "Usage: $(basename $0) [-h|--help] <command> [<#>]"
+  echo
+  echo "Commands:"
+  echo "  clear-line                Clear output from the cursor to the end of the line."
+  echo "  clear-down                Clear output from the cursor down."
+  echo "  clear-up <#>              Clear output from the cursor up # lines."
+  echo "  move-up <#>               Move cursor up # lines."
+  echo "  move-down <#>             Move cursor down # lines."
+  echo
+  echo "Options:"
+  echo "  -h|--help                 Show this help message and exit."
+  echo "  -p|--for-prompt           Adds a deficit for the bash prompt to prevent confusion with lines."
+}
+
+# Fail early if no arguments are given.
+[[ $# -eq 0 ]] && usage && exit 1
+
+function clear_line() {
+  move_up
+  printf "\r\033[K\r"
+}
+
+function clear_up() {
+  move_up
+  clear_down
+}
+
+function clear_down() {
+  printf "\033[J"
+}
+
+function move_up() {
+  tput cuu $lines
+}
+
+function move_down() {
+  tput cud $lines
+}
+
+function main() {
+  local command lines=1 in_prompt=0
+
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    -h | --help)
+      usage && exit 0
+      ;;
+    -p | --for-prompt)
+      in_prompt=1
+      shift
+      ;;
+    reset | clear-line)
+      command="${1/-/_}"
+      lines=0
+      shift
+      ;;
+    clear-up | clear-down | move-up | move-down)
+      command="${1/-/_}"
+      shift
+      lines=${1:-1}
+      shift
+      ;;
+    *)
+      if [[ -z $command ]]; then
+        utility bash print-status -i error "Invalid command: $1"
+        usage && exit 1
+      fi
+
+      if [[ $lines -eq 0 ]]; then
+        utility bash print-status -i error "No numeric input required for command: $1"
+        usage && exit 1
+      fi
+
+      shift
+      ;;
+    esac
+  done
+
+  if [[ ! $lines =~ ^[0-9]+$ ]]; then
+    utility bash print-status -i error "Only numeric input is valid for $command."
+    usage && exit 1
+  fi
+
+  # Increment/decrement the default value by 2 depending on whether we move
+  # up or down. This is because we need to bridge the height of our 
+  # bash prompt. I don't think I can calculate this, so I'll assume the 
+  # default for these dotfiles, which is 2.
+  if [[ $in_prompt -eq 1 ]]; then
+    if [[ $command =~ '_up' ]]; then
+      lines=$((lines + 2))
+    fi
+
+    if [[ $command =~ '_down' ]]; then
+      lines=$((lines - 2))
+    fi
+  fi
+
+  $command
+}
+
+main "$@"
