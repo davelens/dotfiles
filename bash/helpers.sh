@@ -130,14 +130,23 @@ function succeed() {
 }
 
 function ensure_brew_dependency() {
-  package=$1
-  command=$2
-  [[ -z $2 ]] && command=$package
+  for package in "$@"; do
+    local name=${package%:*}   # Extract the package name before ":"
+    local command=${package#*:} # Extract optional command name after ":"
 
-  if [[ ! `command -v $command` ]]; then
-    show_status "pending" "Installing $package ..."
-    brew install --quiet $package
-    show_status "ok" "Installed $package."
-    echo
-  fi
+    [[ -z $command || $command == $package ]] && command=$name
+
+    if [[ ! `command -v $command` ]]; then
+      show_status "pending" "Installing $package ... "
+      output=$(HOMEBREW_COLOR=1 brew install --quiet $name 2>&1 >/dev/null)
+
+      if [[ $? -gt 0 ]]; then
+        show_status "error" "Failed to install package '$package': $output"
+      else
+        show_status "ok" "Installed $package."
+      fi
+
+      echo
+    fi
+  done
 }
