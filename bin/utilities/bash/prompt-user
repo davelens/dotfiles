@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
+trap 'error_handler' ERR
+
+usage() {
+  echo
+  echo "Usage: $(basename $0) [-h|--help] <question>"
+  echo
+  echo "Options:"
+  echo "  -h|--help                Show this help message and exit."
+  echo "  -d|--default             Set the default value for when the prompt receives no input."
+  echo "  -m|--mask                Masks the input with '*' characters."
+}
+
+function basic() {
+  local input
+  local prompt=$(prompt_line)
+  read -p "$prompt" input
+  echo "${input:-$default}"
+}
+
+function masked() {
+  local input
+  local prompt=$(prompt_line)
+  local stty_backup
+
+  printf "%s" "$prompt" >&2
+  stty_backup=$(stty -g)
+
+  stty -echo -icanon time 0 min 1
+  trap 'stty "$stty_backup"; trap - EXIT' EXIT
+
+  while true; do
+    char=$(dd bs=1 count=1 2>/dev/null) # Read/write bytes one at a time
+
+    # I can't isolate the Enter key with the usual method, so I've opted
+    # for a catch-all that includes Enter.
+    [[ -z "$char" ]] && break
+
+    # Handles backspace to delete the previous character/asterisk.
+    if [[ "$char" == $'\177' ]]; then
+      if [[ -n $input ]]; then
+        input=${input::-1} # Reflect the change in the end result.
+        echo -ne "\b \b" >&2  # Reflect the change in the output.
+      fi
+      continue
+    fi
+    input+="$char"
+    printf "*" >&2
+  done
+
+  stty "$stty_backup"
+  trap - EXIT
+
+  echo "${input:-$default}"
+  echo >&2 # Adds a newline after the masked input, otherwise output "sticks".
+}
+
+function prompt_line() {
+  local string=""
+  [[ -n "$question" ]] && string+="$question "
+  [[ -n "$default" ]] && string+="[${default}] "
+  printf "$string"
+}
+
+function main() {
+  local prompt_function="basic"
+  question=
+  default=
+
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -d | --default)
+      shift
+      default="$1"
+      shift
+      ;;
+    -m | --mask)
+      prompt_function="masked"
+      shift
+      ;;
+    *)
+      if [[ -z $question ]]; then
+        question="$1"
+      else
+        show_status "error" "Invalid option: $1\n"
+        usage
+        exit 1
+      fi
+      shift
+      ;;
+    esac
+  done
+
+  if [[ -z $question ]]; then
+    show_status "error" "You need to provide a question to ask.\n"
+    usage
+    exit 1
+  fi
+
+  eval $prompt_function
+}
+
+main "$@"

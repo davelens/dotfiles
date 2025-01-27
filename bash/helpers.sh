@@ -31,7 +31,7 @@ function timesused() {
   [[ -f "$HOME/.bash_history" ]] && grep -c "^${1}" "$HOME/.bash_history"
 }
 
-# Function to display status updates
+# Function to display status updates on the same line.
 function show_status() {
   local status="$1"
   local message="$2"
@@ -52,17 +52,29 @@ function show_status() {
       ;;
   esac
 
-  # The first part clears the line before appending the symbol/message combo.
-  clear_line
+  clear_line # Clear the line before displaying the status.
   printf "$symbol $message"
 }
 
+# Function to clear output starting from the current line upwards
+#
+# TODO: 
+# - [ ] Extract to executable file in bin/utilities. 
+# - [ ] Add support for clearing multiple lines
+# - [ ] Make '\033[J' optional
+#
 function clear_line() {
+  # 1. Move cursor to the front of the line (\r)
+  # 2. Clear everything from the cursor to the end of the line (\033[K)
+  # 3. Move cursor back to the front of the line (\r)
+  # 4. Clear everything from this line downwards to prevent ghosting (\033[J)
   printf "\r\033[K\r"
+  printf '\033[J'
 }
 
 function clear_prompt_line() {
-  printf "\033[1A\r\033[K"
+  printf "\033[1A" # Move up one line
+  clear_line
 }
 
 # To help us centralize how errors look throughout our scripts.
