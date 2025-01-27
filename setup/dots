@@ -30,7 +30,7 @@ update() {
 
   # Check for uncommitted changes and exit gracefully if so.
   if ! git diff-files --quiet; then
-    show_status "error" "There are uncommitted changes in your dotfiles. Please commit or stash them before updating."
+    show_status "error" "There are uncommitted changes in your dotfiles. Please commit or stash them before updating:"
     echo
     echo
     echo "$(cd $DOTFILES_PATH && git st)"
