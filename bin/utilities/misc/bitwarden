@@ -13,6 +13,7 @@ set -e
 trap 'error_handler' ERR
 
 usage() {
+  echo
   echo "Usage: $(basename $0) [-h|--help] <command>"
   echo
   echo "Commands:"

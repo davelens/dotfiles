@@ -4,6 +4,7 @@ set -e
 [[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 usage() {
+  echo
   echo "Usage: $(basename $0) [-h|--help] [tmux-options --] <path-to-folder>"
   echo
   echo "Options:"

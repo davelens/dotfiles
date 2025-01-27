@@ -4,6 +4,7 @@
 trap 'error_handler' ERR
 
 usage() {
+  echo
   echo "Usage: $(basename $0) [-h|--help] -i <input> -o <output>"
   echo
   echo "Options:"
