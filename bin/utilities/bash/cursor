@@ -28,6 +28,7 @@ function clear_line() {
 }
 
 function clear_up() {
+  lines=$((lines + 1))
   move_up
   clear_down
 }
@@ -38,10 +39,12 @@ function clear_down() {
 
 function move_up() {
   tput cuu $lines
+  printf "\r"
 }
 
 function move_down() {
   tput cud $lines
+  printf "\r"
 }
 
 function main() {
@@ -88,10 +91,11 @@ function main() {
     usage && exit 1
   fi
 
-  # Increment/decrement the default value by 2 depending on whether we move
+  # Increment/decrement the default value by 3 depending on whether we move
   # up or down. This is because we need to bridge the height of our 
   # bash prompt. I don't think I can calculate this, so I'll assume the 
-  # default for these dotfiles, which is 2.
+  # default for these dotfiles, which is 2. We have to add 1 extra
+  # because of `printf "\r"`.
   if [[ $in_prompt -eq 1 ]]; then
     if [[ $command =~ '_up' ]]; then
       lines=$((lines + 2))

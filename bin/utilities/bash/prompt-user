@@ -2,22 +2,45 @@
 
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'error_handler' ERR
+trap 'interrupt_handler' SIGINT
 
 usage() {
   echo
-  echo "Usage: $(basename $0) [-h|--help] <question>"
+  echo "Usage: $(basename $0) [-h|--help] [options] <question>"
   echo
   echo "Options:"
   echo "  -h|--help                Show this help message and exit."
+  echo "  -yn|--yesno              Prompts the user with a yes/no question."
   echo "  -d|--default             Set the default value for when the prompt receives no input."
   echo "  -m|--mask                Masks the input with '*' characters."
+  echo "  -i|--indent <string>     Adds a string to the beginning of the prompt."
 }
 
 function basic() {
   local input
-  local prompt=$(prompt_line)
-  read -p "$prompt" input
+  local prompt="$(prompt_line)"
+  # Flush the input buffer before reading.
+  read -p "$prompt" input && printf ""
   echo "${input:-$default}"
+}
+
+function yesno() {
+  local input
+  local prompt="$(prompt_line)(y/n)"
+
+  printf "%s " "$prompt"
+
+  while true; do
+    read -n1 -r input
+
+    case $input in
+      [Yy]* | [Nn]* ) echo "$input" && break;;
+      * )
+        utility bash print-status -n -ni \
+          "$indent${question}Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o: "
+        ;;
+    esac
+  done
 }
 
 function masked() {
@@ -61,13 +84,11 @@ function prompt_line() {
   local string=""
   [[ -n "$question" ]] && string+="$(echo $question | xargs) "
   [[ -n "$default" ]] && string+="[${default}] "
-  printf "$string"
+  printf "$indent$string"
 }
 
 function main() {
-  local prompt_function="basic"
-  question=
-  default=
+  local prompt_function="basic" question default indent
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -82,6 +103,15 @@ function main() {
       ;;
     -m | --mask)
       prompt_function="masked"
+      shift
+      ;;
+    -yn | --yesno)
+      prompt_function="yesno"
+      shift
+      ;;
+    -i | --indent)
+      shift
+      indent="$1"
       shift
       ;;
     *)

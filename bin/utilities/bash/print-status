@@ -30,7 +30,7 @@ function icon() {
     pending)  symbol="$(pending)";;
     ok)       symbol="$(check)";;
     error)    symbol="$(cross)";;
-    *)        symbol="\[$icon\]";;
+    *)        [[ -n $icon ]] && symbol="[$icon]";;
   esac
 
   echo "$symbol"
@@ -63,13 +63,13 @@ function main() {
       prefix="$1"
       shift
       ;;
-    -n)
-      shift
-      newline=0
-      ;;
     -nc | --no-clear)
       shift
       clearline=0
+      ;;
+    -n)
+      shift
+      newline=0
       ;;
     *)
       if [[ -z $message ]]; then
@@ -85,7 +85,11 @@ function main() {
   done
 
   [[ $clearline -eq 1 ]] && clear_line
-  printf "$prefix$(icon) $message$(newline)"
+
+  [[ -n $prefix ]] && result="$prefix"
+  [[ -n $icon ]] && result+="$(icon) "
+  result+="$message$(newline)"
+  printf "$result"
 }
 
 main "$@"

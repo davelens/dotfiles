@@ -18,83 +18,117 @@ function print-status() {
   utility bash print-status "$@"
 }
 
+function prompt-user() {
+  utility bash prompt-user "$@"
+}
+
 function separator() {
-  printf "────¦"
-  printf '%.s─' $(seq 6 $(tput cols))
+  printf "───¦"
+  printf '%.s─' $(seq 5 $(tput cols))
+  utility bash cursor move-down
 }
 
 function fecho() {
-  printf "    ¦ %s" "$1"
+  printf "   ¦  %s\n" "$1"
+}
+
+function secho() {
+  printf "  %s" "$1"
 }
 
 function intro() {
-  echo "    ¦"
-  echo "    ¦ This script will help you set up your environment variables."
-  echo "    ¦ Press Enter to confirm suggested values."
-  echo "    ¦ Press Ctrl + c at any time to abort."
-  echo "    ¦"
+  separator
+  fecho
+  fecho "This script will help you set up your environment variables."
+  fecho "Press Enter to confirm suggested values."
+  fecho "Press Ctrl + c at any time to abort."
+  fecho
 }
 
 function salt_intro() {
-  echo "    ¦"
-  echo "    ¦ Some utility commands like encrypt/decrypt require a password-protected salt."
-  echo "    ¦ Every time you log into your shell, you will be prompted for this password."
-  echo "    ¦"
+  fecho
+  separator
+  fecho
+  fecho "ENCRYPTION                                                         (part 1/5)"
+  fecho
+  fecho "Some utility commands like encrypt/decrypt require a password-protected salt."
+  fecho "Every time you log into your shell, you will be prompted for this password."
+  fecho
+}
+
+function secrets_management_intro() {
+  separator
+  fecho
+  fecho "SECRETS MANAGEMENT                                                 (part 2/5)"
+  fecho
+  fecho "These dotfiles require access to some sensitive data, for example"
+  fecho "Github (a personal access token) and GPG (your signing key) credentials."
+  fecho
+  fecho "These will be stored in ENV vars in $env_file."
+  fecho
+}
+
+function bitwarden_intro() {
+  fecho
+  fecho "Support for Bitwarden, a free password manager, is built into this script."
+  fecho
 }
 
 function bitwarden_data_intro() {
-  echo "    ¦"
-  echo "    ¦ Some utility commands like encrypt/decrypt require a password-protected salt."
-  echo "    ¦ Every time you log into your shell, you will be prompted for this password."
-  echo "    ¦"
-}
-
-function bitwarden_data_intro() {
-  echo "    ¦"
-  echo "    ¦ You need the following two items ready in Bitwarden:"
-  echo "    ¦"
-  echo "    ¦ 1. An item of the Identity type, containing your first and last name."
-  echo "    ¦    a. A custom field entry on the Identity item named 'GPG signing key'"
-  echo "    ¦"
-  echo '    ¦ 2. An item of the Login type, named "Github", containing:'
-  echo "    ¦    a. The Username login credential that matches your Github e-mail address"
-  echo "    ¦    b. A custom field entry named 'Public username'"
-  echo "    ¦    c. A custom field entry named 'Personal access token'"
-  echo "    ¦"
+  fecho
+  fecho "You need the following two items ready in Bitwarden:"
+  fecho
+  fecho "1. An item of the Identity type, containing your first and last name."
+  fecho "   a. A custom field entry on the Identity item named 'GPG signing key'"
+  fecho
+  fecho "2. An item of the Login type, named \"Github\", containing:"
+  fecho "   a. The Username login credential that matches your Github e-mail address"
+  fecho "   b. A custom field entry named 'Public username'"
+  fecho "   c. A custom field entry named 'Personal access token'"
+  fecho 
 }
 
 function bitwarden_prompt() {
-  printf "$(pending) "
+  local bitwarden
+  local question="Would you like to use Bitwarden to retrieve your environment variables?"
+  print-status -n -p "$(secho)" "$question (y/n) "
 
   while true; do
-    read -n1 -p "Would you like to use Bitwarden to retrieve your environment variables? (y/n) " bitwarden
+    read -n1 -r bitwarden
 
-    case $bitwarden in
-      [Yy]* ) print-status -i ok "Using Bitwarden." && return 0;;
-      [Nn]* ) print-status -i error "Not using Bitwarden." && return 1;;
-      * ) print-status -n "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o. ";;
+    case "$bitwarden" in
+      [Yy]* ) print-status -p "$(secho)" -i ok "Using Bitwarden." && return 0;;
+      [Nn]* ) print-status -p "$(secho)" -i error "Not using Bitwarden." && return 1;;
+      * ) print-status -n -p "$(secho)" "$question. Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
     esac
   done
 
-  echo
+  return 1
 }
 
-function bitwarden_requirements() {
+function secrets_management_requirements() {
+  secrets_management_intro
+
   if [[ -f $env_file ]]; then
-    # TODO: This assumes all vars are accounted for with values.
-    # Probably need to check every individual var instead.
     source "$env_file"
-    print-status -p "$(fecho)" -i ok "Loaded environment variables from $env_file."
-  else
-    if bitwarden_prompt; then
-      ensure_brew_dependency jq 'bitwarden-cli:bw'
-      load_env_data_from_bitwarden
-    fi
+    print-status -p "$(secho)" -i ok "Loaded environment variables from $env_file."
   fi
 
-  fecho
-  printf "\n\n"
-  bitwarden_data_wizard
+  # TODO:
+  # - [ ] List the required ENV vars here.
+  # - [ ] Check for each one how to retrieve them
+  # - [ ] If a value exists, prompt the user to confirm it.
+  # - [ ] There should be a built-in way to retrieve these values from Bitwarden.
+  bitwarden_intro
+
+  if bitwarden_prompt; then
+    ensure_brew_dependency jq 'bitwarden-cli:bw'
+    load_env_data_from_bitwarden
+  else
+    bitwarden_data_wizard
+  fi
+
+  secho
 }
 
 function load_env_data_from_bitwarden() {
@@ -108,9 +142,9 @@ function load_env_data_from_bitwarden() {
   # We repeat the check for the session var, because if we don't have it here
   # something went wrong.
   if [[ -n $BW_SESSION ]]; then
-    print-status -n "Syncing with Bitwarden vaults ... "
+    print-status -p "$(secho)" -n "Syncing with Bitwarden vaults ... "
     bw sync --quiet
-    print-status -i ok "Bitwarden vaults synced."
+    print-status -p "$(secho)" -i ok "Bitwarden vaults synced."
   fi
 
   #OWNER_NAME="$(
@@ -119,8 +153,7 @@ function load_env_data_from_bitwarden() {
     #) | fzf --prompt "Who are you? "
   #)"
 
-  export OWNER_NAME=$(u bash prompt-user "OWNER_NAME" "Enter your first and last name" "$OWNER_NAME")
-  clear_prompt_line
+  OWNER_NAME=$(prompt-user -i "  $(pending) " -d "$OWNER_NAME" "Enter your first and last name")
 
   #GITHUB_EMAIL="$(
     #echo $(bw get item --session "$BW_SESSION" --search "Github" |
@@ -128,10 +161,9 @@ function load_env_data_from_bitwarden() {
     #) | fzf --prompt "Select the e-mail address you log into Github with: "
   #)"
 
-  export GITHUB_EMAIL=$(utility bash prompt-user -d "$GITHUB_EMAIL" "Enter the e-mail address you log into Github with")
-  clear_prompt_line
+  GITHUB_EMAIL=$(prompt-user -i "  $(pending) " -d "$GITHUB_EMAIL" "Enter the e-mail address you log into Github with")
 
-  print-status -n "Preparing data from vault(s) ... "
+  print-status -p "$(secho)" -n "Preparing data from vault(s) ... "
   owner_data=$(bw list items --session "$BW_SESSION" --search "$OWNER_NAME" | jq '.[] | select(.identity != null)')
   bitwarden_data=$(bw get item --session "$BW_SESSION" "$GITHUB_EMAIL")
 
@@ -145,31 +177,27 @@ function load_env_data_from_bitwarden() {
   GITHUB_USERNAME="$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Public username").value')"
   GITHUB_PERSONAL_ACCESS_TOKEN=$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Personal access token") | .value')
   GPG_SIGNING_KEY=$(echo $owner_data | jq -r '.fields[] | select(.name == "GPG signing key").value')
-  print-status -i ok "Vault data prepared."
+  print-status -p "$(secho)" -i ok "Vault data prepared."
 }
 
 function bitwarden_data_wizard() {
-  REPO_NAMESPACE=$(utility bash prompt-user -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos?")
-  clear_prompt_line
+  fecho
+
+  REPO_NAMESPACE=$(prompt-user -i "  $(pending) " -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos?")
 
   if [[ -z $OWNER_NAME ]]; then 
-    OWNER_NAME=$(utility bash prompt-user -d "$OWNER_NAME" "Enter your first and last name")
-    clear_prompt_line
+    OWNER_NAME=$(prompt-user -i "  $(pending) " -d "$OWNER_NAME" "Enter your first and last name")
   fi
 
   if [[ -z $GITHUB_EMAIL ]]; then
-    GITHUB_EMAIL=$(utility bash prompt-user -d "$GITHUB_EMAIL" "Enter the email address you log into Github with")
-    clear_prompt_line
+    GITHUB_EMAIL=$(prompt-user -i "  $(pending) " -d "$GITHUB_EMAIL" "Enter the email address you log into Github with")
   fi
 
-  GITHUB_USERNAME=$(utility bash prompt-user -d "${GITHUB_USERNAME}" "Enter your public Github username")
-  clear_prompt_line
+  GITHUB_USERNAME=$(prompt-user -i "  $(pending) " -d "${GITHUB_USERNAME}" "Enter your public Github username")
 
-  GITHUB_PERSONAL_ACCESS_TOKEN=$(utility bash prompt-user -d "$GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github Personal access token")
-  clear_prompt_line
+  GITHUB_PERSONAL_ACCESS_TOKEN=$(prompt-user -i "  $(pending) " -d "$GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github Personal access token")
 
-  GPG_SIGNING_KEY=$(utility bash prompt-user -d "$GPG_SIGNING_KEY" "Enter your GPG signing key")
-  clear_prompt_line
+  GPG_SIGNING_KEY=$(prompt-user -i "  $(pending) " -d "$GPG_SIGNING_KEY" "Enter your GPG signing key")
 
   # Check if the REPO_NAMESPACE path exists, and create it if not.
   if [[ ! -d $REPO_NAMESPACE ]]; then
@@ -183,30 +211,24 @@ function bitwarden_data_wizard() {
 
 salt_requirements() {
   salt_intro
+  echo
 
-  local pass=$(utility bash prompt-user -m "Enter your desired password: ")
-  echo
-  local pass_confirmation=$(utility bash prompt-user -m  "Confirm your entered password: ")
-  echo
+  local pass=$(prompt-user -m "Enter your desired password: ")
+  local pass_confirmation=$(prompt-user -m  "Confirm your entered password: ")
 
   if [[ -z $pass ]] || [[ -z $pass_confirmation ]] || [[ $pass != $pass_confirmation ]]; then
-    print-status --prefix "$(fecho)" -i error "Passwords do not match. Please try again."
-    for i in {1..9}; do printf '\033[F\033[K'; done
-    printf "\033[J"
-    salt_requirements 1
+    utility bash cursor -p clear-up 8
+    salt_requirements
     return
   fi
 
   # Generate a salt and encrypt it with the given password.
   echo $(openssl rand -base64 32 | utility misc encrypt -p "$pass") > "$DOTFILES_STATE_PATH/salt"
 
-  for i in {1..4}; do printf '\033[F\033[K'; done
-  print-status -p "$(fecho)" -i ok "Salt successfully saved."
-  fecho
-
-  echo
-  separator
-  echo
+  #for i in {1..3}; do printf '\033[F\033[K'; done
+  utility bash cursor clear-up 2
+  print-status -p "$(secho)" -i ok "Salt successfully saved."
+  fecho 
 }
 
 function write_env_files() {
@@ -239,25 +261,29 @@ function main() {
   intro
 
   while true; do
-    read -n1 -p "Press any key to continue ... " ok
+    printf "\nPress any key to continue ... "
+    read -n1 ok
+
     if [[ -n $ok ]]; then 
-      clear_line && separator
+      utility bash cursor clear-up
       break
     fi
   done
 
   salt_requirements
-  bitwarden_requirements
-  #write_env_files
+  secrets_management_requirements
+  write_env_files
 
-  print-status -i ok "All done!"
-  echo
-  echo "Environment variables written to these files:"
-  echo "  $gitconfig_env_file"
-  echo "  $env_file"
-  echo
-  echo "Please source ~/.bashrc or restart your shell to apply changes."
-  echo
+  print-status -p "$(secho)" -i ok "All done!"
+
+  fecho
+  fecho "Environment variables written to these files:"
+  fecho "  $gitconfig_env_file"
+  fecho "  $env_file"
+  fecho
+  fecho "Please source ~/.bashrc or restart your shell to apply changes."
+  fecho
+  separator
 }
 
 main "$@"
