@@ -54,7 +54,7 @@ function masked() {
   local prompt=$(prompt_line)
   local stty_backup
 
-  printf "%s" "$prompt" >&2
+  printf "%s " "$prompt" >&2
   stty_backup=$(stty -g)
 
   stty -echo -icanon time 0 min 1
@@ -89,7 +89,7 @@ function masked() {
 function prompt_line() {
   local string=""
   [[ -n "$question" ]] && string+="$(echo $question | xargs)"
-  [[ -n "$default" ]] && string+="[${default}] "
+  [[ -n "$default" ]] && string+=" $BGK[${default}]$NONE "
   printf "$indent$string"
 }
 

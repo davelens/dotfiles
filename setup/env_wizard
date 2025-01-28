@@ -134,7 +134,7 @@ function load_env_data_from_bitwarden() {
     #) | fzf --prompt "Who are you? "
   #)"
 
-  OWNER_NAME=$(prompt-user -i "$(pending) " -d "$OWNER_NAME" "Enter your first and last name")
+  OWNER_NAME=$(prompt-user -i "$(pending) " -d "$OWNER_NAME" "Enter your first and last name: ")
 
   #GITHUB_EMAIL="$(
     #echo $(bw get item --session "$BW_SESSION" --search "Github" |
@@ -142,7 +142,7 @@ function load_env_data_from_bitwarden() {
     #) | fzf --prompt "Select the e-mail address you log into Github with: "
   #)"
 
-  GITHUB_EMAIL=$(prompt-user -i "$(pending) " -d "$GITHUB_EMAIL" "Enter the e-mail address you log into Github with")
+  GITHUB_EMAIL=$(prompt-user -i "$(pending) " -d "$GITHUB_EMAIL" "Enter the e-mail address you log into Github with: ")
 
   print-status -n "Preparing data from vault(s) ... "
   owner_data=$(bw list items --session "$BW_SESSION" --search "$OWNER_NAME" | jq '.[] | select(.identity != null)')
@@ -164,21 +164,21 @@ function load_env_data_from_bitwarden() {
 function bitwarden_data_wizard() {
   fecho
 
-  REPO_NAMESPACE=$(prompt-user -i "$(pending) " -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos?")
+  REPO_NAMESPACE=$(prompt-user -i "$(pending) " -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos? ")
 
   if [[ -z $OWNER_NAME ]]; then 
-    OWNER_NAME=$(prompt-user -i "$(pending) " -d "$OWNER_NAME" "Enter your first and last name")
+    OWNER_NAME=$(prompt-user -i "$(pending) " -d "$OWNER_NAME" "Enter your first and last name: ")
   fi
 
   if [[ -z $GITHUB_EMAIL ]]; then
-    GITHUB_EMAIL=$(prompt-user -i "$(pending) " -d "$GITHUB_EMAIL" "Enter the email address you log into Github with")
+    GITHUB_EMAIL=$(prompt-user -i "$(pending) " -d "$GITHUB_EMAIL" "Enter the email address you log into Github with: ")
   fi
 
-  GITHUB_USERNAME=$(prompt-user -i "$(pending) " -d "${GITHUB_USERNAME}" "Enter your public Github username")
+  GITHUB_USERNAME=$(prompt-user -i "$(pending) " -d "${GITHUB_USERNAME}" "Enter your public Github username: ")
 
-  GITHUB_PERSONAL_ACCESS_TOKEN=$(prompt-user -i "$(pending) " -d "$GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github Personal access token")
+  GITHUB_PERSONAL_ACCESS_TOKEN=$(prompt-user -i "$(pending) " -d "$GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github Personal access token: ")
 
-  GPG_SIGNING_KEY=$(prompt-user -i "$(pending) " -d "$GPG_SIGNING_KEY" "Enter your GPG signing key")
+  GPG_SIGNING_KEY=$(prompt-user -i "$(pending) " -d "$GPG_SIGNING_KEY" "Enter your GPG signing key: ")
 
   # Check if the REPO_NAMESPACE path exists, and create it if not.
   if [[ ! -d $REPO_NAMESPACE ]]; then
@@ -192,13 +192,12 @@ function bitwarden_data_wizard() {
 
 salt_requirements() {
   salt_intro
-  echo
 
-  local pass=$(prompt-user -m "Enter your desired password: ")
-  local pass_confirmation=$(prompt-user -m  "Confirm your entered password: ")
+  local pass=$(prompt-user -i "$(pending) " -m "Enter your desired password: ")
+  local pass_confirmation=$(prompt-user -i "$(pending) " -m  "Confirm your entered password: ")
 
   if [[ -z $pass ]] || [[ -z $pass_confirmation ]] || [[ $pass != $pass_confirmation ]]; then
-    utility bash cursor clear-up:8
+    utility bash cursor -p clear-up:8
     salt_requirements
     return
   fi
@@ -207,7 +206,7 @@ salt_requirements() {
   echo $(openssl rand -base64 32 | utility misc encrypt -p "$pass") > "$DOTFILES_STATE_PATH/salt"
 
   #for i in {1..3}; do printf '\033[F\033[K'; done
-  utility bash cursor clear-up:3
+  utility bash cursor clear-up:2
   print-status -i ok "Salt successfully saved."
   fecho 
 }
@@ -241,11 +240,8 @@ EOF
 function main() {
   intro
 
-  letsgo="$(prompt-user -c -i "$(pending) " "Press any key to continue ... ")"
-
-  if [ -n $letsgo ]; then
-    utility bash cursor clear-up
-  fi
+  proceed="$(prompt-user -c -i "$(pending) " "Press any key to continue ... ")"
+  [[ -n $proceed ]] && utility bash cursor clear-up
 
   salt_requirements
   secrets_management_requirements
