@@ -13,6 +13,7 @@ usage() {
   echo "  -yn|--yesno              Prompts the user with a yes/no question."
   echo "  -d|--default             Set the default value for when the prompt receives no input."
   echo "  -m|--mask                Masks the input with '*' characters."
+  echo "  -c|--confirm             Pressing any key will confirm the prompt."
   echo "  -i|--indent <string>     Adds a string to the beginning of the prompt."
 }
 
@@ -24,23 +25,28 @@ function basic() {
   echo "${input:-$default}"
 }
 
-function yesno() {
+function confirm() {
   local input
-  local prompt="$(prompt_line)(y/n)"
+  local prompt="$(prompt_line)"
+  # Flush the input buffer before reading.
+  read -n1 -r -p "$prompt" input && printf ""
+  echo 1
+}
 
-  printf "%s " "$prompt"
+function yesno() {
+  local input prompt="$(prompt_line)" 
+  [[ $1 == "--clean" ]] && prompt="$question"
 
-  while true; do
-    read -n1 -r input
+  read -n1 -r -p "$prompt (y/n) " input < /dev/tty && echo 1>&1
 
-    case $input in
-      [Yy]* | [Nn]* ) echo "$input" && break;;
-      * )
-        utility bash print-status -n -ni \
-          "$indent${question}Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o: "
-        ;;
-    esac
-  done
+  case $input in
+    [YyNn] ) echo -n $(lowercase $input) ;;
+    * )
+      output=
+      printf "\r\033[K\r${indent}Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o: " >&2
+      yesno --clean && return
+      ;;
+  esac
 }
 
 function masked() {
@@ -82,7 +88,7 @@ function masked() {
 
 function prompt_line() {
   local string=""
-  [[ -n "$question" ]] && string+="$(echo $question | xargs) "
+  [[ -n "$question" ]] && string+="$(echo $question | xargs)"
   [[ -n "$default" ]] && string+="[${default}] "
   printf "$indent$string"
 }
@@ -107,6 +113,10 @@ function main() {
       ;;
     -yn | --yesno)
       prompt_function="yesno"
+      shift
+      ;;
+    -c | --confirm)
+      prompt_function="confirm"
       shift
       ;;
     -i | --indent)

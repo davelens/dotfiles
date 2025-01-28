@@ -9,6 +9,15 @@ function block_unless_sourced() {
   return 0
 }
 
+# Lowercase any string
+function lowercase () {
+  if [ -n "$1" ]; then
+    echo "$1" | tr "[:upper:]" "[:lower:]"
+  else
+    cat - | tr "[:upper:]" "[:lower:]"
+  fi
+}
+
 # Exports all ENV vars listed in a file. Loads ~/.env by default.
 function export-env-vars-from-file() {
   local env_file=${1:-~/.env}

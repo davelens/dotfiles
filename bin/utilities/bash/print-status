@@ -84,7 +84,7 @@ function main() {
     esac
   done
 
-  [[ $clearline -eq 1 ]] && clear_line
+  [[ $clearline -eq 1 ]] && utility bash cursor clear-line
 
   [[ -n $prefix ]] && result="$prefix"
   [[ -n $icon ]] && result+="$(icon) "
