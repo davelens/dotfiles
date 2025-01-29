@@ -15,6 +15,9 @@ usage() {
   echo "  -p|--passphrase <string>    Provide a passphrase to encrypt with."
 }
 
+# Fail early if no arguments are given.
+[[ $# -eq 0 ]] && usage && exit 1
+
 function main() {
   local file=0 input output passphrase
 
@@ -57,7 +60,7 @@ function main() {
 
   if [[ -z $input ]]; then
     if [[ -p /dev/stdin ]]; then
-      input=$(cat /dev/stdin)
+      input="$(cat /dev/stdin)"
     else
       utility bash print-status -i error "You need to provide an input string to decrypt."
       usage && exit 1
@@ -69,7 +72,11 @@ function main() {
     usage && exit 1
   fi
 
-  local cmd="openssl aes-256-cbc -a -d -pbkdf2"
+  local cmd="openssl aes-256-cbc -d -pbkdf2"
+
+  if [[ -n "$passphrase" ]]; then
+    cmd+=" -k '$passphrase'"
+  fi
 
   # No input/output file provided = always print to stdout
   if [[ -n $output ]]; then 

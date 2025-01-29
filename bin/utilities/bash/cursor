@@ -127,7 +127,7 @@ function main() {
         -r | --raw) raw=1;;
         *)
           if [[ -z $1 ]]; then
-            utility bash print-status -i error "Invalid options: $arg"
+            print-status -i error "Invalid options: $arg"
             usage && exit 1
           fi
           ;;
@@ -146,7 +146,7 @@ function main() {
     commands[i]=${commands[i]/-/_}
 
     if ! command -v ${commands[i]%%:*} &> /dev/null; then
-      utility bash print-status -i error "Invalid command: ${commands[i]}"
+      print-status -i error "Invalid command: ${commands[i]}"
       usage && exit 1
     fi
   done

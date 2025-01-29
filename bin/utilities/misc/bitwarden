@@ -40,7 +40,11 @@ function bootstrap_session_token() {
 }
 
 function items_cache_file() {
-  echo $(cat "$DOTFILES_STATE_PATH/bw-items-cache")
+  echo "$DOTFILES_STATE_PATH/bw-items-cache"
+}
+
+function salt_file() {
+  echo "$DOTFILES_STATE_PATH/salt"
 }
 
 function session_token() {
@@ -56,7 +60,7 @@ function session_token() {
 function cache_vault_items() {
   local filter="$1"
   ITEMS=
-  export ITEMS_CACHE_FILE=$(mktemp)
+  export ITEMS_CACHE_FILE=$(items_cache_file)
 
   utility bash print-status -n "Loading items from vault(s) ... "
 
