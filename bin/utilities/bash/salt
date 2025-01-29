@@ -18,10 +18,11 @@ usage() {
 # Fail early if no arguments are given.
 [[ $# -eq 0 ]] && usage && exit 1
 
-encrypt() { utility misc encrypt "$@"; }
-prompt-user() { utility bash prompt-user "$@"; }
-print-status() { utility bash print-status "$@"; }
 cursor() { utility bash cursor "$@"; }
+encrypt() { utility bash encrypt "$@"; }
+decrypt() { utility bash decrypt "$@"; }
+print-status() { utility bash print-status "$@"; }
+prompt-user() { utility bash prompt-user "$@"; }
 
 function salt_file() {
   echo "$DOTFILES_STATE_PATH/salt"
@@ -44,7 +45,7 @@ function new() {
   fi
 
   [[ -f "$(salt_file)" ]] && rm "$(salt_file)"
-  echo $(openssl rand -base64 32) | utility misc encrypt -p "$pass" -i >> $(salt_file)
+  echo $(openssl rand -base64 32) | utility bash encrypt -p "$pass" -i >> $(salt_file)
 
   cursor clear-up:$jump
   print-status -i ok "Salt successfully saved."
