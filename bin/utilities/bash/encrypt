@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
+
+MYTMPDIR="$(mktemp -d)"
 trap 'error_handler' ERR
+trap 'rm -rf -- "$MYTMPDIR"' EXIT
 
 usage() {
   echo
@@ -81,12 +84,14 @@ function main() {
   # No input/output file provided = always print to stdout
   if [[ -n $output ]]; then 
 
-    if [[ $file -eq 1 ]]; then
-      cmd+=" -in $input -out $output"
-      $cmd
-    else
-      echo $(printf $input | $cmd) > $output
+    if [[ $file -eq 0 ]]; then
+      local tempfile=$(mktemp -p "$MYTMPDIR")
+      printf "%s" "$input" > $tempfile
+      input="$tempfile"
     fi
+
+    cmd+=" -in $input -out $output"
+    $cmd
 
   else
 
