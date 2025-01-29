@@ -1,10 +1,22 @@
 [user]
   name = ""
   email = ""
-  signingkey = ""
+	signingkey = ""
 
 [include]
   path = ~/.gitconfig.env
+
+[gpg]
+	format = ssh
+
+[commit]
+  gpgsign = true
+
+[push]
+  autoSetupRemote = true
+
+[url "https://"]
+  insteadOf = git://
 
 [diff]
 [color]
@@ -84,12 +96,3 @@
 
 [interactive]
   diffFilter = delta --color-only
-
-[commit]
-  gpgsign = true
-
-[url "https://"]
-  insteadOf = git://
-
-[push]
-  autoSetupRemote = true
