@@ -14,18 +14,16 @@ bitwarden_cmd="$DOTFILES_PATH/bin/utilities/misc/bitwarden"
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'clear && interrupt_handler' SIGINT
 
-function print-status() {
-  utility bash print-status "$@"
-}
-
-function prompt-user() {
-  utility bash prompt-user "$@"
-}
+cursor() { utility bash cursor "$@"; }
+encrypt() { utility bash encrypt "$@"; }
+decrypt() { utility bash decrypt "$@"; }
+print-status() { utility bash print-status "$@"; }
+prompt-user() { utility bash prompt-user "$@"; }
 
 function separator() {
   printf "─│"
   printf '%.s─' $(seq 3 $(tput cols))
-  utility bash cursor move-down
+  cursor move-down
 }
 
 function fecho() {
@@ -193,19 +191,20 @@ function bitwarden_data_wizard() {
 salt_requirements() {
   salt_intro
 
+  # TODO: Replace with utility bash salt.
   local pass=$(prompt-user -i "$(pending) " -m "Enter your desired password: ")
   local pass_confirmation=$(prompt-user -i "$(pending) " -m  "Confirm your entered password: ")
 
   if [[ -z $pass ]] || [[ -z $pass_confirmation ]] || [[ $pass != $pass_confirmation ]]; then
-    utility bash cursor -p clear-up:8
+    cursor -p clear-up:8
     salt_requirements
     return
   fi
 
   # Generate a salt and encrypt it with the given password.
-  echo $(openssl rand -base64 32 | utility misc encrypt -p "$pass") > "$DOTFILES_STATE_PATH/salt"
+  echo $(openssl rand -base64 32 | encrypt -p "$pass") > "$DOTFILES_STATE_PATH/salt"
 
-  utility bash cursor clear-up:2
+  cursor clear-up:2
   print-status -i ok "Salt successfully saved."
   fecho 
 }
@@ -240,7 +239,7 @@ function main() {
   intro
 
   proceed="$(prompt-user -c -i "$(pending) " "Press any key to continue ... ")"
-  [[ -n $proceed ]] && utility bash cursor clear-up
+  [[ -n $proceed ]] && cursor clear-up
 
   salt_requirements
   secrets_management_requirements
