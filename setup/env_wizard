@@ -24,11 +24,11 @@ prompt-user() { utility bash prompt-user "$@"; }
 export W=80
 export MARGIN=" "
 #MARGIN=$(repeat $(expr $(expr $(tput cols) - $W) / 2) echo -n ".")
-function box_top()       { printf "$MARGIN┌" && printf '%.s─' $(seq 1 ${1:-$((W - 2))}) && printf "┐\n"; }
+function box_top()       { printf "${MARGIN}┌" && printf "%.s─" $(seq 1 ${1:-$((W - 2))}) && printf "┐\n"; }
 function box_line()      { printf "%.s${2:-─}" $(seq 1 ${1:-$((W - 2))}); }
-function box_separator() { printf "$MARGIN├$(box_line $((W - 2)))┤\n"; }
-function box_print()     { printf "$MARGIN│ %-$((W - 4))s │\n" "$1"; }
-function box_bottom()    { printf "$MARGIN└" && printf '%.s─' $(seq 1 ${1:-$((W - 2))}) && printf "┘\n"; }
+function box_separator() { printf "${MARGIN}├$(box_line $((W - 2)))┤\n"; }
+function box_print()     { printf "${MARGIN}│ %-$((W - 4))s │\n" "$1"; }
+function box_bottom()    { printf "${MARGIN}└" && printf '%.s─' $(seq 1 ${1:-$((W - 2))}) && printf "┘\n"; }
 function box_border_right() { cursor move-start move-up col:$((W + 1)) print:│\\n ; }
 
 function box() {
