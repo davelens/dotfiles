@@ -237,3 +237,32 @@ for file in "${DOTFILES_PATH}/bash/completions/"*.bash; do
   [ -r "$file" ] && source "$file"
 done
 unset file
+
+
+########################################################################
+# ENCRYPTED SALT / BITWARDEN (WIP)
+########################################################################
+if [[ -f "$DOTFILES_STATE_PATH/salt.enc" ]]; then
+  function prompt-salt-passkey() {
+    passkey=$(utility bash prompt-user -m "Enter salt passkey: ")
+
+    if [[ -z $passkey ]]; then
+      utility bash print-status "No passkey provided. Exiting."
+      prompt-salt-passkey
+      return
+    fi
+
+    echo $passkey
+  }
+
+  # TODO: Better prompt + error handling for bad decrypts.
+  export ENCRYPTED_SALT_PATH="$DOTFILES_STATE_PATH/salt.enc"
+  passkey=$(prompt-salt-passkey)
+  export DOTFILES_SALT=$(utility bash decrypt -p $passkey -f $ENCRYPTED_SALT_PATH)
+else
+  echo "TODO: Run command to generate and set the salt."
+fi
+
+if [ -z $BW_SESSION ]; then
+  export BW_SESSION="$(utility misc bitwarden session-token)"
+fi

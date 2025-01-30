@@ -23,7 +23,9 @@ prompt-user() { utility bash prompt-user "$@"; }
 
 export W=80
 export MARGIN=" "
+# TODO: Something experimental to calculate the exact width of the screen in relation to the box
 #MARGIN=$(repeat $(expr $(expr $(tput cols) - $W) / 2) echo -n ".")
+
 function box_top()       { printf "${MARGIN}┌" && printf "%.s─" $(seq 1 ${1:-$((W - 2))}) && printf "┐\n"; }
 function box_line()      { printf "%.s${2:-─}" $(seq 1 ${1:-$((W - 2))}); }
 function box_separator() { printf "${MARGIN}├$(box_line $((W - 2)))┤\n"; }
@@ -115,14 +117,10 @@ function setup_encryption() {
 
   setup_encryption_intro
 
-  if [[ ! -f "$DOTFILES_STATE_PATH/salt.enc" ]]; then
+  if [[ ! -f "$ENCRYPTED_SALT_PATH" ]]; then
     [[ $looping -eq 1  ]] && icon="$(cross)"
     local pass=$(prompt-user -i "$icon " -m "Enter your desired password: ")
     local pass_confirmation=$(prompt-user -i "$(pending) " -m  "Confirm your entered password: ")
-
-    if [[ ! -f "$DOTFILES_STATE_PATH/salt" ]]; then
-      openssl rand -base64 32 > "$DOTFILES_STATE_PATH/salt"
-    fi
 
     if [[ -z $pass ]] || [[ -z $pass_confirmation ]] || [[ $pass != $pass_confirmation ]]; then
       cursor -p clear-up:7
@@ -131,7 +129,7 @@ function setup_encryption() {
     fi
 
     # Generate a salt and encrypt it with the given password.
-    encrypt -f -p "$pass" -i "$DOTFILES_STATE_PATH/salt" -o "$DOTFILES_STATE_PATH/salt.enc"
+    encrypt -p $pass -i "$(openssl rand -base64 32)" -o "$ENCRYPTED_SALT_PATH"
     cursor clear-up:2
   fi
 
@@ -208,7 +206,7 @@ function setup_bitwarden() {
 
 function setup_env() {
   # TODO: Check for Bitwarden
-  bitwarden_data_intro
+  #bitwarden_data_intro
 
   if [[ -f $env_file ]]; then
     source "$env_file"

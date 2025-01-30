@@ -1,8 +1,12 @@
+#!/usr/bin/env bash
+
 # The installation script will have made a ~/.env file containing the value for
 # DOTFILES_PATH, so we're sourcing it here at the earliest point.
 source ~/.env
 
 export OS=`${DOTFILES_PATH}/bin/os`
+export DOTFILES_STATE_PATH="$HOME/.local/state/dots"
+export ENCRYPTED_SALT_PATH="$DOTFILES_STATE_PATH/salt.enc"
 
 # Load the mandatory shell settings and ENV vars before everything else.
 [[ -f "${DOTFILES_PATH}/bash/colors.sh" ]] && source "${DOTFILES_PATH}/bash/colors.sh"

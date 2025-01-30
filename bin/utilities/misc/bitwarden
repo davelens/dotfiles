@@ -26,10 +26,10 @@ usage() {
 }
 
 function bootstrap_session_token() {
-  local session_file="$DOTFILES_STATE_PATH/bw-session"
+  #local session_file="$DOTFILES_STATE_PATH/bw-session.enc"
 
-  if [[ ! -f "$session_file" ]]; then
-    $DOTFILES_PATH/setup/unlock_bw
+  if [[ -z "$BW_SESSION" ]]; then
+    source $DOTFILES_PATH/setup/unlock_bw
   fi
 
   if find "$session_file" -type f -mmin +60 | grep -q .; then
@@ -48,7 +48,17 @@ function salt_file() {
 }
 
 function session_token() {
-  echo $(cat "$DOTFILES_STATE_PATH/bw-session")
+  if [[ ! -f "$mp_file" ]]; then
+    utility bash encrypt \
+      -i $(utility bash prompt-user -m "Enter your Bitwarden master password: ") \
+      -o "$DOTFILES_STATE_PATH/bw-mp.enc"
+  fi
+
+  echo $(echo "$(mp)" | bw unlock --raw 2>/dev/null)
+}
+
+function mp() {
+  utility bash decrypt -f "$mp_file"
 }
 
 #
@@ -83,6 +93,8 @@ function cache_vault_items() {
 }
 
 function main() {
+  local mp_file="$DOTFILES_STATE_PATH/bw-mp.enc"
+
   while [[ $# -gt 0 ]]; do
     case $1 in
     -h | --help)
@@ -95,7 +107,7 @@ function main() {
       shift
       ;;
     session-token)
-      echo $(cat "$DOTFILES_STATE_PATH/bw-session")
+      session_token
       exit 0
       ;;
     unlock)
