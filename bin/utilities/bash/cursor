@@ -9,6 +9,8 @@
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'error_handler' ERR
 
+
+NAME=$(basename $0)
 #
 # Note: the [-p|--for-prompt] option is specific to my dotfiles.
 # I wouldn't know how to go about calculating the bash prompt height. 
@@ -19,12 +21,14 @@ trap 'error_handler' ERR
 #
 usage() {
   echo
-  echo "Usage: $(basename $0) [-h|--help] <command(s)>"
+  echo "Usage: $NAME [-h|--help] <command(s)>"
   echo 
+  echo "Move the cursor around the terminal quickly by chaining commands."
+  echo
   echo "Examples:"
-  echo "  You can chain commands together:"
-  echo "    $(basename $0) move-up:3 clear-line"
-  echo "    $(basename $0) move-up:4 clear-line"
+  echo "    $NAME move-up:4 clear-line"
+  echo "    $NAME line:18 clear-down"
+  echo "    $NAME save line:40 col:30 print:H restore"
   echo
   echo "Notes:"
   echo "  EOL = End of Line"
@@ -33,22 +37,24 @@ usage() {
   echo "Commands:"
   echo "  move-start          Move cursor to SOL."
   echo "  move-end            Move cursor to EOL"
-  echo "                      (EXPERIMENTAL: There is no ANSI sequence for EOL)"
-  echo "  move-right<:#>      Move cursor to the right # cols."
-  echo "  move-left<:#>       Move cursor to the left # cols."
-  echo "  move-up<:#>         Move cursor up # lines."
-  echo "  move-down<:#>       Move cursor down # lines."
+  echo "  move-right<:#>      Move cursor to the right <#> cols."
+  echo "  move-left<:#>       Move cursor to the left <#> cols."
+  echo "  move-up<:#>         Move cursor up <#> lines."
+  echo "  move-down<:#>       Move cursor down <#> lines."
+  echo "  col:<#>             Move cursor to column <#>."
+  echo "  line:<#>            Move cursor to line <#>."
   echo "  clear-down          Clear output from the cursor down."
   echo "  clear-up<:#>        Clear output from the cursor up # lines."
   echo "  clear-right         Clear output from the cursor to EOL."
   echo "  clear-left          Clear output from the cursor to SOL."
   echo "  clear-line          Clear output from the entire line."
+  echo "  print:<s>           Prints <s> at the cursor's position."
   echo
   echo "Options:"
   echo "  -h|--help           Show this help message and exit."
   echo "  -p|--for-prompt     Accounts for the bash prompt height."
   echo "                      (Prevents some confusion with line count)."
-  echo "  -r|--raw            Returns the raw string output of a command"
+  echo "  -r|--raw            Returns the ANSI escape sequence as a string."
 }
 
 # Fail early if no arguments are given.
@@ -57,14 +63,12 @@ usage() {
 function move_up() {
   local jump=${1:-1}
   [[ $in_prompt -eq 1 ]] && jump=$((jump + 2))
-  move_start
   printf "\033[${jump}A"
 }
 
 function move_down() {
   local jump=${1:-1}
   [[ $in_prompt -eq 1 ]] && jump=$((jump - 2))
-  move_start
   printf "\033[${jump}B"
 }
 
@@ -86,9 +90,6 @@ function move_start() {
 }
 
 # There is no true ANSI end-of-line sequence, so this is the best we can do.
-# 1. $(tput steps) =  Grab the current width of the terminal
-# 2. \33[C =  Grab the current width of the terminal
-# printf "\033[$(tput steps)\033[s\n"
 function move_end() {
   move_right $(tput cols)
 }
