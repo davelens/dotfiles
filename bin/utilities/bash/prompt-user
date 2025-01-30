@@ -43,7 +43,7 @@ function yesno() {
     [YyNn] ) echo -n $(lowercase $input) ;;
     * )
       output=
-      printf "\r\033[K\r${indent}Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o: " >&2
+      printf "\r\033[2K${indent}Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o: " >&2
       yesno --clean && return
       ;;
   esac
