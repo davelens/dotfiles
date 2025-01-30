@@ -2,13 +2,14 @@
 
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 
+NAME=$(basename $0)
 MYTMPDIR="$(mktemp -d)"
 trap 'error_handler' ERR
 trap 'rm -rf -- "$MYTMPDIR"' EXIT
 
 usage() {
   echo
-  echo "Usage: $(basename $0) [-h|--help] -i <input> -o <output>"
+  echo "Usage: $NAME [-h|--help] -i <input> -o <output>"
   echo
   echo "Options:"
   echo "  -h|--help                   Show this help message and exit."
@@ -21,8 +22,32 @@ usage() {
 # Fail early if no arguments are given.
 [[ $# -eq 0 ]] && usage && exit 1
 
+function build_command() {
+  if [[ -z $input ]]; then
+    if [[ -p /dev/stdin ]]; then
+      input="$(cat /dev/stdin)"
+    else
+      utility bash print-status -i error "You need to provide an input string to encrypt."
+      usage && exit 1
+    fi
+  fi
+
+  if [[ $file -eq 1 ]] && [[ ! -f $input ]]; then
+    utility bash print-status -i error "Input file not found: $input"
+    usage && exit 1
+  fi
+
+  local string="openssl aes-256-cbc -e -pbkdf2"
+
+  if [[ -n "$passphrase" ]]; then
+    string+=" -k '$passphrase'"
+  fi
+
+  echo $string
+}
+
 function main() {
-  local file=0 input output passphrase
+  local command file=0 input output passphrase
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -61,47 +86,22 @@ function main() {
     esac
   done
 
-  if [[ -z $input ]]; then
-    if [[ -p /dev/stdin ]]; then
-      input="$(cat /dev/stdin)"
-    else
-      utility bash print-status -i error "You need to provide an input string to encrypt."
-      usage && exit 1
-    fi
+  command=$(build_command)
+
+  if [[ $file -eq 0 ]]; then
+    local tempfile=$(mktemp -p "$MYTMPDIR")
+    printf "%s" "$input" > $tempfile
+    input="$tempfile"
   fi
 
-  if [[ $file -eq 1 ]] && [[ ! -f $input ]]; then
-    utility bash print-status -i error "Input file not found: $input"
-    usage && exit 1
-  fi
-
-  local cmd="openssl aes-256-cbc -e -pbkdf2"
-
-  if [[ -n "$passphrase" ]]; then
-    cmd+=" -k '$passphrase'"
-  fi
+  command+=" -in $input"
 
   # No input/output file provided = always print to stdout
   if [[ -n $output ]]; then 
-
-    if [[ $file -eq 0 ]]; then
-      local tempfile=$(mktemp -p "$MYTMPDIR")
-      printf "%s" "$input" > $tempfile
-      input="$tempfile"
-    fi
-
-    cmd+=" -in $input -out $output"
-    $cmd
-
-  else
-
-    if [[ $file -eq 1 ]]; then
-      echo "$(cat "$input" | $cmd)"
-    else
-      echo $input | $cmd 
-    fi
-
+    command+=" -out $output"
   fi
+  
+  $command
 }
 
 main "$@"
