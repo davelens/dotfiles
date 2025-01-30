@@ -15,7 +15,7 @@ usage() {
   echo "Works in tandem with \`encrypt\`."
   echo
   echo "Examples:"
-  echo "  $NAME -p mypassphrase -f bw-mp.enc"
+  echo "  $NAME -p mypasskey -f bw-mp.enc"
   echo "  $NAME -f test.enc"
   echo
   echo "Options:"
@@ -32,17 +32,19 @@ usage() {
 function call_openssl() {
   local string="openssl aes-256-cbc -d -pbkdf2"
 
-  if [[ -n "$passphrase" ]]; then
-    string+=" -k $passphrase"
+  if [[ -z "$passkey" ]]; then
+    # TODO: Run command to generate and set the salt.
+    passkey=$DOTFILES_SALT
   fi
 
+  [[ -n $passkey ]] && string+=" -k $passkey"
   string+=" -in $input"
 
   echo $string
 }
 
 function main() {
-  local input output passphrase
+  local input output passkey
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -72,9 +74,9 @@ function main() {
       input="$tempfile"
       shift
       ;;
-    -p | --passphrase)
+    -p | --passkey)
       shift
-      passphrase="$1"
+      passkey="$1"
       shift
       ;;
     *)
