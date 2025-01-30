@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# I mainly made this to understand how to move the cursor around in bash.
+# Turns out it's quite useful when building CLI tools.
+#
+# https://gist.github.com/ConnerWill/d4b6c776b509add763e17f9f113fd25b
+#
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
+trap 'error_handler' ERR
+
+NAME=$(basename $0)
+#
+# Note: the [-p|--for-prompt] option is specific to my dotfiles.
+# I wouldn't know how to go about calculating the bash prompt height. 
+# I know in my case it's always 2.
+#
+# I suppose it could be a bit more flexible by reading the deficit value
+# from an ENV var so you could override it globally that way, but ... meh.
+#
+usage() {
+  echo
+  echo "Usage: $NAME [-h|--help] <command(s)>"
+  echo 
+  echo "Move the cursor around the terminal quickly by chaining commands."
+  echo
+  echo "Options:"
+  echo "  -h|--help           Show this help message and exit."
+}
+
+# Fail early if no arguments are given.
+[[ $# -eq 0 ]] && usage && exit 1
+
+
+function main() {
+  
+}
+
+main "$@"
