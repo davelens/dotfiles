@@ -34,6 +34,35 @@ function pid() {
   lsof -t -c "$@"
 }
 
+# Examples:
+#
+#   repeat-do 4 echo lol 
+#   repeat-do lowercase "FOO" "BAR" "BAZ"
+#
+function repeat() {
+  local times commands arguments
+
+  case $1 in
+    ''|*[0-9]*) 
+      times=${1:-1}
+      shift
+      commands="$@"
+      ;;
+    *) 
+      commands="$1"
+      shift
+      times=$#
+      arguments=("$@")
+      ;;
+  esac
+
+  if [[ -n $arguments ]]; then
+    for i in "${arguments[@]}"; do $commands "$i"; done
+  else
+    for i in $(seq $times); do $commands; done
+  fi
+}
+
 # Because we all want to know how many times we actually typed "gti" instead 
 # of "git".
 function timesused() {
