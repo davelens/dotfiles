@@ -3,51 +3,45 @@
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 
 NAME=$(basename $0)
-MYTMPDIR="$(mktemp -d)"
+TMPDIR="$(mktemp -d "$DOTFILES_STATE_PATH/tmp/$NAME.XXXXXX")" || exit 1
 trap 'error_handler' ERR
 trap 'rm -rf -- "$MYTMPDIR"' EXIT
 
 usage() {
   echo
-  echo "Usage: $NAME [-h|--help] -i <input> -o <output>"
+  echo "Usage: $NAME [-h|--help] [-i|-f] <input>"
+  echo 
+  echo "Removes aes-256-cbc encryption from a string or file using openssl."
+  echo "Works in tandem with \`encrypt\`."
+  echo
+  echo "Examples:"
+  echo "  $NAME -p mypassphrase -f bw-mp.enc"
+  echo "  $NAME -f test.enc"
   echo
   echo "Options:"
   echo "  -h|--help                   Show this help message and exit."
   echo "  -i|--in <string>            Provide a value to decrypt."
-  echo "  -f|--file                   Process -i as file path instead of text."
-  echo "  -o|--out <file>             Write output to file"
-  echo "  -p|--passphrase <string>    Provide a passphrase to encrypt with."
+  echo "  -f|--file                   Provide path to a file to decrypt."
+  echo "  -p|--passphrase <string>    Provide a passphrase to decrypt with."
 }
 
 # Fail early if no arguments are given.
 [[ $# -eq 0 ]] && usage && exit 1
 
-function build_command() {
-  if [[ -z $input ]]; then
-    if [[ -p /dev/stdin ]]; then
-      input="$(cat /dev/stdin)"
-    else
-      utility bash print-status -i error "You need to provide an input string to decrypt."
-      usage && exit 1
-    fi
-  fi
-
-  if [[ $file -eq 1 ]] && [[ ! -f $input ]]; then
-    utility bash print-status -i error "Input file not found: $input"
-    usage && exit 1
-  fi
-
+function call_openssl() {
   local string="openssl aes-256-cbc -d -pbkdf2"
 
   if [[ -n "$passphrase" ]]; then
     string+=" -k $passphrase"
   fi
 
+  string+=" -in $input"
+
   echo $string
 }
 
 function main() {
-  local file=0 input output passphrase
+  local input output passphrase
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -56,17 +50,25 @@ function main() {
       exit 0
       ;;
     -f | --file)
-      file=1
+      shift
+      if [[ ! -f $1 ]]; then
+        utility bash print-status -i error "Input file not found: $1"
+        usage && exit 1
+      fi
+      input="$1"
       shift
       ;;
     -i | --in)
       shift
       input="$1"
-      shift
-      ;;
-    -o | --out)
-      shift
-      output="$1"
+
+      if [[ -p /dev/stdin ]]; then
+        input="$(cat /dev/stdin)"
+      fi
+
+      local tempfile=$(mktemp -p "$MYTMPDIR")
+      printf "%s" "$input" > $tempfile
+      input="$tempfile"
       shift
       ;;
     -p | --passphrase)
@@ -75,34 +77,18 @@ function main() {
       shift
       ;;
     *)
-      if [[ -z $input ]]; then
-        input="$1"
-      else
-        utility bash print-status -i error "Invalid option: $1"
-        usage && exit 1
-      fi
-      shift
+      utility bash print-status -i error "Invalid option: $1"
+      usage && exit 1
       ;;
     esac
   done
 
-  command=$(build_command)
-
-  if [[ $file -eq 0 ]]; then
-    local tempfile=$(mktemp -p "$MYTMPDIR")
-    printf "%s" "$input" > $tempfile
-    input="$tempfile"
+  if [[ -z $input ]]; then
+    utility bash print-status -i error "You need to provide a string or file to encrypt."
+    usage && exit 1
   fi
 
-  command+=" -in $input"
-
-  # No input/output file provided = always print to stdout
-  if [[ -n $output ]]; then 
-    command+=" -out $output"
-    # TODO: Finish, almost there.
-  fi
-
-  echo $command
+  $(call_openssl)
 }
 
 main "$@"
