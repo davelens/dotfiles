@@ -5,118 +5,166 @@
 
 # Derive the dotfiles' absolute path so we always have a sensible default for 
 # the ~/.env file.
-env_file="${HOME}/.env"
-setup_path="$(dirname $(realpath "$0"))"
-export DOTFILES_PATH=$(dirname $setup_path)
+export DOTFILES_PATH=$(dirname "$(dirname $(realpath "$0"))")
 export DOTFILES_STATE_PATH="${HOME}/.local/state/dots"
-bitwarden_cmd="$DOTFILES_PATH/bin/utilities/misc/bitwarden"
 
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'clear && interrupt_handler' SIGINT
 
+bitwarden() { utility misc bitwarden "$@"; }
 cursor() { utility bash cursor "$@"; }
 encrypt() { utility bash encrypt "$@"; }
 decrypt() { utility bash decrypt "$@"; }
-print-status() { utility bash print-status "$@"; }
+print-status() { utility bash print-status "$@" && box_border_right; }
 prompt-user() { utility bash prompt-user "$@"; }
+# TODO: I think this entire thing is worth extracting now o.O
+# box-drawing characters taken from Wikipedia:
+# https://en.wikipedia.org/wiki/Box-drawing_characters#Unix,_CP/M,_BBS
 
-function separator() {
-  printf "─│"
-  printf '%.s─' $(seq 3 $(tput cols))
-  cursor move-down
+export W=80
+export MARGIN=" "
+#MARGIN=$(repeat $(expr $(expr $(tput cols) - $W) / 2) echo -n ".")
+function box_top()       { printf "$MARGIN┌" && printf '%.s─' $(seq 1 ${1:-$((W - 2))}) && printf "┐\n"; }
+function box_line()      { printf "%.s${2:-─}" $(seq 1 ${1:-$((W - 2))}); }
+function box_separator() { printf "$MARGIN├$(box_line $((W - 2)))┤\n"; }
+function box_print()     { printf "$MARGIN│ %-$((W - 4))s │\n" "$1"; }
+function box_bottom()    { printf "$MARGIN└" && printf '%.s─' $(seq 1 ${1:-$((W - 2))}) && printf "┘\n"; }
+function box_border_right() { cursor move-start move-up col:$((W + 1)) print:│\\n ; }
+
+function box() {
+  value="$1"
+
+  if [[ ${#value} -gt 80 ]]; then
+    # TODO: Implement a word wrap function.
+    printf ""
+  fi
+
+  box_top
+  box_print
+  repeat box_print "$@" 
+  box_print
+  box_bottom
 }
 
-function fecho() {
-  printf " │  %s\n" "$1"
-}
 
 function intro() {
-  separator
-  fecho
-  fecho "This script will help you set up your environment variables."
-  fecho "Press Enter to confirm suggested values."
-  fecho "Press Ctrl + c at any time to abort."
-  fecho
+  box_top
+  box_print
+  box_print "This script will help you set up your environment variables."
+  box_print "Press Enter to confirm suggested values."
+  box_print "Press Ctrl + c at any time to abort."
+  box_print
 }
 
-function salt_intro() {
-  fecho
-  separator
-  fecho
-  fecho "ENCRYPTION                                                         (part 1/5)"
-  fecho
-  fecho "Some utility commands like encrypt/decrypt require a password-protected salt."
-  fecho "Once in a blue moon you shall be prompted to reset it."
-  fecho
+function setup_encryption_intro() {
+  box_print
+  box_separator
+  box_print
+  box_print "ENCRYPTION                                                       (part 1/4)"
+  box_print
+  box_print "Utility commands like \`encrypt\` require a password-protected salt."
+  box_print
 }
 
-function secrets_management_intro() {
-  separator
-  fecho
-  fecho "SECRETS MANAGEMENT                                                 (part 2/5)"
-  fecho
-  fecho "These dotfiles require access to some sensitive data, for example"
-  fecho "Github (a personal access token) and GPG (your signing key) credentials."
-  fecho
-  fecho "These will be stored in ENV vars in $env_file."
-  fecho
+function setup_secrets_management_intro() {
+  box_separator
+  box_print
+  box_print "SECRETS MANAGEMENT                                               (part 2/4)"
+  box_print
+  box_print "My various secrets and API keys are stored in Bitwarden."
+  box_print "These dotfiles can retrieve them from your vault(s) using \`bw\`,"
+  box_print "and keep them in ENV vars in $env_file."
+  box_print
+}
+
+function setup_env_intro() {
+  box_separator
+  box_print
+  box_print "ENVIRONMENT VARIABLES                                       (part 3/4)"
+  box_print
+  box_print "My various secrets and API keys are stored in Bitwarden."
+  box_print "These dotfiles can retrieve them from your vault(s) using \`bw\`,"
+  box_print "and keep them in ENV vars in $env_file."
+  box_print
 }
 
 function bitwarden_intro() {
-  fecho
-  fecho "Support for Bitwarden, a free password manager, is built into this script."
-  fecho
+  box_print
+  box_print "My various secrets and API keys are stored in Bitwarden."
+  box_print "I built in support to retrieve and use them in these dotfiles."
+  box_print "(NOTE: This does not use the Secrets Manager yet; it's still in beta."
+  box_print
 }
 
 function bitwarden_data_intro() {
-  fecho
-  fecho "You need the following two items ready in Bitwarden:"
-  fecho
-  fecho "1. An item of the Identity type, containing your first and last name."
-  fecho "   a. A custom field entry on the Identity item named 'GPG signing key'"
-  fecho
-  fecho "2. An item of the Login type, named \"Github\", containing:"
-  fecho "   a. The Username login credential that matches your Github e-mail address"
-  fecho "   b. A custom field entry named 'Public username'"
-  fecho "   c. A custom field entry named 'Personal access token'"
-  fecho 
+  box_print
+  box_print "You need the following two items ready in Bitwarden:"
+  box_print
+  box_print "1. An item of the Identity type, containing your first and last name."
+  box_print
+  box_print "2. An item of the Login type, named \"Github\", containing:"
+  box_print "   a. The 'Username' field entry (i.e. your Github e-mail address)"
+  box_print "   b. A custom field entry named 'Public username'"
+  box_print "   c. A custom field entry named 'Personal access token'"
+  box_print 
 }
 
-function secrets_management_requirements() {
-  secrets_management_intro
+function setup_encryption() {
+  local looping=${1:-0}
+  local icon="$(pending)"
 
-  if [[ -f $env_file ]]; then
-    source "$env_file"
-    print-status -i ok "Loaded environment variables from $env_file."
+  setup_encryption_intro
+
+  if [[ ! -f "$DOTFILES_STATE_PATH/salt.enc" ]]; then
+    [[ $looping -eq 1  ]] && icon="$(cross)"
+    local pass=$(prompt-user -i "$icon " -m "Enter your desired password: ")
+    local pass_confirmation=$(prompt-user -i "$(pending) " -m  "Confirm your entered password: ")
+
+    if [[ ! -f "$DOTFILES_STATE_PATH/salt" ]]; then
+      openssl rand -base64 32 > "$DOTFILES_STATE_PATH/salt"
+    fi
+
+    if [[ -z $pass ]] || [[ -z $pass_confirmation ]] || [[ $pass != $pass_confirmation ]]; then
+      cursor -p clear-up:7
+      setup_encryption 1
+      return
+    fi
+
+    # Generate a salt and encrypt it with the given password.
+    encrypt -f -p "$pass" -i "$DOTFILES_STATE_PATH/salt" -o "$DOTFILES_STATE_PATH/salt.enc"
+    cursor clear-up:2
   fi
 
-  # TODO:
-  # - [ ] List the required ENV vars here.
-  # - [ ] Check for each one how to retrieve them
-  # - [ ] If a value exists, prompt the user to confirm it.
-  # - [ ] There should be a built-in way to retrieve these values from Bitwarden.
+  print-status -i ok "Encrypted salt is ready."
+  box_print 
+}
 
-  bitwarden_intro
+function setup_secrets_management() {
+  setup_secrets_management_intro
 
-  bitwarden_prompt="$(prompt-user -i "$(pending) " -yn "Would you like to use Bitwarden to retrieve your environment variables?")"
+  bitwarden_prompt="$(prompt-user -i "$(pending) " -yn "Would you like to use Bitwarden to retrieve your secrets?")"
 
   if [ $bitwarden_prompt == "y" ]; then
     print-status -i ok "Using Bitwarden."
-    ensure_brew_dependency jq 'bitwarden-cli:bw'
-    load_env_data_from_bitwarden
+    #ensure_brew_dependency jq 'bitwarden-cli:bw'
+    #load_env_data_from_bitwarden
+    setup_bitwarden
   else
     print-status -i error "Not using Bitwarden."
-    bitwarden_data_wizard
   fi
+
+  box_print
+  box_separator
 }
 
-function load_env_data_from_bitwarden() {
-  bitwarden_data_intro
-
+function setup_bitwarden() {
   # Check if Bitwarden CLI is logged in
-  $bitwarden_cmd unlock || exit 1
+  bitwarden unlock || exit 1
+  BW_SESSION="$(bitwarden session-token)"
 
-  BW_SESSION="$($bitwarden_cmd session-token)"
+  # TODO: STOPPED HERE; CONTINUE
+  return
+
 
   # We repeat the check for the session var, because if we don't have it here
   # something went wrong.
@@ -155,12 +203,22 @@ function load_env_data_from_bitwarden() {
 
   GITHUB_USERNAME="$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Public username").value')"
   GITHUB_PERSONAL_ACCESS_TOKEN=$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Personal access token") | .value')
-  GPG_SIGNING_KEY=$(echo $owner_data | jq -r '.fields[] | select(.name == "GPG signing key").value')
   print-status -i ok "Vault data prepared."
 }
 
-function bitwarden_data_wizard() {
-  fecho
+function setup_env() {
+  # TODO: Check for Bitwarden
+  bitwarden_data_intro
+
+  if [[ -f $env_file ]]; then
+    source "$env_file"
+    print-status -i ok "Loaded environment variables from $env_file."
+    box_print
+  fi
+}
+
+function env_data_wizard() {
+  box_print
 
   REPO_NAMESPACE=$(prompt-user -i "$(pending) " -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos? ")
 
@@ -176,7 +234,9 @@ function bitwarden_data_wizard() {
 
   GITHUB_PERSONAL_ACCESS_TOKEN=$(prompt-user -i "$(pending) " -d "$GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github Personal access token: ")
 
-  GPG_SIGNING_KEY=$(prompt-user -i "$(pending) " -d "$GPG_SIGNING_KEY" "Enter your GPG signing key: ")
+  # Can be either a literal key, or a path to a key file.
+  # TODO: Ask to load in an SSH key to set the path
+  GIT_SIGNING_KEY=$(prompt-user -i "$(pending) " -d "$GIT_SIGNING_KEY" "Enter your Git signing key: ")
 
   # Check if the REPO_NAMESPACE path exists, and create it if not.
   if [[ ! -d $REPO_NAMESPACE ]]; then
@@ -186,36 +246,6 @@ function bitwarden_data_wizard() {
     #mkdir -p "$(grealpath $REPO_NAMESPACE)"
     print-status -i ok "Created $REPO_NAMESPACE."
   fi
-}
-
-salt_requirements() {
-  local looped=${1:-0}
-  local icon="$(pending)"
-
-  salt_intro
-
-  if [[ ! -f "$DOTFILES_STATE_PATH/salt.enc" ]]; then
-    [[ $looped -eq 1  ]] && icon="$(cross)"
-    local pass=$(prompt-user -i "$icon " -m "Enter your desired password: ")
-    local pass_confirmation=$(prompt-user -i "$(pending) " -m  "Confirm your entered password: ")
-
-    if [[ ! -f "$DOTFILES_STATE_PATH/salt" ]]; then
-      openssl rand -base64 32 > "$DOTFILES_STATE_PATH/salt"
-    fi
-
-    if [[ -z $pass ]] || [[ -z $pass_confirmation ]] || [[ $pass != $pass_confirmation ]]; then
-      cursor -p clear-up:8
-      salt_requirements 1
-      return
-    fi
-
-    # Generate a salt and encrypt it with the given password.
-    encrypt -f -p "$pass" -i "$DOTFILES_STATE_PATH/salt" -o "$DOTFILES_STATE_PATH/salt.enc"
-    cursor clear-up:2
-  fi
-
-  print-status -i ok "Encrypted salt is ready."
-  fecho 
 }
 
 function write_env_files() {
@@ -229,7 +259,6 @@ DOTFILES_STATE_PATH="$DOTFILES_STATE_PATH"
 GITHUB_EMAIL=$GITHUB_EMAIL
 GITHUB_USERNAME=$GITHUB_USERNAME
 GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_PERSONAL_ACCESS_TOKEN
-GPG_SIGNING_KEY=$GPG_SIGNING_KEY
 EOF
 
   # Write to ~/.gitconfig.env so we can keep our gitconfig user-agnostic.
@@ -240,30 +269,34 @@ EOF
 [user]
   name = "$GITHUB_USERNAME"
   email = "$GITHUB_EMAIL"
-  signingkey = "$GPG_SIGNING_KEY"
+  signingkey = "$GIT_SIGNING_KEY"
 EOF
 }
 
 function main() {
   intro
 
-  proceed="$(prompt-user -c -i "$(pending) " "Press any key to continue ... ")"
-  [[ -n $proceed ]] && cursor clear-up
+  local bitwarden=0
+  local env_file="${HOME}/.env"
 
-  salt_requirements
-  secrets_management_requirements
+  proceed="$(prompt-user -c -i "$(pending) " "Press any key to continue ... ")"
+  [[ -n $proceed ]] && cursor move-start clear-up
+
+  setup_encryption
+  setup_secrets_management
+  setup_env
   #write_env_files
 
   print-status -i ok "All done!"
 
-  fecho
-  fecho "Environment variables written to these files:"
-  fecho "  $gitconfig_env_file"
-  fecho "  $env_file"
-  fecho
-  fecho "Please source ~/.bashrc or restart your shell to apply changes."
-  fecho
-  separator
+  box_print
+  box_print "Environment variables written to these files:"
+  box_print "  $gitconfig_env_file"
+  box_print "  $env_file"
+  box_print
+  box_print "Please source ~/.bashrc or restart your shell to apply changes."
+  box_print
+  box_bottom
 }
 
 main "$@"
