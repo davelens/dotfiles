@@ -22,7 +22,8 @@ usage() {
   echo "  -h|--help                   Show this help message and exit."
   echo "  -i|--in <string>            Provide a value to decrypt."
   echo "  -f|--file                   Provide path to a file to decrypt."
-  echo "  -p|--passphrase <string>    Provide a passphrase to decrypt with."
+  echo "  -p|--passkey <string>       Provide a passkey to decrypt with."
+  echo "                              (NOTE: No spaces!)"
 }
 
 # Fail early if no arguments are given.

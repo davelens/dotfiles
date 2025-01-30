@@ -23,7 +23,8 @@ usage() {
   echo "  -i|--in <string>            Provide a value to encrypt."
   echo "  -f|--file <path>            Provide path to a file to encrypt."
   echo "  -o|--out <path>             Write output to file"
-  echo "  -p|--passphrase <string>    Provide a passphrase to encrypt with."
+  echo "  -p|--passkey <string>       Provide a passkey to encrypt with."
+  echo "                              (NOTE: No spaces!)"
 }
 
 # Fail early if no arguments are given.
