@@ -3,9 +3,8 @@
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 
 NAME=$(basename $0)
-TMPDIR="$(mktemp -d "$DOTFILES_STATE_PATH/tmp/$NAME.XXXXXX")" || exit 1
+MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_PATH/tmp/$NAME.XXXXXX")
 trap 'error_handler' ERR
-trap 'rm -rf -- "$MYTMPDIR"' EXIT
 
 usage() {
   echo
