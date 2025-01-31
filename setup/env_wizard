@@ -112,29 +112,33 @@ function bitwarden_data_intro() {
 }
 
 function setup_encryption() {
-  local looping=${1:-0}
-  local icon="$(pending)"
-
   setup_encryption_intro
+  setup_salt
+}
 
-  if [[ ! -f "$ENCRYPTED_SALT_PATH" ]]; then
-    [[ $looping -eq 1  ]] && icon="$(cross)"
-    local pass=$(prompt-user -i "$icon " -m "Enter your desired password: ")
-    local pass_confirmation=$(prompt-user -i "$(pending) " -m  "Confirm your entered password: ")
+function setup_salt() {
+  local looping icon passkey salt
+  looping=${1:-0}
+  icon="$(pending)"
 
-    if [[ -z $pass ]] || [[ -z $pass_confirmation ]] || [[ $pass != $pass_confirmation ]]; then
-      cursor -p clear-up:7
-      setup_encryption 1
-      return
-    fi
+  # So we know where to restore to after a variable number of attempts.
+  [[ $looping -eq 0 ]] && cursor save
 
-    # Generate a salt and encrypt it with the given password.
-    encrypt -p $pass -i "$(openssl rand -base64 32)" -o "$ENCRYPTED_SALT_PATH"
-    cursor clear-up:2
+  passkey=$(prompt-user -i "$icon " -m "Enter your salt passkey: ")
+  cursor restore clear-down # Restore prompt starting point for feedback.
+  salt=$(utility bash salt -k "$passkey" current)
+
+  if [[ $? -eq 0 ]]; then
+    export DOTFILES_SALT="$salt"
+    print-status -i ok "Encrypted salt is ready."
+  else
+    print-status -i error "Encrypted salt not ready; possibly wrong passkey."
+    setup_salt 1
+    return
   fi
 
-  print-status -i ok "Encrypted salt is ready."
-  box_print 
+  box_print
+  return
 }
 
 function setup_secrets_management() {

@@ -242,27 +242,22 @@ unset file
 ########################################################################
 # ENCRYPTED SALT / BITWARDEN (WIP)
 ########################################################################
-if [[ -f "$DOTFILES_STATE_PATH/salt.enc" ]]; then
-  function prompt-salt-passkey() {
-    passkey=$(utility bash prompt-user -m "Enter salt passkey: ")
+# Salt is used to encrypt and decrypt sensitive values or files with a passkey.
+# TODO: Probably a good idea to regenerate the salt every now and then.
+if [[ -z "$DOTFILES_SALT" ]]; then 
+  salt=$(utility bash salt current)
 
-    if [[ -z $passkey ]]; then
-      utility bash print-status "No passkey provided. Exiting."
-      prompt-salt-passkey
-      return
-    fi
-
-    echo $passkey
-  }
-
-  # TODO: Better prompt + error handling for bad decrypts.
-  export ENCRYPTED_SALT_PATH="$DOTFILES_STATE_PATH/salt.enc"
-  passkey=$(prompt-salt-passkey)
-  export DOTFILES_SALT=$(utility bash decrypt -p $passkey -f $ENCRYPTED_SALT_PATH)
-else
-  echo "TODO: Run command to generate and set the salt."
+  if [[ $? -eq 0 ]]; then
+    export DOTFILES_SALT="$salt"
+    utility bash cursor clear-up
+    utility bash print-status -i ok "Encrypted salt is ready."
+  else
+    utility bash cursor clear-up
+    utility bash print-status -i error "Encrypted salt not ready; possibly wrong passkey."
+  fi
 fi
 
-if [ -z $BW_SESSION ]; then
-  export BW_SESSION="$(utility misc bitwarden session-token)"
-fi
+# TODO:
+#if [ -z $BW_SESSION ]; then
+  #export BW_SESSION="$(utility misc bitwarden session-token)"
+#fi
