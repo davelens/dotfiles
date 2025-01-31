@@ -6,7 +6,9 @@ source ~/.env
 
 export OS=`${DOTFILES_PATH}/bin/os`
 export DOTFILES_STATE_PATH="$HOME/.local/state/dots"
-export ENCRYPTED_SALT_PATH="$DOTFILES_STATE_PATH/salt.enc"
+export DOTFILES_TMP_PATH="$HOME/.local/state/dots/tmp"
+export DOTFILES_SALT_PATH="$DOTFILES_STATE_PATH/salt.enc"
+export DOTFILES_LOG_PATH="$DOTFILES_STATE_PATH/log"
 
 # Load the mandatory shell settings and ENV vars before everything else.
 [[ -f "${DOTFILES_PATH}/bash/colors.sh" ]] && source "${DOTFILES_PATH}/bash/colors.sh"
