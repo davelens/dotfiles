@@ -9,7 +9,6 @@
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'error_handler' ERR
 
-
 NAME=$(basename $0)
 #
 # Note: the [-p|--for-prompt] option is specific to my dotfiles.
@@ -26,9 +25,9 @@ usage() {
   echo "Move the cursor around the terminal quickly by chaining commands."
   echo
   echo "Examples:"
-  echo "    $NAME move-up:4 clear-line"
-  echo "    $NAME line:18 clear-down"
-  echo "    $NAME save line:40 col:30 print:H restore"
+  echo "  $NAME move-up:4 clear-line"
+  echo "  $NAME line:18 clear-down"
+  echo "  $NAME save line:40 col:30 print:H restore"
   echo
   echo "Notes:"
   echo "  EOL = End of Line"
@@ -62,44 +61,55 @@ usage() {
 
 #############################################################################
 
-function move_start()  { printf "\033[G"; }
-function move_end()    { move_right $(tput cols); }
-function clear_down()  { printf "\033[0J"; }
-function clear_right() { printf "\033[0K"; }
-function clear_left()  { printf "\033[1K"; }
-function clear_line()  { printf "\033[2K"; }
-function restore()     { printf "\033[u"; }
-function save()        { printf "\033[s"; } # TODO: Multiple position registers
-function col()         { printf "\033[${steps}G"; }
-function line()        { printf "\033[${steps};1H"; }
-function print()       { printf "$steps"; }
+declare -A sequences=(
+  ["move_start"]='033[G'
+  ["move_up"]='033[${steps}A'
+  ["move_down"]='033[${steps}B'
+  ["move_right"]='033[${steps}C'
+  ["move_left"]='033[${steps}D'
+  ["clear_down"]='033[0J'
+  ["clear_right"]='033[0K'
+  ["clear_left"]='033[1K'
+  ["clear_line"]='033[2K'
+  ["restore"]='033[u'
+  ["save"]='033[s'
+  ["col"]='033[${steps}G'
+  ["line"]='033[${steps};1H'
+)
 
-function move_up() {
+# Dynamically create methods
+for i in "${!sequences[@]}"; do
+  value="${sequences[$i]}"
+  [[ $value =~ ^0 ]] && cmd="printf" || cmd="eval"
+  eval "seq_${i}() { [[ \$raw -eq 0 ]] && $cmd \"\\$value\" || echo \"\\$value\"; }"
+done
+
+#############################################################################
+
+function seq_move_end() {
+  seq_move_right $(tput cols) 
+}
+
+function seq_move_up() {
   local jump=${1:-1}
   [[ $in_prompt -eq 1 ]] && jump=$((jump + 2))
   printf "\033[${jump}A"
 }
 
-function move_down() {
+function seq_move_down() {
   local jump=${1:-1}
   [[ $in_prompt -eq 1 ]] && jump=$((jump - 2))
   printf "\033[${jump}B"
 }
 
-function move_right() {
+function seq_clear_up() {
   local jump=${1:-1}
-  printf "\033[${jump}C"
+  seq_move_up $jump
+  seq_clear_down
 }
 
-function move_left() {
-  local jump=${1:-1}
-  printf "\033[${jump}D"
-}
-
-function clear_up() {
-  local jump=${1:-1}
-  move_up $jump
-  clear_down
+function seq_print() {
+  printf "$steps"
 }
 
 #############################################################################
@@ -144,9 +154,9 @@ function main() {
   # I'll take the overhead of looping a second time for command chaining.
   # Otherwise we end up with a messed up screen if we stop mid-move or clear.
   for ((i = 0; i < ${#commands[@]}; i++)); do
-    commands[i]=${commands[i]/-/_}
+    commands[i]="seq_${commands[i]/-/_}"
 
-    if ! command -v ${commands[i]%%:*} &> /dev/null; then
+    if ! command -v "${commands[i]%%:*}" &> /dev/null; then
       utility bash print-status -i error "Invalid command: ${commands[i]}"
       usage && exit 1
     fi
