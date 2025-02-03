@@ -34,6 +34,16 @@ function pid() {
   lsof -t -c "$@"
 }
 
+# Join an array by a given delimiter string
+function join_by {
+  local d f 
+  d="${1-}" f="${2-}"
+
+  if shift 2; then
+    printf "%s" "$f" "${@/#/$d}"
+  fi
+}
+
 # Examples:
 #
 #   repeat-do 4 echo lol 
