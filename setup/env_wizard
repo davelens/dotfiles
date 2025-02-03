@@ -11,43 +11,46 @@ export DOTFILES_STATE_PATH="${HOME}/.local/state/dots"
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'clear && interrupt_handler' SIGINT
 
+#############################################################################
+
 bitwarden() { utility misc bitwarden "$@"; }
 cursor() { utility bash cursor "$@"; }
 encrypt() { utility bash encrypt "$@"; }
 decrypt() { utility bash decrypt "$@"; }
-print-status() { utility bash print-status "$@" && box_border_right; }
 prompt-user() { utility bash prompt-user "$@"; }
-# TODO: I think this entire thing is worth extracting now o.O
-# box-drawing characters taken from Wikipedia:
-# https://en.wikipedia.org/wiki/Box-drawing_characters#Unix,_CP/M,_BBS
+print-status() { utility bash print-status "$@" && box_border_right; }
 
-export W=80
-export MARGIN=" "
-# TODO: Something experimental to calculate the exact width of the screen in relation to the box
-#MARGIN=$(repeat $(expr $(expr $(tput cols) - $W) / 2) echo -n ".")
+#############################################################################
 
-function box_top()       { printf "${MARGIN}┌" && printf "%.s─" $(seq 1 ${1:-$((W - 2))}) && printf "┐\n"; }
-function box_line()      { printf "%.s${2:-─}" $(seq 1 ${1:-$((W - 2))}); }
-function box_separator() { printf "${MARGIN}├$(box_line $((W - 2)))┤\n"; }
-function box_print()     { printf "${MARGIN}│ %-$((W - 4))s │\n" "$1"; }
-function box_bottom()    { printf "${MARGIN}└" && printf '%.s─' $(seq 1 ${1:-$((W - 2))}) && printf "┘\n"; }
-function box_border_right() { cursor move-start move-up col:$((W + 1)) print:│\\n ; }
+# NOTE: I made the box reusable through `u bash box`, but it's remarkably slower.
+box_top() { utility bash box -m 1 top; }
+box_bottom() { utility bash box -m 1 bottom; }
+box_print() { utility bash box -m 1 print "$1"; }
+box_separator() { utility bash box -m 1 separator; }
+box_line() { utility bash box -m 1 line; }
+box_border_right() { utility bash box -m 1 border-right; }
 
-function box() {
-  value="$1"
+#############################################################################
+# NOTE: This is *a lot* faster rendering than the `u bash box` function. :(
 
-  if [[ ${#value} -gt 80 ]]; then
-    # TODO: Implement a word wrap function.
-    printf ""
-  fi
+#export W=80
+#export MARGIN=" "
+#function box_top()       { printf "${MARGIN}┌" && printf "%.s─" $(seq 1 ${1:-$((W - 2))}) && printf "┐\n"; }
+#function box_line()      { printf "%.s${2:-─}" $(seq 1 ${1:-$((W - 2))}); }
+#function box_separator() { printf "${MARGIN}├$(box_line $((W - 2)))┤\n"; }
+#function box_print()     { printf "${MARGIN}│ %-$((W - 4))s │\n" "$1"; }
+#function box_bottom()    { printf "${MARGIN}└" && printf '%.s─' $(seq 1 ${1:-$((W - 2))}) && printf "┘\n"; }
+#function box_border_right() { cursor move-start move-up col:$((W + 1)) print:│\\n ; }
 
-  box_top
-  box_print
-  repeat box_print "$@" 
-  box_print
-  box_bottom
-}
+#function box() {
+  #box_top
+  #box_print
+  #repeat box_print "$@" 
+  #box_print
+  #box_bottom
+#}
 
+#############################################################################
 
 function intro() {
   box_top

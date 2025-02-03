@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+
+# box-drawing characters taken from Wikipedia:
+# https://en.wikipedia.org/wiki/Box-drawing_characters#Unix,_CP/M,_BBS
+
+# TODO:
+# -[ ] Implement a word wrap function.
+# -[x] Add a way to expose all individual box drawing functions
+#      so I can use them in the env_wizard.
+
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
+trap 'error_handler' ERR
+
+NAME=$(basename $0)
+usage() {
+  echo
+  echo "Usage: $NAME [-h|--help] <option(s)> \"Line 1\" \"Line 2\" ... "
+  echo
+  echo "Draw a simple box around the given text. Useful for some basic"
+  echo "section separating in terminal output."
+  echo
+  echo "Examples:"
+  echo "  $NAME -v \"This is pretty text in a pretty box.\""
+  echo 
+  echo "Commands:"
+  echo "  top                       Draw the top of the box."
+  echo "  bottom                    Draw the bottom of the box."
+  echo "  border-right              Draw a vertical line to the right of the box."
+  echo "  separator                 Draw a horizontal line within the box."
+  echo "  line                      Like \`separator\`, but without borders."
+  echo "  print                     Print a line of text within the box."
+  echo
+  echo "Options:"
+  echo "  -h|--help                 Show this help message and exit."
+  echo "  -w|--width <#>            Provide the column width of the box."
+  echo "                            (Default: 80)"
+  echo "  -m|--margin <string>      The margin to the left of the box."
+  echo "                            (Default is a single space. Yes, this is text)"
+  echo "  -c|--center               Centers the box. Replaces -m."
+  echo "  -e|--execute <command>    Execute a subcommand."
+}
+
+# Fail early if no arguments are given.
+[[ $# -eq 0 ]] && usage && exit 1
+
+#############################################################################
+cursor() { utility bash cursor "$@"; }
+print-status() { utility bash print-status "$@" && box_border_right; }
+#############################################################################
+
+function box_top() {
+  printf "$(margin)┌" && \
+    printf "%.s─" $(seq 1 ${1:-$(($width - 2))}) && \
+    printf "┐\n"
+}
+
+function box_line() {
+  printf "%.s${2:-─}" $(seq 1 ${1:-$(($width - 2))})
+}
+
+# Like a horizontal line within a box.
+function box_separator() {
+  printf "$(margin)├$(box_line $(($width - 2)))┤\n"
+}
+
+function box_print() {
+  printf "$(margin)│ %-$(($width - 4))s │\n" "$1"; 
+}
+
+function box_bottom() {
+  printf "$(margin)└" && \
+    printf '%.s─' $(seq 1 ${1:-$(($width - 2))}) && \
+    printf "┘\n"
+}
+
+function box_border_right() { 
+  cursor move-start move-up col:$(($width + 1)) print:│\\n
+}
+
+function box() {
+  # TODO: Implement some kind of word wrapping.
+  #[[ ${#value} -gt $width ]] && wrap_lines
+  box_top
+  box_print
+  repeat box_print "$value" 
+  box_print
+  box_bottom
+}
+
+#############################################################################
+
+function margin () {
+  if [[ $center -eq 1 ]]; then
+    margin=$(expr $(expr $(tput cols) - $width) / 2)
+  elif [[ $margin -eq 0 ]]; then
+    return 0
+  fi
+
+  repeat $margin echo -n "." | sed 's/./ /g'
+}
+
+#############################################################################
+
+function main() {
+  local value command width=80 margin=0 center=0 args=()
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -w | --width)
+      shift
+      width="$1"
+      shift
+      ;;
+    -m | --margin)
+      shift
+      margin="$1"
+      shift
+      ;;
+    -c | --center)
+      shift
+      center=1
+      ;;
+    *)
+      if [[ "$1" =~ ^- ]]; then
+        utility bash print-status -i error "Invalid option: $1"
+        usage && exit 1
+      else
+        case "$1" in
+          top|bottom|border-right|separator|line)
+            command="box_${1/-/_}"
+            break
+            ;;
+          print)
+            command="box_print"
+            shift
+            value="$1"
+            break
+            ;;
+          *)
+            command="box"
+            value="$@"
+            break
+            ;;
+        esac
+      fi
+      ;;
+    esac
+  done
+
+  if [[ ! `command -v "$command"` ]]; then
+    print-status -i error "Command not found: $command"
+    exit 1
+  fi
+
+  $command "$value"
+}
+
+main "$@"
