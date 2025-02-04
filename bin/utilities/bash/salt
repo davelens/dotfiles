@@ -58,26 +58,25 @@ function generate() {
 
   # So we know where to restore to after a variable number of attempts.
   if [[ $looping -eq 0 ]]; then
-    printf "$(utility bash cursor -r save)" >&2
-    print-status "Generating new salt ..." >&2
+    print-status "Generating new salt ..."
+    cursor save
   fi
 
   if [[ -z "$passkey" ]]; then
-    echo
     passkey=$(prompt-user -i "$icon " -m "Enter your desired password: ")
   fi
 
   pass_confirmation=$(prompt-user -i "$(pending) " -m  "Confirm your entered password: ")
 
   if [[ ${#passkey} -lt 3 ]]; then
-    printf "$(utility bash cursor -r restore clear-down)" >&2
+    cursor restore clear-down
     print-status -i error "Passkey must be at least 3 characters long."
     generate -l
     return
   fi
 
   if [[ "$passkey" != "$pass_confirmation" ]]; then
-    printf "$(utility bash cursor -r restore clear-down)" >&2
+    cursor restore clear-down
     print-status -i error "Mismatched passwords, try again."
     generate -l
     return
@@ -85,11 +84,10 @@ function generate() {
 
   salt=$(openssl rand -base64 32)
   encrypt -p $passkey -i "$salt" -o "$DOTFILES_SALT_PATH"
-  printf "$(utility bash cursor -r restore clear-down)" >&2
+  cursor restore clear-down clear-up
 
   if [[ $? -eq 0 ]]; then
     print-status -i ok "Encrypted salt is ready."
-    echo
   else
     print-status -i error "Decrypt failed; try again or press Ctrl-c to abort."
     generate -l

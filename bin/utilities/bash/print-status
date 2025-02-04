@@ -88,7 +88,7 @@ function main() {
   [[ -n $prefix ]] && result="$prefix"
   [[ -n $icon ]] && result+="$(icon) "
   result+="$message$(newline)"
-  printf "$result"
+  printf "$result" >&2
 }
 
 main "$@"

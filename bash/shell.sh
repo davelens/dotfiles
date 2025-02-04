@@ -255,10 +255,7 @@ if [[ -z "$DOTFILES_SALT" ]]; then
 
   if [[ $? -eq 0 ]]; then
     export DOTFILES_SALT="$salt"
-    utility bash cursor clear-up
-    utility bash print-status -i ok "Encrypted salt is ready."
   else
-    utility bash cursor clear-up
     utility bash print-status -i error "Encrypted salt not ready; possibly wrong passkey."
   fi
 fi
