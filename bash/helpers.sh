@@ -3,9 +3,17 @@
 [[ -n "$_HELPERS_INCLUDED" ]] && return
 export _HELPERS_INCLUDED=1
 
+function is_sourced() {
+  local script="${BASH_SOURCE[1]}"
+  [[ "$script" != "$0" ]]
+}
+
+function is_executed() {
+  ! is_sourced
+}
 
 function block_unless_sourced() {
-  if [[ "$1" == "${0}" ]]; then
+  if is_sourced; then
     echo "$(cross) This script is meant to be sourced, not executed directly." >&2
     return 1
   fi
@@ -83,34 +91,13 @@ function timesused() {
   [[ -f "$HOME/.bash_history" ]] && grep -c "^${1}" "$HOME/.bash_history"
 }
 
-# Function to clear output starting from the current line upwards
-function clear_line() {
-  local lines=1 clear_below=true
-
-  while [[ $1 ]]; do
-    [[ $1 == -n ]] && lines=$2 && shift
-    [[ $1 == -b ]] && clear_below=false
-    shift
-  done
-
-  # 1. Move cursor to the front of the line (\r)
-  # 2. Clear everything from the cursor to the end of the line (\033[K)
-  # 3. Move cursor back to the front of the line (\r)
-  for ((i = 0; i < $lines; i++)); do printf "\r\033[K\r"; done
-  # 4. Clear everything from this line downwards to prevent ghosting (\033[J)
-  printf "\033[J"
-}
-
-function clear_prompt_line() {
-  printf "\033[1A" # Move up one line
-  clear_line
-}
-
 # To help us centralize how errors look throughout our scripts.
 function error_handler() {
-  local exit_code=$?
   echo "$(cross) An error occurred. Check the log file for details: $DOTFILES_STATE_PATH/dots.log"
-  exit $exit_code
+
+  if is_executed; then
+    exit $?
+  fi
 }
 
 function interrupt_handler() {
@@ -176,3 +163,28 @@ function ensure_brew_dependency() {
     fi
   done
 }
+
+# Ensure all helper methods so they are available in subshells.
+export -f block_unless_sourced
+export -f check
+export -f colorize
+export -f cross
+export -f ensure_brew_dependency
+export -f error_handler
+export -f export_env_vars_from_file
+export -f fail
+export -f green
+export -f interrupt_handler
+export -f is_sourced
+export -f join_by
+export -f lowercase 
+export -f pending
+export -f pid 
+export -f red
+export -f repeat
+export -f repeat
+export -f succeed
+export -f timesused
+export -f yellow
+# Source utilities that come with their own helper functions
+source bin/utilities/bash/box

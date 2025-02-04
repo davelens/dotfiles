@@ -17,108 +17,86 @@ cursor() { utility bash cursor "$@"; }
 encrypt() { utility bash encrypt "$@"; }
 decrypt() { utility bash decrypt "$@"; }
 prompt-user() { utility bash prompt-user "$@"; }
-print-status() { utility bash print-status "$@" && box_border_right; }
+print-status() { utility bash print-status "$@" && _box_border_right; }
 
-#############################################################################
+# NOTE: I made the box reusable through `u bash box`, but using it through 
+# the utility command made it remarkably slower. So I made a way to expose
+# the same functions used within the box command. Best of both worlds.
 
-# NOTE: I made the box reusable through `u bash box`, but it's remarkably slower.
-box_top() { utility bash box -m 1 top; }
-box_bottom() { utility bash box -m 1 bottom; }
-box_print() { utility bash box -m 1 print "$1"; }
-box_separator() { utility bash box -m 1 separator; }
-box_line() { utility bash box -m 1 line; }
-box_border_right() { utility bash box -m 1 border-right; }
-
-#############################################################################
-# NOTE: This is *a lot* faster rendering than the `u bash box` function. :(
-
-#export W=80
-#export MARGIN=" "
-#function box_top()       { printf "${MARGIN}┌" && printf "%.s─" $(seq 1 ${1:-$((W - 2))}) && printf "┐\n"; }
-#function box_line()      { printf "%.s${2:-─}" $(seq 1 ${1:-$((W - 2))}); }
-#function box_separator() { printf "${MARGIN}├$(box_line $((W - 2)))┤\n"; }
-#function box_print()     { printf "${MARGIN}│ %-$((W - 4))s │\n" "$1"; }
-#function box_bottom()    { printf "${MARGIN}└" && printf '%.s─' $(seq 1 ${1:-$((W - 2))}) && printf "┘\n"; }
-#function box_border_right() { cursor move-start move-up col:$((W + 1)) print:│\\n ; }
-
-#function box() {
-  #box_top
-  #box_print
-  #repeat box_print "$@" 
-  #box_print
-  #box_bottom
-#}
+# These are globals used by the box helper functions; set and forget.
+BOX_WIDTH=80
+BOX_MARGIN=1
 
 #############################################################################
 
 function intro() {
-  box_top
-  box_print
-  box_print "This script will prime your terminal to use my dotfiles."
-  box_print "Press Enter to confirm suggested values."
-  box_print "Press Ctrl + c at any time to abort."
-  box_print
+  _box_top
+  _box_print
+  _box_print "This script will prime your terminal to use my dotfiles."
+  _box_print "Press Enter to confirm suggested values."
+  _box_print "Press Ctrl + c at any time to abort."
+  _box_print
 }
 
 function setup_encryption_intro() {
-  box_print
-  box_separator
-  box_print
-  box_print "ENCRYPTION                                                       (part 1/4)"
-  box_print
-  box_print "Utility commands like \`encrypt\` require a password-protected salt."
-  box_print
+  _box_print
+  _box_separator
+  _box_print
+  _box_print "ENCRYPTION                                                       (part 1/4)"
+  _box_print
+  _box_print "Utility commands like \`encrypt\` require a password-protected salt."
+  _box_print
 }
 
 function setup_secrets_management_intro() {
-  box_separator
-  box_print
-  box_print "SECRETS MANAGEMENT                                               (part 2/4)"
-  box_print
-  box_print "My various secrets and API keys are stored in Bitwarden."
-  box_print "These dotfiles can retrieve them from your vault(s) using \`bw\`,"
-  box_print "and keep them in ENV vars in $env_file."
-  box_print
+  _box_separator
+  _box_print
+  _box_print "SECRETS MANAGEMENT                                               (part 2/4)"
+  _box_print
+  _box_print "My various secrets and API keys are stored in Bitwarden."
+  _box_print "These dotfiles can retrieve them from your vault(s) using \`bw\`,"
+  _box_print "and keep them in ENV vars in $env_file."
+  _box_print
 }
 
 function setup_environment_variables_intro() {
-  box_separator
-  box_print
-  box_print "ENVIRONMENT VARIABLES                                            (part 3/4)"
-  box_print
-  box_print "The script will now prompt you to confirm every ENV var value."
-  box_print
+  _box_separator
+  _box_print
+  _box_print "ENVIRONMENT VARIABLES                                            (part 3/4)"
+  _box_print
+  _box_print "The script will now prompt you to confirm every ENV var value."
+  _box_print
 }
 
 function finishing_up_intro() {
-  box_separator
-  box_print
-  box_print "STATUS (TODO)                                                    (part 4/4)"
-  box_print
-  box_print "This is a summary of everything the script did."
-  box_print "If something looks off, you can re-run the script."
-  box_print
+  _box_separator
+  _box_print
+  _box_print "STATUS (TODO)                                                    (part 4/4)"
+  _box_print
+  _box_print "This is a summary of everything the script did."
+  _box_print "If something looks off, you can re-run the script."
+  _box_print
 }
 
 function bitwarden_intro() {
-  box_print
-  box_print "My various secrets and API keys are stored in Bitwarden."
-  box_print "I built in support to retrieve and use them in these dotfiles."
-  box_print "(NOTE: This does not use the Secrets Manager yet; it's still in beta."
-  box_print
+  _box_print
+  _box_print "My various secrets and API keys are stored in Bitwarden."
+  _box_print "I built in support to retrieve and use them in these dotfiles."
+  _box_print "(NOTE: This does not use the Secrets Manager yet; it's still in beta."
+  _box_print
 }
 
 function bitwarden_data_intro() {
-  box_print
-  box_print "You need the following two items ready in Bitwarden:"
-  box_print
-  box_print "1. An item of the Identity type, containing your first and last name."
-  box_print
-  box_print "2. An item of the Login type, named \"Github\", containing:"
-  box_print "   a. The 'Username' field entry (i.e. your Github e-mail address)"
-  box_print "   b. A custom field entry named 'Public username'"
-  box_print "   c. A custom field entry named 'Personal access token'"
-  box_print 
+  _box_print
+  _box_print "You need the following two items ready in Bitwarden:"
+  _box_print
+  _box_print "1. An item of the Identity type, containing your first and last name."
+  _box_print
+  _box_print "2. An item of the Login type, named \"Github\", containing:"
+  _box_print "   a. The 'Username' field entry (i.e. your Github e-mail address)"
+  _box_print "   b. A custom field entry named 'Public username'"
+  _box_print "   c. A custom field entry named 'Personal access token'"
+  _box_print 
 }
 
 function setup_encryption() {
@@ -127,7 +105,7 @@ function setup_encryption() {
     setup_salt 
   else
     print-status -i ok "Encrypted salt is ready."
-    box_print
+    _box_print
   fi
 }
 
@@ -153,7 +131,7 @@ function setup_salt() {
     return
   fi
 
-  box_print
+  _box_print
   return
 }
 
@@ -171,7 +149,7 @@ function setup_secrets_management() {
     print-status -i error "Not using Bitwarden."
   fi
 
-  box_print
+  _box_print
 }
 
 function setup_bitwarden() {
@@ -232,7 +210,7 @@ function setup_env() {
   if [[ -f $env_file ]]; then
     source "$env_file"
     print-status -i ok "Loaded environment variables from $env_file."
-    box_print
+    _box_print
   fi
 }
 
@@ -241,7 +219,7 @@ function setup_finish() {
 }
 
 function env_data_wizard() {
-  box_print
+  _box_print
 
   REPO_NAMESPACE=$(prompt-user -i "$(pending) " -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos? ")
 
@@ -311,18 +289,18 @@ function main() {
   setup_finish
   #write_env_files
 
-  box_print
-  box_print "Environment variables written to these files:"
-  box_print "  $gitconfig_env_file"
-  box_print "  $env_file"
-  box_print
-  box_print "Please source ~/.bashrc or restart your shell to apply changes."
-  box_print
-  box_separator
-  box_print
+  _box_print
+  _box_print "Environment variables written to these files:"
+  _box_print "  $gitconfig_env_file"
+  _box_print "  $env_file"
+  _box_print
+  _box_print "Please source ~/.bashrc or restart your shell to apply changes."
+  _box_print
+  _box_separator
+  _box_print
   print-status -i ok "All done!"
-  box_print
-  box_bottom
+  _box_print
+  _box_bottom
 }
 
 main "$@"

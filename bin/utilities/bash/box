@@ -8,9 +8,8 @@
 # -[x] Add a way to expose all individual box drawing functions
 #      so I can use them in the env_wizard.
 
-trap 'error_handler' ERR
+NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
 
-NAME=$(basename $0)
 usage() {
   echo
   echo "Usage: $NAME [-h|--help] <option(s)> \"Line 1\" \"Line 2\" ... "
@@ -19,7 +18,9 @@ usage() {
   echo "section separating in terminal output."
   echo
   echo "Examples:"
-  echo "  $NAME -v \"This is pretty text in a pretty box.\""
+  echo "  $NAME \"This is pretty text in a pretty box.\""
+  echo "  $NAME --center \"This box is dead center.\""
+  echo "  $NAME -m 9 -w 120 \"This box has a margin, and a specific width.\""
   echo 
   echo "Commands:"
   echo "  top                       Draw the top of the box."
@@ -39,69 +40,91 @@ usage() {
   echo "  -e|--execute <command>    Execute a subcommand."
 }
 
-# Fail early if no arguments are given.
-[[ $# -eq 0 ]] && usage && exit 1
+###############################################################################
 
-#############################################################################
+# TODO: Expose these by sourcing through bash/helpers.sh, and remove them here.
 cursor() { utility bash cursor "$@"; }
-print-status() { utility bash print-status "$@" && box_border_right; }
-#############################################################################
+print-status() { utility bash print-status "$@" && _box_border_right; }
 
-function box_top() {
-  printf "$(margin)┌" && \
-    printf "%.s─" $(seq 1 ${1:-$(($width - 2))}) && \
+###############################################################################
+
+function _box_top() {
+  printf "$(_box_margin)┌" && \
+    printf "%.s─" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) && \
     printf "┐\n"
 }
 
-function box_line() {
-  printf "%.s${2:-─}" $(seq 1 ${1:-$(($width - 2))})
+function _box_line() {
+  printf "%.s${2:-─}" $(seq 1 ${1:-$(($BOX_WIDTH - 2))})
 }
 
 # Like a horizontal line within a box.
-function box_separator() {
-  printf "$(margin)├$(box_line $(($width - 2)))┤\n"
+function _box_separator() {
+  printf "$(_box_margin)├$(_box_line $(($BOX_WIDTH - 2)))┤\n"
 }
 
-function box_print() {
-  printf "$(margin)│ %-$(($width - 4))s │\n" "$1"; 
+function _box_print() {
+  printf "$(_box_margin)│ %-$(($BOX_WIDTH - 4))s │\n" "$1"; 
 }
 
-function box_bottom() {
-  printf "$(margin)└" && \
-    printf '%.s─' $(seq 1 ${1:-$(($width - 2))}) && \
+function _box_bottom() {
+  printf "$(_box_margin)└" && \
+    printf '%.s─' $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) && \
     printf "┘\n"
 }
 
-function box_border_right() { 
-  cursor move-start move-up col:$(($width + 1)) print:│\\n
+function _box_border_right() { 
+  cursor move-start move-up col:$(($BOX_WIDTH + 1)) print:│\\n
 }
 
-function box() {
-  # TODO: Implement some kind of word wrapping.
-  #[[ ${#value} -gt $width ]] && wrap_lines
-  box_top
-  box_print
-  repeat box_print "$value" 
-  box_print
-  box_bottom
-}
-
-#############################################################################
-
-function margin () {
+function _box_margin() {
   if [[ $center -eq 1 ]]; then
-    margin=$(expr $(expr $(tput cols) - $width) / 2)
-  elif [[ $margin -eq 0 ]]; then
+    BOX_MARGIN=$(expr $(expr $(tput cols) - $BOX_WIDTH) / 2)
+  elif [[ $BOX_MARGIN -eq 0 ]]; then
     return 0
   fi
 
-  repeat $margin echo -n "." | sed 's/./ /g'
+  repeat $BOX_MARGIN echo -n "." | sed 's/./ /g'
 }
 
-#############################################################################
+###############################################################################
+
+# Sourcing this file will expose the same functions used by this command.
+# Explicitly exporting these here will make them available in all subshells.
+if is_sourced; then
+  export -f _box_top
+  export -f _box_bottom
+  export -f _box_line
+  export -f _box_separator
+  export -f _box_print
+  export -f _box_border_right
+  export -f _box_margin
+  return 0
+else
+  # Fail early if no arguments are given.
+  [[ $# -eq 0 ]] && usage && exit 1
+fi
+
+###############################################################################
+
+function box() {
+  # TODO: Implement some kind of word wrapping.
+  #[[ ${#value} -gt $BOX_WIDTH ]] && wrap_lines
+  _box_top
+  _box_print
+  repeat _box_print "$value" 
+  _box_print
+  _box_bottom
+}
+
+###############################################################################
 
 function main() {
-  local value command width=80 margin=0 center=0 args=()
+  is_sourced && return
+
+  local value command center=0 args=()
+  BOX_WIDTH=80
+  BOX_MARGIN=0
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -111,12 +134,12 @@ function main() {
       ;;
     -w | --width)
       shift
-      width="$1"
+      BOX_WIDTH="$1"
       shift
       ;;
     -m | --margin)
       shift
-      margin="$1"
+      BOX_MARGIN="$1"
       shift
       ;;
     -c | --center)
@@ -130,11 +153,11 @@ function main() {
       else
         case "$1" in
           top|bottom|border-right|separator|line)
-            command="box_${1/-/_}"
+            command="_box_${1/-/_}"
             break
             ;;
           print)
-            command="box_print"
+            command="_box_print"
             shift
             value="$1"
             break
