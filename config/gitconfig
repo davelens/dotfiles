@@ -1,16 +1,5 @@
-[user]
-  name = ""
-  email = ""
-	signingkey = ""
-
 [include]
   path = ~/.gitconfig.env
-
-[gpg]
-	format = ssh
-
-[commit]
-  gpgsign = true
 
 [push]
   autoSetupRemote = true
@@ -18,9 +7,6 @@
 [url "https://"]
   insteadOf = git://
 
-[diff]
-[color]
-  ui = auto
 [alias]
   aa = add --all
   amend = commit --amend
@@ -92,7 +78,12 @@
   pager = delta --side-by-side
 
 [delta]
-  syntax-theme = Solarized (dark)
+  true-color = always
+  navigate = true
+  light = false
+  syntax-theme = Nord
+  line-numbers-minus-style = 9 bold "#2e3440"
+  line-numbers-zero-style = 241
 
 [interactive]
   diffFilter = delta --color-only
