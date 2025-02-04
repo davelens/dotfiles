@@ -23,7 +23,7 @@ function lowercase () {
 }
 
 # Exports all ENV vars listed in a file. Loads ~/.env by default.
-function export-env-vars-from-file() {
+function export_env_vars_from_file() {
   local env_file=${1:-~/.env}
   # shellcheck source=/dev/null
   [[ -f $env_file ]] && source "$env_file"
