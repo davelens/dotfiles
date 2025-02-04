@@ -16,82 +16,88 @@ usage() {
   echo "Usage: $(basename $0) [-h|--help] <command>"
   echo
   echo "Commands:"
-  echo "  session-token        Returns a usable Bitwarden session token."
   echo "  unlock               Unlocks your vault(s) with your master password."
+  echo "  items                Load up your vault items in FZF."
   echo
   echo "Options:"
   echo "  -h|--help            Show this help message and exit."
   echo "  -f|--filter          Provide a query to use as an fzf filter."
 }
 
-function bootstrap_session_token() {
-  #local session_file="$DOTFILES_STATE_PATH/bw-session.enc"
+# Fail early if no arguments are given.
+[[ $# -eq 0 ]] && usage && exit 1
 
-  if [[ -z "$BW_SESSION" ]]; then
-    source $DOTFILES_PATH/setup/unlock_bw
-  fi
+#############################################################################
 
-  if find "$session_file" -type f -mmin +60 | grep -q .; then
-    rm $session_file
-    bootstrap_session_token
-    return
-  fi
-}
+items_cache_file() { echo "$DOTFILES_STATE_PATH/bw-items-cache"; }
+mp() { utility bash decrypt -f "$mp_file"; }
 
-function items_cache_file() {
-  echo "$DOTFILES_STATE_PATH/bw-items-cache"
-}
+#############################################################################
 
-function salt_file() {
-  echo "$DOTFILES_STATE_PATH/salt"
-}
-
-function session_token() {
+function unlock() {
   if [[ ! -f "$mp_file" ]]; then
     utility bash encrypt \
-      -i $(utility bash prompt-user -m "Enter your Bitwarden master password: ") \
+      -i $(utility bash prompt-user -m "$(pending) Enter your Bitwarden master password: ") \
       -o "$DOTFILES_STATE_PATH/bw-mp.enc"
   fi
 
   echo $(echo "$(mp)" | bw unlock --raw 2>/dev/null)
 }
 
-function mp() {
-  utility bash decrypt -f "$mp_file"
-}
+function cache-items() {
+  local ITEMS
+  utility bash print-status "Loading items from vault(s) ... "
 
-#
-# openssl aes-256-cbc -pbkdf2 -e -a -k pras3Awr -in foo.txt -out foo.enc
-# openssl aes-256-cbc -pbkdf2 -d -a -k pras3Awr -in foo.enc
-# 
-# openssl rand -base64 128
-#
-function cache_vault_items() {
-  local filter="$1"
-  ITEMS=
-  export ITEMS_CACHE_FILE=$(items_cache_file)
-
-  utility bash print-status -n "Loading items from vault(s) ... "
+  export BW_SESSION=$(unlock)
 
   if [[ -n "$filter" ]]; then
-    if ! ITEMS=$(bw list items --search "$filter" --session "$(session_token)" 2>/dev/null); then
+    if ! ITEMS=$(bw --session "$BW_SESSION" list items --search "$filter" 2>/dev/null); then
       utility bash print-status -i error "Could not load items or operation timed out."
       exit 1
     fi
   else
-    if ! ITEMS=$(bw list items --session "$(session_token)" 2>/dev/null); then
+    if ! ITEMS=$(bw --session "$BW_SESSION" list items 2>/dev/null); then
       utility bash print-status -i error "Could not load items or operation timed out."
       exit 1
     fi
   fi
 
   utility bash print-status -n -i ok "Items loaded from vault(s)."
-  echo "$ITEMS" >"$ITEMS_CACHE_FILE"
-  openssl aes-256-cbc -a -salt -pbkdf2 -in $ITEMS_CACHE_FILE -out $ITEMS_CACHE_FILE.enc -k $DOTFILES_ENCRYPTION_KEY
-  echo
+
+  tmp=$(mktemp)
+  echo "$ITEMS" > $tmp
+  utility bash encrypt -f "$tmp" -o "$ITEMS_CACHE_FILE.enc"
 }
 
+function items() {
+  ensure_brew_dependency "fzf"
+  [[ ! -f $ITEMS_CACHE_FILE.enc ]] && cache-items
+
+  tmp=$(mktemp)
+  echo "$(utility bash decrypt -f $ITEMS_CACHE_FILE.enc)" >> $tmp
+
+  # So the preview code knows where to look.
+  export SCRIPT_PATH="$(dirname $(realpath $0))"
+
+  # You need to pass the jq queries for $item_id and $item here in order to
+  # get the preview to work. It executes in a subshell, so it doesn't have
+  # context of the variables you've set in the main shell.
+  jq -r '.[] | "\(.name)\t(\(.id))\t\(.login.username)"' "$tmp" | 
+    FZF_PREVIEW_FILE="$tmp" fzf \
+    --cycle --inline-info --ansi --no-mouse --layout=reverse \
+    --prompt="$(basename $0) -> " \
+    --preview-window='right:50%' \
+    --preview='
+      item_id=$(echo {} | sed -n "s/.*(\(.*\)).*/\1/p")
+      item=$(jq -r --arg id "$item_id" ".[] | select(.id == \$id)" "$FZF_PREVIEW_FILE")
+      source $SCRIPT_PATH/bitwarden_preview.sh
+      '
+}
+
+#############################################################################
+
 function main() {
+  local ITEMS_CACHE_FILE=$(items_cache_file)
   local mp_file="$DOTFILES_STATE_PATH/bw-mp.enc"
 
   while [[ $# -gt 0 ]]; do
@@ -105,13 +111,9 @@ function main() {
       filter="$1"
       shift
       ;;
-    session-token)
-      session_token
-      exit 0
-      ;;
-    unlock)
-      bootstrap_session_token
-      exit 0
+    unlock | items)
+      command="$1"
+      shift
       ;;
     *)
       utility bash print-status -i error "Invalid option: $1"
@@ -120,27 +122,7 @@ function main() {
     esac
   done
 
-  ensure_brew_dependency "fzf"
-  bootstrap_session_token
-  cache_vault_items "$filter"
-
-  # So the preview code knows where to look.
-  export SCRIPT_PATH="$(dirname $(realpath $0))"
-
-  # You need to pass the jq queries for $item_id and $item here in order to
-  # get the preview to work. It executes in a subshell, so it doesn't have
-  # context of the variables you've set in the main shell.
-  jq -r '.[] | "\(.name)\t(\(.id))\t\(.login.username)"' "$ITEMS_CACHE_FILE" | 
-    awk '$0=(NR>1?" ":"")$1":"$2' ORS= |
-    FZF_PREVIEW_FILE="$ITEMS_CACHE_FILE" fzf \
-    --cycle --inline-info --ansi --no-mouse --layout=reverse \
-    --prompt="$(basename $0) -> " \
-    --preview-window='right:50%' \
-    --preview='
-      item_id=$(echo {} | sed -n "s/.*(\(.*\)).*/\1/p")
-      item=$(jq -r --arg id "$item_id" ".[] | select(.id == \$id)" "$FZF_PREVIEW_FILE")
-      source $SCRIPT_PATH/bitwarden_preview.sh
-      '
+  $command
 }
 
 # main() is isolated to allow for readability and easier testing.

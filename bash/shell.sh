@@ -248,6 +248,7 @@ unset file
 # If the salt file is gone, we don't want to keep the old value.
 if [[ ! -f "$DOTFILES_SALT_PATH" ]]; then 
   unset DOTFILES_SALT
+  unset BW_SESSION
 fi
 
 if [[ -z "$DOTFILES_SALT" ]]; then 
@@ -260,7 +261,6 @@ if [[ -z "$DOTFILES_SALT" ]]; then
   fi
 fi
 
-# TODO:
-#if [ -z $BW_SESSION ]; then
-  #export BW_SESSION="$(utility misc bitwarden session-token)"
-#fi
+if [[ -z $BW_SESSION ]]; then
+  export BW_SESSION="$(utility misc bitwarden unlock)"
+fi
