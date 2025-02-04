@@ -17,6 +17,7 @@ usage() {
   echo 
   echo "Commands:"
   echo "  current               (Re)generate a new salt."
+  echo "  reset                 Reset the salt along with all encrypted files."
   echo
   echo "Options:"
   echo "  -h|--help             Show this help message and exit."
@@ -36,6 +37,15 @@ prompt-user() { utility bash prompt-user "$@"; }
 
 #############################################################################
 
+function reset() {
+  print-status "Resetting salt and all encrypted files ..."
+  rm -f "$DOTFILES_STATE_PATH"/*.enc
+  cursor move-up move-start
+  print-status -i ok "Salt and encrypted files have been reset.\n"
+  echo "    Please source ~/.bashrc (\`s\`) or restart your shell to apply changes."
+  echo
+}
+
 function generate() {
   local looping passkey pass_confirmation icon
   looping=0
@@ -47,25 +57,27 @@ function generate() {
   fi
 
   # So we know where to restore to after a variable number of attempts.
-  [[ $looping -eq 0 ]] && cursor save
-
-  print-status "Generating new salt ..."
+  if [[ $looping -eq 0 ]]; then
+    printf "$(utility bash cursor -r save)" >&2
+    print-status "Generating new salt ..." >&2
+  fi
 
   if [[ -z "$passkey" ]]; then
+    echo
     passkey=$(prompt-user -i "$icon " -m "Enter your desired password: ")
   fi
 
   pass_confirmation=$(prompt-user -i "$(pending) " -m  "Confirm your entered password: ")
 
   if [[ ${#passkey} -lt 3 ]]; then
-    cursor restore clear-down # Restore prompt starting point for feedback.
+    printf "$(utility bash cursor -r restore clear-down)" >&2
     print-status -i error "Passkey must be at least 3 characters long."
     generate -l
     return
   fi
 
   if [[ "$passkey" != "$pass_confirmation" ]]; then
-    cursor restore clear-down # Restore prompt starting point for feedback.
+    printf "$(utility bash cursor -r restore clear-down)" >&2
     print-status -i error "Mismatched passwords, try again."
     generate -l
     return
@@ -73,10 +85,11 @@ function generate() {
 
   salt=$(openssl rand -base64 32)
   encrypt -p $passkey -i "$salt" -o "$DOTFILES_SALT_PATH"
-  cursor restore clear-down # Restore prompt starting point for feedback.
+  printf "$(utility bash cursor -r restore clear-down)" >&2
 
-  if [[ -n $salt ]]; then
+  if [[ $? -eq 0 ]]; then
     print-status -i ok "Encrypted salt is ready."
+    echo
   else
     print-status -i error "Decrypt failed; try again or press Ctrl-c to abort."
     generate -l
