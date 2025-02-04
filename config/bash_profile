@@ -12,6 +12,7 @@ export DOTFILES_LOG_PATH="$DOTFILES_STATE_PATH/log"
 
 # Load the mandatory shell settings and ENV vars before everything else.
 [[ -f $DOTFILES_PATH/bash/colors.sh ]] && source "$DOTFILES_PATH/bash/colors.sh"
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source "$DOTFILES_PATH/bash/helpers.sh"
 [[ -f $DOTFILES_PATH/bash/shell.sh ]] && source "$DOTFILES_PATH/bash/shell.sh"
 
 # OS specific settings
@@ -20,7 +21,7 @@ export DOTFILES_LOG_PATH="$DOTFILES_STATE_PATH/log"
 [[ $OS == 'linux' ]] && source "$DOTFILES_PATH/bash/linux.sh"
 
 # Source the files in the bash folder
-for file in $DOTFILES_PATH/bash/{helpers,aliases,prompt,private}.sh; do
+for file in $DOTFILES_PATH/bash/{aliases,prompt,private}.sh; do
   [ -r "$file" ] && source "$file";
 done;
 unset file;

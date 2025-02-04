@@ -191,4 +191,4 @@ export -f yellow
 
 # Source utilities that come with their own helper functions, so we can use
 # them in other commands with additional overhead.
-source bin/utilities/bash/box
+source $DOTFILES_PATH/bin/utilities/bash/box
