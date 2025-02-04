@@ -244,6 +244,12 @@ unset file
 ########################################################################
 # Salt is used to encrypt and decrypt sensitive values or files with a passkey.
 # TODO: Probably a good idea to regenerate the salt every now and then.
+
+# If the salt file is gone, we don't want to keep the old value.
+if [[ ! -f "$DOTFILES_SALT_PATH" ]]; then 
+  unset DOTFILES_SALT
+fi
+
 if [[ -z "$DOTFILES_SALT" ]]; then 
   salt=$(utility bash salt current)
 
