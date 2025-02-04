@@ -9,7 +9,6 @@ set -e
 # original source. My apologies to the original author, you rock.
 #
 
-[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'error_handler' ERR
 
 usage() {

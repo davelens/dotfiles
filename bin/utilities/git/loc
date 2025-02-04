@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 script_name=`basename $0`
 [[ ! -d .git ]] && fail "[git/$script_name] ERROR: No .git repository folder found."

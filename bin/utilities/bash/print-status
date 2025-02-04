@@ -2,7 +2,6 @@
 
 # command that displays status updates prefixed with an icon
 
-[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'error_handler' ERR
 
 usage() {

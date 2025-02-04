@@ -11,7 +11,6 @@ trap handle_interrupt SIGINT
 # This command is used to provide suggestions among both my personal as well as
 # my work's public and private repositories.
 
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 [[ ! $(command -v jq) ]] && brew install jq
 
 # Access to private repositories will require a Github access token with the

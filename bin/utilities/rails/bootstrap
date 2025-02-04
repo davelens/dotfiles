@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 [[ -z $1 ]] && fail '[rails/bootstrap] ERROR: No target directory given.'
 [[ ! -d $1 ]] && fail "[rails/bootstrap] ERROR: Directory $1 is missing."

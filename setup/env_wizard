@@ -8,7 +8,6 @@
 export DOTFILES_PATH=$(dirname "$(dirname $(realpath "$0"))")
 export DOTFILES_STATE_PATH="${HOME}/.local/state/dots"
 
-[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'clear && interrupt_handler' SIGINT
 
 #############################################################################

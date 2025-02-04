@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 [ ! `command -v docker` ] && fail "ERROR: Docker is not installed."
 docker info &> /dev/null || fail "ERROR: Docker is not running."

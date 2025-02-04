@@ -4,7 +4,6 @@ set -e
 readonly DOTBOT_DIR="dotbot"
 readonly DOTFILES_PATH="$(dirname $(dirname $(realpath "$0")))"
 readonly DOTFILES_STATE_PATH="$HOME/.local/state/dots"
-[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 
 # Get dotbot installed
 cd "${DOTFILES_PATH}"

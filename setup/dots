@@ -2,7 +2,6 @@
 set -e
 
 source ~/.env
-[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'error_handler' ERR
 
 log_file="${DOTFILES_STATE_PATH}/dots.log"

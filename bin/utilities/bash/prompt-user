@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
 trap 'error_handler' ERR
 trap 'interrupt_handler' SIGINT
 

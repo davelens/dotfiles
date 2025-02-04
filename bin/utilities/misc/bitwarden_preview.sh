@@ -4,8 +4,6 @@
 # fzf preview of bin/utilities/bitwarden.
 # This keeps that command a bit more readable.
 
-[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source $DOTFILES_PATH/bash/helpers.sh
-
 function print_key_value() {
   key="$1"
   value="$(eval echo \"\$$key\")"

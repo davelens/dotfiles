@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+[[ -n "$_HELPERS_INCLUDED" ]] && return
+export _HELPERS_INCLUDED=1
+
+
 function block_unless_sourced() {
   if [[ "$1" == "${0}" ]]; then
     echo "$(cross) This script is meant to be sourced, not executed directly." >&2
