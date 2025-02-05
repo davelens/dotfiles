@@ -168,6 +168,8 @@ function yellow() {
 
 # Expose all helper methods to subshells.
 export -f block_unless_sourced
+export -f is_executed
+export -f is_sourced
 export -f check
 export -f colorize
 export -f cross
@@ -177,7 +179,6 @@ export -f export_env_vars_from_file
 export -f fail
 export -f green
 export -f interrupt_handler
-export -f is_sourced
 export -f join_by
 export -f lowercase 
 export -f pending
