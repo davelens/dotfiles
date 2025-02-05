@@ -42,9 +42,7 @@ usage() {
 
 ###############################################################################
 
-# TODO: Expose these by sourcing through bash/helpers.sh, and remove them here.
-cursor() { utility bash cursor "$@"; }
-print-status() { utility bash print-status "$@" && _box_border_right; }
+STATUS_AFFIX="_box_border_right"
 
 ###############################################################################
 
@@ -148,7 +146,7 @@ function main() {
       ;;
     *)
       if [[ "$1" =~ ^- ]]; then
-        utility bash print-status -i error "Invalid option: $1"
+        print-status -i error "Invalid option: $1"
         usage && exit 1
       else
         case "$1" in

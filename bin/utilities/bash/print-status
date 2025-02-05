@@ -4,9 +4,11 @@
 
 trap 'error_handler' ERR
 
+NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
+
 usage() {
   echo
-  echo "Usage: $(basename $0) [-h|--help] <options> <message>"
+  echo "Usage: $NAME [-h|--help] <options> <message>"
   echo
   echo "Options:"
   echo "  -h|--help                   Show this help message and exit."
@@ -21,8 +23,7 @@ usage() {
   echo "  -nc|--no-clear              Does not clear the line before output."
 }
 
-# Fail early if no arguments are given.
-[[ $# -eq 0 ]] && usage && exit 1
+#############################################################################
 
 function icon() {
   case "$icon" in
@@ -40,7 +41,11 @@ function newline() {
 }
 
 function main() {
+  # Fail early if no arguments are given.
+  [[ $# -eq 0 ]] && usage && exit 0
+
   local newline=1 clearline=1 icon="pending" message prefix
+  STATUS_AFFIX=""
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -74,16 +79,15 @@ function main() {
       if [[ -z $message ]]; then
         message="$1"
       else
-        basename "error" "Invalid option: $1\n"
-        usage
-        exit 1
+        print-status -i error "Invalid option: $1"
+        usage && exit 1
       fi
       shift
       ;;
     esac
   done
 
-  [[ $clearline -eq 1 ]] && utility bash cursor move-start clear-line
+  [[ $clearline -eq 1 ]] && cursor move-start clear-line
 
   [[ -n $prefix ]] && result="$prefix"
   [[ -n $icon ]] && result+="$(icon) "
@@ -91,4 +95,15 @@ function main() {
   printf "$result"
 }
 
-main "$@"
+#############################################################################
+
+eval "function $NAME() { utility bash $NAME \"\$@\"; [ -n "\${STATUS_AFFIX}" ] && \$STATUS_AFFIX ; }"
+
+# Sourcing this file will expose the same functions used by this command.
+# Explicitly exporting these here will make them available in all subshells.
+if is_sourced; then
+  export -f $NAME
+  return 0
+else
+  main "$@"
+fi

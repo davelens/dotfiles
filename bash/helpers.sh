@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-[[ -n "$_HELPERS_INCLUDED" ]] && return
-export _HELPERS_INCLUDED=1
+#[[ -n "$_HELPERS_INCLUDED" ]] && return
+#export _HELPERS_INCLUDED=1
 
 function block_unless_sourced() {
   if is_sourced; then
@@ -32,13 +32,13 @@ function ensure_brew_dependency() {
     [[ -z $command || $command == $package ]] && command=$name
 
     if [[ ! `command -v $command` ]]; then
-      utility bash print-status -n "Installing $package ... "
+      print-status -n "Installing $package ... "
       output=$(HOMEBREW_COLOR=1 brew install --quiet $name 2>&1 >/dev/null)
 
       if [[ $? -gt 0 ]]; then
-        utility bash print-status -n -i error "Failed to install package '$package': $output"
+        print-status -n -i error "Failed to install package '$package': $output"
       else
-        utility bash print-status -i ok "Installed $package."
+        print-status -i ok "Installed $package."
       fi
     fi
   done
@@ -48,7 +48,7 @@ function ensure_brew_dependency() {
 function error_handler() {
   echo "$(cross) An error occurred. Check the log file for details: $DOTFILES_STATE_PATH/dots.log"
 
-  if is_executed; then
+  if ! is_sourced; then
     exit $?
   fi
 }
@@ -71,17 +71,13 @@ function green() {
 }
 
 function interrupt_handler() {
-  utility bash print-status -i error "Aborted."
+  print-status -i error "Aborted."
   exit 1
 }
 
 function is_sourced() {
   local script="${BASH_SOURCE[1]}"
   [[ "$script" != "$0" ]]
-}
-
-function is_executed() {
-  ! is_sourced
 }
 
 # Join an array by a given delimiter string
@@ -168,8 +164,6 @@ function yellow() {
 
 # Expose all helper methods to subshells.
 export -f block_unless_sourced
-export -f is_executed
-export -f is_sourced
 export -f check
 export -f colorize
 export -f cross
@@ -179,6 +173,7 @@ export -f export_env_vars_from_file
 export -f fail
 export -f green
 export -f interrupt_handler
+export -f is_sourced
 export -f join_by
 export -f lowercase 
 export -f pending
@@ -193,3 +188,9 @@ export -f yellow
 # Source utilities that come with their own helper functions, so we can use
 # them in other commands with additional overhead.
 source $DOTFILES_PATH/bin/utilities/bash/box
+source $DOTFILES_PATH/bin/utilities/bash/cursor
+source $DOTFILES_PATH/bin/utilities/bash/prompt-user
+source $DOTFILES_PATH/bin/utilities/bash/print-status
+source $DOTFILES_PATH/bin/utilities/bash/encrypt
+source $DOTFILES_PATH/bin/utilities/bash/decrypt
+source $DOTFILES_PATH/bin/utilities/bash/salt

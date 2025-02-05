@@ -8,7 +8,7 @@
 
 trap 'error_handler' ERR
 
-NAME=$(basename $0)
+NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
 #
 # Note: the [-p|--for-prompt] option is specific to my dotfiles.
 # I wouldn't know how to go about calculating the bash prompt height. 
@@ -55,10 +55,7 @@ usage() {
   echo "  -r|--raw            Returns the ANSI escape sequence as a string."
 }
 
-# Fail early if no arguments are given.
-[[ $# -eq 0 ]] && usage && exit 1
-
-#############################################################################
+###############################################################################
 
 declare -A sequences=(
   ["move_start"]='033[G'
@@ -111,7 +108,7 @@ function seq_print() {
   printf "$steps"
 }
 
-#############################################################################
+###############################################################################
 
 function chain_commands() {
   for cmd in ${commands[@]}; do
@@ -123,6 +120,8 @@ function chain_commands() {
 }
 
 function main() {
+  [[ $# -eq 0 ]] && usage && exit 0
+
   local steps=1 in_prompt=0 raw=0 
   local commands=() options=()
 
@@ -137,7 +136,7 @@ function main() {
         -r | --raw) raw=1;;
         *)
           if [[ -z $1 ]]; then
-            utility bash print-status -i error "Invalid options: $arg"
+            print-status -i error "Invalid options: $arg"
             usage && exit 1
           fi
           ;;
@@ -156,7 +155,7 @@ function main() {
     commands[i]="seq_${commands[i]/-/_}"
 
     if ! command -v "${commands[i]%%:*}" &> /dev/null; then
-      utility bash print-status -i error "Invalid command: ${commands[i]}"
+      print-status -i error "Invalid command: ${commands[i]}"
       usage && exit 1
     fi
   done
@@ -164,4 +163,15 @@ function main() {
   chain_commands
 }
 
-main "$@"
+#############################################################################
+
+eval "function $NAME() { utility bash $NAME \"\$@\"; }"
+
+# Sourcing this file will expose the same functions used by this command.
+# Explicitly exporting these here will make them available in all subshells.
+if is_sourced; then
+  export -f $NAME
+  return 0
+else
+  main "$@"
+fi

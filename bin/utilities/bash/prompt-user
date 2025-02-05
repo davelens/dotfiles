@@ -3,9 +3,11 @@
 trap 'error_handler' ERR
 trap 'interrupt_handler' SIGINT
 
+NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
+
 usage() {
   echo
-  echo "Usage: $(basename $0) [-h|--help] [options] <question>"
+  echo "Usage: $NAME [-h|--help] [options] <question>"
   echo
   echo "Options:"
   echo "  -h|--help                Show this help message and exit."
@@ -15,6 +17,8 @@ usage() {
   echo "  -c|--confirm             Pressing any key will confirm the prompt."
   echo "  -i|--indent <string>     Adds a string to the beginning of the prompt."
 }
+
+###############################################################################
 
 function basic() {
   local input
@@ -92,7 +96,12 @@ function prompt_line() {
   printf "$indent$string"
 }
 
+###############################################################################
+
 function main() {
+  # Fail early if no arguments are given.
+  [[ $# -eq 0 ]] && usage && exit 0
+
   local prompt_function="basic" question default indent
 
   while [[ $# -gt 0 ]]; do
@@ -127,7 +136,7 @@ function main() {
       if [[ -z $question ]]; then
         question="$1"
       else
-        utility bash print-status -i error "Invalid option: $1"
+        print-status -i error "Invalid option: $1"
         usage && exit 1
       fi
       shift
@@ -136,11 +145,22 @@ function main() {
   done
 
   if [[ -z $question ]]; then
-    utility bash print-status -i error "You need to provide a question to ask."
+    print-status -i error "You need to provide a question to ask."
     usage && exit 1
   fi
 
   eval $prompt_function
 }
 
-main "$@"
+#############################################################################
+
+eval "function $NAME() { utility bash $NAME \"\$@\"; }"
+
+# Sourcing this file will expose the same functions used by this command.
+# Explicitly exporting these here will make them available in all subshells.
+if is_sourced; then
+  export -f $NAME
+  return 0
+else
+  main "$@"
+fi

@@ -29,7 +29,7 @@ update() {
 
   # Check for uncommitted changes and exit gracefully if so.
   if ! git -C "$DOTFILES_PATH" diff-files --quiet; then
-    utility bash print-status -i error "There are uncommitted changes in your dotfiles. Please commit or stash them before updating:"
+    print-status -i error "There are uncommitted changes in your dotfiles. Please commit or stash them before updating:"
     echo
     echo
     echo "$(cd $DOTFILES_PATH && git st)"
@@ -37,21 +37,21 @@ update() {
   fi
 
   # Pull the latest changes
-  utility bash print-status -n "Pulling in changes ..."
+  print-status -n "Pulling in changes ..."
   cd "$DOTFILES_PATH" && git pull origin "$(git b)" &>> "$log_file" || error_occurred=1
-  utility bash print-status -i ok "Files updated to latest version"
+  print-status -i ok "Files updated to latest version"
 
   # Run the installer if no errors occurred
   if [[ $error_occurred -eq 0 ]]; then
-    utility bash print-status -n "Running installer ..."
+    print-status -n "Running installer ..."
     "$DOTFILES_PATH/setup/install" &>> "$log_file" || error_occurred=1
   fi
 
   # Handle final status
   if [[ $error_occurred -eq 0 ]]; then
-    utility bash print-status -i ok "Update complete"
+    print-status -i ok "Update complete"
   else
-    utility bash print-status -i error "Update failed"
+    print-status -i error "Update failed"
     echo "    Logs available at $log_file"
     exit 1
   fi

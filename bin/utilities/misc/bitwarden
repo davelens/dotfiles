@@ -30,14 +30,14 @@ usage() {
 #############################################################################
 
 items_cache_file() { echo "$DOTFILES_STATE_PATH/bw-items-cache"; }
-mp() { utility bash decrypt -f "$mp_file"; }
+mp() { decrypt -f "$mp_file"; }
 
 #############################################################################
 
 function unlock() {
   if [[ ! -f "$mp_file" ]]; then
-    utility bash encrypt \
-      -i $(utility bash prompt-user -m "$(pending) Enter your Bitwarden master password: ") \
+    encrypt \
+      -i $(prompt-user -m "$(pending) Enter your Bitwarden master password: ") \
       -o "$DOTFILES_STATE_PATH/bw-mp.enc"
   fi
 
@@ -46,27 +46,27 @@ function unlock() {
 
 function cache-items() {
   local ITEMS
-  utility bash print-status "Loading items from vault(s) ... "
+  print-status "Loading items from vault(s) ... "
 
   export BW_SESSION=$(unlock)
 
   if [[ -n "$filter" ]]; then
     if ! ITEMS=$(bw --session "$BW_SESSION" list items --search "$filter" 2>/dev/null); then
-      utility bash print-status -i error "Could not load items or operation timed out."
+      print-status -i error "Could not load items or operation timed out."
       exit 1
     fi
   else
     if ! ITEMS=$(bw --session "$BW_SESSION" list items 2>/dev/null); then
-      utility bash print-status -i error "Could not load items or operation timed out."
+      print-status -i error "Could not load items or operation timed out."
       exit 1
     fi
   fi
 
-  utility bash print-status -n -i ok "Items loaded from vault(s)."
+  print-status -n -i ok "Items loaded from vault(s)."
 
   tmp=$(mktemp)
   echo "$ITEMS" > $tmp
-  utility bash encrypt -f "$tmp" -o "$ITEMS_CACHE_FILE.enc"
+  encrypt -f "$tmp" -o "$ITEMS_CACHE_FILE.enc"
 }
 
 function items() {
@@ -74,7 +74,7 @@ function items() {
   [[ ! -f $ITEMS_CACHE_FILE.enc ]] && cache-items
 
   tmp=$(mktemp)
-  echo "$(utility bash decrypt -f $ITEMS_CACHE_FILE.enc)" >> $tmp
+  echo "$(decrypt -f $ITEMS_CACHE_FILE.enc)" >> $tmp
 
   # So the preview code knows where to look.
   export SCRIPT_PATH="$(dirname $(realpath $0))"
@@ -116,7 +116,7 @@ function main() {
       shift
       ;;
     *)
-      utility bash print-status -i error "Invalid option: $1"
+      print-status -i error "Invalid option: $1"
       usage && exit 1
       ;;
     esac

@@ -5,7 +5,7 @@
 #
 # https://gist.github.com/ConnerWill/d4b6c776b509add763e17f9f113fd25b
 #
-NAME=$(basename "$0")
+NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
 
 trap 'error_handler' ERR
 
@@ -23,17 +23,6 @@ usage() {
   echo "  -h|--help             Show this help message and exit."
   #echo "  -s|--silent          Suppress feedback messages where possible."
 }
-
-# Fail early if no arguments are given.
-[[ $# -eq 0 ]] && usage && exit 1
-
-#############################################################################
-
-cursor() { utility bash cursor "$@"; }
-encrypt() { utility bash encrypt "$@"; }
-decrypt() { utility bash decrypt "$@"; }
-print-status() { utility bash print-status "$@"; }
-prompt-user() { utility bash prompt-user "$@"; }
 
 #############################################################################
 
@@ -132,6 +121,9 @@ function current() {
 #############################################################################
 
 function main() {
+  # Fail early if no arguments are given.
+  [[ $# -eq 0 ]] && usage && exit 0
+
   local command options passkey
   options=()
 
@@ -150,7 +142,7 @@ function main() {
         #-s | --silent) silent=1;;
         -*)
           if [[ -z $1 ]]; then
-            utility bash print-status -i error "Invalid options: $arg"
+            print-status -i error "Invalid options: $arg"
             usage && exit 1
           fi
           ;;
@@ -164,11 +156,22 @@ function main() {
   command="${@: -1}"
 
   if ! command -v "$command" &> /dev/null; then
-    utility bash print-status -i error "Invalid command: $command"
+    print-status -i error "Invalid command: $command"
     usage && exit 1
   fi
 
   $command
 }
 
-main "$@"
+#############################################################################
+
+eval "function $NAME() { utility bash $NAME \"\$@\"; }"
+
+# Sourcing this file will expose the same functions used by this command.
+# Explicitly exporting these here will make them available in all subshells.
+if is_sourced; then
+  export -f $NAME
+  return 0
+else
+  main "$@"
+fi

@@ -252,12 +252,12 @@ if [[ ! -f "$DOTFILES_SALT_PATH" ]]; then
 fi
 
 if [[ -z $TMUX ]]; then
-  salt=$(utility bash salt current)
+  salt=$(salt current)
 
   if [[ $? -eq 0 ]]; then
     export DOTFILES_SALT="$salt"
   else
-    utility bash print-status -i error "Encrypted salt not ready; possibly wrong passkey."
+    print-status -i error "Encrypted salt not ready; possibly wrong passkey."
   fi
 
   if [[ -z $BW_SESSION ]]; then

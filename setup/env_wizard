@@ -6,27 +6,17 @@
 # Derive the dotfiles' absolute path so we always have a sensible default for 
 # the ~/.env file.
 export DOTFILES_PATH=$(dirname "$(dirname $(realpath "$0"))")
-export DOTFILES_STATE_PATH="${HOME}/.local/state/dots"
 
 trap 'clear && interrupt_handler' SIGINT
 
 #############################################################################
-
 bitwarden() { utility misc bitwarden "$@"; }
-cursor() { utility bash cursor "$@"; }
-encrypt() { utility bash encrypt "$@"; }
-decrypt() { utility bash decrypt "$@"; }
-prompt-user() { utility bash prompt-user "$@"; }
-print-status() { utility bash print-status "$@" && _box_border_right; }
-
-# NOTE: I made the box reusable through `u bash box`, but using it through 
-# the utility command made it remarkably slower. So I made a way to expose
-# the same functions used within the box command. Best of both worlds.
 
 # These are globals used by the box helper functions; set and forget.
 BOX_WIDTH=80
 BOX_MARGIN=1
 
+STATUS_AFFIX="_box_border_right"
 #############################################################################
 
 function intro() {
@@ -119,7 +109,7 @@ function setup_salt() {
 
   passkey=$(prompt-user -i "$icon " -m "Enter your salt passkey: ")
   cursor restore clear-down # Restore prompt starting point for feedback.
-  salt=$(utility bash salt -k "$passkey" current)
+  salt=$(salt -k "$passkey" current)
   echo $salt
 
   if [[ $? -eq 0 ]]; then
@@ -142,8 +132,6 @@ function setup_secrets_management() {
 
   if [ $bitwarden_prompt == "y" ]; then
     print-status -i ok "Using Bitwarden."
-    #ensure_brew_dependency jq 'bitwarden-cli:bw'
-    #load_env_data_from_bitwarden
     setup_bitwarden
   else
     print-status -i error "Not using Bitwarden."
@@ -202,9 +190,6 @@ function setup_bitwarden() {
 
 function setup_env() {
   setup_environment_variables_intro
-
-  # TODO: Check for Bitwarden
-  #bitwarden_data_intro
 
   if [[ -f $env_file ]]; then
     source "$env_file"
