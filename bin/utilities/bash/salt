@@ -113,14 +113,13 @@ function decrypt_salt() {
 }
 
 function current() {
-  exists
+  local salt
 
-  case $? in
-    0) echo "$DOTFILES_SALT" ;;
-    1) decrypt_salt "${1:-"$passkey"}";; # Salt file exists, but env var is empty
-    2) generate "${1:-"$passkey"}" ;; # No salt file found.
-    *) exit 1;;
-  esac
+  if [[ -f "$DOTFILES_SALT_PATH" ]]; then
+    salt=$(decrypt_salt "${1:-"$passkey"}")
+  else
+    salt=$(generate "${1:-"$passkey"}")
+  fi
 
   if [[ -n "$salt" ]]; then
     echo "$salt"
@@ -128,15 +127,6 @@ function current() {
   else
     exit 1
   fi
-}
-
-# 0 = Salt env var is set
-# 1 = Salt encryption file exists but salt env var is empty.
-# 2 = No salt encryption
-function exists() {
-  [[ -n $DOTFILES_SALT ]] && return 0
-  [[ -f $DOTFILES_SALT_PATH ]] && return 1
-  return 2 # No traces of a salt whatsoever
 }
 
 #############################################################################
