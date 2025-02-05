@@ -251,7 +251,7 @@ if [[ ! -f "$DOTFILES_SALT_PATH" ]]; then
   unset BW_SESSION
 fi
 
-if [[ -z "$DOTFILES_SALT" ]]; then 
+if [[ -z $TMUX ]]; then
   salt=$(utility bash salt current)
 
   if [[ $? -eq 0 ]]; then
@@ -259,8 +259,8 @@ if [[ -z "$DOTFILES_SALT" ]]; then
   else
     utility bash print-status -i error "Encrypted salt not ready; possibly wrong passkey."
   fi
-fi
 
-if [[ -z $BW_SESSION ]]; then
-  export BW_SESSION="$(utility misc bitwarden unlock)"
+  if [[ -z $BW_SESSION ]]; then
+    export BW_SESSION="$(utility misc bitwarden unlock)"
+  fi
 fi
