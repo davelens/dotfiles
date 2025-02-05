@@ -9,7 +9,7 @@ set -e
 # original source. My apologies to the original author, you rock.
 #
 
-trap 'error_handler' ERR
+#trap 'error_handler' ERR
 
 usage() {
   echo
@@ -18,6 +18,7 @@ usage() {
   echo "Commands:"
   echo "  unlock               Unlocks your vault(s) with your master password."
   echo "  items                Load up your vault items in FZF."
+  echo "  clear-cache          Clears the items cache."
   echo
   echo "Options:"
   echo "  -h|--help            Show this help message and exit."
@@ -62,11 +63,11 @@ function cache-items() {
     fi
   fi
 
-  print-status -n -i ok "Items loaded from vault(s)."
-
   tmp=$(mktemp)
   echo "$ITEMS" > $tmp
   encrypt -f "$tmp" -o "$ITEMS_CACHE_FILE.enc"
+
+  print-status -i ok "Items loaded from vault(s)."
 }
 
 function items() {
@@ -94,6 +95,11 @@ function items() {
       '
 }
 
+function clear-cache() {
+  rm -f $ITEMS_CACHE_FILE.enc
+  print-status -i ok "Items cache cleared."
+}
+
 #############################################################################
 
 function main() {
@@ -111,7 +117,7 @@ function main() {
       filter="$1"
       shift
       ;;
-    unlock | items)
+    unlock | items | clear-cache)
       command="$1"
       shift
       ;;

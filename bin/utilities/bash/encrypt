@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_PATH/tmp/$NAME.XXXXXX")
-trap 'error_handler' ERR
+#trap 'error_handler' ERR
 
 NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
 

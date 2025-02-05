@@ -2,7 +2,7 @@
 
 # command that displays status updates prefixed with an icon
 
-trap 'error_handler' ERR
+#trap 'error_handler' ERR
 
 NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
 

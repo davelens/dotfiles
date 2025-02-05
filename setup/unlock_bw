@@ -2,8 +2,8 @@
 set -e
 
 [[ -f ~/.env ]] && source ~/.env
-trap 'error_handler' ERR
-trap 'interrupt_handler' SIGINT
+#trap 'error_handler' ERR
+#trap 'interrupt_handler' SIGINT
 
 function prompt_password() {
   #check_bw_session && return 0
