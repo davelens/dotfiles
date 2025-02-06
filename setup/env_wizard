@@ -13,8 +13,10 @@ trap 'clear && interrupt_handler' SIGINT
 bitwarden() { utility misc bitwarden "$@"; }
 
 # These are globals used by the box helper functions; set and forget.
-BOX_WIDTH=80
+# 80 is the default width for a terminal window, so adhere to that.
+BOX_WIDTH=79
 BOX_MARGIN=1
+[[ $(tput cols) -lt 80 ]] && fail "$(print-status -i error "Terminal window too small; must be at least 80 columns wide or you might miss information.")"
 
 STATUS_AFFIX="_box_border_right"
 #############################################################################
