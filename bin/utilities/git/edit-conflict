@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+
+main() {
+  files=$(git st | grep UU | awk '{ print $2 }')
+
+  if [[ ${#files} -eq 0 ]]; then
+    print-status -i ok "No conflicts to resolve."
+    exit 0
+  fi
+
+  $EDITOR $files
+}
+
+main "$@"
