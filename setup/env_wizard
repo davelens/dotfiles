@@ -112,7 +112,6 @@ function setup_salt() {
   passkey=$(prompt-user -i "$icon " -m "Enter your salt passkey: ")
   cursor restore clear-down # Restore prompt starting point for feedback.
   salt=$(salt -k "$passkey" current)
-  echo $salt
 
   if [[ $? -eq 0 ]]; then
     export DOTFILES_SALT="$salt"
@@ -133,30 +132,30 @@ function setup_secrets_management() {
   bitwarden_prompt="$(prompt-user -i "$(pending) " -yn "Would you like to use Bitwarden to retrieve your secrets?")"
 
   if [ $bitwarden_prompt == "y" ]; then
-    print-status -i ok "Using Bitwarden."
     setup_bitwarden
   else
     print-status -i error "Not using Bitwarden."
+    _box_print
   fi
-
-  _box_print
 }
 
 function setup_bitwarden() {
-  # Check if Bitwarden CLI is logged in
-  bitwarden unlock || exit 1
-  BW_SESSION="$(bitwarden session-token)"
+  print-status -n "Unlocking vault(s) ... "
 
-  # TODO: STOPPED HERE; CONTINUE
-  return
+  BW_SESSION="$(bitwarden unlock)"
 
-  # We repeat the check for the session var, because if we don't have it here
-  # something went wrong.
-  if [[ -n $BW_SESSION ]]; then
-    print-status -n "Syncing with Bitwarden vaults ... "
-    bw sync --quiet
-    print-status -i ok "Bitwarden vaults synced."
+  if [[ -z $BW_SESSION ]]; then
+    print-status -i error "Could not unlock Bitwarden vaults."
+    sleep 2 # Just so the user can see the error message.
+    cursor clear-up:9
+    setup_secrets_management # Give them a chance to gracefully skip Bitwarden.
+    return
+  else
+    print-status -i ok "Using Bitwarden."
+    _box_print
   fi
+
+  return # TODO: Continue here
 
   #OWNER_NAME="$(
     #echo $(bw list items --session "$BW_SESSION" |
