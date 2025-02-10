@@ -243,7 +243,8 @@ unset file
 # ENCRYPTED SALT / BITWARDEN (WIP)
 ########################################################################
 # Salt is used to encrypt and decrypt sensitive values or files with a passkey.
-# TODO: Probably a good idea to regenerate the salt every now and then.
+#
+# TODO: Add a mild warning when the salt file hasn't changed for a while.
 
 # If the salt file is gone, we don't want to keep the old value.
 if [[ ! -f "$DOTFILES_SALT_PATH" ]]; then 
@@ -256,11 +257,11 @@ if [[ -z $TMUX ]]; then
 
   if [[ $? -eq 0 ]]; then
     export DOTFILES_SALT="$salt"
+
+    if [[ -z $BW_SESSION ]]; then
+      export BW_SESSION="$(utility misc bitwarden unlock)"
+    fi
   else
     print-status -i error "Encrypted salt not ready; possibly wrong passkey."
-  fi
-
-  if [[ -z $BW_SESSION ]]; then
-    export BW_SESSION="$(utility misc bitwarden unlock)"
   fi
 fi
