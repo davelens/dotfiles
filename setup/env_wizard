@@ -155,27 +155,14 @@ function setup_bitwarden() {
     _box_print
   fi
 
-  return # TODO: Continue here
+  OWNER_NAME=$(bitwarden --prompt "Select your identity: " identities)
+  GITHUB_EMAIL=$(bitwarden -e --prompt "Select your Github username: " -q "Github" items)
 
-  #OWNER_NAME="$(
-    #echo $(bw list items --session "$BW_SESSION" |
-        #jq -r '.[] | select(.identity != null) | .identity.firstName + " " + .identity.lastName'
-    #) | fzf --prompt "Who are you? "
-  #)"
+  return
 
-  OWNER_NAME=$(prompt-user -i "$(pending) " -d "$OWNER_NAME" "Enter your first and last name: ")
-
-  #GITHUB_EMAIL="$(
-    #echo $(bw get item --session "$BW_SESSION" --search "Github" |
-        #jq -r '.[] | select(.login.username != null) | .login.username'
-    #) | fzf --prompt "Select the e-mail address you log into Github with: "
-  #)"
-
-  GITHUB_EMAIL=$(prompt-user -i "$(pending) " -d "$GITHUB_EMAIL" "Enter the e-mail address you log into Github with: ")
-
-  print-status -n "Preparing data from vault(s) ... "
-  owner_data=$(bw list items --session "$BW_SESSION" --search "$OWNER_NAME" | jq '.[] | select(.identity != null)')
-  bitwarden_data=$(bw get item --session "$BW_SESSION" "$GITHUB_EMAIL")
+  #print-status -n "Preparing data from vault(s) ... "
+  #owner_data=$(bw list items --session "$BW_SESSION" --search "$OWNER_NAME" | jq '.[] | select(.identity != null)')
+  #bitwarden_data=$(bw get item --session "$BW_SESSION" "$GITHUB_EMAIL")
 
   # TODO: At this point, if you don't have a good value for $OWNER_NAME,
   # you will see "Not found" and the script will break.
@@ -197,6 +184,11 @@ function setup_env() {
     print-status -i ok "Loaded environment variables from $env_file."
     _box_print
   fi
+
+  # TODO: Confirm values
+  #OWNER_NAME=$(prompt-user -i "$(pending) " -d "$OWNER_NAME" "Enter your first and last name: ")
+  #GITHUB_EMAIL=$(prompt-user -i "$(pending) " -d "$GITHUB_EMAIL" "Enter the e-mail address you log into Github with: ")
+
 }
 
 function setup_finish() {

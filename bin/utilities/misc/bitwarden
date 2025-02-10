@@ -32,7 +32,23 @@ usage() {
 #############################################################################
 
 items_cache_file() { echo "$DOTFILES_STATE_PATH/bw-items-cache"; }
+
 mp() { decrypt -f "$mp_file"; }
+
+pbcopy() {
+  [[ $OS == "darwin" ]] && echo 'pbcopy'
+  echo 'clip.exe'
+}
+
+prepare() {
+  [[ ! -f $ITEMS_CACHE_FILE.enc ]] && cache-items
+
+  tmp=$(mktemp)
+  echo "$(decrypt -f $ITEMS_CACHE_FILE.enc)" >> $tmp
+
+  # So the preview code knows where to look.
+  echo $tmp
+}
 
 #############################################################################
 
@@ -52,16 +68,9 @@ function cache-items() {
 
   export BW_SESSION=$(unlock)
 
-  if [[ -n "$filter" ]]; then
-    if ! ITEMS=$(bw --session "$BW_SESSION" list items --search "$filter" 2>/dev/null); then
-      print-status -i error "Could not load items or operation timed out."
-      exit 1
-    fi
-  else
-    if ! ITEMS=$(bw --session "$BW_SESSION" list items 2>/dev/null); then
-      print-status -i error "Could not load items or operation timed out."
-      exit 1
-    fi
+  if ! ITEMS=$(bw --session "$BW_SESSION" list items 2>/dev/null); then
+    print-status -i error "Could not load items or operation timed out."
+    exit 1
   fi
 
   tmp=$(mktemp)
@@ -71,33 +80,17 @@ function cache-items() {
   print-status -i ok "Items loaded from vault(s)."
 }
 
-function pbcopy() {
-  [[ $OS == "darwin" ]] && echo 'pbcopy'
-  echo 'clip.exe'
-}
-
 function items() {
-  ensure_brew_dependency "fzf"
-  [[ ! -f $ITEMS_CACHE_FILE.enc ]] && cache-items
-
-  tmp=$(mktemp)
-  echo "$(decrypt -f $ITEMS_CACHE_FILE.enc)" >> $tmp
-
-  # So the preview code knows where to look.
-  export SCRIPT_PATH="$(dirname $(realpath $0))"
+  tmp=$(prepare)
 
   # You need to pass the jq queries for $item_id and $item here in order to
   # get the preview to work. It executes in a subshell, so it doesn't have
   # context of the variables you've set in the main shell.
-  #
-  # TODO: The bind correctly filters out the item ID, now you need to grab 
-  # the password from the preview.
-  #
-  jq -r '.[] | "\(.name)\t\(.id)\t\(.login.username)"' "$tmp" |
+  jq -r ".[] | \"\(.name)\t\(.id)\t\(.login.username)\"" "$tmp" |
     awk -F'\t' '{ printf "%-40s %-40s %-40s\n", $1, $3, $2}' |
     FZF_PREVIEW_FILE="$tmp" fzf \
-    --cycle --inline-info --ansi --no-mouse --layout=reverse \
-    --prompt="$NAME -> " \
+    --cycle --inline-info --ansi --no-mouse --layout=reverse --height 30% --border $exact $query \
+    --prompt="${prompt:-$NAME} -> " \
     --header="$(printf "%-40s %-40s %-40s\n" 'Item' 'Username' 'ID')" \
     --bind="enter:become(echo {2} | awk '{printf \$(NF-1)}')" \
     --bind="ctrl-u:execute(username=\$(echo {2} | awk '{printf \$(NF-1)}'); echo -n \"\$username\" | $(pbcopy))+abort" \
@@ -110,6 +103,18 @@ function items() {
       '
 }
 
+function identities() {
+  tmp=$(prepare)
+
+  # You need to pass the jq queries for $item_id and $item here in order to
+  # get the preview to work. It executes in a subshell, so it doesn't have
+  # context of the variables you've set in the main shell.
+  jq -r ".[] | select(.identity != null) | .identity.firstName + \" \" + .identity.lastName" "$tmp" |
+    FZF_PREVIEW_FILE="$tmp" fzf \
+    --cycle --inline-info --ansi --no-mouse --layout=reverse --height 30% --border $exact $query \
+    --prompt="${prompt:-$NAME} -> "
+}
+
 function clear-cache() {
   rm -f $ITEMS_CACHE_FILE.enc
   print-status -i ok "Items cache cleared."
@@ -118,8 +123,11 @@ function clear-cache() {
 #############################################################################
 
 function main() {
+  ensure_brew_dependency "fzf"
+
   local ITEMS_CACHE_FILE=$(items_cache_file)
   local mp_file="$DOTFILES_STATE_PATH/bw-mp.enc"
+  local exact rest query prompt
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -127,22 +135,42 @@ function main() {
       usage
       exit 0
       ;;
+    -e | --exact)
+      exact="-e"
+      shift
+      ;;
+    -q | --query)
+      shift
+      query="-q $1"
+      shift
+      ;;
     -f | --filter)
       shift
       filter="$1"
       shift
       ;;
-    unlock | items | clear-cache)
+    -p | --prompt)
+      shift
+      prompt="$1"
+      shift
+      ;;
+    unlock | items | identities | clear-cache)
       command="$1"
       shift
       ;;
     *)
-      print-status -i error "Invalid option: $1"
-      usage && exit 1
+      if [[ -z $command ]]; then
+        print-status -i error "Invalid option: $1"
+        usage && exit 1
+      fi
+
+      rest="$@"
+      break
       ;;
     esac
   done
 
+  export SCRIPT_PATH="$(dirname $(realpath $0))"
   $command
 }
 
