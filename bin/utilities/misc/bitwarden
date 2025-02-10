@@ -11,9 +11,10 @@ set -e
 
 #trap 'error_handler' ERR
 
+NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
 usage() {
   echo
-  echo "Usage: $(basename $0) [-h|--help] <command>"
+  echo "Usage: $NAME [-h|--help] <command>"
   echo
   echo "Commands:"
   echo "  unlock               Unlocks your vault(s) with your master password."
@@ -70,6 +71,11 @@ function cache-items() {
   print-status -i ok "Items loaded from vault(s)."
 }
 
+function pbcopy() {
+  [[ $OS == "darwin" ]] && echo 'pbcopy'
+  echo 'clip.exe'
+}
+
 function items() {
   ensure_brew_dependency "fzf"
   [[ ! -f $ITEMS_CACHE_FILE.enc ]] && cache-items
@@ -91,9 +97,9 @@ function items() {
     awk -F'\t' '{ printf "%-40s %-40s %-40s\n", $1, $3, $2}' |
     FZF_PREVIEW_FILE="$tmp" fzf \
     --cycle --inline-info --ansi --no-mouse --layout=reverse \
-    --prompt="$(basename $0) -> " \
+    --prompt="$NAME -> " \
     --header="$(printf "%-40s %-40s %-40s\n" 'Item' 'Username' 'ID')" \
-    --bind 'ctrl-y:execute(echo -n {1..} | xargs | awk "{printf \$NF}" | clip.exe)+abort' \
+    --bind="ctrl-y:execute(item_id=\$(echo -n {1..} | awk '{printf \$NF}'); password=\$(jq -r --arg id \"\$item_id\" '.[] | select(.id == \$id) | .login.password' \"$tmp\"); echo -n \"\$password\" | $(pbcopy))+abort" \
     --preview-window='right:50%' \
     --preview='
       item_id=$(echo {} | sed -n "s/.*(\(.*\)).*/\1/p")
