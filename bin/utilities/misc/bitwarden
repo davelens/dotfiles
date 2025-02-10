@@ -104,7 +104,7 @@ function items() {
     --bind="ctrl-y:execute(item_id=\$(echo -n {1..} | awk '{printf \$NF}'); password=\$(jq -r --arg id \"\$item_id\" '.[] | select(.id == \$id) | .login.password' \"$tmp\"); echo -n \"\$password\" | $(pbcopy))+abort" \
     --preview-window='right:50%' \
     --preview='
-      item_id=$(echo {} | sed -n "s/.*(\(.*\)).*/\1/p")
+      item_id=$(echo -n {1..} | awk "{printf \$NF}")
       item=$(jq -r --arg id "$item_id" ".[] | select(.id == \$id)" "$FZF_PREVIEW_FILE")
       source $SCRIPT_PATH/bitwarden_preview.sh
       '
