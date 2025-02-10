@@ -99,6 +99,7 @@ function items() {
     --cycle --inline-info --ansi --no-mouse --layout=reverse \
     --prompt="$NAME -> " \
     --header="$(printf "%-40s %-40s %-40s\n" 'Item' 'Username' 'ID')" \
+    --bind="enter:become(echo {2} | awk '{print \$(NF-1)}')" \
     --bind="ctrl-y:execute(item_id=\$(echo -n {1..} | awk '{printf \$NF}'); password=\$(jq -r --arg id \"\$item_id\" '.[] | select(.id == \$id) | .login.password' \"$tmp\"); echo -n \"\$password\" | $(pbcopy))+abort" \
     --preview-window='right:50%' \
     --preview='
