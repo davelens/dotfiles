@@ -83,12 +83,17 @@ function items() {
   # You need to pass the jq queries for $item_id and $item here in order to
   # get the preview to work. It executes in a subshell, so it doesn't have
   # context of the variables you've set in the main shell.
-  jq -r '.[] | "\(.name)\t(\(.id))\t\(.login.username)"' "$tmp" |
+  #
+  # TODO: The bind correctly filters out the item ID, now you need to grab 
+  # the password from the preview.
+  #
+  jq -r '.[] | "\(.name)\t\(.id)\t\(.login.username)"' "$tmp" |
     awk -F'\t' '{ printf "%-40s %-40s %-40s\n", $1, $3, $2}' |
     FZF_PREVIEW_FILE="$tmp" fzf \
     --cycle --inline-info --ansi --no-mouse --layout=reverse \
     --prompt="$(basename $0) -> " \
     --header="$(printf "%-40s %-40s %-40s\n" 'Item' 'Username' 'ID')" \
+    --bind 'ctrl-y:execute(echo -n {1..} | xargs | awk "{printf \$NF}" | clip.exe)+abort' \
     --preview-window='right:50%' \
     --preview='
       item_id=$(echo {} | sed -n "s/.*(\(.*\)).*/\1/p")
