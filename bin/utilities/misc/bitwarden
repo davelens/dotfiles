@@ -88,6 +88,7 @@ function items() {
     FZF_PREVIEW_FILE="$tmp" fzf \
     --cycle --inline-info --ansi --no-mouse --layout=reverse \
     --prompt="$(basename $0) -> " \
+    --header="$(printf "%-40s %-40s %-40s\n" 'Item' 'Username' 'ID')" \
     --preview-window='right:50%' \
     --preview='
       item_id=$(echo {} | sed -n "s/.*(\(.*\)).*/\1/p")
