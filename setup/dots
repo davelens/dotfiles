@@ -12,7 +12,7 @@ usage() {
   echo "Usage: $(basename $0) [-h|--help] <command>"
   echo
   echo "Commands:"
-  echo "  logs          Opens the logfile in read-only vim."
+  echo "  logs          Opens the logfile in $EDITOR (read-only if applicable)."
   echo "  update        Updates dotfiles to the most recent version."
   echo
   echo "Options:"
@@ -21,7 +21,23 @@ usage() {
 }
 
 logs() {
-  [[ "$EDITOR" == *vim* ]] && $EDITOR -R + "$log_file" || $EDITOR "$log_file"
+  if [ ! -s "$log_file" ]; then
+    fail "$(print-status -i error "The log file is currently empty.")"
+  fi
+
+  if [[ "$EDITOR" == *vim* ]]; then
+    winbar='Press `q` to stop reading or `c` to clear the logs'
+
+    $EDITOR \
+      -c 'set nomodifiable laststatus=0' \
+      -c 'highlight WinBarMsg guifg=#ffcc00 guibg=#44475a gui=bold' \
+      -c "lua vim.o.winbar = '%#WinBarMsg#${winbar}'" \
+      -c 'nnoremap q :q<CR>' \
+      -c "nnoremap c :silent !truncate -s 0 '$log_file' \| edit<CR>" \
+      -R + "$log_file"
+  else
+    $EDITOR "$log_file"
+  fi
 }
 
 update() {
