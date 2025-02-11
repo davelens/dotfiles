@@ -39,6 +39,9 @@ fi
 # So GPG signing of git commits works.
 export GPG_TTY=$(tty)
 
+# Silences the default confirmation feedback for Slackadays/Clipboard.
+export CLIPBOARD_SILENT="1"
+
 
 ########################################################################
 # HOMEBREW (the package manager)
