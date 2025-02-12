@@ -54,7 +54,7 @@ update() {
 
   # Pull the latest changes
   print-status -n "Pulling in changes ..."
-  cd "$DOTFILES_PATH" && git pull origin "$(git b)" &>> "$log_file" || error_occurred=1
+  cd "$DOTFILES_PATH" && git fetch origin && git merge --no-ff origin/"$(git b)" &>> "$log_file" || error_occurred=1
   print-status -i ok "Files updated to latest version"
 
   # Run the installer if no errors occurred
