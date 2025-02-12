@@ -324,7 +324,7 @@
     "Blue Component" : 0.45882352941176469,
     "Green Component" : 0.43137254901960786
   },
-  "Normal Font" : "Monaco 14",
+  "Normal Font" : "Monaco 16",
   "Use Selected Text Color (Dark)" : true,
   "Foreground Color" : {
     "Red Component" : 0.51372549019607838,
@@ -1120,7 +1120,7 @@
     "Alpha Component" : 1,
     "Green Component" : 0.74509817361831665
   },
-  "Normal Font" : "Monaco 14",
+  "Normal Font" : "Monaco 16",
   "Use Selected Text Color (Dark)" : true,
   "Foreground Color" : {
     "Red Component" : 0.51372549019607838,
