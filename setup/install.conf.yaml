@@ -23,6 +23,7 @@
     ~/.rubocop.yml: config/rubocop.yml
     ~/.local/bin/os: bin/os
     ~/.local/bin/utility: bin/utility
+    ~/.wezterm.lua: config/wezterm.lua
     ~/Library/Application Support/iTerm2/DynamicProfiles/iterm2-profiles.json:
       create: true
       path: setup/iterm2-profiles.json
