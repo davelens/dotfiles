@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+# command that displays status updates prefixed with an icon
+
+#trap 'error_handler' ERR
+
+NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
+
+usage() {
+  echo
+  echo "Usage: $NAME [-h|--help] <options> <message>"
+  echo
+  echo "Options:"
+  echo "  -h|--help                   Show this help message and exit."
+  echo "  -i|--icon <name>            A prefix icon between square brackets."
+  echo "                              Can be anything, but has some presets:"
+  echo "                              - $(check) -> 'ok'"
+  echo "                              - $(cross) -> 'error'"
+  echo "                              - $(pending) -> 'pending'"
+  echo "  -ni|--no-icon               Leaves out the status symbol."
+  echo "  -p|--prefix <string>        Any output to print before the icon."
+  echo "  -n                          Do not print the trailing newline character."
+  echo "  -nc|--no-clear              Does not clear the line before output."
+}
+
+#############################################################################
+
+function icon() {
+  case "$icon" in
+    pending)  symbol="$(pending)";;
+    ok)       symbol="$(check)";;
+    error)    symbol="$(cross)";;
+    *)        [[ -n $icon ]] && symbol="[$icon]";;
+  esac
+
+  echo "$symbol"
+}
+
+function newline() {
+  [[ $newline -eq 1 ]] && echo "\n"
+}
+
+function main() {
+  # Fail early if no arguments are given.
+  [[ $# -eq 0 ]] && usage && exit 0
+
+  local newline=1 clearline=1 icon="pending" message prefix
+  STATUS_AFFIX=""
+
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -i | --icon)
+      shift
+      icon="$1"
+      shift
+      ;;
+    -ni | --no-icon)
+      icon=
+      shift
+      ;;
+    -p | --prefix)
+      shift
+      prefix="$1"
+      shift
+      ;;
+    -nc | --no-clear)
+      shift
+      clearline=0
+      ;;
+    -n)
+      shift
+      newline=0
+      ;;
+    *)
+      if [[ -z $message ]]; then
+        message="$1"
+      else
+        print-status -i error "Invalid option: $1"
+        usage && exit 1
+      fi
+      shift
+      ;;
+    esac
+  done
+
+  [[ $clearline -eq 1 ]] && cursor move-start clear-line
+
+  [[ -n $prefix ]] && result="$prefix"
+  [[ -n $icon ]] && result+="$(icon) "
+  result+="$message$(newline)"
+  printf "$result"
+}
+
+#############################################################################
+
+eval "function $NAME() { utility bash $NAME \"\$@\"; [ -n "\${STATUS_AFFIX}" ] && \$STATUS_AFFIX ; }"
+
+# Sourcing this file will expose the same functions used by this command.
+# Explicitly exporting these here will make them available in all subshells.
+if is_sourced; then
+  export -f $NAME
+  return 0
+else
+  main "$@"
+fi

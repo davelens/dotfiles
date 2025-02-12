@@ -11,43 +11,42 @@ trap handle_interrupt SIGINT
 # This command is used to provide suggestions among both my personal as well as
 # my work's public and private repositories.
 
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 [[ ! $(command -v jq) ]] && brew install jq
 
 # Access to private repositories will require a Github access token with the
 # "repo" scope.
 if [[ -z $GITHUB_PERSONAL_ACCESS_TOKEN ]]; then
   echo "ERROR: No Github personal access token set."
-  echo ""
+  echo
   echo "  1. Create one here: https://github.com/settings/tokens"
   echo ""
   echo "  2. Make sure the token has access to the 'repo' scope."
   echo "     (This means full read-only access to private repositories)"
-  echo ""
+  echo
   echo "  3. Store it in GITHUB_PERSONAL_ACCESS_TOKEN and make sure it's available."
-  echo ""
+  echo
   exit 1
 fi
 
 usage() {
+  echo
   echo "Usage: utility github $(basename $0) <qualifier>"
-  echo ""
-  echo "Arguments:"
+  echo
+  echo "Options:"
   echo "  -h|--help            Show this help message and exit."
   echo "  -v|--verbose         Enable verbose output for curl calls."
   echo "  <qualifier>          The Github-specific search qualifier to filter the results."
   echo "                       (e.g. 'Phoenix Framework', 'author:johndoe', 'user:johndoe+user:maryjane', ...)"
-  echo ""
-  echo ""
+  echo
+  echo
   echo "You can read up on Github search qualifiers for repositories here:"
-  echo ""
+  echo
   echo "  https://github.com/github/docs/blob/main/content/search-github/searching-on-github/searching-for-repositories.md"
-  echo ""
-  exit 0
+  echo
 }
 
 # Fail early if no arguments are given.
-[[ $# -eq 0 ]] && usage
+[[ $# -eq 0 ]] && usage && exit 1
 
 verbal=false
 query=""
@@ -57,7 +56,7 @@ results=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
-      usage
+      usage && exit 0
       ;;
     -v|--verbal)
       verbal=true
@@ -71,7 +70,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # No query, no results.
-[[ -z $query ]] && usage
+[[ -z $query ]] && usage && exit 1
 
 # Sanitize the query for use in the Github API call. 
 # Only spaces are a problem, for now.

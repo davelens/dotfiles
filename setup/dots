@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+set -e
+
+source ~/.env
+#trap 'error_handler' ERR
+
+log_file="${DOTFILES_STATE_PATH}/dots.log"
+[ ! -f "$log_file" ] && touch "$log_file"
+
+usage() {
+  echo
+  echo "Usage: $(basename $0) [-h|--help] <command>"
+  echo
+  echo "Commands:"
+  echo "  logs          Opens the logfile in $EDITOR (read-only if applicable)."
+  echo "  update        Updates dotfiles to the most recent version."
+  echo
+  echo "Options:"
+  echo "  -h|--help    Show this help message and exit."
+  exit 0
+}
+
+logs() {
+  if [ ! -s "$log_file" ]; then
+    fail "$(print-status -i error "The log file is currently empty.")"
+  fi
+
+  if [[ "$EDITOR" == *vim* ]]; then
+    winbar='Press `q` to stop reading or `c` to clear the logs'
+
+    $EDITOR \
+      -c 'set nomodifiable laststatus=0' \
+      -c 'highlight WinBarMsg guifg=#ffcc00 guibg=#44475a gui=bold' \
+      -c "lua vim.o.winbar = '%#WinBarMsg#${winbar}'" \
+      -c 'nnoremap q :q<CR>' \
+      -c "nnoremap c :silent !truncate -s 0 '$log_file' \| edit<CR>" \
+      -R + "$log_file"
+  else
+    $EDITOR "$log_file"
+  fi
+}
+
+update() {
+  error_occurred=0
+
+  # Check for uncommitted changes and exit gracefully if so.
+  if ! git -C "$DOTFILES_PATH" diff-files --quiet; then
+    print-status -i error "There are uncommitted changes in your dotfiles. Please commit or stash them before updating:"
+    echo
+    echo
+    echo "$(cd $DOTFILES_PATH && git st)"
+    exit 1
+  fi
+
+  # Pull the latest changes
+  print-status -n "Pulling in changes ..."
+  cd "$DOTFILES_PATH" && git fetch origin && git merge --no-ff origin/"$(git b)" &>> "$log_file" || error_occurred=1
+  print-status -i ok "Files updated to latest version"
+
+  # Run the installer if no errors occurred
+  if [[ $error_occurred -eq 0 ]]; then
+    print-status -n "Running installer ..."
+    "$DOTFILES_PATH/setup/install" &>> "$log_file" || error_occurred=1
+  fi
+
+  # Handle final status
+  if [[ $error_occurred -eq 0 ]]; then
+    print-status -i ok "Update complete"
+  else
+    print-status -i error "Update failed"
+    echo "    Logs available at $log_file"
+    exit 1
+  fi
+}
+
+# Parse arguments
+if [[ $# -eq 0 ]]; then
+  usage
+fi
+
+case "$1" in
+  -h|--help)
+    usage
+    ;;
+  logs)
+    logs
+    ;;
+  update)
+    update
+    ;;
+  *)
+    echo "Unknown command: $1"
+    usage
+    ;;
+esac

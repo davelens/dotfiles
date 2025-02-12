@@ -1,40 +1,97 @@
-# Exports all ENV vars listed in a file. Loads ~/.env by default.
-export-env-vars-from-file() {
-  local env_file=${1:-~/.env}
-  [[ -f $env_file ]] && source "$env_file"
+#!/usr/bin/env bash
+
+#[[ -n "$_HELPERS_INCLUDED" ]] && return
+#export _HELPERS_INCLUDED=1
+
+function block_unless_sourced() {
+  if is_sourced; then
+    echo "$(cross) This script is meant to be sourced, not executed directly." >&2
+    return 1
+  fi
+
+  return 0
 }
 
-# One generic command to extract most compressed files.
-extract() {
-  if [ -f $1 ]; then
-    case $1 in
-      *.tar.bz2)   tar xjf $1     ;;
-      *.tar.gz)    tar xzf $1     ;;
-      *.bz2)       bunzip2 $1     ;;
-      *.rar)       unrar e $1     ;;
-      *.gz)        gunzip $1      ;;
-      *.tar)       tar xf $1      ;;
-      *.tbz2)      tar xjf $1     ;;
-      *.tgz)       tar xzf $1     ;;
-      *.zip)       unzip $1       ;;
-      *.Z)         uncompress $1  ;;
-      *.7z)        7z x $1        ;;
-      *)     echo "'$1' cannot be extracted via extract()" ;;
-    esac
-  else
-    echo "'$1' is not a valid file"
+function check() {
+  echo "[$(green ✓)]"
+}
+
+function cross() {
+  echo "[$(red x)]"
+}
+
+function colorize() {
+  echo "$(tput setaf "$1")$2$(tput sgr0)"
+}
+
+function ensure_brew_dependency() {
+  for package in "$@"; do
+    local name=${package%:*}   # Extract the package name before ":"
+    local command=${package#*:} # Extract optional command name after ":"
+
+    [[ -z $command || $command == $package ]] && command=$name
+
+    if [[ ! `command -v $command` ]]; then
+      print-status -n "Installing $package ... "
+      output=$(HOMEBREW_COLOR=1 brew install --quiet $name 2>&1 >/dev/null)
+
+      if [[ $? -gt 0 ]]; then
+        print-status -n -i error "Failed to install package '$package': $output"
+      else
+        print-status -i ok "Installed $package."
+      fi
+    fi
+  done
+}
+
+# To help us centralize how errors look throughout our scripts.
+function error_handler() {
+  echo "$(cross) An error occurred. Check the log file for details: $DOTFILES_STATE_PATH/dots.log"
+
+  if ! is_sourced; then
+    exit $?
   fi
 }
 
+# Exports all ENV vars listed in a file. Loads ~/.env by default.
+function export_env_vars_from_file() {
+  local env_file=${1:-~/.env}
+  # shellcheck source=/dev/null
+  [[ -f $env_file ]] && source "$env_file"
+}
+
 # Helps us hard stop our custom executables during fails.
-fail() {
+function fail() {
   printf '%s\n' "$1" >&2 # Sends a message to stderr.
   exit "${2-1}" # Returns a code specified by $2 or 1 by default.
 }
 
-# Flattens any string you give it. Made to format user input like Y/N -> y/n.
-lowercase()
-{
+function green() {
+  colorize 2 "$1"
+}
+
+function interrupt_handler() {
+  print-status -i error "Aborted."
+  exit 1
+}
+
+function is_sourced() {
+  local script="${BASH_SOURCE[1]}"
+  [[ "$script" != "$0" ]]
+}
+
+# Join an array by a given delimiter string
+function join_by {
+  local d f 
+  d="${1-}" f="${2-}"
+
+  if shift 2; then
+    printf "%s" "$f" "${@/#/$d}"
+  fi
+}
+
+# Lowercase any string
+function lowercase () {
   if [ -n "$1" ]; then
     echo "$1" | tr "[:upper:]" "[:lower:]"
   else
@@ -42,75 +99,98 @@ lowercase()
   fi
 }
 
+function pending() {
+  echo "[$(yellow \~)]"
+}
+
 # Find the process ID of a given command. Note that you can use regex as well.
 # 
 #   pid '/d$/' 
 #
 # Would find pids of all processes with names ending in 'd'
-pid() { 
+function pid() { 
   lsof -t -c "$@"
 }
 
-# A basic spinner to indicate a process is running.
-#
-# Example usage:
-# (sleep 5) &
-# pid=$!
-# spinner $pid "Processing your request..."
-# wait $pid  # Halts the script until the process is done
-#
-spinner() {
-  local pid=$1
-  local delay=0.1
-  local spinstr='|/-\'
-  local msg="$2"
-
-  # Display spinner while process with PID $pid is running
-  echo -n "$msg "
-
-  while [ -d /proc/$pid ]; do
-    local temp=${spinstr#?}
-    printf " [%c]  " "$spinstr"
-    local spinstr=$temp${spinstr%"$temp"}
-    sleep $delay
-    printf "\b\b\b\b\b\b"
-  done
-
-  printf "    \b\b\b\b"  # Clear spinner once done
+function red() {
+  colorize 1 "$1"
 }
 
-# Bootstrap an ssh-agent and add your default key to it.
-ssh-agent-bootstrap() {
-  #if ! pgrep -u "$USER" ssh-agent > /dev/null 2>&1; then
-    #echo "Starting a new ssh-agent..."
-    #eval "$(ssh-agent -s)"
-  #else
-    #export SSH_AUTH_SOCK=$(find /tmp/ -type s -user "$USER" -name "agent.*" 2>/dev/null | head -n 1)
+# Examples:
+#
+#   repeat-do 4 echo lol 
+#   repeat-do lowercase "FOO" "BAR" "BAZ"
+#
+function repeat() {
+  local times commands arguments
 
-    #if [[ -n $SSH_AUTH_SOCK ]]; then
-      #echo "Found existing ssh-agent. SSH_AUTH_SOCK set to $SSH_AUTH_SOCK"
-    #else
-      #echo "No valid SSH_AUTH_SOCK found. You may need to restart the ssh-agent."
-    #fi
-  #fi
+  case $1 in
+    ''|*[0-9]*) 
+      times=${1:-1}
+      shift
+      commands="$@"
+      ;;
+    *) 
+      commands="$1"
+      shift
+      times=$#
+      arguments=("$@")
+      ;;
+  esac
 
-  #if [ -z "$SSH_AUTH_SOCK" ]; then
-    #export SSH_AUTH_SOCK="/tmp/ssh-agent.socket"
-    #eval $(ssh-agent -s -a "$SSH_AUTH_SOCK")
-    #ssh-add
-  #fi
-
-  if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent > /dev/null; then
-    export SSH_AUTH_SOCK=/tmp/ssh-agent.socket
-    [ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"
-    eval $(ssh-agent -s -a $SSH_AUTH_SOCK)
-    ssh-add
+  if [[ -n $arguments ]]; then
+    for i in "${arguments[@]}"; do $commands "$i"; done
+  else
+    for i in $(seq $times); do $commands; done
   fi
+}
+
+function succeed() {
+  echo "$1" # Sends a message to stderr.
+  exit 0
 }
 
 # Because we all want to know how many times we actually typed "gti" instead 
 # of "git".
-timesused()
-{
-  [[ -f ${HOME}/.bash_history ]] && grep -c "^${1}" ${HOME}/.bash_history
+function timesused() {
+  [[ -f "$HOME/.bash_history" ]] && grep -c "^${1}" "$HOME/.bash_history"
 }
+
+function yellow() {
+  colorize 3 "$1"
+}
+
+###############################################################################
+
+# Expose all helper methods to subshells.
+export -f block_unless_sourced
+export -f check
+export -f colorize
+export -f cross
+export -f ensure_brew_dependency
+export -f error_handler
+export -f export_env_vars_from_file
+export -f fail
+export -f green
+export -f interrupt_handler
+export -f is_sourced
+export -f join_by
+export -f lowercase 
+export -f pending
+export -f pid 
+export -f red
+export -f repeat
+export -f repeat
+export -f succeed
+export -f timesused
+export -f yellow
+
+# My source utilities come with their own helper functions. This exposes
+# them to subshells (ie. other commands) without additional overhead.
+source $DOTFILES_PATH/bin/utilities/bash/box
+source $DOTFILES_PATH/bin/utilities/bash/cursor
+source $DOTFILES_PATH/bin/utilities/bash/prompt-user
+source $DOTFILES_PATH/bin/utilities/bash/print-status
+source $DOTFILES_PATH/bin/utilities/bash/encrypt
+source $DOTFILES_PATH/bin/utilities/bash/decrypt
+source $DOTFILES_PATH/bin/utilities/bash/salt

@@ -1,0 +1,166 @@
+#!/usr/bin/env bash
+
+#trap 'error_handler' ERR
+#trap 'interrupt_handler' SIGINT
+
+NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
+
+usage() {
+  echo
+  echo "Usage: $NAME [-h|--help] [options] <question>"
+  echo
+  echo "Options:"
+  echo "  -h|--help                Show this help message and exit."
+  echo "  -yn|--yesno              Prompts the user with a yes/no question."
+  echo "  -d|--default             Set the default value for when the prompt receives no input."
+  echo "  -m|--mask                Masks the input with '*' characters."
+  echo "  -c|--confirm             Pressing any key will confirm the prompt."
+  echo "  -i|--indent <string>     Adds a string to the beginning of the prompt."
+}
+
+###############################################################################
+
+function basic() {
+  local input
+  local prompt="$(prompt_line)"
+  # Flush the input buffer before reading.
+  read -p "$prompt" input && printf ""
+  echo "${input:-$default}"
+}
+
+function confirm() {
+  local input
+  local prompt="$(prompt_line)"
+  # Flush the input buffer before reading.
+  read -n1 -r -p "$prompt" input && printf ""
+  echo 1
+}
+
+function yesno() {
+  local input prompt="$(prompt_line)" 
+  [[ $1 == "--clean" ]] && prompt="$question"
+
+  read -n1 -r -p "$prompt (y/n) " input < /dev/tty && echo 1>&1
+
+  case $input in
+    [YyNn] ) echo -n $(lowercase $input) ;;
+    * )
+      output=
+      printf "\r\033[2K${indent}Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o: " >&2
+      yesno --clean && return
+      ;;
+  esac
+}
+
+function masked() {
+  local input
+  local prompt=$(prompt_line)
+  local stty_backup
+
+  printf "%s " "$prompt" >&2
+  stty_backup=$(stty -g)
+
+  stty -echo -icanon time 0 min 1
+  trap 'stty "$stty_backup"; trap - EXIT' EXIT
+
+  while true; do
+    char=$(dd bs=1 count=1 2>/dev/null) # Read/write bytes one at a time
+
+    # I can't isolate the Enter key with the usual method, so I've opted
+    # for a catch-all that includes Enter.
+    [[ -z "$char" ]] && break
+
+    # Handles backspace to delete the previous character/asterisk.
+    if [[ "$char" == $'\177' ]]; then
+      if [[ -n $input ]]; then
+        input=${input::-1} # Reflect the change in the end result.
+        echo -ne "\b \b" >&2  # Reflect the change in the output.
+      fi
+      continue
+    fi
+    input+="$char"
+    printf "*" >&2
+  done
+
+  stty "$stty_backup"
+  trap - EXIT
+
+  echo "${input:-$default}"
+  echo >&2 # Adds a newline after the masked input, otherwise output "sticks".
+}
+
+function prompt_line() {
+  local string=""
+  [[ -n "$question" ]] && string+="$(echo $question | xargs)"
+  [[ -n "$default" ]] && string+=" $BGK[${default}]$NONE "
+  printf "$indent$string"
+}
+
+###############################################################################
+
+function main() {
+  # Fail early if no arguments are given.
+  [[ $# -eq 0 ]] && usage && exit 0
+
+  local prompt_function="basic" question default indent
+
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -d | --default)
+      shift
+      default="$1"
+      shift
+      ;;
+    -m | --mask)
+      prompt_function="masked"
+      shift
+      ;;
+    -yn | --yesno)
+      prompt_function="yesno"
+      shift
+      ;;
+    -c | --confirm)
+      prompt_function="confirm"
+      shift
+      ;;
+    -i | --indent)
+      shift
+      indent="$1"
+      shift
+      ;;
+    *)
+      if [[ -z $question ]]; then
+        question="$1"
+      else
+        print-status -i error "Invalid option: $1"
+        usage && exit 1
+      fi
+      shift
+      ;;
+    esac
+  done
+
+  if [[ -z $question ]]; then
+    print-status -i error "You need to provide a question to ask."
+    usage && exit 1
+  fi
+
+  eval $prompt_function
+}
+
+#############################################################################
+
+eval "function $NAME() { utility bash $NAME \"\$@\"; }"
+
+# Sourcing this file will expose the same functions used by this command.
+# Explicitly exporting these here will make them available in all subshells.
+if is_sourced; then
+  export -f $NAME
+  return 0
+else
+  main "$@"
+fi

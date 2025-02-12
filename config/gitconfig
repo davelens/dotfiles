@@ -1,14 +1,12 @@
-[user]
-  name = ""
-  email = ""
-  signingkey = ""
-
 [include]
   path = ~/.gitconfig.env
 
-[diff]
-[color]
-  ui = auto
+[push]
+  autoSetupRemote = true
+
+[url "https://"]
+  insteadOf = git://
+
 [alias]
   aa = add --all
   amend = commit --amend
@@ -57,7 +55,7 @@
 
   pr-body = "!utility github pr-body"
   pullff = pull --ff-only
-  r = !git --no-pager l -20 && echo ""
+  r = !git --no-pager l -20 && echo
   s = "!utility git switch-branch"
 
   # Uses the GitHub API to perform a search query and find repos.
@@ -80,16 +78,12 @@
   pager = delta --side-by-side
 
 [delta]
-  syntax-theme = Solarized (dark)
+  true-color = always
+  navigate = true
+  light = false
+  syntax-theme = Nord
+  line-numbers-minus-style = 9 bold "#2e3440"
+  line-numbers-zero-style = 241
 
 [interactive]
   diffFilter = delta --color-only
-
-[commit]
-  gpgsign = true
-
-[url "https://"]
-  insteadOf = git://
-
-[push]
-  autoSetupRemote = true

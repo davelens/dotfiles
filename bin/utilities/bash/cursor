@@ -1,0 +1,177 @@
+#!/usr/bin/env bash
+
+# I mainly made this to understand how to move the cursor around in bash.
+# Turns out it's quite useful when building CLI tools.
+#
+# https://gist.github.com/ConnerWill/d4b6c776b509add763e17f9f113fd25b
+#
+
+#trap 'error_handler' ERR
+
+NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
+#
+# Note: the [-p|--for-prompt] option is specific to my dotfiles.
+# I wouldn't know how to go about calculating the bash prompt height. 
+# I know in my case it's always 2.
+#
+# I suppose it could be a bit more flexible by reading the deficit value
+# from an ENV var so you could override it globally that way, but ... meh.
+#
+usage() {
+  echo
+  echo "Usage: $NAME [-h|--help] <command(s)>"
+  echo 
+  echo "Move the cursor around the terminal quickly by chaining commands."
+  echo
+  echo "Examples:"
+  echo "  $NAME move-up:4 clear-line"
+  echo "  $NAME line:18 clear-down"
+  echo "  $NAME save line:40 col:30 print:H restore"
+  echo
+  echo "Notes:"
+  echo "  EOL = End of Line"
+  echo "  SOL = Start of Line"
+  echo
+  echo "Commands:"
+  echo "  move-start          Move cursor to SOL."
+  echo "  move-end            Move cursor to EOL"
+  echo "  move-right<:#>      Move cursor to the right <#> cols."
+  echo "  move-left<:#>       Move cursor to the left <#> cols."
+  echo "  move-up<:#>         Move cursor up <#> lines."
+  echo "  move-down<:#>       Move cursor down <#> lines."
+  echo "  col:<#>             Move cursor to column <#>."
+  echo "  line:<#>            Move cursor to line <#>."
+  echo "  clear-down          Clear output from the cursor down."
+  echo "  clear-up<:#>        Clear output from the cursor up # lines."
+  echo "  clear-right         Clear output from the cursor to EOL."
+  echo "  clear-left          Clear output from the cursor to SOL."
+  echo "  clear-line          Clear output from the entire line."
+  echo "  print:<s>           Prints <s> at the cursor's position."
+  echo
+  echo "Options:"
+  echo "  -h|--help           Show this help message and exit."
+  echo "  -p|--for-prompt     Accounts for the bash prompt height."
+  echo "                      (Prevents some confusion with line count)."
+  echo "  -r|--raw            Returns the ANSI escape sequence as a string."
+}
+
+###############################################################################
+
+declare -A sequences=(
+  ["move_start"]='033[G'
+  ["move_up"]='033[${steps}A'
+  ["move_down"]='033[${steps}B'
+  ["move_right"]='033[${steps}C'
+  ["move_left"]='033[${steps}D'
+  ["clear_down"]='033[0J'
+  ["clear_right"]='033[0K'
+  ["clear_left"]='033[1K'
+  ["clear_line"]='033[2K'
+  ["restore"]='033[u'
+  ["save"]='033[s'
+  ["col"]='033[${steps}G'
+  ["line"]='033[${steps};1H'
+)
+
+# Dynamically create methods
+for i in "${!sequences[@]}"; do
+  value="${sequences[$i]}"
+  [[ $value =~ ^0 ]] && cmd="printf" || cmd="eval"
+  eval "seq_${i}() { [[ \$raw -eq 0 ]] && $cmd \"\\$value\" || echo \"\\$value\"; }"
+done
+
+#############################################################################
+
+function seq_move_end() {
+  seq_move_right $(tput cols) 
+}
+
+function seq_move_up() {
+  local jump=${1:-1}
+  [[ $in_prompt -eq 1 ]] && jump=$((jump + 2))
+  printf "\033[${jump}A"
+}
+
+function seq_move_down() {
+  local jump=${1:-1}
+  [[ $in_prompt -eq 1 ]] && jump=$((jump - 2))
+  printf "\033[${jump}B"
+}
+
+function seq_clear_up() {
+  local jump=${1:-1}
+  seq_move_up $jump
+  seq_clear_down
+}
+
+function seq_print() {
+  printf "$steps"
+}
+
+###############################################################################
+
+function chain_commands() {
+  for cmd in ${commands[@]}; do
+    command="${cmd%%:*}" # Extract the part before `:`
+    steps=${cmd##*:}   # Extract the part after `:`
+    [[ "$command" == "$steps" ]] && steps=1
+    $command $steps
+  done
+}
+
+function main() {
+  [[ $# -eq 0 ]] && usage && exit 0
+
+  local steps=1 in_prompt=0 raw=0 
+  local commands=() options=()
+
+  IFS=' ' read -r -a args <<< "$@"
+
+  # Isolate commands from options
+  for arg in "${args[@]}"; do
+    if [[ $arg =~ ^- ]]; then 
+      case $arg in
+        -h | --help) usage && exit 0 ;;
+        -p | --for-prompt) in_prompt=1;;
+        -r | --raw) raw=1;;
+        *)
+          if [[ -z $1 ]]; then
+            print-status -i error "Invalid options: $arg"
+            usage && exit 1
+          fi
+          ;;
+      esac
+
+      options+=("$arg")
+    else 
+      commands+=("$arg")
+    fi
+  done
+
+  # We do a first loop to catch any invalid commands first to exit early.
+  # I'll take the overhead of looping a second time for command chaining.
+  # Otherwise we end up with a messed up screen if we stop mid-move or clear.
+  for ((i = 0; i < ${#commands[@]}; i++)); do
+    commands[i]="seq_${commands[i]/-/_}"
+
+    if ! command -v "${commands[i]%%:*}" &> /dev/null; then
+      print-status -i error "Invalid command: ${commands[i]}"
+      usage && exit 1
+    fi
+  done
+
+  chain_commands
+}
+
+#############################################################################
+
+eval "function $NAME() { utility bash $NAME \"\$@\"; }"
+
+# Sourcing this file will expose the same functions used by this command.
+# Explicitly exporting these here will make them available in all subshells.
+if is_sourced; then
+  export -f $NAME
+  return 0
+else
+  main "$@"
+fi

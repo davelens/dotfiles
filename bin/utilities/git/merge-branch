@@ -5,8 +5,6 @@
 
 # Stops further execution after any error.
 set -e
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
-[[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
 
 branch_name=$(git b) # `git b` is an alias in my ~/.gitconfig
 if [[ -z $branch_name ]]; then

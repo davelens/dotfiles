@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-
 set -e
 
 if [ -f /proc/version ] && grep -qEi "(microsoft|WSL)" /proc/version ; then
   echo 'windows'
 else
-  readonly os=`uname -s`
-  [ $os == 'Darwin' ] && echo 'macos'
-  [ $os == 'Linux' ] && echo 'linux'
-  [ $os == 'FreeBSD' ] && echo 'freebsd'
+  case "$(uname -s)" in
+    Darwin) echo 'macos' ;;
+    Linux) echo 'linux' ;;
+    FreeBSD) echo 'freebsd' ;;
+  esac
 fi

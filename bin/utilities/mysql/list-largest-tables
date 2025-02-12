@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 # Check if the correct number of arguments is provided
 pid mysqld &> /dev/null || fail "ERROR: MySQL is not running."

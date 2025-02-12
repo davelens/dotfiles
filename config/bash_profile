@@ -1,20 +1,27 @@
+#!/usr/bin/env bash
+
 # The installation script will have made a ~/.env file containing the value for
 # DOTFILES_PATH, so we're sourcing it here at the earliest point.
 source ~/.env
 
 export OS=`${DOTFILES_PATH}/bin/os`
+export DOTFILES_STATE_PATH="$HOME/.local/state/dots"
+export DOTFILES_TMP_PATH="$HOME/.local/state/dots/tmp"
+export DOTFILES_SALT_PATH="$DOTFILES_STATE_PATH/salt.enc"
+export DOTFILES_LOG_PATH="$DOTFILES_STATE_PATH/log"
 
 # Load the mandatory shell settings and ENV vars before everything else.
-[[ -f "${DOTFILES_PATH}/bash/colors.sh" ]] && source "${DOTFILES_PATH}/bash/colors.sh"
-[[ -f "${DOTFILES_PATH}/bash/shell.sh" ]] && source "${DOTFILES_PATH}/bash/shell.sh"
+[[ -f $DOTFILES_PATH/bash/colors.sh ]] && source "$DOTFILES_PATH/bash/colors.sh"
+[[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source "$DOTFILES_PATH/bash/helpers.sh"
+[[ -f $DOTFILES_PATH/bash/shell.sh ]] && source "$DOTFILES_PATH/bash/shell.sh"
 
 # OS specific settings
-[[ $OS == 'windows' ]] && source "${DOTFILES_PATH}/bash/wsl.sh"
-[[ $OS == 'macos' ]] && source "${DOTFILES_PATH}/bash/macos.sh"
-[[ $OS == 'linux' ]] && source "${DOTFILES_PATH}/bash/linux.sh"
+[[ $OS == 'windows' ]] && source "$DOTFILES_PATH/bash/wsl.sh"
+[[ $OS == 'macos' ]] && source "$DOTFILES_PATH/bash/macos.sh"
+[[ $OS == 'linux' ]] && source "$DOTFILES_PATH/bash/linux.sh"
 
 # Source the files in the bash folder
-for file in ${DOTFILES_PATH}/bash/{helpers,aliases,prompt,private}.sh; do
+for file in $DOTFILES_PATH/bash/{aliases,prompt,private}.sh; do
   [ -r "$file" ] && source "$file";
 done;
 unset file;

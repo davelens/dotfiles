@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
-
 set -e
 
+# TODO: Eventually I'd want this to first install every dependency for my env,
+# so that involves:
+# - [ ] Install Homebrew
+# - [ ] Process my Brewfile
+# - [ ] Change my default shell to my brew-installed bash. Involves two steps:
+#   - [ ] `echo $BREW_PATH/bin/bash | sudo tee -a /etc/shells`
+#   - [ ] `chsh -s $BREW_PATH/bin/bash`
+
 readonly DOTBOT_DIR="dotbot"
-readonly DOTFILES_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+readonly DOTFILES_PATH="$(dirname $(dirname $(realpath "$0")))"
+readonly DOTFILES_STATE_PATH="$HOME/.local/state/dots"
 
 # Get dotbot installed
 cd "${DOTFILES_PATH}"
@@ -20,3 +28,16 @@ git submodule update --init --recursive "${DOTBOT_DIR}"
 # the .bash_profile file.
 [[ -f ~/.env ]] && touch ~/.env
 grep -q 'DOTFILES_PATH' ~/.env || echo "DOTFILES_PATH=${DOTFILES_PATH}" >> ~/.env
+grep -q 'DOTFILES_STATE_PATH' ~/.env || echo "DOTFILES_STATE_PATH=${DOTFILES_STATE_PATH}" >> ~/.env
+
+# Create an executable that allows us to update our dotfiles, among other 
+# things.
+dots_path="${HOME}/.local/bin/dots"
+if [ ! -f $dots_path ]; then
+  ln -s "${DOTFILES_PATH}/setup/dots" $dots_path
+  chmod +x $dots_path
+  echo "$(check) dots command installed."
+  echo "    From now on you can use 'dots update' anywhere to pull in the latest dotfiles."
+  echo
+  echo "Please source ~/.bashrc or restart your shell to apply changes."
+fi

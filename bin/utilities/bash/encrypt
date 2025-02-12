@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_PATH/tmp/$NAME.XXXXXX")
+#trap 'error_handler' ERR
+
+NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
+
+usage() {
+  echo
+  echo "Usage: $NAME [-h|--help] [-i|-f] <input> -o <output>"
+  echo
+  echo "Applies aes-256-cbc encryption from a string or file using openssl."
+  echo "Works in tandem with \`decrypt\`."
+  echo
+  echo "Examples:"
+  echo "  $NAME -p mypasskey -i mysecretpassword -o bw-mp.enc"
+  echo "  $NAME -i \"foo bar baz\" -o test.enc"
+  echo
+  echo "Options:"
+  echo "  -h|--help                   Show this help message and exit."
+  echo "  -i|--in <string>            Provide a value to encrypt."
+  echo "  -f|--file <path>            Provide path to a file to encrypt."
+  echo "  -o|--out <path>             Write output to file"
+  echo "  -p|--passkey <string>       Provide a passkey to encrypt with."
+  echo "                              (NOTE: No spaces!)"
+}
+
+###############################################################################
+
+function call_openssl() {
+  local string="openssl aes-256-cbc -e -pbkdf2"
+
+  if [[ -z "$passkey" ]]; then
+    # TODO: Run command to generate and set the salt.
+    passkey=$DOTFILES_SALT
+  fi
+
+  [[ -n $passkey ]] && string+=" -k $passkey"
+  string+=" -in $input"
+
+  if [[ -n $output ]]; then 
+    string+=" -out $output"
+  fi
+
+  echo $string
+}
+
+function main() {
+  # Fail early if no arguments are given.
+  [[ $# -eq 0 ]] && usage && exit 0
+
+  local input output passkey
+
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -f | --file)
+      shift
+      if [[ ! -f $1 ]]; then
+        print-status -i error "Input file not found: $1"
+        usage && exit 1
+      fi
+      input="$1"
+      shift
+      ;;
+    -i | --in)
+      shift
+      input="$1"
+
+      if [[ -p /dev/stdin ]]; then
+        input="$(cat /dev/stdin)"
+      fi
+
+      local tempfile=$(mktemp -p "$MYTMPDIR")
+      printf "%s" "$input" > $tempfile
+      input="$tempfile"
+      shift
+      ;;
+    -o | --out)
+      shift
+      output="$1"
+      shift
+      ;;
+    -p | --passkey)
+      shift
+      passkey="$1"
+      shift
+      ;;
+    *)
+      print-status -i error "Invalid option: $1"
+      usage && exit 1
+      ;;
+    esac
+  done
+
+  if [[ -z $input ]]; then
+    print-status -i error "You need to provide a string or file to encrypt."
+    usage && exit 1
+  fi
+
+  $(call_openssl)
+}
+
+#############################################################################
+
+eval "function $NAME() { utility bash $NAME \"\$@\"; }"
+
+# Sourcing this file will expose the same functions used by this command.
+# Explicitly exporting these here will make them available in all subshells.
+if is_sourced; then
+  export -f $NAME
+  return 0
+else
+  main "$@"
+fi

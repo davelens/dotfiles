@@ -1,8 +1,5 @@
 # Default command overrides. Generally trying to avoid serious ones, but to
 # my knowledge these are not considered harmful.
-
-# Temp workaround to disable punycode deprecation logging to stderr
-# https://github.com/bitwarden/clients/issues/6689
 alias ls='ls -G'
 alias nano='vim' # 😬
 alias rsync='rsync --exclude-from=${HOME}/.rsyncignore'

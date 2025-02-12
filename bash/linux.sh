@@ -18,7 +18,6 @@ export FREEDESKTOP_MIME_TYPES_PATH="${BREW_PATH}/share/mime/packages/freedesktop
 # *.rpm = files with the ending .rpm
 LS_COLORS=$LS_COLORS:'di=0;35:'; export LS_COLORS
 alias lsa='ls -hal --color=tty'
-alias pbcopy='xclip -selection clipboard'
 
 setxkbmap -option altwin:ctrl_win # Switch win/command key with ctrl
 setxkbmap -option ctrl:nocaps # Switch capslock with ctrl

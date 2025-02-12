@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 # This search and replace script uses ripgrep (rg) to find text in 
 # files, and sed to replace the text in each matching file.

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 [[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
 [[ `command -v gsed` ]] && cmd=gsed || cmd=sed
 

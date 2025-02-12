@@ -12,7 +12,6 @@
 # * It asks to push the updated body to the GitHub website.
 # * It returns a link to the PR as the command finishes.
 set -e
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 [[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
 
 if [ $# -eq 0 ]; then
@@ -56,17 +55,17 @@ ${EDITOR} ".git/$branch_name.md"
 # If for some reason you end up removing the file at this point, we just exit.
 [ ! -f ".git/$branch_name.md" ] && exit
 
-echo ""
+echo
 echo "*********************************<BODY CONTENT>**********************************"
 cat .git/$branch_name.md
 echo "*********************************</BODY CONTENT>*********************************"
-echo ""
+echo
 
 while true; do
   read -n1 -p "Push to GitHub? (y/n) " yn
   case $yn in
-    [Yy]* ) echo "" && gh pr edit "$pr_id" --body "$(cat .git/$branch_name.md)"; break;;
-    [Nn]* ) echo "" && exit;;
-    * ) echo "" && echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
+    [Yy]* ) echo && gh pr edit "$pr_id" --body "$(cat .git/$branch_name.md)"; break;;
+    [Nn]* ) echo && exit;;
+    * ) echo && echo "Please answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.";;
   esac
 done

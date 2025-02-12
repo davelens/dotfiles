@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -e
-[[ -f ${DOTFILES_PATH}/bash/helpers.sh ]] && source ${DOTFILES_PATH}/bash/helpers.sh
 
 if [ -n "$TMUX_PANE" ] && [ "$TMUX_PANE_LOGGING" != "1" ]; then
   export TMUX_PANE_LOGGING=1
