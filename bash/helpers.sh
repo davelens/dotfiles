@@ -185,8 +185,8 @@ export -f succeed
 export -f timesused
 export -f yellow
 
-# Source utilities that come with their own helper functions, so we can use
-# them in other commands with additional overhead.
+# My source utilities come with their own helper functions. This exposes
+# them to subshells (ie. other commands) without additional overhead.
 source $DOTFILES_PATH/bin/utilities/bash/box
 source $DOTFILES_PATH/bin/utilities/bash/cursor
 source $DOTFILES_PATH/bin/utilities/bash/prompt-user
