@@ -155,8 +155,14 @@ function setup_bitwarden() {
     _box_print
   fi
 
+  print-status "Setup will now prompt you for some information from your Bitwarden vaults."
+
   OWNER_NAME=$(bitwarden --prompt "Select your identity: " identities)
   GITHUB_EMAIL=$(bitwarden -e --prompt "Select your Github username: " -q "Github" items)
+
+  cursor clear-up
+  print-status -i ok "Data from vaults OK"
+  _box_print
 
   return
 
