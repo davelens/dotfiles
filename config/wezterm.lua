@@ -9,7 +9,7 @@ local platforms = {
 }
 
 -- Defaults!
-config.max_fps = 240 -- Fixes the (s)low default of 60, this feels snappier.
+config.max_fps = 144 -- Fixes the (s)low default of 60, this feels snappier.
 config.enable_tab_bar = false
 config.color_scheme = 'nord'
 config.font_size = 14.0
