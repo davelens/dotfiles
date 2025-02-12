@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
+# TODO: Eventually I'd want this to first install every dependency for my env,
+# so that involves:
+# - [ ] Install Homebrew
+# - [ ] Process my Brewfile
+# - [ ] Change my default shell to my brew-installed bash. Involves two steps:
+#   - [ ] `echo $BREW_PATH/bin/bash | sudo tee -a /etc/shells`
+#   - [ ] `chsh -s $BREW_PATH/bin/bash`
+
 readonly DOTBOT_DIR="dotbot"
 readonly DOTFILES_PATH="$(dirname $(dirname $(realpath "$0")))"
 readonly DOTFILES_STATE_PATH="$HOME/.local/state/dots"
