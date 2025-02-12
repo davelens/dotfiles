@@ -17,5 +17,5 @@ filename="$(date +%Y-%m-%d-%H-%M-%S).jpg"
 full_path=$TMPDIR/$filename
 
 screencapture -ix $full_path && scp $full_path $SCREENSHOT_HOST:$SCREENSHOT_REMOTE_PATH/$filename
-echo "$SCREENSHOT_URL/$filename" | pbcopy
+echo "$SCREENSHOT_URL/$filename" | cb
 rm $full_path

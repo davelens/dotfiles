@@ -35,11 +35,6 @@ items_cache_file() { echo "$DOTFILES_STATE_PATH/bw-items-cache"; }
 
 mp() { decrypt -f "$mp_file"; }
 
-pbcopy() {
-  [[ $OS == "darwin" ]] && echo 'pbcopy'
-  echo 'clip.exe'
-}
-
 prepare() {
   [[ ! -f $ITEMS_CACHE_FILE.enc ]] && cache-items
 
@@ -93,8 +88,8 @@ function items() {
     --prompt="${prompt:-$NAME} -> " \
     --header="$(printf "%-40s %-40s %-40s\n" 'Item' 'Username' 'ID')" \
     --bind="enter:become(echo {2} | awk '{printf \$(NF-1)}')" \
-    --bind="ctrl-u:execute(username=\$(echo {2} | awk '{printf \$(NF-1)}'); echo -n \"\$username\" | $(pbcopy))+abort" \
-    --bind="ctrl-y:execute(item_id=\$(echo -n {1..} | awk '{printf \$NF}'); password=\$(jq -r --arg id \"\$item_id\" '.[] | select(.id == \$id) | .login.password' \"$tmp\"); echo -n \"\$password\" | $(pbcopy))+abort" \
+    --bind="ctrl-u:execute(username=\$(echo {2} | awk '{printf \$(NF-1)}'); echo -n \"\$username\" | cb)+abort" \
+    --bind="ctrl-y:execute(item_id=\$(echo -n {1..} | awk '{printf \$NF}'); password=\$(jq -r --arg id \"\$item_id\" '.[] | select(.id == \$id) | .login.password' \"$tmp\"); echo -n \"\$password\" | cb)+abort" \
     --preview-window='right:50%' \
     --preview='
       item_id=$(echo -n {1..} | awk "{printf \$NF}")
