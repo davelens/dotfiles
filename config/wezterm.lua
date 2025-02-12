@@ -64,4 +64,32 @@ config.keys = {
   { mods = 'SUPER', key = 'Enter', action = wezterm.action.ToggleFullScreen },
 }
 
+-- Windows only settings
+if wezterm.target_triple:find("windows") then
+  config.prefer_egl = true
+  config.enable_wayland = false
+  config.default_domain = 'WSL:Arch'
+  config.default_prog = {
+    "wsl.exe", "-u", "davelens", "--", "bash", "-c", "cd ~ && exec bash"
+  }
+
+  config.window_frame = {
+    border_bottom_height = '0',
+    border_top_height = '0',
+  }
+
+  config.line_height = 1.0
+  config.cell_width = 1.01
+  config.font_size = 14.0
+  config.font = wezterm.font_with_fallback {
+    { family = "MonegoLigatures Nerd Font", weight = "Regular" },
+    { family = "Hack Nerd Font" },
+  }
+
+  config.keys = {
+    { mods = 'ALT', key = 'Enter', action = wezterm.action.ToggleFullScreen }, -- ToggleFullScreen
+    { mods = 'SUPER', key = 'Enter', action = wezterm.action.DisableDefaultAssignment },
+  }
+end
+
 return config
