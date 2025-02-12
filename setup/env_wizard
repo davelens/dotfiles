@@ -191,14 +191,15 @@ function setup_env() {
     _box_print
   fi
 
-  # TODO: Confirm values
+  # TODO: Confirm all values
   #OWNER_NAME=$(prompt-user -i "$(pending) " -d "$OWNER_NAME" "Enter your first and last name: ")
   #GITHUB_EMAIL=$(prompt-user -i "$(pending) " -d "$GITHUB_EMAIL" "Enter the e-mail address you log into Github with: ")
-
 }
 
 function setup_finish() {
   finishing_up_intro
+  # TODO: Overview of all actions. Will probably have to have a central array
+  # so I can just loop that and print messages.
 }
 
 function env_data_wizard() {
@@ -251,6 +252,8 @@ function write_env_files() {
   name = "$GITHUB_USERNAME"
   email = "$GITHUB_EMAIL"
   signingkey = "$GIT_SIGNING_KEY"
+[gpg]
+  format = ssh
 EOF
 }
 
