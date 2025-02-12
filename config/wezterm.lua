@@ -11,6 +11,8 @@ local platforms = {
 -- Defaults!
 config.max_fps = 240 -- Fixes the (s)low default of 60, this feels snappier.
 config.enable_tab_bar = false
+config.color_scheme = 'nord'
+config.font_size = 14.0
 
 config.window_frame = {
   border_bottom_height = '0',
@@ -22,11 +24,6 @@ config.window_padding = {
   top = 0,
   bottom = 0,
 }
-
--- Nord theme on Monaco with Hack has been my jam for a while now.
-config.color_scheme = 'nord'
-config.cell_width = 1.01
-config.font_size = 14.0
 
 config.keys = {
   -- Disable most keybinds associated with tab management, I don't use em.
@@ -76,17 +73,16 @@ end
 
 -- Load platform specific configurations
 if platforms.windows then
+  config.line_height = 1.08
   config.prefer_egl = true
   config.enable_wayland = false
   config.default_prog = {
     "wsl.exe", "-d", "Arch", "-u", "davelens", "--", "bash", "-c", "cd ~ && exec bash"
   }
 
-  config.line_height = 1.0
-  config.cell_width = 1.01
   config.font_size = 14.0
   config.font = wezterm.font_with_fallback {
-    { family = "MonegoLigatures Nerd Font", weight = "Regular" },
+    { family = "NotoMono NF", weight = "Regular" },
     { family = "Hack Nerd Font" },
   }
 end
