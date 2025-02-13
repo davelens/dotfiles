@@ -271,8 +271,8 @@ function main() {
   setup_encryption
   setup_secrets_management
   setup_env
+  write_env_files
   setup_finish
-  #write_env_files
 
   _box_print
   _box_print "Environment variables written to these files:"
