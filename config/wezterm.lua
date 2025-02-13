@@ -73,6 +73,9 @@ end
 
 -- Load platform specific configurations
 if platforms.windows then
+  -- The default for me is "wslhost.exe", not very descriptive.
+  wezterm.on('format-window-title', function() return "Wezterm" end)
+
   config.line_height = 1.08
   config.prefer_egl = true
   config.enable_wayland = false
