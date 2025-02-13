@@ -66,8 +66,8 @@ if platforms.macos then
 
   -- CMD+Enter is how I've been triggering full screen for years.
   config.keys = {
-    { mods = 'ALT', key = 'Enter', action = wezterm.action.ToggleFullScreen }, -- ToggleFullScreen
-    { mods = 'SUPER', key = 'Enter', action = wezterm.action.DisableDefaultAssignment },
+    { mods = 'ALT', key = 'Enter', action = wezterm.action.DisableDefaultAssignment }, -- ToggleFullScreen
+    { mods = 'SUPER', key = 'Enter', action = wezterm.action.ToggleFullScreen },
   }
 end
 
