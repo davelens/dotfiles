@@ -241,10 +241,8 @@ function write_env_files() {
     DOTFILES_STATE_PATH \
     GITHUB_EMAIL \
     GITHUB_USERNAME \
-    GITHUB_PERSONAL_ACCESS_TOKEN > "$env_file"
-
-  # When the vars are already declared, we should remove the `declare -x` prefix.
-  sed -i 's/^declare -x //' "$env_file"
+    GITHUB_PERSONAL_ACCESS_TOKEN | \
+    sed 's/declare -x //g' > "$env_file"
 
   # Write to ~/.gitconfig.env so we can keep our gitconfig user-agnostic.
   [[ -f "$HOME/.ssh/id_rsa.pub" ]] && export GITHUB_SIGNING_KEY="$HOME/.ssh/id_rsa.pub"
