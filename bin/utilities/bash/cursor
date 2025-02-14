@@ -88,13 +88,13 @@ function seq_move_end() {
 
 function seq_move_up() {
   local jump=${1:-1}
-  [[ $in_prompt -eq 1 ]] && jump=$((jump + 2))
+  [[ $in_prompt -eq 1 ]] && jump=$((jump + $(prompt_correction)))
   printf "\033[${jump}A"
 }
 
 function seq_move_down() {
   local jump=${1:-1}
-  [[ $in_prompt -eq 1 ]] && jump=$((jump - 2))
+  [[ $in_prompt -eq 1 ]] && jump=$((jump - $(prompt_correction)))
   printf "\033[${jump}B"
 }
 
@@ -109,6 +109,15 @@ function seq_print() {
 }
 
 ###############################################################################
+# Some clear functions require a deficit corresponding to the prompt height.
+# Afaik you can't derive this dynamically, so we hardcode it for our needs.
+function prompt_correction() {
+  if [[ $in_prompt -eq 1 ]]; then
+    [[ -n $STARSHIP_SHELL ]] && succeed 3
+    succeed 2
+  fi
+  echo 0
+}
 
 function chain_commands() {
   for cmd in ${commands[@]}; do
