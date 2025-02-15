@@ -54,6 +54,7 @@ update() {
 
   # Pull the latest changes
   print-status -n "Pulling in changes ..."
+  # TODO: Check why merge output does not get redirected to log file anymore.
   cd "$DOTFILES_PATH" && git fetch origin && git merge --no-commit origin/"$(git b)" &>> "$log_file" || error_occurred=1
   print-status -i ok "Files updated to latest version"
 
