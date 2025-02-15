@@ -13,6 +13,7 @@
     ~/.ackrc: config/ackrc
     ~/.bash_profile: config/bash_profile
     ~/.bashrc: config/bashrc
+    ~/.config/starship.toml: config/starship.toml
     ~/.editrc: config/editrc
     ~/.gitconfig: config/gitconfig
     ~/.gitignore_global: config/gitignore_global
