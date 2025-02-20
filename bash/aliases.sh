@@ -3,6 +3,8 @@
 alias ls='ls -G'
 alias nano='vim' # 😬
 alias rsync='rsync --exclude-from=${HOME}/.rsyncignore'
+# Experimental: trying out Starship. Convenient, but not sure if permanent yet.
+alias sp='eval "$(starship init bash)"'
 alias vim=${EDITOR} # My usecase here is that I use `dvim` as my Neovim profile.
 alias vi='vim'
 
