@@ -204,6 +204,7 @@ style = "bg:base"
 format = '[[ ($all_status$ahead_behind )](fg:red bg:base)]($style)'
 
 [nodejs]
+disabled = true
 symbol = ""
 style = "bg:base"
 format = '[[ ∙ $symbol( $version) ](fg:mauve bg:base)]($style)'
