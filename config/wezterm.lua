@@ -9,7 +9,7 @@ local platforms = {
 }
 
 -- Defaults!
-config.max_fps = 144 -- Fixes the (s)low default of 60, this feels snappier.
+config.max_fps = 120 -- Fixes the (s)low default of 60, this feels snappier.
 config.enable_tab_bar = false
 config.color_scheme = 'Catppuccin Mocha'
 config.font_size = 14.0
@@ -75,6 +75,14 @@ end
 if platforms.windows then
   -- The default for me is "wslhost.exe", not very descriptive.
   wezterm.on('format-window-title', function() return "Wezterm" end)
+
+  for _, gpu in ipairs(wezterm.gui.enumerate_gpus()) do
+    if gpu.backend == 'Vulkan' and gpu.device_type == 'IntegratedGpu' then
+      config.webgpu_preferred_adapter = gpu
+      config.front_end = 'WebGpu'
+      break
+    end
+  end
 
   config.line_height = 1.08
   config.prefer_egl = true
