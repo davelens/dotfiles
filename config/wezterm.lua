@@ -27,24 +27,24 @@ config.window_padding = {
 
 config.keys = {
   -- Disable most keybinds associated with tab management, I don't use em.
-  { mods = 'SUPER', key = '1', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(0)
-  { mods = 'SUPER', key = '2', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(1)
-  { mods = 'SUPER', key = '3', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(2)
-  { mods = 'SUPER', key = '4', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(3)
-  { mods = 'SUPER', key = '5', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(4)
-  { mods = 'SUPER', key = '6', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(5)
-  { mods = 'SUPER', key = '7', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(6)
-  { mods = 'SUPER', key = '8', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(7)
-  { mods = 'SUPER', key = '9', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(-1)
-  { mods = 'SUPER', key = 't', action = wezterm.action.DisableDefaultAssignment }, -- SpawnTab
-  { mods = 'SUPER', key = '{', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTabRelative(-1)
-  { mods = 'SUPER', key = '}', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTabRelative(1)
+  { mods = 'SUPER',         key = '1', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(0)
+  { mods = 'SUPER',         key = '2', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(1)
+  { mods = 'SUPER',         key = '3', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(2)
+  { mods = 'SUPER',         key = '4', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(3)
+  { mods = 'SUPER',         key = '5', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(4)
+  { mods = 'SUPER',         key = '6', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(5)
+  { mods = 'SUPER',         key = '7', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(6)
+  { mods = 'SUPER',         key = '8', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(7)
+  { mods = 'SUPER',         key = '9', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(-1)
+  { mods = 'SUPER',         key = 't', action = wezterm.action.DisableDefaultAssignment }, -- SpawnTab
+  { mods = 'SUPER',         key = '{', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTabRelative(-1)
+  { mods = 'SUPER',         key = '}', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTabRelative(1)
   { mods = 'SHIFT | SUPER', key = '{', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTabRelative(-1)
   { mods = 'SHIFT | SUPER', key = '}', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTabRelative(1)
   { mods = 'SHIFT | SUPER', key = '[', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTabRelative(-1)
   { mods = 'SHIFT | SUPER', key = ']', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTabRelative(1)
   -- Disable the wezterm search; I have more control with the bash default.
-  { mods = 'SUPER', key = 'f', action = wezterm.action.DisableDefaultAssignment }, -- Search(CurrentSelectionOrEmptyString)
+  { mods = 'SUPER',         key = 'f', action = wezterm.action.DisableDefaultAssignment }, -- Search(CurrentSelectionOrEmptyString)
 }
 
 if platforms.macos then
@@ -59,14 +59,14 @@ if platforms.macos then
   config.cell_width = 1.01
   config.font_size = 16.0
   config.font = wezterm.font_with_fallback {
-    { family = "Monaco", weight = "Regular" },
+    { family = "Monaco",           weight = "Regular" },
     { family = "Hack Nerd Font" },
     { family = "Apple Color Emoji" },
-  } 
+  }
 
   -- CMD+Enter is how I've been triggering full screen for years.
   config.keys = {
-    { mods = 'ALT', key = 'Enter', action = wezterm.action.DisableDefaultAssignment }, -- ToggleFullScreen
+    { mods = 'ALT',   key = 'Enter', action = wezterm.action.DisableDefaultAssignment }, -- ToggleFullScreen
     { mods = 'SUPER', key = 'Enter', action = wezterm.action.ToggleFullScreen },
   }
 end
@@ -93,7 +93,7 @@ if platforms.windows then
 
   config.font_size = 14.0
   config.font = wezterm.font_with_fallback {
-    { family = "NotoMono NF", weight = "Regular" },
+    { family = "NotoMono NF",   weight = "Regular" },
     { family = "Hack Nerd Font" },
   }
 end
