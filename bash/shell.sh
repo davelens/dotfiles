@@ -87,6 +87,7 @@ eval "$(${BREW_PATH}/bin/brew shellenv)"
 #   ${BREW_PATH}/opt/*/bin # All Homebrew binaries
 #
 paths_to_add=(
+  ${ASDF_DATA_DIR:-$HOME/.asdf}/shims
   ${BREW_PATH}/opt/openssl@3/bin
   ${BREW_PATH}/opt/mysql@{5.{6,7},8.4}/bin
   ${BREW_PATH}/opt/openjdk/bin
@@ -146,12 +147,6 @@ export KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl)"
 # rbenv is a Ruby version manager.
 if command -v rbenv &> /dev/null; then
   eval "$(rbenv init -)"
-fi
-
-# ASDF is a version manager for multiple languages.
-if command -v asdf &> /dev/null; then
-  source "${BREW_PATH}/opt/asdf/libexec/asdf.sh"
-  source "${BREW_PATH}/opt/asdf/etc/bash_completion.d/asdf.bash"
 fi
 
 
