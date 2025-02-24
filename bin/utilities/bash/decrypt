@@ -31,7 +31,7 @@ function call_openssl() {
 
   if [[ -z "$passkey" ]]; then
     # TODO: Run command to generate and set the salt.
-    passkey=$DOTFILES_SALT
+    passkey="$DOTFILES_SALT"
   fi
 
   [[ -n $passkey ]] && string+=" -k $passkey"

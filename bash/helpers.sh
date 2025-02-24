@@ -175,9 +175,9 @@ export -f green
 export -f interrupt_handler
 export -f is_sourced
 export -f join_by
-export -f lowercase 
+export -f lowercase
 export -f pending
-export -f pid 
+export -f pid
 export -f red
 export -f repeat
 export -f repeat
