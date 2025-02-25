@@ -25,15 +25,6 @@ export ERL_AFLAGS="-kernel shell_history enabled"
 # Get rid of the forking errors triggered by spring
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
-if [ -f “${HOME}/.gpg-agent-info” ]; then
-  source “${HOME}/.gpg-agent-info”
-  export GPG_AGENT_INFO
-  export SSH_AUTH_SOCK
-fi
-
-# So GPG signing of git commits works.
-export GPG_TTY=$(tty)
-
 # Silences the default confirmation feedback for Slackadays/Clipboard.
 export CLIPBOARD_SILENT="1"
 
