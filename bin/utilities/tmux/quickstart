@@ -50,7 +50,7 @@ done
 
 # Sanitize the input for use in the tmux command(s).
 TARGET_PATH=$(realpath "$TARGET_PATH")
-SESSION_NAME=$(basename "$TARGET_PATH" | sed 's/^\.//')
+SESSION_NAME=$(basename "$TARGET_PATH" | sed 's/\./_/')
 
 # Assure the target path exists.
 [[ ! -d "$TARGET_PATH" ]] && fail "Error: '$TARGET_PATH' is not a valid directory."
