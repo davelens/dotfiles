@@ -101,26 +101,19 @@ fi
 printf -v PATH "%s:" "${paths_to_add[@]}"
 export PATH="${PATH%:}"
 
-# Necessary for some software to find the libraries installed by Homebrew
-# during compilation.
 # Both bison and libiconv are required for PHP to compile with ASDF.
-export LDFLAGS="-L${BREW_PATH}/opt/bison/lib"
-LDFLAGS="${LDFLAGS} -L${BREW_PATH}/opt/libiconv/lib"
+#export LDFLAGS="-L${BREW_PATH}/opt/bison/lib"
+#LDFLAGS="${LDFLAGS} -L${BREW_PATH}/opt/libiconv/lib"
+#export CPPFLAGS="-I${BREW_PATH}/opt/libiconv/include"
+
+# MySQL 8.4 compilation flags
 LDFLAGS="${LDFLAGS} -L${BREW_PATH}/opt/mysql@8.4/lib"
-
-export CPPFLAGS="-I${BREW_PATH}/opt/libiconv/include"
 CPPFLAGS="${CPPFLAGS} -I${BREW_PATH}/opt/mysql@8.4/include"
-
 export PKG_CONFIG_PATH="${BREW_PATH}/opt/mysql@8.4/lib/pkgconfig"
-
-# Fixes installation of mysql2 gem due to missing openssl lib.
-LIBRARY_PATH=${LIBRARY_PATH}:${BREW_PATH}/opt/openssl/lib/
 
 # So software can pick up and load this entire config.
 export SHELL=${BREW_PATH}/bin/bash
 
-# node.js modules path
-export NODE_PATH="/usr/local/share/npm/lib/node_modules"
 # This is to prevent punycode deprecation logging to stderr, in particular.
 export NODE_OPTIONS="--no-deprecation"
 
