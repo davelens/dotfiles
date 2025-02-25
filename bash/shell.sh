@@ -16,13 +16,8 @@ export PAGER='less --quit-if-one-screen --no-init --ignore-case --RAW-CONTROL-CH
 # Stop checking shellmail for new messages
 unset MAILCHECK
 
-# Ruby GC settings
-# See: https://collectiveidea.com/blog/archives/2015/02/19/optimizing-rails-for-memory-usage-part-2-tuning-the-gc
-export RUBY_GC_MALLOC_LIMIT=4000100
-export RUBY_GC_MALLOC_LIMIT_MAX=16000100
-export RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.1
-export RUBY_GC_OLDMALLOC_LIMIT=16000100
-export RUBY_GC_OLDMALLOC_LIMIT_MAX=16000100
+# Faster Ruby garbage collection
+RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR=0.75
 
 # Erlang history settings to have a cmd history in iex sessions.
 export ERL_AFLAGS="-kernel shell_history enabled"
