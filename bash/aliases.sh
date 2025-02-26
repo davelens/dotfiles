@@ -17,7 +17,7 @@ alias be='bundle exec'
 alias d="utility tmux repo"
 alias dc='docker compose'
 alias ds='du -sh */' # Short for "directory sizes"
-alias fs="ls -laSh $1 | grep -v ^d | awk '{print $5 "\t" $9}'"
+alias fs="ls -laSh $1 | grep -v ^d | awk '{print \$5 \"\t\" \$9}'"
 alias lsa='ls -hal'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
 alias redis='brew services start redis'
