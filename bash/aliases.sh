@@ -14,6 +14,7 @@ alias docker-compose='docker compose' # They changed it. -.-
 
 # Shortcuts
 alias be='bundle exec'
+alias cdir='cd "${_%/*}"' # Fix accidentally cd'ing into a filename
 alias d="utility tmux repo"
 alias dc='docker compose'
 alias ds='du -sh */' # Short for "directory sizes"
