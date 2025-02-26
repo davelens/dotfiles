@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# No spaces added to completion string, and trigger path completion.
+compopt -o nospace -o plusdirs
+
+# Complete directories with whatever we typed in the prompt.
+input="${COMP_WORDS[COMP_CWORD]}"
+COMPREPLY=( $(compgen -d -- "$input") )
