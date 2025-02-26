@@ -163,6 +163,19 @@ function yellow() {
   colorize 3 "$1"
 }
 
+function refresh_sensitive_env_vars_in_tmux_session() {
+  [[ -z "$TMUX" ]] && return
+  local data
+
+  # You could automate this to read *all* env vars, but I'm only interested in
+  # a few select ones relevant for my dotfiles for now.
+  data="$(tmux show-environment)"
+  export $(echo "$data" | grep "^SSH_AGENT_PID") >/dev/null
+  export $(echo "$data" | grep "^SSH_CONNECTION") >/dev/null
+  export $(echo "$data" | grep "^DOTFILES_SALT") >/dev/null
+  unset data
+}
+
 ###############################################################################
 
 # Expose all helper methods to subshells.
