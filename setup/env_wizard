@@ -16,8 +16,12 @@ bitwarden() { utility misc bitwarden "$@"; }
 # 80 is the default width for a terminal window, so adhere to that.
 BOX_WIDTH=79
 BOX_MARGIN=1
-[[ $(tput cols) -lt 80 ]] && fail "$(print-status -i error "Terminal window too small; must be at least 80 columns wide or you might miss information.")"
+BOX_HIGHLIGHT=${1:-141} # Just to try out some easy colours for now.
+[[ $(tput cols) -lt 80 ]] && fail "$(print-status -hl $BOX_HIGHLIGHT -i error "Terminal window too small; must be at least 80 columns wide or you might miss information.")"
 
+# Any time a status message is printed using print-status -hl $BOX_HIGHLIGHT, it adds this as
+# an affix to the printed output. This way you can connect drawn boxes before
+# and after.
 STATUS_AFFIX="_box_border_right"
 #############################################################################
 
@@ -96,7 +100,7 @@ function setup_encryption() {
   if [[ -z "$DOTFILES_SALT" ]]; then 
     setup_salt 
   else
-    print-status -i ok "Encrypted salt is ready."
+    print-status -hl $BOX_HIGHLIGHT -i ok "Encrypted salt is ready."
     _box_print
   fi
 }
@@ -104,7 +108,7 @@ function setup_encryption() {
 function setup_salt() {
   local looping icon passkey salt
   looping=${1:-0}
-  icon="$(pending)"
+  icon="$(pending $BOX_HIGHLIGHT)"
 
   # So we know where to restore to after a variable number of attempts.
   [[ $looping -eq 0 ]] && cursor save
@@ -115,9 +119,9 @@ function setup_salt() {
 
   if [[ $? -eq 0 ]]; then
     export DOTFILES_SALT="$salt"
-    print-status -i ok "Encrypted salt is ready."
+    print-status -hl $BOX_HIGHLIGHT -i ok "Encrypted salt is ready."
   else
-    print-status -i error "Encrypted salt not ready; possibly wrong passkey."
+    print-status -hl $BOX_HIGHLIGHT -i error "Encrypted salt not ready; possibly wrong passkey."
     setup_salt 1
     return
   fi
@@ -129,44 +133,44 @@ function setup_salt() {
 function setup_secrets_management() {
   setup_secrets_management_intro
 
-  bitwarden_prompt="$(prompt-user -i "$(pending) " -yn "Would you like to use Bitwarden to retrieve your secrets?")"
+  bitwarden_prompt="$(prompt-user -i "$(pending $BOX_HIGHLIGHT) " -yn "Would you like to use Bitwarden to retrieve your secrets?")"
 
   if [ $bitwarden_prompt == "y" ]; then
     setup_bitwarden
   else
-    print-status -i error "Not using Bitwarden."
+    print-status -hl $BOX_HIGHLIGHT -i error "Not using Bitwarden."
     _box_print
   fi
 }
 
 function setup_bitwarden() {
-  print-status -n "Unlocking vault(s) ... "
+  print-status -hl $BOX_HIGHLIGHT -n "Unlocking vault(s) ... "
 
   BW_SESSION="$(bitwarden unlock)"
 
   if [[ -z $BW_SESSION ]]; then
-    print-status -i error "Could not unlock Bitwarden vaults."
+    print-status -hl $BOX_HIGHLIGHT -i error "Could not unlock Bitwarden vaults."
     sleep 2 # Just so the user can see the error message.
     cursor clear-up:9
     setup_secrets_management # Give them a chance to gracefully skip Bitwarden.
     return
   else
-    print-status -i ok "Using Bitwarden."
+    print-status -hl $BOX_HIGHLIGHT -i ok "Using Bitwarden."
     _box_print
   fi
 
-  print-status "Setup will now prompt you for some information from your Bitwarden vaults."
+  print-status -hl $BOX_HIGHLIGHT "Setup will now prompt you for some information from your Bitwarden vaults."
 
   OWNER_NAME=$(bitwarden --prompt "Select your identity: " identities)
   GITHUB_EMAIL=$(bitwarden -e --prompt "Select your Github username: " -q "Github" items)
 
   cursor clear-up
-  print-status -i ok "Data from vaults OK"
+  print-status -hl $BOX_HIGHLIGHT -i ok "Data from vaults OK"
   _box_print
 
   return
 
-  #print-status -n "Preparing data from vault(s) ... "
+  #print-status -hl $BOX_HIGHLIGHT -n "Preparing data from vault(s) ... "
   #owner_data=$(bw list items --session "$BW_SESSION" --search "$OWNER_NAME" | jq '.[] | select(.identity != null)')
   #bitwarden_data=$(bw get item --session "$BW_SESSION" "$GITHUB_EMAIL")
 
@@ -179,7 +183,7 @@ function setup_bitwarden() {
 
   GITHUB_USERNAME="$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Public username").value')"
   GITHUB_PERSONAL_ACCESS_TOKEN=$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Personal access token") | .value')
-  print-status -i ok "Vault data prepared."
+  print-status -hl $BOX_HIGHLIGHT -i ok "Vault data prepared."
 }
 
 function setup_env() {
@@ -187,13 +191,13 @@ function setup_env() {
 
   if [[ -f $env_file ]]; then
     source "$env_file"
-    print-status -i ok "Loaded environment variables from $env_file."
+    print-status -hl $BOX_HIGHLIGHT -i ok "Loaded environment variables from $env_file."
     _box_print
   fi
 
   # TODO: Confirm all values
-  #OWNER_NAME=$(prompt-user -i "$(pending) " -d "$OWNER_NAME" "Enter your first and last name: ")
-  #GITHUB_EMAIL=$(prompt-user -i "$(pending) " -d "$GITHUB_EMAIL" "Enter the e-mail address you log into Github with: ")
+  #OWNER_NAME=$(prompt-user -i "$(pending $BOX_HIGHLIGHT) " -d "$OWNER_NAME" "Enter your first and last name: ")
+  #GITHUB_EMAIL=$(prompt-user -i "$(pending $BOX_HIGHLIGHT) " -d "$GITHUB_EMAIL" "Enter the e-mail address you log into Github with: ")
 }
 
 function setup_finish() {
@@ -205,31 +209,31 @@ function setup_finish() {
 function env_data_wizard() {
   _box_print
 
-  REPO_NAMESPACE=$(prompt-user -i "$(pending) " -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos? ")
+  REPO_NAMESPACE=$(prompt-user -i "$(pending $BOX_HIGHLIGHT) " -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos? ")
 
   if [[ -z $OWNER_NAME ]]; then 
-    OWNER_NAME=$(prompt-user -i "$(pending) " -d "$OWNER_NAME" "Enter your first and last name: ")
+    OWNER_NAME=$(prompt-user -i "$(pending $BOX_HIGHLIGHT) " -d "$OWNER_NAME" "Enter your first and last name: ")
   fi
 
   if [[ -z $GITHUB_EMAIL ]]; then
-    GITHUB_EMAIL=$(prompt-user -i "$(pending) " -d "$GITHUB_EMAIL" "Enter the email address you log into Github with: ")
+    GITHUB_EMAIL=$(prompt-user -i "$(pending $BOX_HIGHLIGHT) " -d "$GITHUB_EMAIL" "Enter the email address you log into Github with: ")
   fi
 
-  GITHUB_USERNAME=$(prompt-user -i "$(pending) " -d "${GITHUB_USERNAME}" "Enter your public Github username: ")
+  GITHUB_USERNAME=$(prompt-user -i "$(pending $BOX_HIGHLIGHT) " -d "${GITHUB_USERNAME}" "Enter your public Github username: ")
 
-  GITHUB_PERSONAL_ACCESS_TOKEN=$(prompt-user -i "$(pending) " -d "$GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github Personal access token: ")
+  GITHUB_PERSONAL_ACCESS_TOKEN=$(prompt-user -i "$(pending $BOX_HIGHLIGHT) " -d "$GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github Personal access token: ")
 
   # Can be either a literal key, or a path to a key file.
   # TODO: Ask to load in an SSH key to set the path
-  GITHUB_SIGNING_KEY=$(prompt-user -i "$(pending) " -d "$GITHUB_SIGNING_KEY" "Enter your Git signing key: ")
+  GITHUB_SIGNING_KEY=$(prompt-user -i "$(pending $BOX_HIGHLIGHT) " -d "$GITHUB_SIGNING_KEY" "Enter your Git signing key: ")
 
   # Check if the REPO_NAMESPACE path exists, and create it if not.
   if [[ ! -d $REPO_NAMESPACE ]]; then
-    print-status -n "Creating $REPO_NAMESPACE ... "
+    print-status -hl $BOX_HIGHLIGHT -n "Creating $REPO_NAMESPACE ... "
     # You want to use `grealpath` here to correctly resolve the tilde in the path
     # and prevent bash from creating a directory named "~". -.-
     #mkdir -p "$(grealpath $REPO_NAMESPACE)"
-    print-status -i ok "Created $REPO_NAMESPACE."
+    print-status -hl $BOX_HIGHLIGHT -i ok "Created $REPO_NAMESPACE."
   fi
 }
 
@@ -263,7 +267,7 @@ function main() {
   local bitwarden=0
   local env_file="${HOME}/.env"
 
-  proceed="$(prompt-user -c -i "$(pending) " "Press any key to continue ... ")"
+  proceed="$(prompt-user -c -i "$(pending $BOX_HIGHLIGHT) " "Press any key to continue ... ")"
   [[ -n $proceed ]] && cursor move-start clear-up
 
   setup_encryption
@@ -281,7 +285,7 @@ function main() {
   _box_print
   _box_separator
   _box_print
-  print-status -i ok "All done!"
+  print-status -hl $BOX_HIGHLIGHT -i ok "All done!"
   _box_print
   _box_bottom
 }

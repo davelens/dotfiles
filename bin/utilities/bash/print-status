@@ -17,6 +17,7 @@ usage() {
   echo "                              - $(check) -> 'ok'"
   echo "                              - $(cross) -> 'error'"
   echo "                              - $(pending) -> 'pending'"
+  echo "  -hl|--highlight <colour>    A number between 0 and 255."
   echo "  -ni|--no-icon               Leaves out the status symbol."
   echo "  -p|--prefix <string>        Any output to print before the icon."
   echo "  -n                          Do not print the trailing newline character."
@@ -27,10 +28,10 @@ usage() {
 
 function icon() {
   case "$icon" in
-    pending)  symbol="$(pending)";;
-    ok)       symbol="$(check)";;
-    error)    symbol="$(cross)";;
-    *)        [[ -n $icon ]] && symbol="[$icon]";;
+    pending)  symbol="$(pending $color)";;
+    ok)       symbol="$(check $color)";;
+    error)    symbol="$(cross $color)";;
+    *)        [[ -n $icon ]] && symbol="$(colorize $color [)${icon}$(colorize $color ])";;
   esac
 
   echo "$symbol"
@@ -44,7 +45,7 @@ function main() {
   # Fail early if no arguments are given.
   [[ $# -eq 0 ]] && usage && exit 0
 
-  local newline=1 clearline=1 icon="pending" message prefix
+  local newline=1 clearline=1 icon="pending" color=255 message prefix
   STATUS_AFFIX=""
 
   while [[ $# -gt 0 ]]; do
@@ -70,6 +71,11 @@ function main() {
     -nc | --no-clear)
       shift
       clearline=0
+      ;;
+    -hl | --highlight)
+      shift
+      color=$1
+      shift
       ;;
     -n)
       shift

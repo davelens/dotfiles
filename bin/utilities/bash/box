@@ -42,33 +42,37 @@ usage() {
 
 ###############################################################################
 
+function _box_color() {
+  printf "$(colorize $BOX_HIGHLIGHT $1)"
+}
+
 function _box_top() {
-  printf "$(_box_margin)┌" && \
-    printf "%.s─" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) && \
-    printf "┐\n"
+  printf "$(_box_margin)$(_box_color ┌)" && \
+    printf "%.s$(_box_color ─)" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) && \
+    printf "$(_box_color ┐)\n"
 }
 
 function _box_line() {
-  printf "%.s${2:-─}" $(seq 1 ${1:-$(($BOX_WIDTH - 2))})
+  printf "%.s${2:-$(_box_color ─)}" $(seq 1 ${1:-$(($BOX_WIDTH - 2))})
 }
 
 # Like a horizontal line within a box.
 function _box_separator() {
-  printf "$(_box_margin)├$(_box_line $(($BOX_WIDTH - 2)))┤\n"
+  printf "$(_box_margin)$(_box_color ├)$(_box_line $(($BOX_WIDTH - 2)))$(_box_color ┤)\n"
 }
 
 function _box_print() {
-  printf "$(_box_margin)│ %-$(($BOX_WIDTH - 4))s │\n" "$1"; 
+  printf "$(_box_margin)$(_box_color │) %-$(($BOX_WIDTH - 4))s $(_box_color │)\n" "$1"; 
 }
 
 function _box_bottom() {
-  printf "$(_box_margin)└" && \
-    printf '%.s─' $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) && \
-    printf "┘\n"
+  printf "$(_box_margin)$(_box_color └)" && \
+    printf "%.s$(_box_color ─)" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) && \
+    printf "$(_box_color ┘)\n"
 }
 
 function _box_border_right() { 
-  cursor move-start move-up col:$(($BOX_WIDTH + 1)) print:│\\n
+  cursor move-start move-up col:$(($BOX_WIDTH + 1)) print:$(_box_color │)\\n
 }
 
 function _box_margin() {
@@ -86,6 +90,7 @@ function _box_margin() {
 # Sourcing this file will expose the same functions used by this command.
 # Explicitly exporting these here will make them available in all subshells.
 if is_sourced; then
+  export -f _box_color
   export -f _box_top
   export -f _box_bottom
   export -f _box_line
@@ -119,6 +124,7 @@ function main() {
   local value command center=0 args=()
   BOX_WIDTH=80
   BOX_MARGIN=0
+  BOX_HIGHLIGHT=255
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -134,6 +140,11 @@ function main() {
     -m | --margin)
       shift
       BOX_MARGIN="$1"
+      shift
+      ;;
+    -hl | --highlight)
+      shift
+      BOX_HIGHLIGHT=$1
       shift
       ;;
     -c | --center)

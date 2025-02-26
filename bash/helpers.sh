@@ -13,11 +13,13 @@ function block_unless_sourced() {
 }
 
 function check() {
-  echo "[$(green ✓)]"
+  hl=${1:-255}
+  echo "$(colorize $hl [)$(green ✓)$(colorize $hl ])"
 }
 
 function cross() {
-  echo "[$(red x)]"
+  hl=${1:-255}
+  echo "$(colorize $hl [)$(red x)$(colorize $hl ])"
 }
 
 function colorize() {
@@ -100,7 +102,8 @@ function lowercase () {
 }
 
 function pending() {
-  echo "[$(yellow \~)]"
+  hl=${1:-255}
+  echo "$(colorize $hl [)$(yellow \~)$(colorize $hl ])"
 }
 
 # Find the process ID of a given command. Note that you can use regex as well.
