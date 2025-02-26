@@ -3,8 +3,6 @@
 alias ls='ls -G'
 alias nano='vim' # 😬
 alias rsync='rsync --exclude-from=${HOME}/.rsyncignore'
-# Experimental: trying out Starship. Convenient, but not sure if permanent yet.
-alias sp='eval "$(starship init bash)"'
 alias vim=${EDITOR} # My usecase here is that I use `dvim` as my Neovim profile.
 alias vi='vim'
 
@@ -24,6 +22,7 @@ alias lsa='ls -hal'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
 alias redis='brew services start redis'
 alias s='source ${HOME}/.bashrc && echo "${HOME}/.bashrc sourced!"'
+alias sp='eval "$(starship init bash)"' # [s]tarship [p]rompt. Trying it out!
 alias ta='tmux attach'
 alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
 alias u='utility'
