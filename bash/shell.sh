@@ -74,14 +74,14 @@ eval "$(${BREW_PATH}/bin/brew shellenv)"
 #
 paths_to_add=(
   ${ASDF_DATA_DIR:-$HOME/.asdf}/shims
-  ${BREW_PATH}/opt/openssl@3/bin
-  ${BREW_PATH}/opt/mysql@{5.{6,7},8.4}/bin
-  ${BREW_PATH}/opt/openjdk/bin
-  ${BREW_PATH}/opt/gnu-getopt/{,s}bin
-  ${BREW_PATH}/opt/imagemagick@6/bin
-  ${BREW_PATH}/opt/bison/bin
-  ${BREW_PATH}/opt/libiconv/bin
-  ${BREW_PATH}/opt/m4/bin
+  ${BREW_PATH}/opt/mysql@8.4/bin
+  #${BREW_PATH}/opt/openssl@3/bin
+  #${BREW_PATH}/opt/openjdk/bin
+  #${BREW_PATH}/opt/gnu-getopt/{,s}bin
+  #${BREW_PATH}/opt/imagemagick@6/bin
+  #${BREW_PATH}/opt/bison/bin
+  #${BREW_PATH}/opt/libiconv/bin
+  #${BREW_PATH}/opt/m4/bin
   ${BREW_PATH}/{,s}bin # unbound in sbin/, most Homebrew binaries in bin/
   ${HOME}/.local/{,s}bin # Neovim configs, homebrew binaries
   /usr/local/{,s}bin # Docker, npm, Private Internet Access,...
