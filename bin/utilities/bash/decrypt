@@ -106,3 +106,5 @@ if is_sourced; then
 else
   main "$@"
 fi
+
+unset NAME
