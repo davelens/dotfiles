@@ -229,6 +229,14 @@ if [[ ! -f "$DOTFILES_SALT_PATH" ]]; then
   unset BW_SESSION
 fi
 
+########################################################################
+# TODO: There is bug with salt generation where undesired characters end
+# up as part of the salt. I think forward slashes are the main issue.
+# As a potential solution, I should continue generating a salt until a "clean"
+# value is born. That should solve all lingering inconsistencies with salt
+# generation!
+########################################################################
+
 #
 # Outside of tmux, we ask for the salt passkey once and store it in an ENV var.
 # Because I'm in tmux 24/7 I have access to DOTFILES_SALT in all my panes and 
