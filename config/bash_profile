@@ -15,13 +15,14 @@ export DOTFILES_LOG_PATH="$DOTFILES_STATE_PATH/log"
 [[ -f $DOTFILES_PATH/bash/helpers.sh ]] && source "$DOTFILES_PATH/bash/helpers.sh"
 [[ -f $DOTFILES_PATH/bash/shell.sh ]] && source "$DOTFILES_PATH/bash/shell.sh"
 
-# OS specific settings
-[[ $OS == 'windows' ]] && source "$DOTFILES_PATH/bash/wsl.sh"
-[[ $OS == 'macos' ]] && source "$DOTFILES_PATH/bash/macos.sh"
-[[ $OS == 'linux' ]] && source "$DOTFILES_PATH/bash/linux.sh"
-
 # Source the files in the bash folder
 for file in $DOTFILES_PATH/bash/{aliases,prompt,private}.sh; do
   [ -r "$file" ] && source "$file";
 done;
 unset file;
+
+# OS specific settings
+[[ $OS == 'windows' ]] && source "$DOTFILES_PATH/bash/wsl.sh"
+[[ $OS == 'macos' ]] && source "$DOTFILES_PATH/bash/macos.sh"
+[[ $OS == 'linux' ]] && source "$DOTFILES_PATH/bash/linux.sh"
+
