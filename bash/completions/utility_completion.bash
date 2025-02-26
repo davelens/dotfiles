@@ -1,21 +1,17 @@
 _utility_completions() {
-  local cur prev subfolders scripts
+  local cur prev subcommand subcommand_completion_path subfolders scripts
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
   subcommand="${COMP_WORDS[1]}"
+  subcommand_completion_path="$DOTFILES_PATH/bash/completions/${subcommand}_${COMP_WORDS[2]}.bash"
 
   # Define the root directory for the scripts
   local utilities_root="${DOTFILES_PATH}/bin/utilities"
 
-  # TODO: Leaving this here as a start for subcommand-specific delegations.
-  # Delegate to subcommand-specific completions
-  #if [[ "$subcommand" == "rails" ]]; then
-    #if [[ "${COMP_WORDS[2]}" == "deploy" ]]; then
-      #source "${DOTFILES_PATH}/bash/completions/utilities/rails/_deploy_completion.bash"
-      #_deploy_completion
-      #return
-    #fi
-  #fi
+  if [[ -f $subcommand_completion_path ]]; then
+    source $subcommand_completion_path
+    return 0
+  fi
 
   # If this is the first argument after "utility", we list the subfolders
   if [[ $COMP_CWORD -eq 1 ]]; then
