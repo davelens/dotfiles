@@ -49,8 +49,10 @@ done
 [[ -z "$TARGET_PATH" ]] && fail "Error: <path-to-folder> is required."
 
 # Sanitize the input for use in the tmux command(s).
-TARGET_PATH=$(realpath "$TARGET_PATH")
-SESSION_NAME=$(basename "$TARGET_PATH" | sed 's/^\.//' | sed 's/\./_/')
+TARGET_PATH="$(realpath "$TARGET_PATH")"
+# Removes leading dots and trailing slashes in the first sed
+# Replaces all further dots or spaces with underscores in the second sed.
+SESSION_NAME="$(basename "$TARGET_PATH" | sed 's/^\.//;s:/$::' | sed 's/[. ]/_/g')"
 
 # Assure the target path exists.
 [[ ! -d "$TARGET_PATH" ]] && fail "Error: '$TARGET_PATH' is not a valid directory."
