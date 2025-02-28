@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
 # All I ever do is source ~/.bashrc; this ought to store our dots root path.
-export DOTFILES_PATH="$(dirname $(dirname $(readlink "${BASH_SOURCE[0]}")))"
+DOTFILES_PATH="$(dirname "$(dirname "$(readlink "${BASH_SOURCE[0]}")")")"
+export DOTFILES_PATH
 
 # Trying to adhere to the XDG Base Directory Specification.
 source "$DOTFILES_PATH/config/xdg_paths"
 
 # Load the mandatory shell settings and ENV vars before everything else.
-[ -f $DOTFILES_PATH/bash/colors.sh ] && source "$DOTFILES_PATH/bash/colors.sh"
-[ -f $DOTFILES_PATH/bash/helpers.sh ] && source "$DOTFILES_PATH/bash/helpers.sh"
-[ -f $DOTFILES_PATH/bash/shell.sh ] && source "$DOTFILES_PATH/bash/shell.sh"
+[ -f "$DOTFILES_PATH/bash/colors.sh" ] && source "$DOTFILES_PATH/bash/colors.sh"
+[ -f "$DOTFILES_PATH/bash/helpers.sh" ] && source "$DOTFILES_PATH/bash/helpers.sh"
+[ -f "$DOTFILES_PATH/bash/shell.sh" ] && source "$DOTFILES_PATH/bash/shell.sh"
 
 # Source the files in the bash folder
 for file in $DOTFILES_PATH/bash/{aliases,prompt,private}.sh; do
@@ -26,4 +27,3 @@ esac
 
 export DOTFILES_SALT_PATH="$DOTFILES_DATA_PATH/salt.enc"
 export DOTFILES_LOG_PATH="$DOTFILES_STATE_PATH/log"
-
