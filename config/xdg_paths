@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Load XDG specific ENV vars, make sure the dirs exist.
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+
+[ ! -d $XDG_CACHE_HOME ] && mkdir -p $XDG_CACHE_HOME
+[ ! -d $XDG_CONFIG_HOME ] && mkdir -p $XDG_CONFIG_HOME
+[ ! -d $XDG_DATA_HOME ] && mkdir -p $XDG_DATA_HOME
+[ ! -d $XDG_STATE_HOME ] && mkdir -p $XDG_STATE_HOME
+
+# Load in specific dotfiles paths while adhering to the XDG spec.
+export DOTFILES_STATE_PATH="$XDG_STATE_HOME/dots"
+export DOTFILES_CACHE_PATH="$XDG_CACHE_HOME/dots"
+export DOTFILES_DATA_PATH="$XDG_DATA_HOME/dots"
+
+[ ! -d $DOTFILES_STATE_PATH ] && mkdir -p $DOTFILES_STATE_PATH
+[ ! -d $DOTFILES_CACHE_PATH ] && mkdir -p $DOTFILES_CACHE_PATH
+[ ! -d $DOTFILES_DATA_PATH ] && mkdir -p $DOTFILES_DATA_PATH
+
+printf ""

@@ -3,7 +3,9 @@ set -e
 
 readonly DOTBOT_DIR="dotbot"
 readonly DOTFILES_PATH="$(dirname $(dirname $(realpath "$0")))"
-readonly DOTFILES_STATE_PATH="$HOME/.local/state/dots"
+
+# Trying to adhere to the XDG Base Directory Specification.
+source "$DOTFILES_PATH/config/xdg_paths"
 
 # Get dotbot installed
 cd "${DOTFILES_PATH}"
