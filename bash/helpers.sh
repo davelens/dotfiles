@@ -211,8 +211,8 @@ export -f yellow
 # them to subshells (ie. other commands) without additional overhead.
 source $DOTFILES_PATH/bin/utilities/bash/box
 source $DOTFILES_PATH/bin/utilities/bash/cursor
-source $DOTFILES_PATH/bin/utilities/bash/prompt-user
-source $DOTFILES_PATH/bin/utilities/bash/print-status
+source $DOTFILES_PATH/bin/utilities/bash/prompt_user
+source $DOTFILES_PATH/bin/utilities/bash/print_status
 source $DOTFILES_PATH/bin/utilities/bash/encrypt
 source $DOTFILES_PATH/bin/utilities/bash/decrypt
 source $DOTFILES_PATH/bin/utilities/bash/salt
