@@ -13,13 +13,13 @@ function block_unless_sourced() {
 }
 
 function check() {
-  hl=${1:-255}
-  echo "$(colorize $hl [)$(green ✓)$(colorize $hl ])"
+  [ -z "$1" ] && set -- 255
+  echo "$(colorize "$1" "[")$(green ✓)$(colorize "$1" "]")"
 }
 
 function cross() {
-  hl=${1:-255}
-  echo "$(colorize $hl [)$(red x)$(colorize $hl ])"
+  [ -z "$1" ] && set -- 255
+  echo "$(colorize "$1" "[")$(red x)$(colorize "$1" "]")"
 }
 
 function colorize() {
@@ -31,11 +31,11 @@ function ensure_brew_dependency() {
     local name=${package%:*}   # Extract the package name before ":"
     local command=${package#*:} # Extract optional command name after ":"
 
-    [[ -z $command || $command == $package ]] && command=$name
+    [[ -z $command || $command == "$package" ]] && command=$name
 
-    if [[ ! `command -v $command` ]]; then
+    if [[ ! $(command -v "$command") ]]; then
       print-status -n "Installing $package ... "
-      output=$(HOMEBREW_COLOR=1 brew install --quiet $name 2>&1 >/dev/null)
+      output=$(HOMEBREW_COLOR=1 brew install --quiet "$name" 2>&1 >/dev/null)
 
       if [[ $? -gt 0 ]]; then
         print-status -n -i error "Failed to install package '$package': $output"
@@ -102,8 +102,8 @@ function lowercase() {
 }
 
 function pending() {
-  hl=${1:-255}
-  echo "$(colorize $hl [)$(yellow \~)$(colorize $hl ])"
+  [ -z "$1" ] && set -- 255
+  echo "$(colorize "$1" "[")$(yellow \~)$(colorize "$1" "]")"
 }
 
 # Find the process ID of a given command. Note that you can use regex as well.
@@ -127,11 +127,14 @@ function red() {
 function repeat() {
   local times commands arguments
 
+  # Had to add () as a potential first argument. It was '' before, but that
+  # threw function import errors when commands like `mix` ran using bin/sh
+  # in subshells. Read the note at the bottom of this file for more info.
   case $1 in
-    ''|*[0-9]*) 
+    *[0-9]*) 
       times=${1:-1}
       shift
-      commands="$@"
+      commands="$*"
       ;;
     *) 
       commands="$1"
@@ -141,10 +144,10 @@ function repeat() {
       ;;
   esac
 
-  if [[ -n $arguments ]]; then
+  if [ -n "${arguments[*]}" ]; then
     for i in "${arguments[@]}"; do $commands "$i"; done
   else
-    for i in $(seq $times); do $commands; done
+    for i in $(seq "${times:-1}"); do $commands; done
   fi
 }
 
@@ -170,9 +173,9 @@ function refresh_sensitive_env_vars_in_tmux_session() {
   # You could automate this to read *all* env vars, but I'm only interested in
   # a few select ones relevant for my dotfiles for now.
   data="$(tmux show-environment)"
-  export $(echo "$data" | grep "^SSH_AGENT_PID") >/dev/null
-  export $(echo "$data" | grep "^SSH_CONNECTION") >/dev/null
-  export $(echo "$data" | grep "^DOTFILES_SALT") >/dev/null
+  export "$(echo "$data" | grep "^SSH_AGENT_PID")" >/dev/null
+  export "$(echo "$data" | grep "^SSH_CONNECTION")" >/dev/null
+  export "$(echo "$data" | grep "^DOTFILES_SALT")" >/dev/null
   unset data
 }
 
