@@ -3,7 +3,7 @@
 alias ls='ls -G'
 alias nano='vim' # 😬
 alias rsync='rsync --exclude-from=${HOME}/.rsyncignore'
-alias vim=${EDITOR} # My usecase here is that I use `dvim` as my Neovim profile.
+alias vim="$EDITOR" # My usecase here is that I use `dvim` as my Neovim profile.
 alias vi='vim'
 
 # Spelling corrections
