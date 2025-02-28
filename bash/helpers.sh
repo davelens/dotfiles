@@ -180,6 +180,23 @@ function refresh_sensitive_env_vars_in_tmux_session() {
 }
 
 ###############################################################################
+# 
+#  DISCLAIMER: Exporting functions in your env is considered harmful. It's what 
+#  led to the Shellshock/Bashdoor family of vulnerabilities in bash < 4.3.
+#  If you want to find out if your bash is vulnerable, run the following:
+# 
+#    env x='() { :;}; echo vulnerable' bash -c "echo this is a test"
+# 
+#  You'll see the word "vulnerable" when you're at risk.
+#
+#  Running Bash 5+ at the time of writing should be OK. But keep in mind that 
+#  exporting functions remains a security risk. Use with caution.
+#
+#  Sources:
+#  https://en.wikipedia.org/wiki/Shellshock_(software_bug)
+#  https://unix.stackexchange.com/questions/537516/why-is-sh-not-bash-complaining-about-functions-defined-in-my-bashrc
+#
+###############################################################################
 
 # Expose all helper methods to subshells.
 export -f block_unless_sourced
