@@ -203,7 +203,6 @@ export -f pending
 export -f pid
 export -f red
 export -f repeat
-export -f repeat
 export -f succeed
 export -f timesused
 export -f yellow
