@@ -50,7 +50,7 @@ prepare() {
 function unlock() {
   if [[ ! -f "$mp_file" ]]; then
     encrypt \
-      -i $(prompt-user -m "$(pending) Enter your Bitwarden master password: ") \
+      -i $(prompt_user -m "$(pending) Enter your Bitwarden master password: ") \
       -o "$DOTFILES_STATE_PATH/bw-mp.enc"
   fi
 
@@ -59,12 +59,12 @@ function unlock() {
 
 function cache-items() {
   local ITEMS
-  print-status "Loading items from vault(s) ... "
+  print_status "Loading items from vault(s) ... "
 
   export BW_SESSION=$(unlock)
 
   if ! ITEMS=$(bw --session "$BW_SESSION" list items 2>/dev/null); then
-    print-status -i error "Could not load items or operation timed out."
+    print_status -i error "Could not load items or operation timed out."
     exit 1
   fi
 
@@ -72,7 +72,7 @@ function cache-items() {
   echo "$ITEMS" > $tmp
   encrypt -f "$tmp" -o "$ITEMS_CACHE_FILE.enc"
 
-  print-status -i ok "Items loaded from vault(s)."
+  print_status -i ok "Items loaded from vault(s)."
 }
 
 function items() {
@@ -112,7 +112,7 @@ function identities() {
 
 function clear-cache() {
   rm -f $ITEMS_CACHE_FILE.enc
-  print-status -i ok "Items cache cleared."
+  print_status -i ok "Items cache cleared."
 }
 
 #############################################################################
@@ -155,7 +155,7 @@ function main() {
       ;;
     *)
       if [[ -z $command ]]; then
-        print-status -i error "Invalid option: $1"
+        print_status -i error "Invalid option: $1"
         usage && exit 1
       fi
 

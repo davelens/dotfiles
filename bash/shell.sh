@@ -265,6 +265,6 @@ fi
       #export BW_SESSION="$(utility misc bitwarden unlock)"
     #fi
   #else
-    #print-status -i error "Encrypted salt not ready; possibly wrong passkey."
+    #print_status -i error "Encrypted salt not ready; possibly wrong passkey."
   #fi
 #fi

@@ -85,7 +85,9 @@ function main() {
       if [[ -z $message ]]; then
         message="$1"
       else
-        print-status -i error "Invalid option: $1"
+        # This used to use print_status itself, but that *has* to break 
+        # something.
+        echo "[$NAME]: Invalid option: $1"
         usage && exit 1
       fi
       shift

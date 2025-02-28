@@ -136,7 +136,7 @@ function main() {
       if [[ -z $question ]]; then
         question="$1"
       else
-        print-status -i error "Invalid option: $1"
+        print_status -i error "Invalid option: $1"
         usage && exit 1
       fi
       shift
@@ -145,7 +145,7 @@ function main() {
   done
 
   if [[ -z $question ]]; then
-    print-status -i error "You need to provide a question to ask."
+    print_status -i error "You need to provide a question to ask."
     usage && exit 1
   fi
 

@@ -60,7 +60,7 @@ function main() {
     -f | --file)
       shift
       if [[ ! -f $1 ]]; then
-        print-status -i error "Input file not found: $1"
+        print_status -i error "Input file not found: $1"
         usage && exit 1
       fi
       input="$1"
@@ -90,14 +90,14 @@ function main() {
       shift
       ;;
     *)
-      print-status -i error "Invalid option: $1"
+      print_status -i error "Invalid option: $1"
       usage && exit 1
       ;;
     esac
   done
 
   if [[ -z $input ]]; then
-    print-status -i error "You need to provide a string or file to encrypt."
+    print_status -i error "You need to provide a string or file to encrypt."
     usage && exit 1
   fi
 

@@ -22,7 +22,7 @@ usage() {
 
 logs() {
   if [ ! -s "$log_file" ]; then
-    fail "$(print-status -i error "The log file is currently empty.")"
+    fail "$(print_status -i error "The log file is currently empty.")"
   fi
 
   if [[ "$EDITOR" == *vim* ]]; then
@@ -45,7 +45,7 @@ update() {
 
   # Check for uncommitted changes and exit gracefully if so.
   if ! git -C "$DOTFILES_PATH" diff-files --quiet; then
-    print-status -i error "There are uncommitted changes in your dotfiles. Please commit or stash them before updating:"
+    print_status -i error "There are uncommitted changes in your dotfiles. Please commit or stash them before updating:"
     echo
     echo
     echo "$(cd $DOTFILES_PATH && git st)"
@@ -53,22 +53,22 @@ update() {
   fi
 
   # Pull the latest changes
-  print-status -n "Pulling in changes ..."
+  print_status -n "Pulling in changes ..."
   # TODO: Check why merge output does not get redirected to log file anymore.
   cd "$DOTFILES_PATH" && git fetch origin && git merge --no-commit origin/"$(git b)" &>> "$log_file" || error_occurred=1
-  print-status -i ok "Files updated to latest version"
+  print_status -i ok "Files updated to latest version"
 
   # Run the installer if no errors occurred
   if [[ $error_occurred -eq 0 ]]; then
-    print-status -n "Running installer ..."
+    print_status -n "Running installer ..."
     "$DOTFILES_PATH/setup/install" &>> "$log_file" || error_occurred=1
   fi
 
   # Handle final status
   if [[ $error_occurred -eq 0 ]]; then
-    print-status -i ok "Update complete"
+    print_status -i ok "Update complete"
   else
-    print-status -i error "Update failed"
+    print_status -i error "Update failed"
     echo "    Logs available at $log_file"
     exit 1
   fi
