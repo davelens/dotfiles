@@ -186,6 +186,11 @@ function yellow() {
 ###############################################################################
 
 # Expose all helper methods to subshells.
+#
+# TODO: This is both a security risk, and something that's giving me errors on
+# "some" commands running in subshells. It's annoying, and I hate it.
+# I also don't have any solution yet, so I'll need to dos ome more reading.
+#
 export -f block_unless_sourced
 export -f check
 export -f colorize
