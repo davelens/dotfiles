@@ -18,12 +18,7 @@ done;
 unset file;
 
 # OS specific settings
-#[[ $OS == 'windows' ]] && source "$DOTFILES_PATH/bash/wsl.sh"
-#[[ $OS == 'macos' ]] && source "$DOTFILES_PATH/bash/macos.sh"
-#[[ $OS == 'linux' ]] && source "$DOTFILES_PATH/bash/linux.sh"
-
-# OS specific settings
-case $($DOTFILES_PATH/bin/os) in
+case $("$DOTFILES_PATH/bin/os") in
   windows) source "$DOTFILES_PATH/bash/wsl.sh";;
   macos) source "$DOTFILES_PATH/bash/macos.sh";;
   linux) source "$DOTFILES_PATH/bash/linux.sh";;

@@ -89,7 +89,7 @@ paths_to_add=(
   /{,s}bin # *nix shells and binaries, and basic commands like ls, cp, echo,...
 )
 
-if [[ $OS == 'windows' ]]; then
+if [[ $(os) == 'windows' ]]; then
   paths_to_add+=(
     /mnt/c/Windows/System32
     /mnt/c/Windows/System32/WindowsPowerShell/v1.0
