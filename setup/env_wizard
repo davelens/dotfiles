@@ -241,8 +241,6 @@ function write_env_files() {
   declare -p \
     OWNER_NAME \
     REPO_NAMESPACE \
-    DOTFILES_PATH \
-    DOTFILES_STATE_PATH \
     GITHUB_EMAIL \
     GITHUB_USERNAME \
     GITHUB_PERSONAL_ACCESS_TOKEN | \
