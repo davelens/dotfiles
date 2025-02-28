@@ -1,7 +1,7 @@
 # This file will only load on WSL.
 
 # Bootstrap an ssh-agent and add your default key to it.
-function ssh-agent-bootstrap() {
+function ssh-agent-bootstrap {
   if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent > /dev/null; then
     export SSH_AUTH_SOCK=/tmp/ssh-agent.socket
     [ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"

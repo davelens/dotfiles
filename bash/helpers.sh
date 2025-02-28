@@ -3,7 +3,7 @@
 #[[ -n "$_HELPERS_INCLUDED" ]] && return
 #export _HELPERS_INCLUDED=1
 
-function block_unless_sourced() {
+function block_unless_sourced {
   if is_sourced; then
     echo "$(cross) This script is meant to be sourced, not executed directly." >&2
     return 1
@@ -12,21 +12,21 @@ function block_unless_sourced() {
   return 0
 }
 
-function check() {
+function check {
   [ -z "$1" ] && set -- 255
   echo "$(colorize "$1" "[")$(green ✓)$(colorize "$1" "]")"
 }
 
-function cross() {
+function cross {
   [ -z "$1" ] && set -- 255
   echo "$(colorize "$1" "[")$(red x)$(colorize "$1" "]")"
 }
 
-function colorize() {
+function colorize {
   echo "$(tput setaf "$1")$2$(tput sgr0)"
 }
 
-function ensure_brew_dependency() {
+function ensure_brew_dependency {
   for package in "$@"; do
     local name=${package%:*}   # Extract the package name before ":"
     local command=${package#*:} # Extract optional command name after ":"
@@ -47,7 +47,7 @@ function ensure_brew_dependency() {
 }
 
 # To help us centralize how errors look throughout our scripts.
-function error_handler() {
+function error_handler {
   echo "$(cross) An error occurred. Check the log file for details: $DOTFILES_STATE_PATH/dots.log"
 
   if ! is_sourced; then
@@ -56,34 +56,34 @@ function error_handler() {
 }
 
 # Exports all ENV vars listed in a file. Loads ~/.env by default.
-function export_env_vars_from_file() {
+function export_env_vars_from_file {
   local env_file=${1:-~/.env}
   # shellcheck source=/dev/null
   [[ -f $env_file ]] && source "$env_file"
 }
 
 # Helps us hard stop our custom executables during fails.
-function fail() {
+function fail {
   printf '%s\n' "$1" >&2 # Sends a message to stderr.
   exit "${2-1}" # Returns a code specified by $2 or 1 by default.
 }
 
-function green() {
+function green {
   colorize 2 "$1"
 }
 
-function interrupt_handler() {
+function interrupt_handler {
   print_status -i error "Aborted."
   exit 1
 }
 
-function is_sourced() {
+function is_sourced {
   local script="${BASH_SOURCE[1]}"
   [[ "$script" != "$0" ]]
 }
 
 # Join an array by a given delimiter string
-function join_by() {
+function join_by {
   local d f 
   d="${1-}" f="${2-}"
 
@@ -93,7 +93,7 @@ function join_by() {
 }
 
 # Lowercase any string
-function lowercase() {
+function lowercase {
   if [ -n "$1" ]; then
     echo "$1" | tr "[:upper:]" "[:lower:]"
   else
@@ -101,7 +101,7 @@ function lowercase() {
   fi
 }
 
-function pending() {
+function pending {
   [ -z "$1" ] && set -- 255
   echo "$(colorize "$1" "[")$(yellow \~)$(colorize "$1" "]")"
 }
@@ -111,11 +111,11 @@ function pending() {
 #   pid '/d$/' 
 #
 # Would find pids of all processes with names ending in 'd'
-function pid() { 
+function pid { 
   lsof -t -c "$@"
 }
 
-function red() {
+function red {
   colorize 1 "$1"
 }
 
@@ -124,7 +124,7 @@ function red() {
 #   repeat-do 4 echo lol 
 #   repeat-do lowercase "FOO" "BAR" "BAZ"
 #
-function repeat() {
+function repeat {
   local times commands arguments
 
   # Had to add () as a potential first argument. It was '' before, but that
@@ -151,18 +151,18 @@ function repeat() {
   fi
 }
 
-function succeed() {
+function succeed {
   echo "$1" # Sends a message to stderr.
   exit 0
 }
 
 # Because we all want to know how many times we actually typed "gti" instead 
 # of "git".
-function timesused() {
+function timesused {
   [[ -f "$HOME/.bash_history" ]] && grep -c "^${1}" "$HOME/.bash_history"
 }
 
-function yellow() {
+function yellow {
   colorize 3 "$1"
 }
 

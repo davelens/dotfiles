@@ -26,7 +26,7 @@ usage() {
 
 #############################################################################
 
-function reset() {
+function reset {
   print_status "Resetting salt and all encrypted files ..."
   rm -f "$DOTFILES_STATE_PATH"/*.enc
   cursor move-up move-start
@@ -35,7 +35,7 @@ function reset() {
   echo
 }
 
-function generate() {
+function generate {
   local looping passkey pass_confirmation icon
   looping=0
   icon="$(pending)"
@@ -84,7 +84,7 @@ function generate() {
   fi
 }
 
-function decrypt_salt() {
+function decrypt_salt {
   local passkey icon
   [[ -n $1 ]] && passkey="$1"
 
@@ -101,7 +101,7 @@ function decrypt_salt() {
   fi
 }
 
-function current() {
+function current {
   local salt
 
   if [[ -f "$DOTFILES_SALT_PATH" ]]; then
@@ -120,7 +120,7 @@ function current() {
 
 #############################################################################
 
-function main() {
+function main {
   # Fail early if no arguments are given.
   [[ $# -eq 0 ]] && usage && exit 0
 
@@ -165,7 +165,7 @@ function main() {
 
 #############################################################################
 
-eval "function $NAME() { utility bash $NAME \"\$@\"; }"
+eval "function $NAME { utility bash $NAME \"\$@\"; }"
 
 # Sourcing this file will expose the same functions used by this command.
 # Explicitly exporting these here will make them available in all subshells.

@@ -82,36 +82,36 @@ done
 
 #############################################################################
 
-function seq_move_end() {
+function seq_move_end {
   seq_move_right $(tput cols) 
 }
 
-function seq_move_up() {
+function seq_move_up {
   local jump=${1:-1}
   [[ $in_prompt -eq 1 ]] && jump=$((jump + $(prompt_correction)))
   printf "\033[${jump}A"
 }
 
-function seq_move_down() {
+function seq_move_down {
   local jump=${1:-1}
   [[ $in_prompt -eq 1 ]] && jump=$((jump - $(prompt_correction)))
   printf "\033[${jump}B"
 }
 
-function seq_clear_up() {
+function seq_clear_up {
   local jump=${1:-1}
   seq_move_up $jump
   seq_clear_down
 }
 
-function seq_print() {
+function seq_print {
   printf "$steps"
 }
 
 ###############################################################################
 # Some clear functions require a deficit corresponding to the prompt height.
 # Afaik you can't derive this dynamically, so we hardcode it for our needs.
-function prompt_correction() {
+function prompt_correction {
   if [[ $in_prompt -eq 1 ]]; then
     [[ -n $STARSHIP_SHELL ]] && succeed 3
     succeed 2
@@ -119,7 +119,7 @@ function prompt_correction() {
   echo 0
 }
 
-function chain_commands() {
+function chain_commands {
   for cmd in ${commands[@]}; do
     command="${cmd%%:*}" # Extract the part before `:`
     steps=${cmd##*:}   # Extract the part after `:`
@@ -128,7 +128,7 @@ function chain_commands() {
   done
 }
 
-function main() {
+function main {
   [[ $# -eq 0 ]] && usage && exit 0
 
   local steps=1 in_prompt=0 raw=0 
@@ -174,7 +174,7 @@ function main() {
 
 #############################################################################
 
-eval "function $NAME() { utility bash $NAME \"\$@\"; }"
+eval "function $NAME { utility bash $NAME \"\$@\"; }"
 
 # Sourcing this file will expose the same functions used by this command.
 # Explicitly exporting these here will make them available in all subshells.

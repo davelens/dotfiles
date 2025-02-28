@@ -4,7 +4,7 @@
 # fzf preview of bin/utilities/bitwarden.
 # This keeps that command a bit more readable.
 
-function print_key_value() {
+function print_key_value {
   key="$1"
   value="$(eval echo \"\$$key\")"
 
@@ -19,13 +19,13 @@ function print_key_value() {
   fi
 }
 
-function uri_values() {
+function uri_values {
   echo "$1" |
     jq -r "if .login.uris? then .login.uris[].uri else null end" |
     sed "s/^/- /"
 }
 
-function main() {
+function main {
   username=$(echo "$item" | jq -r ".login.username")
   password=$(echo "$item" | jq -r ".login.password" | sed 's/./*/g')
   notes=$(echo "$item" | jq -r ".notes")

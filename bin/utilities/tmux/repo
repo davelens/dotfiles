@@ -60,7 +60,7 @@ destination=$namespace/$1
 # Clone the git repo, fail with error output from `git clone`.
 [[ ! -d $destination ]] && bootstrap=1 && (git clone git@github.com:$1.git $destination || fail)
 
-function rails_windows() {
+function rails_windows {
   tmux new-window -n db -c $destination -t $1
   tmux new-window -n repl -c $destination -t $1
   tmux new-window -n server -c $destination -t $1
@@ -82,7 +82,7 @@ function rails_windows() {
   esac
 }
 
-function phoenix_windows() {
+function phoenix_windows {
   tmux new-window -n db -c $destination -t $1
   tmux new-window -n repl -c $destination -t $1
   tmux new-window -n server -c $destination -t $1

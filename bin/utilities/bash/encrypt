@@ -27,7 +27,7 @@ usage() {
 
 ###############################################################################
 
-function call_openssl() {
+function call_openssl {
   local string="openssl aes-256-cbc -e -pbkdf2"
 
   if [[ -z "$passkey" ]]; then
@@ -45,7 +45,7 @@ function call_openssl() {
   echo $string
 }
 
-function main() {
+function main {
   # Fail early if no arguments are given.
   [[ $# -eq 0 ]] && usage && exit 0
 
@@ -106,7 +106,7 @@ function main() {
 
 #############################################################################
 
-eval "function $NAME() { utility bash $NAME \"\$@\"; }"
+eval "function $NAME { utility bash $NAME \"\$@\"; }"
 
 # Sourcing this file will expose the same functions used by this command.
 # Explicitly exporting these here will make them available in all subshells.

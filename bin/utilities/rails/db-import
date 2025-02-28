@@ -10,7 +10,7 @@ docker_prefix=
 mysql='mysql' # TODO: fix a .my.cnf for Docker
 mysqldump='mysqldump'
 
-function spinner() {
+function spinner {
   echo "[$me] $1"
 }
 

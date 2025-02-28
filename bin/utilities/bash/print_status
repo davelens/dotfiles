@@ -26,7 +26,7 @@ usage() {
 
 #############################################################################
 
-function icon() {
+function icon {
   case "$icon" in
     pending)  symbol="$(pending $color)";;
     ok)       symbol="$(check $color)";;
@@ -37,11 +37,11 @@ function icon() {
   echo "$symbol"
 }
 
-function newline() {
+function newline {
   [[ $newline -eq 1 ]] && echo "\n"
 }
 
-function main() {
+function main {
   # Fail early if no arguments are given.
   [[ $# -eq 0 ]] && usage && exit 0
 
@@ -105,7 +105,7 @@ function main() {
 
 #############################################################################
 
-eval "function $NAME() { utility bash $NAME \"\$@\"; [ -n "\${STATUS_AFFIX}" ] && \$STATUS_AFFIX ; }"
+eval "function $NAME { utility bash $NAME \"\$@\"; [ -n "\${STATUS_AFFIX}" ] && \$STATUS_AFFIX ; }"
 
 # Sourcing this file will expose the same functions used by this command.
 # Explicitly exporting these here will make them available in all subshells.

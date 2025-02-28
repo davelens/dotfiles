@@ -20,7 +20,7 @@ usage() {
 
 ###############################################################################
 
-function basic() {
+function basic {
   local input
   local prompt="$(prompt_line)"
   # Flush the input buffer before reading.
@@ -28,7 +28,7 @@ function basic() {
   echo "${input:-$default}"
 }
 
-function confirm() {
+function confirm {
   local input
   local prompt="$(prompt_line)"
   # Flush the input buffer before reading.
@@ -36,7 +36,7 @@ function confirm() {
   echo 1
 }
 
-function yesno() {
+function yesno {
   local input prompt="$(prompt_line)" 
   [[ $1 == "--clean" ]] && prompt="$question"
 
@@ -52,7 +52,7 @@ function yesno() {
   esac
 }
 
-function masked() {
+function masked {
   local input
   local prompt=$(prompt_line)
   local stty_backup
@@ -89,7 +89,7 @@ function masked() {
   echo >&2 # Adds a newline after the masked input, otherwise output "sticks".
 }
 
-function prompt_line() {
+function prompt_line {
   local string=""
   [[ -n "$question" ]] && string+="$(echo $question | xargs)"
   [[ -n "$default" ]] && string+=" $BGK[${default}]$NONE "
@@ -98,7 +98,7 @@ function prompt_line() {
 
 ###############################################################################
 
-function main() {
+function main {
   # Fail early if no arguments are given.
   [[ $# -eq 0 ]] && usage && exit 0
 
@@ -154,7 +154,7 @@ function main() {
 
 #############################################################################
 
-eval "function $NAME() { utility bash $NAME \"\$@\"; }"
+eval "function $NAME { utility bash $NAME \"\$@\"; }"
 
 # Sourcing this file will expose the same functions used by this command.
 # Explicitly exporting these here will make them available in all subshells.

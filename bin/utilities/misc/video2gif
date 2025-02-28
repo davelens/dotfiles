@@ -14,7 +14,7 @@ SCALE=1
 CUTOFF=0
 FULLPATH=
 
-function usage() {
+function usage {
   echo
   echo "Usage: $0 [-f|--fps <fps>] [-s|--scale <scale>] file"
   echo
