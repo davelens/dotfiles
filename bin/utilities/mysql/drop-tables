@@ -4,7 +4,7 @@ set -e
 # Check if the correct number of arguments is provided
 if [ $# -ne 2 ]; then
   echo
-  echo "Usage: utility mysql `basename $0` <username> <database>"
+  echo "Usage: utility mysql $(basename "$0") <username> <database>"
   exit 1
 fi
 

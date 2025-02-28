@@ -5,7 +5,7 @@ segments=''
 bgcolor=''
 fgcolor=23
 
-status=`cd $PWD && hub ci-status`
+status=$(cd $PWD && hub ci-status)
 
 fail() {
   segment "CI: $status" 208 52 'left'
@@ -20,9 +20,9 @@ success() {
 }
 
 case $status in
-  'failure' ) segments+=`fail`; bgcolor=52;;
-  'pending' ) segments+=`pending`; bgcolor=30;;
-  'success' ) segments+=`success`; bgcolor=30;;
+  'failure' ) segments+=$(fail); bgcolor=52;;
+  'pending' ) segments+=$(pending); bgcolor=30;;
+  'success' ) segments+=$(success); bgcolor=30;;
 esac
 
 echo "#[fg=colour$fgcolor,bg=colour$bgcolor]$segments"

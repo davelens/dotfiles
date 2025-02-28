@@ -2,7 +2,7 @@
 set -e
 
 # Check if the correct number of arguments is provided
-[[ $# -ne 2 ]] && fail "Usage: utility mysql `basename $0` <database> <.sql file path>"
+[[ $# -ne 2 ]] && fail "Usage: utility mysql $(basename "$0") <database> <.sql file path>"
 
 database="$1"
 sql_file="$2"

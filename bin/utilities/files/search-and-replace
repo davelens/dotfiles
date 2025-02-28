@@ -6,7 +6,7 @@ set -e
 # I chose to use ripgrep, as it's fast and respects the .gitignore.
 
 # Check if exactly two arguments are provided
-[[ $# -lt 2 ]] && fail "Usage: `basename $0` <query> <replacement> [<files>...]"
+[[ $# -lt 2 ]] && fail "Usage: $(basename "$0") <query> <replacement> [<files>...]"
 
 query="$1"
 replacement="$2"

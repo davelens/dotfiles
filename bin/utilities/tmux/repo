@@ -27,7 +27,7 @@ set -e
 # Loading ENV vars enables us to pick up REPO_NAMESPACE.
 export_env_vars_from_file ${HOME}/.env
 
-me=bin/tmux/`basename "$0"`
+me="bin/tmux/$(basename "$0")"
 namespace=${REPO_NAMESPACE:-"$HOME/Sites"}
 lockfile=/tmp/mix-done.lock
 
@@ -43,7 +43,7 @@ fi
 # Requesting to pull in a new project will query GitHub's API for namespaces
 [[ $# -eq 1 && $1 == '-n' ]] && set -- $(utility github search-repos user:davelens+user:blimp)
 
-if [[ $# -eq 1 && $1 == '--docker' ]] && [[ ! `pgrep -n docker` ]]; then
+if [[ $# -eq 1 && $1 == '--docker' ]] && [[ ! $(pgrep -n docker) ]]; then
   echo ERROR: You requested to bootstrap the project for docker, but no docker server is running.
   exit
 fi
@@ -66,7 +66,7 @@ function rails_windows() {
   tmux new-window -n server -c $destination -t $1
   sleep 1
 
-  if [[ -n `pgrep -n mysqld` ]]; then
+  if [ -n $(pgrep -n mysqld) ]; then
     tmux send-keys -t $1:db "clear && mysql \$(utility rails lookup-db-credentials --key=database)" C-m
   fi
 
@@ -78,7 +78,7 @@ function rails_windows() {
   case $server in
     [Yy]* ) tmux send-keys -t $1:server 'clear && bin/rails s' C-m;;
     [Nn]* ) tmux send-keys -t $1:server 'clear && bin/rails s';;
-    * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
+    * ) printf "\nPlease answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.\n";;
   esac
 }
 
@@ -88,7 +88,7 @@ function phoenix_windows() {
   tmux new-window -n server -c $destination -t $1
   sleep 1
 
-  if [[ -n `pgrep -n mysqld` ]]; then
+  if [ -n $(pgrep -n mysqld) ]; then
     # TODO: Extract database name from config/dev.exs
     tmux send-keys -t $1:db "clear && mysql" C-m
   fi
@@ -110,7 +110,7 @@ function phoenix_windows() {
   case $server in
     [Yy]* ) tmux send-keys -t $1:server 'clear && mix phx.server' C-m;;
     [Nn]* ) tmux send-keys -t $1:server 'clear && mix phx.server';;
-    * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
+    * ) printf "\nPlease answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.\n";;
   esac
 }
 
@@ -118,13 +118,13 @@ tmux attach -t $1 >/dev/null 2>&1 || (
   tmux new-session -s $1 -n editor -c $destination -d
   tmux send-keys -t $1 "export_env_vars_from_file; clear && ${EDITOR}" C-m
 
-  if [[ -z `pgrep -n mysqld` ]]; then
+  if [ -z $(pgrep -n mysqld) ]; then
     read -n1 -p "[tmux/d] Launch local mysql server? (y/n) " mysql
     echo
     case $mysql in
       [Yy]* ) mysql.server start >/dev/null 2>&1;;
       [Nn]* ) echo;;
-      * ) printf "\nPlease answer `tput smul`Y`tput rmul`es or `tput smul`N`tput rmul`o.\n";;
+      * ) printf "\nPlease answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.\n";;
     esac
   fi
 

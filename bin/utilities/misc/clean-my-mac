@@ -17,13 +17,13 @@ rm ~/Library/Caches/com.spotify.client/Cache.db* || true
 
 # Firefox cache
 # This will probably break if you're working with n+2 profiles.
-firefox_profile=`ls ~/Library/Caches/Firefox/Profiles/`
+firefox_profile=$(ls ~/Library/Caches/Firefox/Profiles/)
 rm -rf ~/Library/Caches/Firefox/Profiles/$firefox_profile/cache2/entries
 mkdir ~/Library/Caches/Firefox/Profiles/$firefox_profile/cache2/entries
 
 # Thunderbird cache
 # This will probably break if you're working with n+2 profiles.
-thunderbird_profile=`ls ~/Library/Caches/Thunderbird/Profiles/`
+thunderbird_profile=$(ls ~/Library/Caches/Thunderbird/Profiles/)
 rm -rf ~/Library/Caches/Thunderbird/Profiles/$thunderbird_profile/cache2/entries
 mkdir ~/Library/Caches/Thunderbird/Profiles/$thunderbird_profile/cache2/entries
 

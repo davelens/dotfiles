@@ -4,7 +4,7 @@
 set -e
 [[ -f ~/.env ]] && export $(cat ~/.env | grep -v ^\# | xargs)
 
-BASENAME=`basename $0`
+BASENAME=$(basename "$0")
 
 # Ensure we have at least two arguments
 [[ $# -lt 2 ]] && fail "Usage: $BASENAME <category> <command> [<args>...]"

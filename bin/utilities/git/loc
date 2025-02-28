@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-script_name=`basename $0`
+script_name=$(basename "$0")
 [[ ! -d .git ]] && fail "[git/$script_name] ERROR: No .git repository folder found."
 
 # Check if the correct number of arguments is provided

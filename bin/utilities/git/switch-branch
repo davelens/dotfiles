@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
-[[ ! -d .git ]] && fail "ERROR: Local working directory is not a git repo."
-[[ `command -v gsed` ]] && cmd=gsed || cmd=sed
+[ ! -d .git ] && fail "ERROR: Local working directory is not a git repo."
+[ $(command -v gsed) ] && cmd=gsed || cmd=sed
 
 # Before being pushed into FZF, this list of branches:
 # * Removes excess whitespace in front of the branch names
@@ -11,5 +11,5 @@ set -e
 # * Filters out duplicates
 # * Is sorted alphabetically
 set -- $(git branch -a | $cmd -e 's|^  \(remotes/origin/\)\?||' -e "/^$\|^HEAD\|$(git branch --show-current)/d" | sort -r | uniq | fzf)
-[[ -z $1 ]] && fail "Staying on current branch."
-[[ -n $1 ]] && git checkout $1
+[ -z "$1" ] && fail "Staying on current branch."
+[ -n "$1" ] && git checkout $1

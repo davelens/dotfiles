@@ -196,7 +196,7 @@ unset available_locales lang locale
 # BASH AUTOCOMPLETION
 ########################################################################
 # Load bash_completion through brew, when installed
-if [ `command -v brew` ]; then
+if [ $(command -v brew) ]; then
   if [ -r "${BREW_PATH}/etc/profile.d/bash_completion.sh" ]; then
     source "${BREW_PATH}/etc/profile.d/bash_completion.sh"
   fi

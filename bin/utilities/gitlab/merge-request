@@ -6,7 +6,7 @@
 # Stops further execution after any error.
 set -e
 
-if [ ! `command -v gitlab` ]; then
+if [ ! $(command -v gitlab) ]; then
   echo "EXIT: This command uses the CLI version of NARKOZ/gitlab to connect with GitLab's API. Run \`gem install gitlab\` to install it."
   exit
 fi
@@ -51,7 +51,7 @@ if [ ! -f ".gitlab-project-id" ]; then
 
   echo $project_id > .gitlab-project-id
 else
-  project_id=`cat .gitlab-project-id`
+  project_id=$(cat .gitlab-project-id)
 fi
 
 gitlab create_merge_request $project_id "'$description'" "{source_branch: '$branch', target_branch: '$target', assignee_id: $GITLAB_USER_ID}" --only=web_url | awk '{print $2}' | grep https

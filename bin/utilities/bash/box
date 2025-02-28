@@ -178,7 +178,7 @@ function main() {
     esac
   done
 
-  if [[ ! `command -v "$command"` ]]; then
+  if [[ ! $(command -v "$command") ]]; then
     print_status -i error "Command not found: $command"
     exit 1
   fi
