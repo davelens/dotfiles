@@ -111,6 +111,7 @@ eval "function $NAME() { utility bash $NAME \"\$@\"; [ -n "\${STATUS_AFFIX}" ] &
 # Explicitly exporting these here will make them available in all subshells.
 if is_sourced; then
   export -f $NAME
+  unset NAME
   return 0
 else
   main "$@"
