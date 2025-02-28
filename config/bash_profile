@@ -25,5 +25,5 @@ case $("$DOTFILES_PATH/bin/os") in
   linux) source "$DOTFILES_PATH/bash/linux.sh";;
 esac
 
-export DOTFILES_SALT_PATH="$DOTFILES_DATA_PATH/salt.enc"
+export DOTFILES_SALT_PATH="$DOTFILES_CACHE_PATH/salt.enc"
 export DOTFILES_LOG_PATH="$DOTFILES_STATE_PATH/log"

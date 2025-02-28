@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+
 set -e
 
 #
@@ -31,7 +31,7 @@ usage() {
 
 #############################################################################
 
-items_cache_file() { echo "$DOTFILES_STATE_PATH/bw-items-cache"; }
+items_cache_file() { echo "$DOTFILES_CACHE_PATH/bw-items-cache"; }
 
 mp() { decrypt -f "$mp_file"; }
 
@@ -51,7 +51,7 @@ function unlock() {
   if [[ ! -f "$mp_file" ]]; then
     encrypt \
       -i $(prompt_user -m "$(pending) Enter your Bitwarden master password: ") \
-      -o "$DOTFILES_STATE_PATH/bw-mp.enc"
+      -o "$DOTFILES_CACHE_PATH/bw-mp.enc"
   fi
 
   echo $(echo "$(mp)" | bw unlock --raw 2>/dev/null)
@@ -121,7 +121,7 @@ function main() {
   ensure_brew_dependency "fzf"
 
   local ITEMS_CACHE_FILE=$(items_cache_file)
-  local mp_file="$DOTFILES_STATE_PATH/bw-mp.enc"
+  local mp_file="$DOTFILES_CACHE_PATH/bw-mp.enc"
   local exact rest query prompt
 
   while [[ $# -gt 0 ]]; do
