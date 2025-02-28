@@ -10,6 +10,8 @@ export DOTFILES_PATH=$(dirname "$(dirname $(realpath "$0"))")
 trap 'clear && interrupt_handler' SIGINT
 
 #############################################################################
+source $DOTFILES_PATH/bin/utilities/bash/box
+
 bitwarden() { utility misc bitwarden "$@"; }
 
 # These are globals used by the box helper functions; set and forget.

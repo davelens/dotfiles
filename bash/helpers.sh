@@ -209,7 +209,6 @@ export -f yellow
 
 # My source utilities come with their own helper functions. This exposes
 # them to subshells (ie. other commands) without additional overhead.
-source $DOTFILES_PATH/bin/utilities/bash/box
 source $DOTFILES_PATH/bin/utilities/bash/cursor
 source $DOTFILES_PATH/bin/utilities/bash/prompt_user
 source $DOTFILES_PATH/bin/utilities/bash/print_status
