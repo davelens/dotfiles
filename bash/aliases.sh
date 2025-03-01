@@ -36,3 +36,6 @@ alias dotvim='bash -c "utility tmux quickstart \"\$@\" -- ~/.dotvim" --'
 # Generic helpers and custom commands
 alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias http='ruby -run -ehttpd . -p3000' # Run a quick & basic local HTTP server
+
+# XDG related overrides
+alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME/yarn/config"'
