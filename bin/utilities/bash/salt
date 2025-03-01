@@ -5,13 +5,12 @@
 #
 # https://gist.github.com/ConnerWill/d4b6c776b509add763e17f9f113fd25b
 #
-NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
 
-#trap 'error_handler' ERR
+name="salt"
 
 usage() {
   echo
-  echo "Usage: $NAME [-h|--help] <options>"
+  echo "Usage: $name [-h|--help] <options>"
   echo 
   echo "Operations related to the default salt used in encrypt/decrypt."
   echo 
@@ -27,10 +26,10 @@ usage() {
 #############################################################################
 
 function reset {
-  print_status "Resetting salt and all encrypted files ..."
+  $print_status "Resetting salt and all encrypted files ..."
   rm -f "$DOTFILES_STATE_PATH"/*.enc
   cursor move-up move-start
-  print_status -i ok "Salt and encrypted files have been reset.\n"
+  $print_status -i ok "Salt and encrypted files have been reset.\n"
   echo "    Please source ~/.bashrc (\`s\`) or restart your shell to apply changes."
   echo
 }
@@ -47,38 +46,38 @@ function generate {
 
   # So we know where to restore to after a variable number of attempts.
   if [[ $looping -eq 0 ]]; then
-    print_status "Generating new salt ..." >&2
+    $print_status "Generating new salt ..." >&2
     cursor save
   fi
 
   if [[ -z "$passkey" ]]; then
-    passkey=$(prompt_user -i "$icon " -m "Enter your desired password: ") >&2
+    passkey=$($prompt_user -i "$icon " -m "Enter your desired password: ") >&2
   fi
 
-  pass_confirmation=$(prompt_user -i "$(pending) " -m  "Confirm your entered password: ") >&2
+  pass_confirmation=$($prompt_user -i "$(pending) " -m  "Confirm your entered password: ") >&2
 
   if [[ ${#passkey} -lt 3 ]]; then
     cursor restore clear-down >&2
-    print_status -i error "Passkey must be at least 3 characters long."
+    $print_status -i error "Passkey must be at least 3 characters long."
     generate -l
     return
   fi
 
   if [[ "$passkey" != "$pass_confirmation" ]]; then
     cursor restore clear-down >&2
-    print_status -i error "Mismatched passwords, try again." >&2
+    $print_status -i error "Mismatched passwords, try again." >&2
     generate -l
     return
   fi
 
   salt=$(openssl rand -base64 32)
-  encrypt -p $passkey -i "$salt" -o "$DOTFILES_SALT_PATH"
+  $encrypt -p $passkey -i "$salt" -o "$DOTFILES_SALT_PATH"
   cursor restore clear-down clear-up >&2
 
   if [[ $? -eq 0 ]]; then
-    print_status -i ok "Encrypted salt is ready." >&2
+    $print_status -i ok "Encrypted salt is ready." >&2
   else
-    print_status -i error "Decrypt failed; try again or press Ctrl-c to abort." >&2
+    $print_status -i error "Decrypt failed; try again or press Ctrl-c to abort." >&2
     generate -l
     return
   fi
@@ -90,10 +89,10 @@ function decrypt_salt {
 
   if [[ -z "$passkey" ]]; then
     icon="$(pending)"
-    passkey=$(prompt_user -i "$icon " -m "Enter your salt passkey: ")
+    passkey=$($prompt_user -i "$icon " -m "Enter your salt passkey: ")
   fi
 
-  if decrypt -p "$passkey" -f "$DOTFILES_SALT_PATH" 2>/dev/null; then
+  if $decrypt -p "$passkey" -f "$DOTFILES_SALT_PATH" 2>/dev/null; then
     echo "$?"
     exit 0
   else
@@ -142,7 +141,7 @@ function main {
         #-s | --silent) silent=1;;
         -*)
           if [[ -z $1 ]]; then
-            print_status -i error "Invalid options: $arg"
+            $print_status -i error "Invalid options: $arg"
             usage && exit 1
           fi
           ;;
@@ -156,7 +155,7 @@ function main {
   command="${@: -1}"
 
   if ! command -v "$command" &> /dev/null; then
-    print_status -i error "Invalid command: $command"
+    $print_status -i error "Invalid command: $command"
     usage && exit 1
   fi
 
@@ -164,15 +163,5 @@ function main {
 }
 
 #############################################################################
-
-eval "function $NAME { utility bash $NAME \"\$@\"; }"
-
-# Sourcing this file will expose the same functions used by this command.
-# Explicitly exporting these here will make them available in all subshells.
-if is_sourced; then
-  export -f $NAME
-  unset NAME
-  return 0
-else
-  main "$@"
-fi
+unset name
+main "$@"

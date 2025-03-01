@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
 
-MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_PATH/tmp/$NAME.XXXXXX")
-#trap 'error_handler' ERR
-
-NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
+name="decrypt"
 
 usage() {
   echo
-  echo "Usage: $NAME [-h|--help] [-i|-f] <input>"
+  echo "Usage: $name [-h|--help] [-i|-f] <input>"
   echo 
   echo "Removes aes-256-cbc encryption from a string or file using openssl."
   echo "Works in tandem with \`encrypt\`."
   echo
   echo "Examples:"
-  echo "  $NAME -p mypasskey -f bw-mp.enc"
-  echo "  $NAME -f test.enc"
+  echo "  $name -p mypasskey -f bw-mp.enc"
+  echo "  $name -f test.enc"
   echo
   echo "Options:"
   echo "  -h|--help                   Show this help message and exit."
@@ -25,6 +22,8 @@ usage() {
 }
 
 ###############################################################################
+
+MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_PATH/tmp/$name.XXXXXX")
 
 function call_openssl {
   local string="openssl aes-256-cbc -d -pbkdf2"
@@ -37,7 +36,7 @@ function call_openssl {
   [[ -n $passkey ]] && string+=" -k $passkey"
   string+=" -in $input"
 
-  echo $string
+  eval $(echo "$string")
 }
 
 function main {
@@ -55,7 +54,7 @@ function main {
     -f | --file)
       shift
       if [[ ! -f $1 ]]; then
-        print_status -i error "Input file not found: $1"
+        $print_status -i error "Input file not found: $1"
         usage && exit 1
       fi
       input="$1"
@@ -80,31 +79,20 @@ function main {
       shift
       ;;
     *)
-      print_status -i error "Invalid option: $1"
+      $print_status -i error "Invalid option: $1"
       usage && exit 1
       ;;
     esac
   done
 
   if [[ -z $input ]]; then
-    print_status -i error "You need to provide a string or file to encrypt."
+    $print_status -i error "You need to provide a string or file to encrypt."
     usage && exit 1
   fi
 
-  $(call_openssl)
+  call_openssl
 }
 
 #############################################################################
-
-eval "function $NAME { utility bash $NAME \"\$@\"; }"
-
-# Sourcing this file will expose the same functions used by this command.
-# Explicitly exporting these here will make them available in all subshells.
-if is_sourced; then
-  export -f $NAME
-  return 0
-else
-  main "$@"
-fi
-
-unset NAME
+unset name
+main "$@"

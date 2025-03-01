@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 
-#trap 'error_handler' ERR
-#trap 'interrupt_handler' SIGINT
-
-NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
+name="prompt_user"
 
 usage() {
   echo
-  echo "Usage: $NAME [-h|--help] [options] <question>"
+  echo "Usage: $name [-h|--help] [options] <question>"
   echo
   echo "Options:"
   echo "  -h|--help                Show this help message and exit."
@@ -136,7 +133,7 @@ function main {
       if [[ -z $question ]]; then
         question="$1"
       else
-        print_status -i error "Invalid option: $1"
+        $print_status -i error "Invalid option: $1"
         usage && exit 1
       fi
       shift
@@ -145,7 +142,7 @@ function main {
   done
 
   if [[ -z $question ]]; then
-    print_status -i error "You need to provide a question to ask."
+    $print_status -i error "You need to provide a question to ask."
     usage && exit 1
   fi
 
@@ -153,17 +150,5 @@ function main {
 }
 
 #############################################################################
-
-eval "function $NAME { utility bash $NAME \"\$@\"; }"
-
-# Sourcing this file will expose the same functions used by this command.
-# Explicitly exporting these here will make them available in all subshells.
-if is_sourced; then
-  export -f $NAME
-  unset NAME
-  return 0
-else
-  main "$@"
-fi
-
-unset NAME
+unset name
+main "$@"

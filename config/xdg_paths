@@ -19,3 +19,7 @@ export DOTFILES_DATA_PATH="$XDG_DATA_HOME/dots"
 [ ! -d $DOTFILES_STATE_PATH ] && mkdir -p $DOTFILES_STATE_PATH
 [ ! -d $DOTFILES_CACHE_PATH ] && mkdir -p $DOTFILES_CACHE_PATH
 [ ! -d $DOTFILES_DATA_PATH ] && mkdir -p $DOTFILES_DATA_PATH
+
+# TODO: These should go elsewhere, I think.
+export DOTFILES_SALT_PATH="$DOTFILES_CACHE_PATH/salt.enc"
+export DOTFILES_LOG_PATH="$DOTFILES_STATE_PATH/log"

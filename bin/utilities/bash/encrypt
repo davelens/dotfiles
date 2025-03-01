@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
 
-MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_PATH/tmp/$NAME.XXXXXX")
-#trap 'error_handler' ERR
-
-NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
+name="encrypt"
 
 usage() {
   echo
-  echo "Usage: $NAME [-h|--help] [-i|-f] <input> -o <output>"
+  echo "Usage: $name [-h|--help] [-i|-f] <input> -o <output>"
   echo
   echo "Applies aes-256-cbc encryption from a string or file using openssl."
   echo "Works in tandem with \`decrypt\`."
   echo
   echo "Examples:"
-  echo "  $NAME -p mypasskey -i mysecretpassword -o bw-mp.enc"
-  echo "  $NAME -i \"foo bar baz\" -o test.enc"
+  echo "  $name -p mypasskey -i mysecretpassword -o bw-mp.enc"
+  echo "  $name -i \"foo bar baz\" -o test.enc"
   echo
   echo "Options:"
   echo "  -h|--help                   Show this help message and exit."
@@ -27,12 +24,14 @@ usage() {
 
 ###############################################################################
 
+MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_PATH/tmp/$name.XXXXXX")
+
 function call_openssl {
   local string="openssl aes-256-cbc -e -pbkdf2"
 
   if [[ -z "$passkey" ]]; then
     # TODO: Run command to generate and set the salt.
-    passkey=$DOTFILES_SALT
+    passkey="$DOTFILES_SALT"
   fi
 
   [[ -n $passkey ]] && string+=" -k $passkey"
@@ -42,7 +41,7 @@ function call_openssl {
     string+=" -out $output"
   fi
 
-  echo $string
+  eval $(echo "$string")
 }
 
 function main {
@@ -60,7 +59,7 @@ function main {
     -f | --file)
       shift
       if [[ ! -f $1 ]]; then
-        print_status -i error "Input file not found: $1"
+        $print_status -i error "Input file not found: $1"
         usage && exit 1
       fi
       input="$1"
@@ -90,32 +89,20 @@ function main {
       shift
       ;;
     *)
-      print_status -i error "Invalid option: $1"
+      $print_status -i error "Invalid option: $1"
       usage && exit 1
       ;;
     esac
   done
 
   if [[ -z $input ]]; then
-    print_status -i error "You need to provide a string or file to encrypt."
+    $print_status -i error "You need to provide a string or file to encrypt."
     usage && exit 1
   fi
 
-  $(call_openssl)
+  call_openssl
 }
 
 #############################################################################
-
-eval "function $NAME { utility bash $NAME \"\$@\"; }"
-
-# Sourcing this file will expose the same functions used by this command.
-# Explicitly exporting these here will make them available in all subshells.
-if is_sourced; then
-  export -f $NAME
-  unset NAME
-  return 0
-else
-  main "$@"
-fi
-
-unset NAME
+unset name
+main "$@"

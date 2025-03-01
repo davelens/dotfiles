@@ -2,13 +2,11 @@
 
 # command that displays status updates prefixed with an icon
 
-#trap 'error_handler' ERR
-
-NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
+name="print_status"
 
 usage() {
   echo
-  echo "Usage: $NAME [-h|--help] <options> <message>"
+  echo "Usage: $name [-h|--help] <options> <message>"
   echo
   echo "Options:"
   echo "  -h|--help                   Show this help message and exit."
@@ -87,7 +85,7 @@ function main {
       else
         # This used to use print_status itself, but that *has* to break 
         # something.
-        echo "[$NAME]: Invalid option: $1"
+        echo "[$name]: Invalid option: $1"
         usage && exit 1
       fi
       shift
@@ -95,7 +93,7 @@ function main {
     esac
   done
 
-  [[ $clearline -eq 1 ]] && cursor move-start clear-line
+  [[ $clearline -eq 1 ]] && $cursor move-start clear-line
 
   [[ -n $prefix ]] && result="$prefix"
   [[ -n $icon ]] && result+="$(icon) "
@@ -104,17 +102,5 @@ function main {
 }
 
 #############################################################################
-
-eval "function $NAME { utility bash $NAME \"\$@\"; [ -n "\${STATUS_AFFIX}" ] && \$STATUS_AFFIX ; }"
-
-# Sourcing this file will expose the same functions used by this command.
-# Explicitly exporting these here will make them available in all subshells.
-if is_sourced; then
-  export -f $NAME
-  unset NAME
-  return 0
-else
-  main "$@"
-fi
-
-unset NAME
+unset name
+main "$@"

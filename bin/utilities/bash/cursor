@@ -6,9 +6,8 @@
 # https://gist.github.com/ConnerWill/d4b6c776b509add763e17f9f113fd25b
 #
 
-#trap 'error_handler' ERR
+name="cursor"
 
-NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
 #
 # Note: the [-p|--for-prompt] option is specific to my dotfiles.
 # I wouldn't know how to go about calculating the bash prompt height. 
@@ -19,14 +18,14 @@ NAME=$(basename "$(is_sourced && echo ${BASH_SOURCE[0]} || echo "$0")")
 #
 usage() {
   echo
-  echo "Usage: $NAME [-h|--help] <command(s)>"
+  echo "Usage: $name [-h|--help] <command(s)>"
   echo 
   echo "Move the cursor around the terminal quickly by chaining commands."
   echo
   echo "Examples:"
-  echo "  $NAME move-up:4 clear-line"
-  echo "  $NAME line:18 clear-down"
-  echo "  $NAME save line:40 col:30 print:H restore"
+  echo "  $name move-up:4 clear-line"
+  echo "  $name line:18 clear-down"
+  echo "  $name save line:40 col:30 print:H restore"
   echo
   echo "Notes:"
   echo "  EOL = End of Line"
@@ -128,6 +127,8 @@ function chain_commands {
   done
 }
 
+###############################################################################
+
 function main {
   [[ $# -eq 0 ]] && usage && exit 0
 
@@ -145,7 +146,7 @@ function main {
         -r | --raw) raw=1;;
         *)
           if [[ -z $1 ]]; then
-            print_status -i error "Invalid options: $arg"
+            $print_status -i error "Invalid options: $arg"
             usage && exit 1
           fi
           ;;
@@ -164,7 +165,7 @@ function main {
     commands[i]="seq_${commands[i]/-/_}"
 
     if ! command -v "${commands[i]%%:*}" &> /dev/null; then
-      print_status -i error "Invalid command: ${commands[i]}"
+      $print_status -i error "Invalid command: ${commands[i]}"
       usage && exit 1
     fi
   done
@@ -173,17 +174,5 @@ function main {
 }
 
 #############################################################################
-
-eval "function $NAME { utility bash $NAME \"\$@\"; }"
-
-# Sourcing this file will expose the same functions used by this command.
-# Explicitly exporting these here will make them available in all subshells.
-if is_sourced; then
-  export -f $NAME
-  unset NAME
-  return 0
-else
-  main "$@"
-fi
-
-unset NAME
+unset name
+main "$@"
