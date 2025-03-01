@@ -22,6 +22,7 @@
     ~/.local/bin/os: bin/os
     ~/.local/bin/utility: bin/utility
     $XDG_CONFIG_HOME/nethackrc: config/nethackrc
+    $XDG_CONFIG_HOME/npm/npmrc: config/npmrc
     $XDG_CONFIG_HOME/wgetrc: config/wgetrc
     $XDG_CONFIG_HOME/shellcheckrc: config/shellcheckrc
     $XDG_CONFIG_HOME/wezterm/wezterm.lua: config/wezterm.lua
