@@ -47,17 +47,15 @@ update() {
   if ! git -C "$DOTFILES_PATH" diff-files --quiet; then
     $print_status -i error "There are uncommitted changes in your dotfiles. Please commit or stash them before updating:"
     echo
-    echo
     echo "$(git -C "$DOTFILES_PATH" st)"
     exit 1
   fi
 
   # Pull the latest changes
   $print_status -n "Pulling in changes ..."
-  # TODO: Check why merge output does not get redirected to log file anymore.
   $(
     git -C "$DOTFILES_PATH" fetch origin && \
-    git -C "$DOTFILES_PATH" merge --no-commit origin/"$(git b)" &>> "$log_file"
+    git -C "$DOTFILES_PATH" merge --no-commit origin/"$(git -C "$DOTFILES_PATH" b)" &>> "$log_file"
   ) || error_occurred=1
   $print_status -i ok "Files updated to latest version"
 

@@ -7,6 +7,9 @@
 [url "https://"]
   insteadOf = git://
 
+[color]
+	status = always
+
 [alias]
   aa = add --all
   amend = commit --amend
