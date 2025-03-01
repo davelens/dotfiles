@@ -27,4 +27,5 @@ export DOTFILES_LOG_PATH="$DOTFILES_STATE_PATH/log"
 # Program-specific overrides to let them follow the XDG spec.
 export ASDF_CONFIG_FILE="${XDG_CONFIG_HOME}/asdf/asdfrc"
 export ASDF_DATA_DIR="${XDG_DATA_HOME}/asdf"
-export WGETRC="$XDG_CONFIG_HOME/wgetrc"
+export WGETRC="${XDG_CONFIG_HOME}/wgetrc"
+export NETHACKOPTIONS="${XDG_CONFIG_HOME}/nethackrc"
