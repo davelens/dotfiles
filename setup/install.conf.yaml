@@ -21,6 +21,7 @@
     ~/.rspec: config/rspec
     ~/.rsyncignore: config/rsyncignore
     ~/.rubocop.yml: config/rubocop.yml
+    ~/.shellcheckrc: config/shellcheckrc
     ~/.local/bin/os: bin/os
     ~/.local/bin/utility: bin/utility
     ~/.wezterm.lua: config/wezterm.lua
