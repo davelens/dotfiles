@@ -44,7 +44,6 @@ function main {
   [[ $# -eq 0 ]] && usage && exit 0
 
   local newline=1 clearline=1 icon="pending" color=255 message prefix
-  STATUS_AFFIX=""
 
   while [[ $# -gt 0 ]]; do
     case $1 in
