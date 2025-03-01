@@ -1,11 +1,9 @@
 - defaults:
     link:
+      create: true
       relink: true
 
 - clean: ['~']
-
-- create:
-    - ~/.local/bin
 
 # Requires 4 space indentation or it will fail
 - link:
@@ -24,7 +22,7 @@
     ~/.shellcheckrc: config/shellcheckrc
     ~/.local/bin/os: bin/os
     ~/.local/bin/utility: bin/utility
-    ~/.wezterm.lua: config/wezterm.lua
+    $XDG_CONFIG_HOME/wezterm/wezterm.lua: config/wezterm.lua
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
