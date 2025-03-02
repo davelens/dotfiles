@@ -30,7 +30,7 @@ function reset {
   rm -f "$DOTFILES_STATE_PATH"/*.enc
   $cursor move-up move-start
   $print_status -i ok "Salt and encrypted files have been reset.\n"
-  echo "    Please source ~/.bashrc (\`s\`) or restart your shell to apply changes."
+  echo "    Please source $BASHRC (\`s\`) or restart your shell to apply changes."
   echo
 }
 

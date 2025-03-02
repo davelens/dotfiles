@@ -23,7 +23,7 @@ alias lsa='ls -hal'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
 alias redis='brew services start redis'
 # NOTE: I'm unsure if the refresh needs to be WSL2 only, but we'll see.
-alias s='source ${HOME}/.bashrc && echo "${HOME}/.bashrc sourced!"'
+alias s='source $BASHRC && echo "$BASHRC sourced!"'
 alias sp='eval "$(starship init bash)"' # [s]tarship [p]rompt. Trying it out!
 alias ta='tmux attach'
 alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace

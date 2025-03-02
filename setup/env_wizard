@@ -289,7 +289,7 @@ function main {
   _box_print "  $gitconfig_env_file"
   _box_print "  $env_file"
   _box_print
-  _box_print "Please source ~/.bashrc (\`s\`) or restart your shell to apply changes."
+  _box_print "Please source $BASHRC (\`s\`) or restart your shell to apply changes."
   _box_print
   _box_separator
   _box_print

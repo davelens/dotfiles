@@ -6,6 +6,11 @@
 - clean: ['~']
 
 # Requires 4 space indentation or it will fail
+# NOTE: "XDG dir support instead of $HOME" is currently a patch waiting to be 
+# merged into bash, so keep an eye on this:
+#
+#   https://savannah.gnu.org/support/?108134
+#
 - link:
     ~/.bash_profile: config/bash_profile
     ~/.bashrc: config/bashrc
@@ -13,10 +18,12 @@
     ~/.local/bin/os: bin/os
     ~/.local/bin/utility: bin/utility
     $ACKRC: config/ackrc
-    $INPUTRC: config/inputc
+    $INPUTRC: config/inputrc
     $NETHACKOPTIONS: config/nethackrc
     $NPM_CONFIG_USERCONFIG: config/npmrc
     $WGETRC: config/wgetrc
+    $BASHRC: config/bashrc
+    $BASH_PROFILE: config/bash_profile
     $XDG_CONFIG_HOME/git/config: config/gitconfig
     $XDG_CONFIG_HOME/git/global_ignore: config/gitignore_global
     $XDG_CONFIG_HOME/rspec/options: config/rspec
