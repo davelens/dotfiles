@@ -1,5 +1,9 @@
+[core]
+  editor = ${EDITOR}
+  pager = delta --side-by-side
+
 [include]
-  path = ~/.gitconfig.env
+  path = $XDG_CONFIG_HOME/git/config.env
 
 [push]
   autoSetupRemote = true
@@ -74,11 +78,6 @@
 
 [merge]
   tool = vimdiff
-
-[core]
-  editor = ${EDITOR}
-  excludesfile = "${XDG_CONFIG_HOME}/git/global_ignore"
-  pager = delta --side-by-side
 
 [delta]
   true-color = always

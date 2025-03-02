@@ -256,16 +256,17 @@ function write_env_files {
     GITHUB_PERSONAL_ACCESS_TOKEN | \
     sed 's/declare -x //g' > "$env_file"
 
-  # Write to ~/.gitconfig.env so we can keep our gitconfig user-agnostic.
+  # Write to "$XDG_CONFIG_HOME/git/config.env" so we can keep our gitconfig 
+  # user-agnostic.
   [[ -f "$HOME/.ssh/id_rsa.pub" ]] && export GITHUB_SIGNING_KEY="$HOME/.ssh/id_rsa.pub"
 
   content=$(envsubst < "$DOTFILES_PATH/setup/gitconfig.env.template")
-  echo "$content" > "$HOME/.gitconfig.env"
+  echo "$content" > "$XDG_CONFIG_HOME/git/config.env"
 
   # Include the allowed signers file, if it's there.
   if [[ -f "$HOME/.ssh/allowed_signers" ]]; then
     printf "[gpg \"ssh\"]\n  allowedSignersFile = ~/.ssh/allowed_signers" \
-      >> "$HOME/.gitconfig.env"
+      >> "$XDG_CONFIG_HOME/git/config.env"
   fi
 }
 
