@@ -6,7 +6,7 @@ function ssh-agent-bootstrap {
     export SSH_AUTH_SOCK=/tmp/ssh-agent.socket
     [ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"
     eval "$(ssh-agent -s -a $SSH_AUTH_SOCK)"
-    ssh-add
+    echo $SSH_AGENT_PID >> "${XDG_RUNTIME_DIR}/ssh-agent.pid"
   fi
 }
 
@@ -41,9 +41,7 @@ ssh-agent-bootstrap
 
 # Primarily make sure keychain doesn't create files in the home dir, but
 # also have it hold our initialized ssh-agent.
-if command -v keychain >/dev/null; then
-  eval $(keychain --eval --absolute --dir "${XDG_RUNTIME_DIR}/keychain" --quiet)
-fi
+keychain --inherit any --agents ssh id_rsa --absolute --dir "${XDG_RUNTIME_DIR}/keychain" --quiet
 
 # After an upgrade to Ubuntu 20.04 LTS, brew no longer gets loaded by default.
 #eval $(SHELL=/bin/bash /home/linuxbrew/.linuxbrew/bin/brew shellenv)
