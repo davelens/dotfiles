@@ -77,7 +77,7 @@
 
 [core]
   editor = ${EDITOR}
-  excludesfile = ~/.gitignore_global
+  excludesfile = "${XDG_CONFIG_HOME}/git/global_ignore"
   pager = delta --side-by-side
 
 [delta]

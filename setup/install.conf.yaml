@@ -11,8 +11,6 @@
     ~/.bash_profile: config/bash_profile
     ~/.bashrc: config/bashrc
     ~/.editrc: config/editrc
-    ~/.gitconfig: config/gitconfig
-    ~/.gitignore_global: config/gitignore_global
     ~/.inputrc: config/inputrc
     ~/.rspec: config/rspec
     ~/.rubocop.yml: config/rubocop.yml
@@ -22,6 +20,8 @@
     $NETHACKOPTIONS: config/nethackrc
     $NPM_CONFIG_USERCONFIG: config/npmrc
     $WGETRC: config/wgetrc
+    $XDG_CONFIG_HOME/git/config: config/gitconfig
+    $XDG_CONFIG_HOME/git/global_ignore: config/gitignore_global
     $XDG_CONFIG_HOME/rsyncignore: config/rsyncignore
     $XDG_CONFIG_HOME/shellcheckrc: config/shellcheckrc
     $XDG_CONFIG_HOME/starship.toml: config/starship.toml
