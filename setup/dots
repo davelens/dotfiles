@@ -12,6 +12,7 @@ usage() {
   echo
   echo "Commands:"
   echo "  logs          Opens the logfile in $EDITOR (read-only if applicable)."
+  echo "  install       Attempts a (re)install through dotbot."
   echo "  update        Updates dotfiles to the most recent version."
   echo
   echo "Options:"
@@ -37,6 +38,10 @@ logs() {
   else
     $EDITOR "$log_file"
   fi
+}
+
+install() {
+  ${DOTFILES_PATH}/setup/install
 }
 
 update() {
@@ -85,6 +90,9 @@ case "$1" in
     ;;
   logs)
     logs
+    ;;
+  install)
+    install
     ;;
   update)
     update
