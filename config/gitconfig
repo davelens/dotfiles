@@ -3,7 +3,7 @@
   pager = delta --side-by-side
 
 [include]
-  path = $XDG_CONFIG_HOME/git/config.env
+  path = ~/.config/git/config.env
 
 [push]
   autoSetupRemote = true
