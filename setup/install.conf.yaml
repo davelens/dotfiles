@@ -7,7 +7,6 @@
 
 # Requires 4 space indentation or it will fail
 - link:
-    ~/.ackrc: config/ackrc
     ~/.bash_profile: config/bash_profile
     ~/.bashrc: config/bashrc
     ~/.editrc: config/editrc
