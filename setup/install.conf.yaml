@@ -17,11 +17,11 @@
 - link:
     ~/.bash_profile: config/bash_profile
     ~/.bashrc: config/bashrc
-    ~/.editrc: config/editrc
     ~/.local/bin/os: bin/os
     ~/.local/bin/utility: bin/utility
     $ACKRC: config/ackrc
     $INPUTRC: config/inputrc
+    $EDITRC: config/editrc
     $NETHACKOPTIONS: config/nethackrc
     $NPM_CONFIG_USERCONFIG: config/npmrc
     $WGETRC: config/wgetrc
