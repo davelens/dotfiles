@@ -8,26 +8,23 @@ readonly DOTFILES_PATH="$(dirname $(dirname $(realpath "$0")))"
 source "$DOTFILES_PATH/config/xdg_paths"
 
 # Get dotbot installed
-cd "${DOTFILES_PATH}"
-git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
-git submodule update --init --recursive "${DOTBOT_DIR}"
+git -C "${DOTFILES_PATH}/${DOTBOT_DIR}" submodule sync --quiet --recursive
+git -C "${DOTFILES_PATH}/${DOTBIT_DIR}" submodule update --init --recursive
 
 # Activate dotbot with the install configuration
-"${DOTFILES_PATH}/${DOTBOT_DIR}/bin/dotbot" -d "${DOTFILES_PATH}" -c "setup/install.conf.yaml" "${@}"
+"${DOTFILES_PATH}/${DOTBOT_DIR}/bin/dotbot" -d "${DOTFILES_PATH}" -c "${DOTFILES_PATH}/setup/install.conf.yaml" "${@}"
 
-[[ ! -f ~/.env ]] && $DOTFILES_PATH/setup/env_wizard
+[[ ! -f "${DOTFILES_CONFIG_PATH}/env" ]] && \
+  "$DOTFILES_PATH/setup/env_wizard" || \
+  touch "${DOTFILES_CONFIG_PATH}/.env"
 
-# Cache the installation directory string so we can reference it in subscripts.
-# I don't use an ENV var directly because we need this *before* the shell loads
-# the .bash_profile file.
-[[ -f ~/.env ]] && touch ~/.env
-grep -q 'DOTFILES_PATH' ~/.env || echo "DOTFILES_PATH=${DOTFILES_PATH}" >> ~/.env
-grep -q 'DOTFILES_STATE_PATH' ~/.env || echo "DOTFILES_STATE_PATH=${DOTFILES_STATE_PATH}" >> ~/.env
+#grep -q 'DOTFILES_PATH' "${DOTFILES_CONFIG_PATH}/env" || echo "DOTFILES_PATH=${DOTFILES_PATH}" >> ~/.env
+#grep -q 'DOTFILES_STATE_PATH' "${DOTFILES_CONFIG_PATH}/env" || echo "DOTFILES_STATE_PATH=${DOTFILES_STATE_PATH}" >> ~/.env
 
 # Create an executable that allows us to update our dotfiles, among other 
 # things.
 dots_path="${HOME}/.local/bin/dots"
-if [ ! -f $dots_path ]; then
+if [ ! -f "$dots_path" ]; then
   ln -s "${DOTFILES_PATH}/setup/dots" $dots_path
   chmod +x $dots_path
   echo "$(check) dots command installed."

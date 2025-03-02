@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-source ~/.env
-#trap 'error_handler' ERR
+source "$DOTFILES_CONFIG_PATH/env"
 
 log_file="${DOTFILES_STATE_PATH}/dots.log"
 [ ! -f "$log_file" ] && touch "$log_file"

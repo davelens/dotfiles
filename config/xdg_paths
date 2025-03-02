@@ -12,6 +12,7 @@ export XDG_STATE_HOME="${HOME}/.local/state"
 [ ! -d $XDG_STATE_HOME ] && mkdir -p $XDG_STATE_HOME
 
 # Load in specific dotfiles paths while adhering to the XDG spec.
+export DOTFILES_CONFIG_PATH="$XDG_CONFIG_HOME/dots"
 export DOTFILES_STATE_PATH="$XDG_STATE_HOME/dots"
 export DOTFILES_CACHE_PATH="$XDG_CACHE_HOME/dots"
 export DOTFILES_DATA_PATH="$XDG_DATA_HOME/dots"

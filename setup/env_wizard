@@ -3,17 +3,20 @@
 # TODO: Would be better to switch most of my ENV vars I don't need in $PATH
 # to live in a config/config.toml file or something.
 
-# Derive the dotfiles' absolute path so we always have a sensible default for 
-# the ~/.env file.
-export DOTFILES_PATH=$(dirname "$(dirname $(realpath "$0"))")
-
 # Handles interrupts with a clear and an "Aborted" message.
 trap 'clear && interrupt_handler' SIGINT
+
+# Derive the dotfiles' absolute path so we always have a sensible default for 
+# the $DOTFILES_CONFIG_PATH/env file.
+export DOTFILES_PATH=$(dirname "$(dirname $(realpath "$0"))")
+
+# Make sure we have all necessary paths available.
+source "${DOTFILES_PATH}/config/xdg_paths"
 
 #############################################################################
 # This exposes all the box draw functions to this command.
 # This is much faster than calling `utility bash box` for every draw action.
-source $DOTFILES_PATH/bin/utilities/bash/box
+source "${DOTFILES_PATH}/bin/utilities/bash/box"
 
 # Command aliases for ease of use.
 bitwarden="utility misc bitwarden"
@@ -260,13 +263,13 @@ function write_env_files {
   # user-agnostic.
   [[ -f "$HOME/.ssh/id_rsa.pub" ]] && export GITHUB_SIGNING_KEY="$HOME/.ssh/id_rsa.pub"
 
-  content=$(envsubst < "$DOTFILES_PATH/setup/gitconfig.env.template")
-  echo "$content" > "$XDG_CONFIG_HOME/git/config.env"
+  content=$(envsubst < "${DOTFILES_PATH}/setup/gitconfig.env.template")
+  echo "$content" > "${XDG_CONFIG_HOME}/git/config.env"
 
   # Include the allowed signers file, if it's there.
   if [[ -f "$HOME/.ssh/allowed_signers" ]]; then
     printf "[gpg \"ssh\"]\n  allowedSignersFile = ~/.ssh/allowed_signers" \
-      >> "$XDG_CONFIG_HOME/git/config.env"
+      >> "${XDG_CONFIG_HOME}/git/config.env"
   fi
 }
 
@@ -274,7 +277,7 @@ function main {
   intro
 
   local using_bitwarden=0
-  local env_file="${HOME}/.env"
+  local env_file="${DOTFILES_CONFIG_PATH}/env"
 
   proceed="$($prompt_user -c -i "$(pending $BOX_HIGHLIGHT) " "Press any key to continue ... ")"
   [[ -n $proceed ]] && $cursor move-start clear-up
