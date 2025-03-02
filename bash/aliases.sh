@@ -2,7 +2,7 @@
 # my knowledge these are not considered harmful.
 alias ls='ls -G'
 alias nano='vim' # 😬
-alias rsync='rsync --exclude-from=${HOME}/.rsyncignore'
+alias rsync='rsync --exclude-from="${XDG_CONFIG_HOME}/rsyncignore"'
 alias vim="$EDITOR" # My usecase here is that I use `dvim` as my Neovim profile.
 alias vi='vim'
 

@@ -15,7 +15,6 @@
     ~/.gitignore_global: config/gitignore_global
     ~/.inputrc: config/inputrc
     ~/.rspec: config/rspec
-    ~/.rsyncignore: config/rsyncignore
     ~/.rubocop.yml: config/rubocop.yml
     ~/.local/bin/os: bin/os
     ~/.local/bin/utility: bin/utility
@@ -23,6 +22,7 @@
     $NETHACKOPTIONS: config/nethackrc
     $NPM_CONFIG_USERCONFIG: config/npmrc
     $WGETRC: config/wgetrc
+    $XDG_CONFIG_HOME/rsyncignore: config/rsyncignore
     $XDG_CONFIG_HOME/shellcheckrc: config/shellcheckrc
     $XDG_CONFIG_HOME/starship.toml: config/starship.toml
     $XDG_CONFIG_HOME/wezterm/wezterm.lua: config/wezterm.lua
