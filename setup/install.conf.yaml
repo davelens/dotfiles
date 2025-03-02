@@ -5,6 +5,9 @@
 
 - clean: ['~']
 
+- create:
+  - ${XDG_STATE_HOME}/bash
+
 # Requires 4 space indentation or it will fail
 # NOTE: "XDG dir support instead of $HOME" is currently a patch waiting to be 
 # merged into bash, so keep an eye on this:
@@ -25,7 +28,7 @@
     $BASHRC: config/bashrc
     $BASH_PROFILE: config/bash_profile
     $XDG_CONFIG_HOME/git/config: config/gitconfig
-    $XDG_CONFIG_HOME/git/global_ignore: config/gitignore_global
+    $XDG_CONFIG_HOME/git/ignore: config/gitignore_global
     $XDG_CONFIG_HOME/rspec/options: config/rspec
     $XDG_CONFIG_HOME/rsyncignore: config/rsyncignore
     $XDG_CONFIG_HOME/rubocop/config.yml: config/rubocop.yml
