@@ -16,10 +16,7 @@ git -C "${DOTFILES_PATH}/${DOTBIT_DIR}" submodule update --init --recursive
 
 [[ ! -f "${DOTFILES_CONFIG_PATH}/env" ]] && \
   "$DOTFILES_PATH/setup/env_wizard" || \
-  touch "${DOTFILES_CONFIG_PATH}/.env"
-
-#grep -q 'DOTFILES_PATH' "${DOTFILES_CONFIG_PATH}/env" || echo "DOTFILES_PATH=${DOTFILES_PATH}" >> ~/.env
-#grep -q 'DOTFILES_STATE_PATH' "${DOTFILES_CONFIG_PATH}/env" || echo "DOTFILES_STATE_PATH=${DOTFILES_STATE_PATH}" >> ~/.env
+  touch "${DOTFILES_CONFIG_PATH}/env"
 
 # Create an executable that allows us to update our dotfiles, among other 
 # things.
