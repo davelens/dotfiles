@@ -39,6 +39,7 @@ export EDITRC="${XDG_CONFIG_HOME}/editrc"
 export GNUPGHOME="${XDG_DATA_HOME}/gnupg"
 export HISTFILE="${XDG_STATE_HOME}/bash/history"
 export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
+export IRBRC="${XDG_CONFIG_HOME}/irb/irbrc"
 export MIX_XDG="true" # So both mix and hex use XDG
 export MYSQL_HISTFILE="${XDG_DATA_HOME}/mysql_history"
 export NETHACKOPTIONS="${XDG_CONFIG_HOME}/nethackrc"
