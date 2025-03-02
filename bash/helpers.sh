@@ -89,7 +89,7 @@ function is_sourced {
 }
 
 # Join an array by a given delimiter string
-function join_by {
+function join_by() {
   local d f 
   d="${1-}" f="${2-}"
 
