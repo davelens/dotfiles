@@ -16,14 +16,8 @@ export PAGER='less --quit-if-one-screen --no-init --ignore-case --RAW-CONTROL-CH
 # Stop checking shellmail for new messages
 unset MAILCHECK
 
-# Faster Ruby garbage collection
-RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR=0.75
-
 # Erlang history settings to have a cmd history in iex sessions.
 export ERL_AFLAGS="-kernel shell_history enabled"
-
-# Get rid of the forking errors triggered by spring
-export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 # Silences the default confirmation feedback for Slackadays/Clipboard.
 export CLIPBOARD_SILENT="1"
@@ -123,10 +117,46 @@ export GOPATH=${HOME}/.go
 # This makes sure asdf can configure Erlang with Homebrew's openssl pkg.
 export KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl)"
 
-# rbenv is a Ruby version manager.
-if command -v rbenv &> /dev/null; then
-  eval "$(rbenv init -)"
-fi
+########################################################################
+# Ruby — This gets its own section! <3
+########################################################################
+# Pick up on rbenv, if it's there.
+$(command -v rbenv &> /dev/null) && eval "$(rbenv init -)"
+
+# Temporarily putting this here to make sure asdf-installed Ruby compiles
+# with clang++ support, so gems can actually compile properly.
+# https://github.com/sass/sassc-ruby/issues/225#issuecomment-2665440688
+export CC="clang" 
+export CXX="clang++"
+
+# Configure the garbage collector for local development.
+# Basically these following settings reduce interruptions due to GC. 
+# The aim is to improve request/response time in local development.
+export RUBY_GC_HEAP_INIT_SLOTS=80000 # Larger initial heap (default is lowish)
+export RUBY_GC_HEAP_FREE_SLOTS=20000 # Keep more free slots to reduce GC runs
+export RUBY_GC_HEAP_GROWTH_FACTOR=1.25 # Less heap expansion (default = 1.8!)
+export RUBY_GC_HEAP_GROWTH_MAX_SLOTS=40000 # Limit max heap growth per step
+export RUBY_GC_MALLOC_LIMIT=128000000  # Delay GC runs for memory allocations
+export RUBY_GC_MALLOC_LIMIT_MAX=256000000 # Wait longer to trigger GC
+export RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.2 # Bigger, gradual malloc limits
+# No automatic garbage collection when requiring.
+# Prevent garbage collection from interfering during gem loading.
+# Don't compact the heap (useful for long-running processes).
+export RUBY_GC_AUTO_COMPACT=0 
+export RUBY_GC_PROFILER=0 # No unnecessary profiling overhead.
+# 3.1+ provides YJIT to give us a speed boost.
+export RUBY_YJIT_ENABLE=1
+export RUBY_YJIT_STATS=0
+export RUBY_YJIT_MIN_CODE_SIZE=16384
+
+# Make sure bootsnap caches to the right location.
+export BOOTSNAP_CACHE_DIR="$XDG_CACHE_HOME"
+
+# Don't scan for system gems when bundling.
+BUNDLE_DISABLE_SHARED_GEMS=1
+
+# Fix annoying Spring forking errors on Apple silicon.
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 
 ########################################################################
