@@ -1,14 +1,14 @@
 # This file will only load on WSL.
 
 # Bootstrap an ssh-agent and add your default key to it.
-function ssh-agent-bootstrap {
-  if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent > /dev/null; then
-    export SSH_AUTH_SOCK=/tmp/ssh-agent.socket
-    [ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"
-    eval "$(ssh-agent -s -a $SSH_AUTH_SOCK)"
-    ssh-add
-  fi
-}
+#function ssh-agent-bootstrap {
+  #if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    #export SSH_AUTH_SOCK=/tmp/ssh-agent.socket
+    #[ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"
+    #eval "$(ssh-agent -s -a $SSH_AUTH_SOCK)"
+    #ssh-add
+  #fi
+#}
 
 # The mimemagic gem requires this file, which is installed via a homebrew pkg
 # called shared-mime-info. On Linuxbrew however we need to explicitly set this
@@ -37,7 +37,13 @@ alias pbcopy="clip.exe"
 alias pbpaste="powershell.exe -command 'Get-Clipboard' | head -n -1"
 
 # Make sure an ssh-agent is running with our default key active.
-ssh-agent-bootstrap
+#ssh-agent-bootstrap
+
+# Initialize SSH agent using keychain, and make sure it doesn't create files 
+# in the home dir.
+if command -v keychain >/dev/null; then
+  eval $(keychain --agents ssh --eval id_rsa --absolute --dir "${XDG_RUNTIME_DIR}/keychain")
+fi
 
 # After an upgrade to Ubuntu 20.04 LTS, brew no longer gets loaded by default.
 #eval $(SHELL=/bin/bash /home/linuxbrew/.linuxbrew/bin/brew shellenv)
