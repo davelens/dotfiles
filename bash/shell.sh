@@ -172,8 +172,11 @@ shopt -s histreedit
 # Append to the history file rather than overwriting
 shopt -s histappend
 
+# Disable macos keeping separate history per session in ~/.bash_sessions.
+export SHELL_SESSION_HISTORY=0
+
 # Keep a reasonably long history.
-export HISTSIZE=4096
+export HISTSIZE=8192
 
 # Keep even more history lines inside the file, so we can still look up
 # previous commands without needlessly cluttering the current shell's history.

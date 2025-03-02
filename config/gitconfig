@@ -1,9 +1,9 @@
 [core]
-  editor = ${EDITOR}
+  editor =
   pager = delta --side-by-side
 
 [include]
-  path = ~/.config/git/config.env
+  path = "~/.config/git/config.env"
 
 [push]
   autoSetupRemote = true
