@@ -251,18 +251,21 @@ function env_data_wizard {
 }
 
 function write_env_files {
+  # TODO: I think I might've broken macos support here, so double check!
   declare -p \
     OWNER_NAME \
     REPO_NAMESPACE \
     GITHUB_EMAIL \
     GITHUB_USERNAME \
-    GITHUB_PERSONAL_ACCESS_TOKEN | \
-    sed 's/declare -x //g' > "$env_file"
+    GITHUB_PERSONAL_ACCESS_TOKEN |\
+    sed 's/declare --/declare -x/g' > "$env_file"
 
   # Write to "$XDG_CONFIG_HOME/git/config.env" so we can keep our gitconfig 
   # user-agnostic.
-  [[ -f "$HOME/.ssh/id_rsa.pub" ]] && export GITHUB_SIGNING_KEY="$HOME/.ssh/id_rsa.pub"
+  [ -f "$HOME/.ssh/id_rsa.pub" ] && export GITHUB_SIGNING_KEY="$HOME/.ssh/id_rsa.pub"
 
+  # So every variable we need is exported before we write the config.env file.
+  source "${DOTFILES_CONFIG_PATH}/env"
   content=$(envsubst < "${DOTFILES_PATH}/setup/gitconfig.env.template")
   echo "$content" > "${XDG_CONFIG_HOME}/git/config.env"
 
@@ -293,7 +296,7 @@ function main {
   _box_print "  $gitconfig_env_file"
   _box_print "  $env_file"
   _box_print
-  _box_print "Please source $BASHRC (\`s\`) or restart your shell to apply changes."
+  _box_print "Please source (\`s\`) or restart your shell to apply changes."
   _box_print
   _box_separator
   _box_print
