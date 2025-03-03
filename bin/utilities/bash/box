@@ -46,10 +46,11 @@ function _box_color {
   printf "$(colorize $BOX_HIGHLIGHT $1)"
 }
 
+# ┌┬┐ ╭┬╮
 function _box_top {
-  printf "$(_box_margin)$(_box_color ┌)" && \
+  printf "$(_box_margin)$(_box_color ╭)" && \
     printf "%.s$(_box_color ─)" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) && \
-    printf "$(_box_color ┐)\n"
+    printf "$(_box_color ╮)\n"
 }
 
 function _box_line {
@@ -65,10 +66,11 @@ function _box_print {
   printf "$(_box_margin)$(_box_color │) %-$(($BOX_WIDTH - 4))s $(_box_color │)\n" "$1"; 
 }
 
+# ╰┴╯└┴┘
 function _box_bottom {
-  printf "$(_box_margin)$(_box_color └)" && \
+  printf "$(_box_margin)$(_box_color ╰)" && \
     printf "%.s$(_box_color ─)" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) && \
-    printf "$(_box_color ┘)\n"
+    printf "$(_box_color ╯)\n"
 }
 
 function _box_border_right { 
