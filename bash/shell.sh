@@ -153,7 +153,7 @@ export RUBY_YJIT_MIN_CODE_SIZE=16384
 export BOOTSNAP_CACHE_DIR="$XDG_CACHE_HOME"
 
 # Don't scan for system gems when bundling.
-BUNDLE_DISABLE_SHARED_GEMS=1
+export BUNDLE_DISABLE_SHARED_GEMS=1
 
 # Fix annoying Spring forking errors on Apple silicon.
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
