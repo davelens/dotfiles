@@ -98,15 +98,6 @@ function join_by() {
   fi
 }
 
-# Lowercase any string
-function lowercase {
-  if [ -n "$1" ]; then
-    echo "$1" | tr "[:upper:]" "[:lower:]"
-  else
-    cat - | tr "[:upper:]" "[:lower:]"
-  fi
-}
-
 function pending {
   [ -z "$1" ] && set -- 255
   echo "$(colorize "$1" "[")$(yellow \~)$(colorize "$1" "]")"
@@ -128,7 +119,6 @@ function red {
 # Examples:
 #
 #   repeat-do 4 echo lol 
-#   repeat-do lowercase "FOO" "BAR" "BAZ"
 #
 function repeat {
   local times commands arguments

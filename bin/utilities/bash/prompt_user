@@ -40,7 +40,7 @@ function yesno {
   read -n1 -r -p "$prompt (y/n) " input < /dev/tty && echo 1>&1
 
   case $input in
-    [YyNn] ) echo -n $(lowercase $input) ;;
+    [YyNn] ) echo -n "${input,,}" ;;
     * )
       output=
       printf "\r\033[2K${indent}Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o: " >&2
