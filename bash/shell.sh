@@ -117,6 +117,7 @@ export GOPATH=${HOME}/.go
 # This makes sure asdf can configure Erlang with Homebrew's openssl pkg.
 export KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl)"
 
+
 ########################################################################
 # Ruby — This gets its own section! <3
 ########################################################################
