@@ -126,8 +126,13 @@ $(command -v rbenv &> /dev/null) && eval "$(rbenv init -)"
 # Temporarily putting this here to make sure asdf-installed Ruby compiles
 # with clang++ support, so gems can actually compile properly.
 # https://github.com/sass/sassc-ruby/issues/225#issuecomment-2665440688
-export CC="clang" 
-export CXX="clang++"
+#
+# NOTE: It appears that this, in turn, breaks RMagick installations. -.-
+# Commenting this out, but keeping it around until asdf and/or Ruby sort
+# themselves out.
+#
+#export CC="clang" 
+#export CXX="clang++"
 
 # Configure the garbage collector for local development.
 # Basically these following settings reduce interruptions due to GC. 
