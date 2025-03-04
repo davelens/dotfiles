@@ -280,7 +280,7 @@ function main {
   intro
 
   local using_bitwarden=0
-  local env_file="${DOTFILES_CONFIG_PATH}/env"
+  local env_file="${DOTFILES_CONFIG_PATH/$HOME/"~"}/env"
 
   proceed="$($prompt_user -c -i "$(pending $BOX_HIGHLIGHT) " "Press any key to continue ... ")"
   [ -n $proceed ] && $cursor move-start clear-up
