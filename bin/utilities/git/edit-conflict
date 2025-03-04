@@ -5,7 +5,7 @@ main() {
   files=$(git st | grep UU | awk '{ print $2 }')
 
   if [[ ${#files} -eq 0 ]]; then
-    print_status -i ok "No conflicts to resolve."
+    $print_status -i ok "No conflicts to resolve."
     exit 0
   fi
 
