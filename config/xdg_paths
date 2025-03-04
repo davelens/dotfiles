@@ -28,6 +28,7 @@ export DOTFILES_LOG_PATH="$DOTFILES_STATE_PATH/log"
 # Program-specific overrides to let them follow the XDG spec.
 export ACKRC="${XDG_CONFIG_HOME}/ack/ackrc"
 export ASDF_CONFIG_FILE="${XDG_CONFIG_HOME}/asdf/asdfrc"
+export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="${XDG_CONFIG_HOME}/asdf/tool-versions"
 export ASDF_DATA_DIR="${XDG_DATA_HOME}/asdf"
 export BASHRC="${XDG_CONFIG_HOME}/bash/bashrc"
 export BASH_PROFILE="${XDG_CONFIG_HOME}/bash/bash_profile"
