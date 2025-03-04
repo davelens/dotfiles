@@ -85,7 +85,7 @@ function interrupt_handler {
 
 function is_sourced {
   local script="${BASH_SOURCE[1]}"
-  [[ "$script" != "$0" ]]
+  [[ "$script" != "" && "$script" != "$0" ]]
 }
 
 # Join an array by a given delimiter string
