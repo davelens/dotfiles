@@ -22,7 +22,7 @@ alias fs="ls -laSh $1 | grep -v ^d | awk '{print \$5 \"\t\" \$9}'"
 alias lsa='ls -hal'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
 alias redis='brew services start redis'
-alias s='exec $SHELL && echo "$SHELL refreshed!"' # Used to source, hence `s`.
+alias s="exec $SHELL" # Used to source, hence `s`.
 alias sp='eval "$(starship init bash)"' # [s]tarship [p]rompt. Trying it out!
 alias ta='tmux attach'
 alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
