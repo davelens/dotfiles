@@ -26,7 +26,7 @@ bitwarden="utility misc bitwarden"
 BOX_WIDTH=79
 BOX_MARGIN=1
 BOX_HIGHLIGHT=${1:-141} # Just to try out some easy colours for now.
-[[ $(tput cols) -lt 80 ]] && fail "$(print_status -i error "Terminal window too small; must be at least 80 columns wide or you might miss information.")"
+[ $(tput cols) -lt 80 ] && fail "$(print_status -i error "Terminal window too small; must be at least 80 columns wide or you might miss information.")"
 
 # Any time a status message is printed using this function, it will add
 # a closing _box_border_right to the active line. 
@@ -110,7 +110,7 @@ function bitwarden_data_intro {
 
 function setup_encryption {
   setup_encryption_intro
-  if [[ -z "$DOTFILES_SALT" ]]; then 
+  if [ -z "$DOTFILES_SALT" ]; then 
     setup_salt 
   else
     print_status -i ok "Encrypted salt is ready."
@@ -124,13 +124,13 @@ function setup_salt {
   icon="$(pending $BOX_HIGHLIGHT)"
 
   # So we know where to restore to after a variable number of attempts.
-  [[ $looping -eq 0 ]] && $cursor save
+  [ $looping -eq 0 ] && $cursor save
 
   passkey=$($prompt_user -i "$icon " -m "Enter your salt passkey: ")
   $cursor restore clear-down # Restore prompt starting point for feedback.
   salt_value=$($salt -k "$passkey" current)
 
-  if [[ $? -eq 0 ]]; then
+  if [ $? -eq 0 ]; then
     export DOTFILES_SALT="$salt_value"
     print_status -i ok "Encrypted salt is ready."
   else
@@ -161,7 +161,7 @@ function setup_bitwarden {
 
   BW_SESSION="$($bitwarden unlock)"
 
-  if [[ -z $BW_SESSION ]]; then
+  if [ -z $BW_SESSION ]; then
     print_status -i error "Could not unlock Bitwarden vaults."
     sleep 2 # Just so the user can see the error message.
     $cursor clear-up:9
@@ -190,7 +190,7 @@ function setup_bitwarden {
   # TODO: At this point, if you don't have a good value for $OWNER_NAME,
   # you will see "Not found" and the script will break.
   # Catch the error after every bw call, or use fzf to get the right values.
-  #if [[ $? -gt 0 ]]; then
+  #if [ $? -gt 0 ]; then
     #clear_prompt_line
   #fi
 
@@ -202,7 +202,7 @@ function setup_bitwarden {
 function setup_env {
   setup_environment_variables_intro
 
-  if [[ -f $env_file ]]; then
+  if [ -f $env_file ]; then
     source "$env_file"
     print_status -i ok "Loaded environment variables from $env_file."
     _box_print
@@ -224,11 +224,11 @@ function env_data_wizard {
 
   REPO_NAMESPACE=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos? ")
 
-  if [[ -z $OWNER_NAME ]]; then 
+  if [ -z $OWNER_NAME ]; then 
     OWNER_NAME=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "$OWNER_NAME" "Enter your first and last name: ")
   fi
 
-  if [[ -z $GITHUB_EMAIL ]]; then
+  if [ -z $GITHUB_EMAIL ]; then
     GITHUB_EMAIL=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "$GITHUB_EMAIL" "Enter the email address you log into Github with: ")
   fi
 
@@ -241,7 +241,7 @@ function env_data_wizard {
   GITHUB_SIGNING_KEY=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "$GITHUB_SIGNING_KEY" "Enter your Git signing key: ")
 
   # Check if the REPO_NAMESPACE path exists, and create it if not.
-  if [[ ! -d $REPO_NAMESPACE ]]; then
+  if [ ! -d $REPO_NAMESPACE ]; then
     print_status -n "Creating $REPO_NAMESPACE ... "
     # You want to use `grealpath` here to correctly resolve the tilde in the path
     # and prevent bash from creating a directory named "~". -.-
@@ -270,7 +270,7 @@ function write_env_files {
   echo "$content" > "${XDG_CONFIG_HOME}/git/config.env"
 
   # Include the allowed signers file, if it's there.
-  if [[ -f "$HOME/.ssh/allowed_signers" ]]; then
+  if [ -f "$HOME/.ssh/allowed_signers" ]; then
     printf "[gpg \"ssh\"]\n  allowedSignersFile = ~/.ssh/allowed_signers" \
       >> "${XDG_CONFIG_HOME}/git/config.env"
   fi
@@ -283,7 +283,7 @@ function main {
   local env_file="${DOTFILES_CONFIG_PATH}/env"
 
   proceed="$($prompt_user -c -i "$(pending $BOX_HIGHLIGHT) " "Press any key to continue ... ")"
-  [[ -n $proceed ]] && $cursor move-start clear-up
+  [ -n $proceed ] && $cursor move-start clear-up
 
   setup_encryption
   setup_secrets_management
