@@ -64,7 +64,7 @@ function setup_secrets_management_intro {
   _box_print
   _box_print "My various secrets and API keys are stored in Bitwarden."
   _box_print "These dotfiles can retrieve them from your vault(s) using \`bw\`,"
-  _box_print "and keep them in ENV vars in $env_file."
+  _box_print "and keep them in ENV vars in $env_file_label."
   _box_print
 }
 
@@ -204,7 +204,7 @@ function setup_env {
 
   if [ -f $env_file ]; then
     source "$env_file"
-    print_status -i ok "Loaded environment variables from $env_file."
+    print_status -i ok "Loaded environment variables from $env_file_label."
     _box_print
   fi
 
@@ -280,7 +280,8 @@ function main {
   intro
 
   local using_bitwarden=0
-  local env_file="${DOTFILES_CONFIG_PATH/$HOME/"~"}/env"
+  local env_file="${DOTFILES_CONFIG_PATH}/env"
+  local env_file_label="${env_file/$HOME/"~"}"
 
   proceed="$($prompt_user -c -i "$(pending $BOX_HIGHLIGHT) " "Press any key to continue ... ")"
   [ -n $proceed ] && $cursor move-start clear-up
@@ -294,7 +295,7 @@ function main {
   _box_print
   _box_print "Environment variables written to these files:"
   _box_print "  $gitconfig_env_file"
-  _box_print "  $env_file"
+  _box_print "  $env_file_label"
   _box_print
   _box_print "Please source (\`s\`) or restart your shell to apply changes."
   _box_print
