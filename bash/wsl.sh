@@ -41,7 +41,7 @@ ssh-agent-bootstrap
 
 # Primarily make sure keychain doesn't create files in the home dir, but
 # also have it hold our initialized ssh-agent.
-keychain --inherit any --agents ssh id_rsa --absolute --dir "${XDG_RUNTIME_DIR}/keychain" --quiet
+keychain --inherit any --agents ssh id_rsa --absolute --dir "${XDG_RUNTIME_DIR}keychain" --quiet
 
 # After an upgrade to Ubuntu 20.04 LTS, brew no longer gets loaded by default.
 #eval $(SHELL=/bin/bash /home/linuxbrew/.linuxbrew/bin/brew shellenv)
