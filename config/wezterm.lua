@@ -76,22 +76,11 @@ if platforms.windows then
   -- The default for me is "wslhost.exe", not very descriptive.
   wezterm.on('format-window-title', function() return "Wezterm" end)
 
-  for _, gpu in ipairs(wezterm.gui.enumerate_gpus()) do
-    if gpu.backend == 'Vulkan' and gpu.device_type == 'IntegratedGpu' then
-      config.webgpu_preferred_adapter = gpu
-      config.front_end = 'WebGpu'
-      break
-    end
-  end
-
   config.line_height = 1.08
-  config.prefer_egl = true
-  config.enable_wayland = false
   config.default_prog = {
     "wsl.exe", "-d", "Arch", "-u", "davelens", "--", "bash", "-c", "cd ~ && exec bash"
   }
 
-  config.font_size = 14.0
   config.font = wezterm.font_with_fallback {
     { family = "NotoMono NF",   weight = "Regular" },
     { family = "Hack Nerd Font" },
