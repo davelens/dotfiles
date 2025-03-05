@@ -5,10 +5,8 @@
 
 - clean: ['~']
 
-- create:
-  - ${XDG_STATE_HOME}/bash
-
 # Requires 4 space indentation or it will fail
+#
 # NOTE: "XDG dir support instead of $HOME" is currently a patch waiting to be 
 # merged into bash, so keep an eye on this:
 #
