@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
-
 set -e
-me=rails/$(basename "$0")
 
-app=.
+me=rails/$(basename "$0")
+app="$(realpath ".")"
 env=production
 ignore_tables=
 docker_prefix=
