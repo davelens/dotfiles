@@ -77,7 +77,7 @@ paths_to_add=(
   #${BREW_PATH}/opt/libiconv/bin
   #${BREW_PATH}/opt/m4/bin
   ${BREW_PATH}/{,s}bin # unbound in sbin/, most Homebrew binaries in bin/
-  ${HOME}/.local/{,s}bin # Neovim configs, homebrew binaries
+  ${XDG_BIN_HOME} # User-made and controlled binaries
   /usr/local/{,s}bin # Docker, npm, Private Internet Access,...
   /usr/{,s}bin # User specific system binaries. A *lot* of them.
   /{,s}bin # *nix shells and binaries, and basic commands like ls, cp, echo,...

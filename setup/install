@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 set -e
 
@@ -20,7 +21,8 @@ git -C "${DOTFILES_PATH}/${DOTBIT_DIR}" submodule update --init --recursive
 
 # Create an executable that allows us to update our dotfiles, among other 
 # things.
-dots_path="${HOME}/.local/bin/dots"
+dots_path="${XDG_BIN_HOME}/dots"
+
 if [ ! -f "$dots_path" ]; then
   ln -s "${DOTFILES_PATH}/setup/dots" $dots_path
   chmod +x $dots_path
