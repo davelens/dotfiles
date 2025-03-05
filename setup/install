@@ -25,8 +25,9 @@ dots_path="${XDG_BIN_HOME}/dots"
 if [ ! -f "$dots_path" ]; then
   ln -s "${DOTFILES_PATH}/setup/dots" $dots_path
   chmod +x $dots_path
-  echo "$(check) dots command installed."
-  echo "    From now on you can use 'dots update' anywhere to pull in the latest dotfiles."
+  $dots_path
   echo
+  echo "$(check) dots command installed!"
   echo "Please source $BASHRC or restart your shell to apply changes."
+  echo
 fi
