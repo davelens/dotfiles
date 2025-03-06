@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-# This search and replace script uses ripgrep (rg) to find text in 
-# files, and sed to replace the text in each matching file.
-# I chose to use ripgrep, as it's fast and respects the .gitignore.
+# Uses ripgrep (rg) to find text in files, and sed to replace the text in each
+# matching file. Ripgrep is speedy and respects .gitignore.
 
 # Check if exactly two arguments are provided
 [[ $# -lt 2 ]] && fail "Usage: $(basename "$0") <query> <replacement> [<files>...]"
