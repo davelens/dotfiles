@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -e
+
+# Finds directories with a given pattern to glob, and renames them with a
+# given replacement pattern.
+# Also triggers automatic git add/rm
+
+# TODO: Usage
+
+main () {
+  local pattern replacement old new
+  pattern="$1"
+  replacement="$2"
+  [ -z $pattern ] && pattern="$($prompt_user "Look for which pattern?")"
+  [ -z $replacement ] && replacement="$($prompt_user "Replace '$pattern' with: ")"
+
+  # TODO: Better input validation
+  # TODO: Trigger globbing instead of defaulting to it
+  # TODO: Optional disabling of git rm/add
+  # TODO: Check for `fd` and fallback to `find`
+
+  for old in $(fd -t d -g "*${pattern}*"); do
+    new="${old/$pattern/$replacement}"
+    mv "$old" "$new" && \
+      echo "Renamed $old to $new"
+
+    git ls-files --error-unmatch $old &> /dev/null
+    if [ $? -eq 0 ]; then 
+      git rm -r $old
+      git add $new
+    fi
+  done
+}
+
+main "$@"
