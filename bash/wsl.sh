@@ -101,6 +101,16 @@ alias lsa='ls -hal --color=tty'
 alias pbcopy="clip.exe"
 alias pbpaste="powershell.exe -command 'Get-Clipboard' | head -n -1"
 
+notes() {
+  local mountpoint="${HOME}/Network/alexandria"
+
+  if ! mount -l | grep Network/alexandria > /dev/null; then
+    sudo mount -t drvfs '\\alexandria\storage\projects\notes' "$mountpoint"
+  fi
+
+  bash -c "utility tmux quickstart \"$@\" -- \"$mountpoint\" --"
+}
+
 # Make sure an ssh-agent is running with our default key active.
 ssh-agent-bootstrap
 
