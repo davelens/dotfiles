@@ -37,11 +37,11 @@ function call_openssl {
   [[ -n $passkey ]] && string+=" -k $passkey"
   string+=" -in $input"
 
-  if [[ -n $output ]]; then 
+  if [[ -n $output ]]; then
     string+=" -out $output"
   fi
 
-  eval $(echo "$string")
+  cmd "$string"
 }
 
 function main {
@@ -74,7 +74,7 @@ function main {
       fi
 
       local tempfile=$(mktemp -p "$MYTMPDIR")
-      printf "%s" "$input" > $tempfile
+      printf "%s" "$input" >$tempfile
       input="$tempfile"
       shift
       ;;
