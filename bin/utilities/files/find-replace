@@ -7,25 +7,69 @@ set -e
 # Check if exactly two arguments are provided
 [[ $# -lt 2 ]] && fail "Usage: $(basename "$0") <query> <replacement> [<files>...]"
 
-query="$1"
-replacement="$2"
-files="$3"
+name="$(basename "$0")"
 
-# Prompt user for confirmation before making changes
-read -p "Are you sure you want to replace all occurrences of '$query' with '$replacement'? (y/n): " response
-[[ "$response" != "y" ]] && exit
+usage() {
+  echo
+  echo "Usage: $name [-h|--help] <command(s)>"
+  echo
+  echo "Move the cursor around the terminal quickly by chaining commands."
+  echo
+  echo "Examples:"
+  echo "  $name move-up:4 clear-line"
+  echo "  $name line:18 clear-down"
+  echo "  $name save line:40 col:30 print:H restore"
+  echo
+  echo "Notes:"
+  echo "  EOL = End of Line"
+  echo "  SOL = Start of Line"
+  echo
+  echo "Commands:"
+  echo "  move-start          Move cursor to SOL."
+  echo "  move-end            Move cursor to EOL"
+  echo "  move-right<:#>      Move cursor to the right <#> cols."
+  echo "  move-left<:#>       Move cursor to the left <#> cols."
+  echo "  move-up<:#>         Move cursor up <#> lines."
+  echo "  move-down<:#>       Move cursor down <#> lines."
+  echo "  col:<#>             Move cursor to column <#>."
+  echo "  line:<#>            Move cursor to line <#>."
+  echo "  clear-down          Clear output from the cursor down."
+  echo "  clear-up<:#>        Clear output from the cursor up # lines."
+  echo "  clear-right         Clear output from the cursor to EOL."
+  echo "  clear-left          Clear output from the cursor to SOL."
+  echo "  clear-line          Clear output from the entire line."
+  echo "  print:<s>           Prints <s> at the cursor's position."
+  echo
+  echo "Options:"
+  echo "  -h|--help           Show this help message and exit."
+  echo "  -p|--for-prompt     Accounts for the bash prompt height."
+  echo "                      (Prevents some confusion with line count)."
+  echo "  -r|--raw            Returns the ANSI escape sequence as a string."
+}
 
-# Perform a dry run first to show matching files and occurrences
-echo "Dry run (showing matches only):"
-rg --files-with-matches "$query" $files | xargs -I {} rg "$query" {}
+main() {
+  query="$1"
+  replacement="$2"
+  files="$3"
 
-echo
-read -p "Proceed with replacements? (y/n): " final_response
-[[ "$final_response" != "y" ]] && exit
+  # Prompt user for confirmation before making changes
+  read -r -p "Are you sure you want to replace all occurrences of '$query' with '$replacement'? (y/n): " response
+  [[ "$response" != "y" ]] && exit
 
-rg --files-with-matches "$query" $files | while read -r file; do
-  # Use sed to replace the text in each matching file
-  sed -i.bak "s/$query/$replacement/g" "$file" && echo "Replaced in $file"
-done
+  # Perform a dry run first to show matching files and occurrences
+  echo "Dry run (showing matches only):"
+  rg --files-with-matches "$query" "$files" | xargs -I {} rg "$query" {}
 
-echo "Replacement complete. Backups of original files have '.bak' extension."
+  echo
+  read -r -p "Proceed with replacements? (y/n): " final_response
+  [[ "$final_response" != "y" ]] && exit
+
+  rg --files-with-matches "$query" "$files" | while read -r file; do
+    # Use sed to replace the text in each matching file
+    sed -i.bak "s/$query/$replacement/g" "$file" && echo "Replaced in $file"
+  done
+
+  echo "Replacement complete. Backups of original files have '.bak' extension."
+}
+
+main "$@"
