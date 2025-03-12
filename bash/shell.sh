@@ -91,11 +91,6 @@ fi
 printf -v PATH "%s:" "${paths_to_add[@]}"
 export PATH="${PATH%:}"
 
-# Both bison and libiconv are required for PHP to compile with ASDF.
-#export LDFLAGS="-L${BREW_PATH}/opt/bison/lib"
-#LDFLAGS="${LDFLAGS} -L${BREW_PATH}/opt/libiconv/lib"
-#export CPPFLAGS="-I${BREW_PATH}/opt/libiconv/include"
-
 # MySQL 8.4 compilation flags
 LDFLAGS="$LDFLAGS -L$BREW_PATH/opt/mysql@8.4/lib"
 CPPFLAGS="$CPPFLAGS -I$BREW_PATH/opt/mysql@8.4/include"
