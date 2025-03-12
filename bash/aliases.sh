@@ -38,3 +38,4 @@ alias http='ruby -run -ehttpd . -p3000' # Run a quick & basic local HTTP server
 # XDG related overrides
 alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME/yarn/config"'
 alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
+alias mycli='mycli --myclirc "$MYCLIRC"'

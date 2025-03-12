@@ -18,6 +18,7 @@
     $ACKRC: config/ackrc
     $INPUTRC: config/inputrc
     $EDITRC: config/editrc
+    $MYCLIRC: config/myclirc
     $NETHACKOPTIONS: config/nethackrc
     $NPM_CONFIG_USERCONFIG: config/npmrc
     $WGETRC: config/wgetrc
