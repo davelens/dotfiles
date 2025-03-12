@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-main() {
-  shopt -s extglob
-  ls -laSh "${1:-"."/*}"
-  #grep -v ^d | awk '{print \$5 \"\t\" \$9}'
-}
+set -- "${1:-$(realpath ".")}/"
+path="${1/#$HOME/\~}"
+path="${path%/}"
 
-main "$@"
+echo "$path ->"
+unset path
+
+find "$1" -maxdepth 1 -type f -exec ls -laSh {} + | \
+  awk "{sub(/^\.\//, \"\", \$9); sub(/${1//\//\\\/}/, \"\", \$9); print \$5 \"\t\" \$9}"
