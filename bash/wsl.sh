@@ -79,7 +79,6 @@ function ssh-agent-bootstrap {
 # called shared-mime-info. On Linuxbrew however we need to explicitly set this
 # path.
 export FREEDESKTOP_MIME_TYPES_PATH="${BREW_PATH}/share/mime/packages/freedesktop.org.xml"
-export INFOPATH="${BREW_PATH}/share/info:" # Fix duplication of info pages.
 export WSL2_GUI_APPS_ENABLED="0"
 
 # di = directory

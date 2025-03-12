@@ -34,16 +34,20 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 # On macos with M1 chips: /opt/homebrew
 # On macos with Intel chips: /usr/local
 # On *nix using Linuxbrew: /home/linuxbrew/.linuxbrew
-[[ -f /opt/homebrew/bin/brew ]] && export BREW_PATH=$(/opt/homebrew/bin/brew --prefix)
-[[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] && export BREW_PATH=$(/home/linuxbrew/.linuxbrew/bin/brew --prefix)
-[[ -f /usr/local/bin/brew ]] && export BREW_PATH=$(/usr/local/bin/brew --prefix)
-[[ -f /usr/bin/brew ]] && export BREW_PATH=$(/usr/bin/brew --prefix)
+[[ -f /opt/homebrew/bin/brew ]] && BREW_PATH=$(/opt/homebrew/bin/brew --prefix)
+[[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] && BREW_PATH=$(/home/linuxbrew/.linuxbrew/bin/brew --prefix)
+[[ -f /usr/local/bin/brew ]] && BREW_PATH=$(/usr/local/bin/brew --prefix)
+[[ -f /usr/bin/brew ]] && BREW_PATH=$(/usr/bin/brew --prefix)
+export BREW_PATH
 
-# Load in all necessary brew env vars, because bash completion for `brew` won't 
-# work. It specifically needs HOMEBREW_REPOSITORY, but I load in the entire 
-# shellenv just in case. See: https://github.com/orgs/Homebrew/discussions/4227
-eval "$(${BREW_PATH}/bin/brew shellenv)"
-
+# If HOMEBREW_REPOSITORY isn't set properly, brew's bash autocompletion won't
+# work properly [GH issue](https://github.com/orgs/Homebrew/discussions/4227).
+#
+# I leave out the PATH override though. Homebrew wants its shims to be at the
+# top of the list, but we want ASDF to take precedence.
+if [ -z "$HOMEBREW_REPOSITORY" ]; then
+  eval "$("$BREW_PATH/bin/brew" shellenv | grep -v ^PATH)"
+fi
 
 ########################################################################
 # PATH
@@ -67,20 +71,13 @@ eval "$(${BREW_PATH}/bin/brew shellenv)"
 #   ${BREW_PATH}/opt/*/bin # All Homebrew binaries
 #
 paths_to_add=(
-  ${ASDF_DATA_DIR:-$HOME/.asdf}/shims
-  ${BREW_PATH}/opt/mysql@8.4/bin
-  #${BREW_PATH}/opt/openssl@3/bin
-  #${BREW_PATH}/opt/openjdk/bin
-  #${BREW_PATH}/opt/gnu-getopt/{,s}bin
-  #${BREW_PATH}/opt/imagemagick@6/bin
-  #${BREW_PATH}/opt/bison/bin
-  #${BREW_PATH}/opt/libiconv/bin
-  #${BREW_PATH}/opt/m4/bin
-  ${BREW_PATH}/{,s}bin # unbound in sbin/, most Homebrew binaries in bin/
-  ${XDG_BIN_HOME} # User-made and controlled binaries
-  /usr/local/{,s}bin # Docker, npm, Private Internet Access,...
-  /usr/{,s}bin # User specific system binaries. A *lot* of them.
-  /{,s}bin # *nix shells and binaries, and basic commands like ls, cp, echo,...
+  "${ASDF_DATA_DIR:-$HOME/.asdf}"/shims # Always prefer asdf shims
+  "$BREW_PATH"/{,s}bin                  # unbound in sbin/, most Homebrew binaries in bin/
+  "$BREW_PATH"/opt/mysql@8.4/bin        # Brew wants you to use `brew services`, but I want direct access
+  "$XDG_BIN_HOME"                       # User-made and controlled binaries
+  /usr/local/{,s}bin                    # Docker, npm, Private Internet Access,...
+  /usr/{,s}bin                          # User specific system binaries. A *lot* of them.
+  /{,s}bin                              # *nix shells and binaries, and basic commands like ls, cp, echo,...
 )
 
 if [[ $($DOTFILES_PATH/bin/os) == 'windows' ]]; then
