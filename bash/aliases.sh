@@ -3,7 +3,7 @@
 alias ls='ls -G'
 alias nano='vim' # 😬
 alias rsync='rsync --exclude-from="${XDG_CONFIG_HOME}/rsyncignore"'
-alias vim="$EDITOR" # My usecase here is that I use `dvim` as my Neovim profile.
+alias vim="\$EDITOR" # My usecase here is that I use `dvim` as my Neovim profile.
 alias vi='vim'
 
 # Spelling corrections
@@ -31,7 +31,7 @@ alias dotfiles='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/da
 alias dotvim='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotvim\"" --'
 
 # Generic helpers and custom commands
-alias colors='for i in {0..255} ; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
+alias colors='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias http='ruby -run -ehttpd . -p3000' # Run a quick & basic local HTTP server
 
 # XDG related overrides
