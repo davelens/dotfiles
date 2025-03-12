@@ -22,7 +22,6 @@ export ERL_AFLAGS="-kernel shell_history enabled"
 # Silences the default confirmation feedback for Slackadays/Clipboard.
 export CLIPBOARD_SILENT="1"
 
-
 ########################################################################
 # HOMEBREW (the package manager)
 ########################################################################
@@ -58,7 +57,7 @@ fi
 # one to be searched (and used) for binaries.
 #
 # So Homebrew binaries are typically installed in the Cellar/ directory.
-# If a package has multiple possible versions however, it will get symlinked 
+# If a package has multiple possible versions however, it will get symlinked
 # into the opt/ directory (e.g. python@3, mysql@8.4, ...).
 #
 # We *could* load in all homebrew binaries in opt/, but that would be a LOT
@@ -80,7 +79,7 @@ paths_to_add=(
   /{,s}bin                              # *nix shells and binaries, and basic commands like ls, cp, echo,...
 )
 
-if [[ $($DOTFILES_PATH/bin/os) == 'windows' ]]; then
+if [ "$("$DOTFILES_PATH/bin/os")" == "windows" ] >/dev/null; then
   paths_to_add+=(
     /mnt/c/Windows/System32
     /mnt/c/Windows/System32/WindowsPowerShell/v1.0
@@ -98,28 +97,28 @@ export PATH="${PATH%:}"
 #export CPPFLAGS="-I${BREW_PATH}/opt/libiconv/include"
 
 # MySQL 8.4 compilation flags
-LDFLAGS="${LDFLAGS} -L${BREW_PATH}/opt/mysql@8.4/lib"
-CPPFLAGS="${CPPFLAGS} -I${BREW_PATH}/opt/mysql@8.4/include"
-export PKG_CONFIG_PATH="${BREW_PATH}/opt/mysql@8.4/lib/pkgconfig"
+LDFLAGS="$LDFLAGS -L$BREW_PATH/opt/mysql@8.4/lib"
+CPPFLAGS="$CPPFLAGS -I$BREW_PATH/opt/mysql@8.4/include"
+export PKG_CONFIG_PATH="$BREW_PATH/opt/mysql@8.4/lib/pkgconfig"
 
 # So software can pick up and load this entire config.
-export SHELL=${BREW_PATH}/bin/bash
+export SHELL="$BREW_PATH/bin/bash"
 
 # This is to prevent punycode deprecation logging to stderr, in particular.
 export NODE_OPTIONS="--no-deprecation"
 
 # Go lang work dir
-export GOPATH=${HOME}/.go
+export GOPATH="$HOME/.go"
 
 # This makes sure asdf can configure Erlang with Homebrew's openssl pkg.
-export KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl)"
-
+KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl)"
+export KERL_CONFIGURE_OPTIONS
 
 ########################################################################
 # Ruby — This gets its own section! <3
 ########################################################################
 # Pick up on rbenv, if it's there.
-$(command -v rbenv &> /dev/null) && eval "$(rbenv init -)"
+command -v rbenv &>/dev/null && eval "$(rbenv init -)"
 
 # Temporarily putting this here to make sure asdf-installed Ruby compiles
 # with clang++ support, so gems can actually compile properly.
@@ -129,23 +128,23 @@ $(command -v rbenv &> /dev/null) && eval "$(rbenv init -)"
 # Commenting this out, but keeping it around until asdf and/or Ruby sort
 # themselves out.
 #
-#export CC="clang" 
+#export CC="clang"
 #export CXX="clang++"
 
 # Configure the garbage collector for local development.
-# Basically these following settings reduce interruptions due to GC. 
+# Basically these following settings reduce interruptions due to GC.
 # The aim is to improve request/response time in local development.
-export RUBY_GC_HEAP_INIT_SLOTS=80000 # Larger initial heap (default is lowish)
-export RUBY_GC_HEAP_FREE_SLOTS=20000 # Keep more free slots to reduce GC runs
-export RUBY_GC_HEAP_GROWTH_FACTOR=1.25 # Less heap expansion (default = 1.8!)
-export RUBY_GC_HEAP_GROWTH_MAX_SLOTS=40000 # Limit max heap growth per step
-export RUBY_GC_MALLOC_LIMIT=128000000  # Delay GC runs for memory allocations
-export RUBY_GC_MALLOC_LIMIT_MAX=256000000 # Wait longer to trigger GC
+export RUBY_GC_HEAP_INIT_SLOTS=80000          # Larger initial heap (default is lowish)
+export RUBY_GC_HEAP_FREE_SLOTS=20000          # Keep more free slots to reduce GC runs
+export RUBY_GC_HEAP_GROWTH_FACTOR=1.25        # Less heap expansion (default = 1.8!)
+export RUBY_GC_HEAP_GROWTH_MAX_SLOTS=40000    # Limit max heap growth per step
+export RUBY_GC_MALLOC_LIMIT=128000000         # Delay GC runs for memory allocations
+export RUBY_GC_MALLOC_LIMIT_MAX=256000000     # Wait longer to trigger GC
 export RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.2 # Bigger, gradual malloc limits
 # No automatic garbage collection when requiring.
 # Prevent garbage collection from interfering during gem loading.
 # Don't compact the heap (useful for long-running processes).
-export RUBY_GC_AUTO_COMPACT=0 
+export RUBY_GC_AUTO_COMPACT=0
 export RUBY_GC_PROFILER=0 # No unnecessary profiling overhead.
 # 3.1+ provides YJIT to give us a speed boost.
 export RUBY_YJIT_ENABLE=1
@@ -160,7 +159,6 @@ export BUNDLE_DISABLE_SHARED_GEMS=1
 
 # Fix annoying Spring forking errors on Apple silicon.
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-
 
 ########################################################################
 # HISTORY
@@ -195,7 +193,6 @@ export HISTIGNORE="ls:lsa:ll:la:pwd:clear:h:j"
 # Set up fzf key bindings and fuzzy completion
 [[ ! $(which fzf) ]] && eval "$(fzf --bash)"
 
-
 ########################################################################
 # LOCALE AND COMPLETION
 ########################################################################
@@ -210,11 +207,11 @@ shopt -s no_empty_cmd_completion
 set -o noclobber
 
 # Prefer English and use UTF-8.
-printf -v available_locales ' %s ' $(locale -a)
+printf -v available_locales ' %s ' "$(locale -a)"
 
 for lang in en_US en_GB en; do
   for locale in "$lang".{UTF-8,utf8}; do
-    if [[ "$available_locales" =~ " $locale " ]]; then
+    if [[ "$available_locales" =~ $locale ]]; then
       export LC_ALL="$locale"
       export LANG="$lang"
       break 2
@@ -224,12 +221,11 @@ done
 
 unset available_locales lang locale
 
-
 ########################################################################
 # BASH AUTOCOMPLETION
 ########################################################################
 # Load bash_completion through brew, when installed
-if [ $(command -v brew) ]; then
+if command -v brew >/dev/null; then
   if [ -r "${BREW_PATH}/etc/profile.d/bash_completion.sh" ]; then
     source "${BREW_PATH}/etc/profile.d/bash_completion.sh"
   fi
@@ -248,7 +244,6 @@ for file in "${DOTFILES_PATH}/bash/completions/"*.bash; do
 done
 unset file
 
-
 ########################################################################
 # ENCRYPTED SALT / BITWARDEN (WIP)
 ########################################################################
@@ -257,7 +252,7 @@ unset file
 # TODO: Add a mild warning when the salt file hasn't changed for a while.
 
 # If the salt file is gone, we don't want to keep the old value.
-if [[ ! -f "$DOTFILES_SALT_PATH" ]]; then 
+if [[ ! -f "$DOTFILES_SALT_PATH" ]]; then
   unset DOTFILES_SALT
   unset BW_SESSION
 fi
@@ -272,7 +267,7 @@ fi
 
 #
 # Outside of tmux, we ask for the salt passkey once and store it in an ENV var.
-# Because I'm in tmux 24/7 I have access to DOTFILES_SALT in all my panes and 
+# Because I'm in tmux 24/7 I have access to DOTFILES_SALT in all my panes and
 # windows.
 #
 # This way we don't need to enter our Bitwarden master password beyond the
@@ -280,24 +275,24 @@ fi
 #
 # TODO: This is functional but I've disabled it for now.
 #
-# The issue is that ENV vars (ie. DOTFILES_SALT) don't persist outside of 
+# The issue is that ENV vars (ie. DOTFILES_SALT) don't persist outside of
 # subshells.
 #
-# I might have to ask for the passkey to the salt every single time. It won't 
+# I might have to ask for the passkey to the salt every single time. It won't
 # defeat the purpose of having a salt
 #
 # `utility misc screenshot` would ask for a passkey every time, for instance.
 #
 #if [[ -z $TMUX ]]; then
-  #salt=$(salt current)
+#salt=$(salt current)
 
-  #if [[ $? -eq 0 ]]; then
-    #export DOTFILES_SALT="$salt"
+#if [[ $? -eq 0 ]]; then
+#export DOTFILES_SALT="$salt"
 
-    #if [[ -z $BW_SESSION ]]; then
-      #export BW_SESSION="$(utility misc bitwarden unlock)"
-    #fi
-  #else
-    #print_status -i error "Encrypted salt not ready; possibly wrong passkey."
-  #fi
+#if [[ -z $BW_SESSION ]]; then
+#export BW_SESSION="$(utility misc bitwarden unlock)"
+#fi
+#else
+#print_status -i error "Encrypted salt not ready; possibly wrong passkey."
+#fi
 #fi
