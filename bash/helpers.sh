@@ -1,12 +1,12 @@
 # This script is loaded once through BASH_ENV.
 # Function checks are there to ensure they only get declared once.
 
-if declare -F "fn_exists" > /dev/null; then
+if declare -F "fn_exists" >/dev/null; then
   return 0
 fi
 
-function fn_exists { 
-  declare -F "$1" > /dev/null
+function fn_exists {
+  declare -F "$1" >/dev/null
 }
 
 function block_unless_sourced {
@@ -34,7 +34,7 @@ function colorize {
 
 function ensure_brew_dependency {
   for package in "$@"; do
-    local name=${package%:*}   # Extract the package name before ":"
+    local name=${package%:*}    # Extract the package name before ":"
     local command=${package#*:} # Extract optional command name after ":"
 
     [[ -z $command || $command == "$package" ]] && command=$name
@@ -71,7 +71,7 @@ function export_env_vars_from_file {
 # Helps us hard stop our custom executables during fails.
 function fail {
   printf '%s\n' "$1" >&2 # Sends a message to stderr.
-  exit "${2-1}" # Returns a code specified by $2 or 1 by default.
+  exit "${2-1}"          # Returns a code specified by $2 or 1 by default.
 }
 
 function green {
@@ -90,7 +90,7 @@ function is_sourced {
 
 # Join an array by a given delimiter string
 function join_by() {
-  local d f 
+  local d f
   d="${1-}" f="${2-}"
 
   if shift 2; then
@@ -104,11 +104,11 @@ function pending {
 }
 
 # Find the process ID of a given command. Note that you can use regex as well.
-# 
-#   pid '/d$/' 
+#
+#   pid '/d$/'
 #
 # Would find pids of all processes with names ending in 'd'
-function pid { 
+function pid {
   lsof -t -c "$@"
 }
 
@@ -118,23 +118,23 @@ function red {
 
 # Examples:
 #
-#   repeat-do 4 echo lol 
+#   repeat-do 4 echo lol
 #
 function repeat {
   local times commands arguments
 
   case $1 in
-    *[0-9]*) 
-      times=${1:-1}
-      shift
-      commands="$*"
-      ;;
-    *) 
-      commands="$1"
-      shift
-      times=$#
-      arguments=("$@")
-      ;;
+  *[0-9]*)
+    times=${1:-1}
+    shift
+    commands="$*"
+    ;;
+  *)
+    commands="$1"
+    shift
+    times=$#
+    arguments=("$@")
+    ;;
   esac
 
   if [ -n "${arguments[*]}" ]; then
@@ -149,7 +149,7 @@ function succeed {
   exit 0
 }
 
-# Because we all want to know how many times we actually typed "gti" instead 
+# Because we all want to know how many times we actually typed "gti" instead
 # of "git".
 function timesused {
   [ -f "$HISTFILE" ] && grep -c "^${1}" "$HISTFILE"

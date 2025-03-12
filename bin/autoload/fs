@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e
+
+main() {
+  shopt -s extglob
+  ls -laSh "${1:-"."/*}"
+  #grep -v ^d | awk '{print \$5 \"\t\" \$9}'
+}
+
+main "$@"

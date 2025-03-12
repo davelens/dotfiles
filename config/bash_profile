@@ -5,23 +5,23 @@ DOTFILES_PATH="$(dirname "$(dirname "$(readlink "${BASH_SOURCE[0]}")")")"
 export DOTFILES_PATH
 
 # This file will autoload in every subshell, exposing our scripting helpers.
-export BASH_ENV="${DOTFILES_PATH}/bash/helpers.sh" 
+export BASH_ENV="$DOTFILES_PATH"/bash/helpers.sh
 
 # Adhere (roughly) to the XDG Base Directory Specification.
-source "${DOTFILES_PATH}/config/xdg_paths"
+source "$DOTFILES_PATH"/config/xdg_paths
 
-# Load in our user-specific 
-source "${DOTFILES_CONFIG_PATH}/env"
+# Load in our user-specific
+source "$DOTFILES_CONFIG_PATH"/env
 
 # Load the mandatory shell settings and ENV vars before everything else.
-for file in $DOTFILES_PATH/bash/{colors,shell,aliases,prompt,private}.sh; do
-  [ -r "$file" ] && source "$file";
-done;
-unset file;
+for file in "$DOTFILES_PATH"/bash/{colors,shell,aliases,prompt,private}.sh; do
+  [ -r "$file" ] && source "$file"
+done
+unset file
 
 # OS specific settings
-case $("${DOTFILES_PATH}/bin/os") in
-  windows) source "${DOTFILES_PATH}/bash/wsl.sh";;
-  macos) source "${DOTFILES_PATH}/bash/macos.sh";;
-  linux) source "${DOTFILES_PATH}/bash/linux.sh";;
+case $("$XDG_BIN_HOME"/os) in
+windows) source "$DOTFILES_PATH"/bash/wsl.sh ;;
+macos) source "$DOTFILES_PATH"/bash/macos.sh ;;
+linux) source "$DOTFILES_PATH"/bash/linux.sh ;;
 esac
