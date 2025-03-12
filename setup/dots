@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
-source "$DOTFILES_CONFIG_PATH/env"
+source "$DOTFILES_CONFIG_PATH"/env
 
-log_file="${DOTFILES_STATE_PATH}/dots.log"
+log_file="$DOTFILES_STATE_PATH"/dots.log
 [ ! -f "$log_file" ] && touch "$log_file"
 
 usage() {
   echo
-  echo "Usage: $(basename $0) [-h|--help] <command>"
+  echo "Usage: $(basename "$0") [-h|--help] <command>"
   echo
   echo "Commands:"
   echo "  logs          Opens the logfile in $EDITOR (read-only if applicable)."
@@ -26,7 +26,7 @@ logs() {
   fi
 
   if [[ "$EDITOR" == *vim* ]]; then
-    winbar='Press `q` to stop reading or `c` to clear the logs'
+    winbar='Press "q" to stop reading or "c" to clear the logs'
 
     $EDITOR \
       -c 'set nomodifiable laststatus=0' \
@@ -41,7 +41,7 @@ logs() {
 }
 
 install() {
-  ${DOTFILES_PATH}/setup/install
+  "$DOTFILES_PATH"/setup/install
 }
 
 update() {
@@ -51,26 +51,30 @@ update() {
   if ! git -C "$DOTFILES_PATH" diff-files --quiet; then
     $print_status -i error "There are uncommitted changes in your dotfiles. Please commit or stash them before updating:"
     echo
-    echo "$(git -C "$DOTFILES_PATH" st)"
+    git -C "$DOTFILES_PATH" st
     exit 1
   fi
 
   # Pull the latest changes
   $print_status -n "Pulling in changes ..."
-  $(
-    git -C "$DOTFILES_PATH" fetch origin && \
-    git -C "$DOTFILES_PATH" merge --no-commit origin/"$(git -C "$DOTFILES_PATH" b)" &>> "$log_file"
-  ) || error_occurred=1
-  $print_status -i ok "Files updated to latest version"
+
+  if git -C "$DOTFILES_PATH" fetch origin >/dev/null; then
+    if ! git -C "$DOTFILES_PATH" merge --no-commit origin/"$(git -C "$DOTFILES_PATH" b)" &>> "$log_file"; then
+      error_occurred=1
+    fi
+  else
+    error_occurred=1
+  fi
 
   # Run the installer if no errors occurred
-  if [[ $error_occurred -eq 0 ]]; then
+  if [ $error_occurred -eq 0 ]; then
+    $print_status -i ok "Files updated to latest version"
     $print_status -n "Running installer ..."
-    "$DOTFILES_PATH/setup/install" &>> "$log_file" || error_occurred=1
+    "$DOTFILES_PATH"/setup/install &>> "$log_file" || error_occurred=1
   fi
 
   # Handle final status
-  if [[ $error_occurred -eq 0 ]]; then
+  if [ $error_occurred -eq 0 ]; then
     $print_status -i ok "Update complete"
   else
     $print_status -i error "Update failed"
