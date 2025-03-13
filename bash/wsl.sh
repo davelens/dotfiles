@@ -53,7 +53,6 @@ fi
 until compgen -G "/tmp/systemd-private-*" >/dev/null; do
   sleep 1
 done
-clear # So the message doesn't linger.
 
 declare -i MyUID=$(id -u)
 # Adding the additional forward slash to mimick the default behaviour.
