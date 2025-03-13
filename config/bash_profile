@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-##############################################################################
+###############################################################################
 # This is the main entry point for my interactive shells.
-##############################################################################
+###############################################################################
 DOTFILES_PATH="$(dirname "$(dirname "$(readlink "${BASH_SOURCE[0]}")")")"
 export DOTFILES_PATH
 
@@ -10,9 +10,9 @@ export DOTFILES_PATH
 # This means they are NOT explicitly present in interactive shells, by design.
 export BASH_ENV="$DOTFILES_PATH/bash/helpers.sh"
 
-##############################################################################
+###############################################################################
 # Configuration of how our shell behaves ($PATH, commands, completion,...).
-##############################################################################
+###############################################################################
 source "$DOTFILES_PATH/bash/env/brew.sh"           # Homebrew pkg manager
 source "$DOTFILES_PATH/bash/env/xdg.sh"            # XDG base dir spec paths
 source "$DOTFILES_PATH/bash/env/path.sh"           # $PATH
@@ -22,24 +22,24 @@ source "$DOTFILES_PATH/bash/env/autocompletion.sh" # Bash cmd autocompletion
 source "$DOTFILES_PATH/bash/env/ruby.sh"           # Ruby-specific env config
 source "$DOTFILES_PATH/bash/env/misc.sh"           # The kitchen sink
 
-##############################################################################
+###############################################################################
 # Configuration for how we interact with our shell (aliases, prompt).
-##############################################################################
+###############################################################################
 source "$DOTFILES_PATH/bash/colors.sh"
 source "$DOTFILES_PATH/bash/aliases.sh"
 source "$DOTFILES_PATH/bash/prompt.sh"
 source "$DOTFILES_PATH/bash/dots.sh"
 
-##############################################################################
+###############################################################################
 # OS specific configuration and/or overrides.
-##############################################################################
+###############################################################################
 case $("$XDG_BIN_HOME/os") in
 windows) source "$DOTFILES_PATH/bash/wsl.sh" ;;
 macos) source "$DOTFILES_PATH/bash/macos.sh" ;;
 linux) source "$DOTFILES_PATH/bash/linux.sh" ;;
 esac
 
-##############################################################################
+###############################################################################
 # User-specific settings and/or overrides.
-##############################################################################
+###############################################################################
 [ -f "$DOTFILES_CONFIG_PATH/env" ] && source "$DOTFILES_CONFIG_PATH/env"
