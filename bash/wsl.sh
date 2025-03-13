@@ -91,11 +91,10 @@ export WSL2_GUI_APPS_ENABLED="0"
 # mi = non-existent file pointed to by a symbolic link (visible when you type ls -l)
 # ex = file which is executable (ie. has 'x' set in permissions).
 # *.rpm = files with the ending .rpm
-LS_COLORS=$LS_COLORS:'di=0;35:'
+LS_COLORS=$LS_COLORS:"di=0;35:"
 export LS_COLORS
 # NOTE: On macos this command seems to have an additional column, so we need
 # to shift this by 1.
-alias fs="ls -laSh $1 | grep -v ^d | awk '{print \$4 \"\t\" \$8}'"
 alias lsa='ls -hal --color=tty'
 alias pbcopy="clip.exe"
 alias pbpaste="powershell.exe -command 'Get-Clipboard' | head -n -1"
