@@ -106,7 +106,7 @@ notes() {
     sudo mount -t drvfs '\\alexandria\storage\projects\notes' "$mountpoint"
   fi
 
-  bash -c "utility tmux quickstart \"$@\" -- \"$mountpoint\" --"
+  bash -c "utility tmux quickstart \"$*\" -- \"$mountpoint\" --"
 }
 
 # Make sure an ssh-agent is running with our default key active.
