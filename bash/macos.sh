@@ -3,13 +3,13 @@
 
 alias allow='xattr -d com.apple.quarantine'
 alias rm='$(which trash) &>/dev/null && trash' # Puts rm'ed files in the OS trash
-alias ss="osascript ${DOTFILES_PATH}/config/macos/hide-terminal.scpt && utility misc screenshot && killall Terminal"
+alias ss="osascript \"\$DOTFILES_PATH/config/macos/hide-terminal.scpt\" && utility misc screenshot && killall Terminal"
 alias toggle_desktop='toggle_default finder CreateDesktop'
 alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
 
-# Flush the Directory Service cache on macos. Useful for forcing 
+# Flush the Directory Service cache on macos. Useful for forcing
 # hostname/user/groups changes to update.
-alias clearcache='sudo dscacheutil -flushcache' 
+alias clearcache='sudo dscacheutil -flushcache'
 
 # Disable/Enable ipv6 on the Wi-Fi interface.
 # This is useful for when you're on a network that doesn't support ipv6, but
@@ -24,25 +24,21 @@ if [ ! -f "${DOTFILES_PATH}/bash/completions/iterm2_shell_integration.bash" ]; t
 fi
 
 # toggles a boolean setting in the com.apple environment
-toggle_default()
-{
-  environment=$1
-  setting=$2
-  value="$(defaults read com.apple.$environment $setting)"
+toggle_default() {
+  local environment="$1"
+  local setting="$2"
+  local value new
 
-  if [[ $value == 0 ]]; then
-    newValue="TRUE"
-  else
-    newValue="FALSE"
-  fi
+  value="$(defaults read "com.apple.$environment" "$setting")"
+  [ "$value" -eq 0 ] && new="TRUE" || new="FALSE"
 
-  defaults write com.apple.$environment $setting -bool $newValue
+  defaults write "com.apple.$environment" "$setting" -bool $new
   killall Finder
-  echo "$setting is now $newValue."
+
+  echo "$setting is now $new."
 }
 
 # Use quicklook in debug mode to quickly display file info.
-quicklook()
-{
-  qlmanage -p $1 >& /dev/null
+quicklook() {
+  qlmanage -p "$1" >&/dev/null
 }

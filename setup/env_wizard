@@ -11,7 +11,7 @@ trap 'clear && interrupt_handler' SIGINT
 export DOTFILES_PATH=$(dirname "$(dirname $(realpath "$0"))")
 
 # Make sure we have all necessary paths available.
-source "${DOTFILES_PATH}/config/xdg_paths"
+source "$DOTFILES_PATH/bash/env/xdg.sh"
 
 #############################################################################
 # This exposes all the box draw functions to this command.

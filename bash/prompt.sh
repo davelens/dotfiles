@@ -7,13 +7,13 @@ prompt_branch() {
 
   # The default branch retrieval in case `git b` is not available.
   #
-  # Note that in this repo, `git b` is aliased to the same value as this 
-  # assignment. No other reason, othern than I like having that alias on hand 
+  # Note that in this repo, `git b` is aliased to the same value as this
+  # assignment. No other reason, othern than I like having that alias on hand
   # regardless of the prompt logic.
   local cmd="git rev-parse --abbrev-ref HEAD"
- 
+
   # If `git b` exists as an alias, use that instead.
-  if [ git config --get alias.b &>/dev/null ]; then
+  if [ git config --get alias.b ] &>/dev/null; then
     cmd="git b"
   fi
 
@@ -27,10 +27,10 @@ prompt_branch() {
     echo "(no branch selected)"
 
   elif [ -n "$current_branch" ]; then # Valid branch is valid
-    echo "(branch: $current_branch)" 
+    echo "(branch: $current_branch)"
 
   else # Fallback, should never see this though.
-    echo "(no branch)" 
+    echo "(no branch)"
   fi
 }
 
@@ -42,8 +42,7 @@ prompt_branch() {
 # Example: ${REPO_NAMESPACE}/blimp/abcdefghij
 # if pwdmaxlen=25: ${REPO_NAMESPACE}/blimp/abcdefghij
 # if pwdmaxlen=20: ~/blimp/abcdefghij
-rewrite_pwd()
-{
+rewrite_pwd() {
   # how many characters of the $PWD should remain visible.
   local pwdmaxlen=25
 
@@ -53,13 +52,13 @@ rewrite_pwd()
 
   # Make sure the last dir does not exceed $pwdmaxlen, otherwise take
   # the length of the last dir as new pwdmaxlen.
-  pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
+  pwdmaxlen=$(((pwdmaxlen < ${#dir}) ? ${#dir} : pwdmaxlen))
 
   # Substitute $HOME with ~
   NEW_PWD=${PWD/${HOME}/"~"}
 
   # Calculate how many characters we have to truncate
-  local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
+  local pwdoffset=$((${#NEW_PWD} - pwdmaxlen))
 
   # If the PWD string is too long, then we will truncate it.
   if [ ${pwdoffset} -gt "0" ]; then
@@ -72,8 +71,8 @@ rewrite_pwd()
 # and colorizes the prompt. Subsequent commands will pick up any changes in the
 # same state we initialize here.
 #
-# PROMPT_COMMAND is a special environment variable in Bash. It allows you to 
-# specify a command or function that gets executed just before the Bash prompt 
+# PROMPT_COMMAND is a special environment variable in Bash. It allows you to
+# specify a command or function that gets executed just before the Bash prompt
 # is displayed. I use it to update the active working dir after every cmd.
 PROMPT_COMMAND=rewrite_pwd
 
