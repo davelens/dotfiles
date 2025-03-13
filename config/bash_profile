@@ -25,6 +25,7 @@ source "$DOTFILES_PATH/bash/env/misc.sh"           # The kitchen sink
 ##############################################################################
 # Configuration for how we interact with our shell (aliases, prompt).
 ##############################################################################
+source "$DOTFILES_PATH/bash/colors.sh"
 source "$DOTFILES_PATH/bash/aliases.sh"
 source "$DOTFILES_PATH/bash/prompt.sh"
 source "$DOTFILES_PATH/bash/dots.sh"
