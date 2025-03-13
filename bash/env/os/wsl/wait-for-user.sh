@@ -1,6 +1,8 @@
-# This file will only load on WSL.
+###############################################################################
+# This script waits for WSL2 to finish its bootstrapping process before 
+# granting my own user access.
+###############################################################################
 
-#
 # So on WSL it seems that there's some tomfoolery going on as it starts up
 # our shell. Some history ...
 #
@@ -44,8 +46,8 @@
 # isn't proper practice, I just want this to work so I can do some coding.
 #
 # So as a final step, to prevent any kind of errors on startup, I just wait
-# until the systemd-private-* folders appear, and then I allow myself access.
-#
+# until the systemd-private-* folders appear, and then I allow my $USER access.
+
 if ! compgen -G "/tmp/systemd-private-*" >/dev/null; then
   echo "Waiting for WSL2 to finish its prep ..."
 fi
@@ -54,67 +56,13 @@ until compgen -G "/tmp/systemd-private-*" >/dev/null; do
   sleep 1
 done
 
-declare -i MyUID=$(id -u)
+declare -i MY_UID
+MY_UID=$(id -u)
 # Adding the additional forward slash to mimick the default behaviour.
-XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$MyUID/}
+XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$MY_UID/}
 export XDG_RUNTIME_DIR
 while findmnt --shadow -n -o SOURCE "$XDG_RUNTIME_DIR" >/dev/null; do
   echo "Unmounting '$XDG_RUNTIME_DIR'" >&2
   sudo umount "$XDG_RUNTIME_DIR"
 done
-
-# Bootstrap an ssh-agent and add your default key to it.
-function ssh-agent-bootstrap {
-  if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent >/dev/null; then
-    export DOTFILES_SSH_AUTH_SOCK="${DOTFILES_TMP_HOME}/ssh-agent.socket"
-    export SSH_AUTH_SOCK="$DOTFILES_SSH_AUTH_SOCK"
-    [ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"
-    eval "$(ssh-agent -s -a $SSH_AUTH_SOCK)"
-    echo $SSH_AGENT_PID >>"${XDG_RUNTIME_DIR}/ssh-agent.pid"
-  fi
-}
-
-# The mimemagic gem requires this file, which is installed via a homebrew pkg
-# called shared-mime-info. On Linuxbrew however we need to explicitly set this
-# path.
-export FREEDESKTOP_MIME_TYPES_PATH="${BREW_PATH}/share/mime/packages/freedesktop.org.xml"
-export WSL2_GUI_APPS_ENABLED="0"
-
-# di = directory
-# fi = file
-# ln = symbolic link
-# pi = fifo file
-# so = socket file
-# bd = block (buffered) special file
-# cd = character (unbuffered) special file
-# or = symbolic link pointing to a non-existent file (orphan)
-# mi = non-existent file pointed to by a symbolic link (visible when you type ls -l)
-# ex = file which is executable (ie. has 'x' set in permissions).
-# *.rpm = files with the ending .rpm
-LS_COLORS=$LS_COLORS:"di=0;35:"
-export LS_COLORS
-# NOTE: On macos this command seems to have an additional column, so we need
-# to shift this by 1.
-alias lsa='ls -hal --color=tty'
-alias pbcopy="clip.exe"
-alias pbpaste="powershell.exe -command 'Get-Clipboard' | head -n -1"
-
-notes() {
-  local mountpoint="${HOME}/Network/alexandria"
-
-  if ! mount -l | grep Network/alexandria >/dev/null; then
-    sudo mount -t drvfs '\\alexandria\storage\projects\notes' "$mountpoint"
-  fi
-
-  bash -c "utility tmux quickstart \"$*\" -- \"$mountpoint\" --"
-}
-
-# Make sure an ssh-agent is running with our default key active.
-ssh-agent-bootstrap
-
-# Primarily make sure keychain doesn't create files in the home dir, but
-# also have it hold our initialized ssh-agent.
-keychain --inherit any --agents ssh id_rsa --absolute --dir "${XDG_RUNTIME_DIR}keychain" --quiet
-
-# Makes sure that the terminal is cleared when pressing Ctrl+l in tmux in WSL.
-bind -x $'"\C-l":clear;'
+unset MY_UID

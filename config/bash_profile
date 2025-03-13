@@ -34,9 +34,9 @@ source "$DOTFILES_PATH/bash/dots.sh"
 # OS specific configuration and/or overrides.
 ###############################################################################
 case $("$XDG_BIN_HOME/os") in
-windows) source "$DOTFILES_PATH/bash/wsl.sh" ;;
-macos) source "$DOTFILES_PATH/bash/macos.sh" ;;
-linux) source "$DOTFILES_PATH/bash/linux.sh" ;;
+windows) source "$DOTFILES_PATH/bash/env/os/wsl/init.sh" ;;
+macos)   source "$DOTFILES_PATH/bash/env/os/macos/init.sh" ;;
+linux)   source "$DOTFILES_PATH/bash/env/os/linux/init.sh" ;;
 esac
 
 ###############################################################################
