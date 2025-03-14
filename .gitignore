@@ -2,7 +2,7 @@
 .env
 .install_path
 dotbot
-bash/completions/iterm2_shell_integration.bash
+bash/env/autocompletions/iterm2_shell_integration.bash
 bash/private
 # ac is a symlink to my ActiveCollab commands, which live in a private repo.
 bin/utilities/ac
