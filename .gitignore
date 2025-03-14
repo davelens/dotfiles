@@ -13,4 +13,4 @@ vim/autoload/plug.vim
 vim/ftplugin/go
 vim/swp
 node_modules
-tmux/plugins
+config/tmux/plugins
