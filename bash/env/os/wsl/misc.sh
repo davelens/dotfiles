@@ -31,18 +31,3 @@ export FREEDESKTOP_MIME_TYPES_PATH="${BREW_PATH}/share/mime/packages/freedesktop
 LS_COLORS=$LS_COLORS:"di=0;34:":"*.rb=0;35:"
 export LS_COLORS
 
-# This uses tmux/quickstart to open a tmux session to my NAS's notes directory.
-#
-# TODO:
-# - [ ] Move this to an os-unisex command
-# - [ ] Have it detect whether I'm home. If I'm not: Boot up a VPN connection
-#
-notes() {
-  local mountpoint="$HOME/Network/alexandria"
-
-  if ! mount -l | grep Network/alexandria >/dev/null; then
-    sudo mount -t drvfs '\\alexandria\storage\projects\notes' "$mountpoint"
-  fi
-
-  bash -c "utility tmux quickstart \"$*\" -- \"$mountpoint\" --"
-}

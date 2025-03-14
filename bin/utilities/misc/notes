@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# This uses tmux/quickstart to open a tmux session to my NAS's notes directory.
+#
+# TODO:
+# - [x] Move this to an os-unisex command
+# - [ ] Have it detect whether I'm home. If I'm not: Boot up a VPN connection
+#
+
+mountpoint="$HOME/Network/alexandria"
+[ ! -d "$mountpoint" ] && mkdir -p "$mountpoint"
+
+macos=0
+[ "$(os)" == "macos" ] && macos=1
+
+cmd="mount -l"
+[ $macos -eq 1 ] && cmd="mount"
+
+if ! command $cmd | grep Network/alexandria >/dev/null; then
+  if [ $macos -eq 1 ]; then
+    mount_smbfs //davelens@alexandria.local/storage/projects/notes ~/Network/alexandria
+  else
+    sudo mount -t drvfs '\\alexandria\storage\projects\notes' "$mountpoint"
+  fi
+fi
+
+bash -c "utility tmux quickstart \"$*\" -- \"$mountpoint\" --"
