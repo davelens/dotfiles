@@ -17,21 +17,22 @@ export XDG_BIN_HOME="$HOME/.local/bin"
 [ ! -d "$XDG_BIN_HOME" ] && mkdir -p "$XDG_BIN_HOME"
 
 # Load in specific dotfiles paths while adhering to the XDG spec.
-export DOTFILES_CONFIG_PATH="$XDG_CONFIG_HOME/dots"
-export DOTFILES_STATE_PATH="$XDG_STATE_HOME/dots"
-export DOTFILES_CACHE_PATH="$XDG_CACHE_HOME/dots"
-export DOTFILES_DATA_PATH="$XDG_DATA_HOME/dots"
+export DOTFILES_FOLDER="dots"
+export DOTFILES_CONFIG_HOME="$XDG_CONFIG_HOME/$DOTFILES_FOLDER"
+export DOTFILES_STATE_HOME="$XDG_STATE_HOME/$DOTFILES_FOLDER"
+export DOTFILES_CACHE_HOME="$XDG_CACHE_HOME/$DOTFILES_FOLDER"
+export DOTFILES_DATA_HOME="$XDG_DATA_HOME/$DOTFILES_FOLDER"
 
-[ ! -d "$DOTFILES_STATE_PATH" ] && mkdir -p "$DOTFILES_STATE_PATH"
-[ ! -d "$DOTFILES_CACHE_PATH" ] && mkdir -p "$DOTFILES_CACHE_PATH"
-[ ! -d "$DOTFILES_DATA_PATH" ] && mkdir -p "$DOTFILES_DATA_PATH"
+[ ! -d "$DOTFILES_CONFIG_HOME" ] && mkdir -p "$DOTFILES_CONFIG_HOME"
+[ ! -d "$DOTFILES_STATE_HOME" ] && mkdir -p "$DOTFILES_STATE_HOME/tmp"
+[ ! -d "$DOTFILES_CACHE_HOME" ] && mkdir -p "$DOTFILES_CACHE_HOME"
+[ ! -d "$DOTFILES_DATA_HOME" ] && mkdir -p "$DOTFILES_DATA_HOME"
 
 # TODO: These should go elsewhere, I think.
-export DOTFILES_TMP_HOME="$DOTFILES_STATE_PATH/tmp"
-# TODO: Find out if this can be $DOTFILES_TMP_HOME/ssh-agent.socket on macos.
-# Then I can just make it the same between macos/WSL2.
-export DOTFILES_SSH_AUTH_SOCK="$SSH_AUTH_SOCKET"
-export DOTFILES_SALT_PATH="$DOTFILES_CACHE_PATH/salt.enc"
+# TODO: Find out if this can be $DOTFILES_STATE_HOME/tmp/ssh-agent.socket 
+# on macos. Then I can just make it the same between macos/WSL2.
+# export DOTFILES_SSH_AUTH_SOCK="$SSH_AUTH_SOCKET"
+export DOTFILES_SALT_PATH="$DOTFILES_CACHE_HOME/salt.enc"
 
 # Program-specific overrides to let them follow the XDG spec.
 # Some of these (HISTFILE, INPUTRC,...) could live in their respective

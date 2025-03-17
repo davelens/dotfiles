@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-source "$DOTFILES_CONFIG_PATH"/env
+source "$DOTFILES_CONFIG_HOME"/env
 
-log_file="$DOTFILES_STATE_PATH"/dots.log
+log_file="$DOTFILES_STATE_HOME"/dots.log
 [ ! -f "$log_file" ] && touch "$log_file"
 
 usage() {
@@ -41,25 +41,25 @@ logs() {
 }
 
 install() {
-  "$DOTFILES_PATH"/setup/install
+  "$DOTFILES_REPO_HOME"/setup/install
 }
 
 update() {
   error_occurred=0
 
   # Check for uncommitted changes and exit gracefully if so.
-  if ! git -C "$DOTFILES_PATH" diff-files --quiet; then
+  if ! git -C "$DOTFILES_REPO_HOME" diff-files --quiet; then
     $print_status -i error "There are uncommitted changes in your dotfiles. Please commit or stash them before updating:"
     echo
-    git -C "$DOTFILES_PATH" st
+    git -C "$DOTFILES_REPO_HOME" st
     exit 1
   fi
 
   # Pull the latest changes
   $print_status -n "Pulling in changes ..."
 
-  if git -C "$DOTFILES_PATH" fetch origin >/dev/null; then
-    if ! git -C "$DOTFILES_PATH" merge --no-commit origin/"$(git -C "$DOTFILES_PATH" b)" &>>"$log_file"; then
+  if git -C "$DOTFILES_REPO_HOME" fetch origin >/dev/null; then
+    if ! git -C "$DOTFILES_REPO_HOME" merge --no-commit origin/"$(git -C "$DOTFILES_REPO_HOME" b)" &>>"$log_file"; then
       error_occurred=1
     fi
   else
@@ -70,7 +70,7 @@ update() {
   if [ $error_occurred -eq 0 ]; then
     $print_status -i ok "Files updated to latest version"
     $print_status -n "Running installer ..."
-    "$DOTFILES_PATH"/setup/install &>>"$log_file" || error_occurred=1
+    "$DOTFILES_REPO_HOME"/setup/install &>>"$log_file" || error_occurred=1
   fi
 
   # Handle final status

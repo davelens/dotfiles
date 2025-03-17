@@ -1,22 +1,30 @@
 #!/usr/bin/env bash
 set -e
 
-readonly DOTBOT_DIR="dotbot"
-DOTFILES_PATH="$(dirname "$(dirname "$(realpath "$0")")")"
-readonly DOTFILES_PATH
+function fail {
+  printf "%s\n" "$1" >&2
+  exit "${2-1}"
+}
+
+[ -z "${BASH_VERSION:-}" ] && fail "Bash is required to interpret this script."
+
+DOTFILES_REPO_HOME="$(dirname "$(dirname "$(realpath "$0")")")"
+readonly DOTFILES_REPO_HOME
+dotbot_path="$DOTFILES_REPO_HOME/dotbot"
+readonly dotbot_path
 
 # Trying to adhere to the XDG Base Directory Specification.
-source "$DOTFILES_PATH/bash/env/xdg.sh"
+source "$DOTFILES_REPO_HOME/bash/env/xdg.sh"
 
 # Get dotbot installed
-git -C "$DOTFILES_PATH/$DOTBOT_DIR" submodule sync --quiet --recursive
-git -C "$DOTFILES_PATH/$DOTBOT_DIR" submodule update --init --recursive
+git -C "$dotbot_path" submodule sync --quiet --recursive
+git -C "$dotbot_path" submodule update --init --recursive
 
 # Activate dotbot with the install configuration
-"$DOTFILES_PATH/$DOTBOT_DIR/bin/dotbot" -d "$DOTFILES_PATH" -c "$DOTFILES_PATH/setup/install.conf.yaml" "${@}"
+"$dotbot_path/bin/dotbot" -d "$DOTFILES_REPO_HOME" -c "$DOTFILES_REPO_HOME/setup/install.conf.yaml" "${@}"
 
-if [ ! -f "$DOTFILES_CONFIG_PATH"/env ]; then
-  "$DOTFILES_PATH"/setup/env_wizard || touch "$DOTFILES_CONFIG_PATH"/env
+if [ ! -f "$DOTFILES_CONFIG_HOME/env" ]; then
+  "$DOTFILES_REPO_HOME/setup/env_wizard" || touch "$DOTFILES_CONFIG_HOME/env"
 fi
 
 # Create an executable that allows us to update our dotfiles, among other
@@ -24,7 +32,7 @@ fi
 dots_path="$XDG_BIN_HOME/dots"
 
 if [ ! -f "$dots_path" ]; then
-  ln -s "$DOTFILES_PATH"/setup/dots "$dots_path"
+  ln -s "$DOTFILES_REPO_HOME/setup/dots" "$dots_path"
   chmod +x "$dots_path"
   $dots_path
   echo

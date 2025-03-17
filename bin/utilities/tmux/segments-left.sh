@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-. "$DOTFILES_PATH/bin/utilities/tmux/helpers.sh"
+. "$DOTFILES_REPO_HOME/bin/utilities/tmux/helpers.sh"
 
 segments=''
 bgcolor=''

@@ -7,7 +7,7 @@ _dots_completions() {
   prev="${COMP_WORDS[COMP_CWORD - 1]}"
 
   # Define available commands
-  opts="logs update"
+  opts="logs update install"
 
   # Provide command completions if we're on the first argument
   if [[ ${COMP_CWORD} -eq 1 ]]; then
@@ -19,10 +19,14 @@ _dots_completions() {
   case "$prev" in
   logs)
     # Suggest log file path as completion
-    COMPREPLY=($(compgen -f "$DOTFILES_STATE_PATH/dots.log"))
+    COMPREPLY=($(compgen -f "$DOTFILES_STATE_HOME/dots.log"))
     ;;
   update)
     # No additional arguments for "update"
+    COMPREPLY=()
+    ;;
+  install)
+    # No additional arguments for "install"
     COMPREPLY=()
     ;;
   *)

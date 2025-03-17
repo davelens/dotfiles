@@ -4,7 +4,7 @@
 
 # Bootstrap an ssh-agent and add your default key to it.
 if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent >/dev/null; then
-  export DOTFILES_SSH_AUTH_SOCK="$DOTFILES_TMP_HOME/ssh-agent.socket"
+  export DOTFILES_SSH_AUTH_SOCK="$DOTFILES_STATE_HOME/tmp/ssh-agent.socket"
   export SSH_AUTH_SOCK="$DOTFILES_SSH_AUTH_SOCK"
   [ -S "$SSH_AUTH_SOCK" ] && rm -f "$SSH_AUTH_SOCK"
   eval "$(ssh-agent -s -a "$SSH_AUTH_SOCK")"

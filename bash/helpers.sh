@@ -54,7 +54,7 @@ function ensure_brew_dependency {
 
 # To help us centralize how errors look throughout our scripts.
 function error_handler {
-  echo "$(cross) An error occurred. Check the log file for details: $DOTFILES_STATE_PATH/dots.log"
+  echo "$(cross) An error occurred. Check the log file for details: $DOTFILES_STATE_HOME/dots.log"
 
   if ! is_sourced; then
     exit $?
@@ -62,15 +62,15 @@ function error_handler {
 }
 
 # Exports all ENV vars listed in a file.
-# Loads $DOTFILES_CONFIG_PATH/env by default.
+# Loads $DOTFILES_CONFIG_HOME/env by default.
 function export_env_vars_from_file {
-  local env_file=${1:-"$DOTFILES_CONFIG_PATH/env"}
+  local env_file=${1:-"$DOTFILES_CONFIG_HOME/env"}
   [ -f "$env_file" ] && source "$env_file"
 }
 
 # Helps us hard stop our custom executables during fails.
 function fail {
-  printf '%s\n' "$1" >&2 # Sends a message to stderr.
+  printf "%s\n" "$1" >&2 # Sends a message to stderr.
   exit "${2-1}"          # Returns a code specified by $2 or 1 by default.
 }
 

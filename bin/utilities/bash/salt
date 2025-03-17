@@ -27,7 +27,7 @@ usage() {
 
 function reset {
   $print_status "Resetting salt and all encrypted files ..."
-  rm -f "$DOTFILES_STATE_PATH"/*.enc
+  rm -f "$DOTFILES_STATE_HOME"/*.enc
   $cursor move-up move-start
   $print_status -i ok "Salt and encrypted files have been reset.\n"
   echo "    Please source $BASHRC (\`s\`) or restart your shell to apply changes."

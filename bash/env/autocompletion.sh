@@ -20,7 +20,7 @@ if command -v brew >/dev/null; then
 fi
 
 # Source all downloaded completion files.
-for file in "$DOTFILES_PATH"/bash/env/autocompletions/*.bash; do
+for file in "$DOTFILES_REPO_HOME"/bash/env/autocompletions/*.bash; do
   [ -r "$file" ] && source "$file"
 done
 unset file

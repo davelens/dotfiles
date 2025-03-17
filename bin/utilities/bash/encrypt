@@ -24,7 +24,7 @@ usage() {
 
 ###############################################################################
 
-MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_PATH/tmp/$name.XXXXXX")
+MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_HOME/tmp/$name.XXXXXX")
 
 function call_openssl {
   local string="openssl aes-256-cbc -e -pbkdf2"

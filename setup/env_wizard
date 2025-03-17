@@ -7,16 +7,16 @@
 trap 'clear && interrupt_handler' SIGINT
 
 # Derive the dotfiles' absolute path so we always have a sensible default for
-# the $DOTFILES_CONFIG_PATH/env file.
-export DOTFILES_PATH=$(dirname "$(dirname $(realpath "$0"))")
+# the $DOTFILES_CONFIG_HOME/env file.
+export DOTFILES_REPO_HOME=$(dirname "$(dirname $(realpath "$0"))")
 
 # Make sure we have all necessary paths available.
-source "$DOTFILES_PATH/bash/env/xdg.sh"
+source "$DOTFILES_REPO_HOME/bash/env/xdg.sh"
 
 #############################################################################
 # This exposes all the box draw functions to this command.
 # This is much faster than calling `utility bash box` for every draw action.
-source "$DOTFILES_PATH/bin/utilities/bash/box"
+source "$DOTFILES_REPO_HOME/bin/utilities/bash/box"
 
 # Command aliases for ease of use.
 bitwarden="utility misc bitwarden"
@@ -265,8 +265,8 @@ function write_env_files {
   [ -f "$HOME/.ssh/id_rsa.pub" ] && export GITHUB_SIGNING_KEY="$HOME/.ssh/id_rsa.pub"
 
   # So every variable we need is exported before we write the config.env file.
-  source "$DOTFILES_CONFIG_PATH/env"
-  content=$(envsubst <"$DOTFILES_PATH/setup/gitconfig.env.template")
+  source "$DOTFILES_CONFIG_HOME/env"
+  content=$(envsubst <"$DOTFILES_REPO_HOME/setup/gitconfig.env.template")
   echo "$content" >"$XDG_CONFIG_HOME/git/config.env"
 
   # Include the allowed signers file, if it's there.
@@ -280,7 +280,7 @@ function main {
   intro
 
   local using_bitwarden=0
-  local env_file="$DOTFILES_CONFIG_PATH/env"
+  local env_file="$DOTFILES_CONFIG_HOME/env"
   local env_file_label="${env_file/$HOME/"~"}"
 
   proceed="$($prompt_user -c -i "$(pending $BOX_HIGHLIGHT) " "Press any key to continue ... ")"

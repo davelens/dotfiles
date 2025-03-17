@@ -3,7 +3,7 @@
 
 alias allow='xattr -d com.apple.quarantine'
 alias rm='$(which trash) &>/dev/null && trash' # Puts rm'ed files in the OS trash
-alias ss="osascript \"\$DOTFILES_PATH/config/macos/hide-terminal.scpt\" && utility misc screenshot && killall Terminal"
+alias ss="osascript \"\$DOTFILES_REPO_HOME/config/macos/hide-terminal.scpt\" && utility misc screenshot && killall Terminal"
 alias toggle_desktop='toggle_default finder CreateDesktop'
 alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
 
@@ -18,9 +18,9 @@ alias ipv6off='networksetup -setv6off Wi-Fi'
 alias ipv6on='networksetup -setv6automatic Wi-Fi'
 
 # Download the iTerm2 shell integration file and place it in the completions dir.
-if [ ! -f "$DOTFILES_PATH/bash/env/autocompletions/iterm2_shell_integration.bash" ]; then
+if [ ! -f "$DOTFILES_REPO_HOME/bash/env/autocompletions/iterm2_shell_integration.bash" ]; then
   curl -L https://iterm2.com/shell_integration/bash \
-    -o "$DOTFILES_PATH/bash/env/autocompletions/iterm2_shell_integration.bash"
+    -o "$DOTFILES_REPO_HOME/bash/env/autocompletions/iterm2_shell_integration.bash"
 fi
 
 # toggles a boolean setting in the com.apple environment

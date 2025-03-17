@@ -13,7 +13,7 @@ main() {
   command="$2"
 
   # Define the base directory for scripts
-  BASE_DIR="$DOTFILES_PATH/bin/utilities"
+  BASE_DIR="$DOTFILES_REPO_HOME/bin/utilities"
   SCRIPT_PATH="$BASE_DIR/$category/$command"
 
   # Shift off category and command, leaving any remaining arguments

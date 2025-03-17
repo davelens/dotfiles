@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source "$DOTFILES_PATH/bin/utilities/tmux/helpers.sh"
+source "$DOTFILES_REPO_HOME/bin/utilities/tmux/helpers.sh"
 
 battery_info() {
   # Slightly modified from https://github.com/richoH/dotfiles/blob/master/bin/battery
@@ -31,7 +31,7 @@ battery_info() {
 }
 
 song_playing() {
-  song_playing=$("$DOTFILES_PATH/bin/utilities/tmux/current_track.sh")
+  song_playing=$("$DOTFILES_REPO_HOME/bin/utilities/tmux/current_track.sh")
 
   if [[ $song_playing ]]; then
     echo "#[fg=colour30]$song_playing"

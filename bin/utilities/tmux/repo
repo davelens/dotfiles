@@ -25,7 +25,7 @@
 set -e
 
 # Loading ENV vars enables us to pick up REPO_NAMESPACE.
-export_env_vars_from_file "$DOTFILES_CONFIG_PATH/env"
+export_env_vars_from_file "$DOTFILES_CONFIG_HOME/env"
 
 me="bin/tmux/$(basename "$0")"
 namespace=${REPO_NAMESPACE:-"$HOME/Sites"}
