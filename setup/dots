@@ -41,7 +41,7 @@ logs() {
 }
 
 install() {
-  "$DOTFILES_REPO_HOME"/setup/install
+  "$DOTFILES_REPO_HOME/setup/install.sh"
 }
 
 update() {

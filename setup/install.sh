@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
 
 function fail {
@@ -7,6 +7,11 @@ function fail {
 }
 
 [ -z "${BASH_VERSION:-}" ] && fail "Bash is required to interpret this script."
+
+# Either curl or wget will work.
+if ! command -v curl >/dev/null && ! command -v wget >/dev/null; then
+  fail "Either curl or wget is required to download the dotfiles."
+fi
 
 DOTFILES_REPO_HOME="$(dirname "$(dirname "$(realpath "$0")")")"
 readonly DOTFILES_REPO_HOME
@@ -21,7 +26,7 @@ git -C "$dotbot_path" submodule sync --quiet --recursive
 git -C "$dotbot_path" submodule update --init --recursive
 
 # Activate dotbot with the install configuration
-"$dotbot_path/bin/dotbot" -d "$DOTFILES_REPO_HOME" -c "$DOTFILES_REPO_HOME/setup/install.conf.yaml" "${@}"
+"$dotbot_path/bin/dotbot" -d "$DOTFILES_REPO_HOME" -c "$DOTFILES_REPO_HOME/setup/install.conf.yaml" "$@"
 
 if [ ! -f "$DOTFILES_CONFIG_HOME/env" ]; then
   "$DOTFILES_REPO_HOME/setup/env_wizard" || touch "$DOTFILES_CONFIG_HOME/env"
