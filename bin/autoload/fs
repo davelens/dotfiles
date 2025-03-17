@@ -8,5 +8,5 @@ path="${path%/}"
 echo "$path ->"
 unset path
 
-find "$1" -maxdepth 1 -type f -exec ls -laSh {} + | \
+find "$1" -maxdepth 1 -type f -exec ls -laSh {} + |
   awk "{sub(/^\.\//, \"\", \$9); sub(/${1//\//\\\/}/, \"\", \$9); print \$5 \"\t\" \$9}"

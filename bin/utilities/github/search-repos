@@ -55,24 +55,24 @@ results=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -h|--help)
-      usage && exit 0
-      ;;
-    -v|--verbal)
-      verbal=true
-      shift
-      ;;
-    *)
-      query="$1"
-      shift
-      ;;
+  -h | --help)
+    usage && exit 0
+    ;;
+  -v | --verbal)
+    verbal=true
+    shift
+    ;;
+  *)
+    query="$1"
+    shift
+    ;;
   esac
 done
 
 # No query, no results.
 [[ -z $query ]] && usage && exit 1
 
-# Sanitize the query for use in the Github API call. 
+# Sanitize the query for use in the Github API call.
 # Only spaces are a problem, for now.
 query=$(echo "${query// /+}")
 

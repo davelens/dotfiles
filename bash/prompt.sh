@@ -39,8 +39,8 @@ prompt_branch() {
 #   * The last pwdmaxlen characters of the PWD are displayed
 #   * Leading partial directory names are stripped off
 #
-# Example: ${REPO_NAMESPACE}/blimp/abcdefghij
-# if pwdmaxlen=25: ${REPO_NAMESPACE}/blimp/abcdefghij
+# Example: $REPO_NAMESPACE/blimp/abcdefghij
+# if pwdmaxlen=25: $REPO_NAMESPACE/blimp/abcdefghij
 # if pwdmaxlen=20: ~/blimp/abcdefghij
 rewrite_pwd() {
   # how many characters of the $PWD should remain visible.
@@ -61,9 +61,9 @@ rewrite_pwd() {
   local pwdoffset=$((${#NEW_PWD} - pwdmaxlen))
 
   # If the PWD string is too long, then we will truncate it.
-  if [ ${pwdoffset} -gt "0" ]; then
+  if [ $pwdoffset -gt "0" ]; then
     NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
-    NEW_PWD=${trunc_symbol}/${NEW_PWD#*/} # Remove until the first forward slash
+    NEW_PWD=$trunc_symbol/${NEW_PWD#*/} # Remove until the first forward slash
   fi
 }
 
@@ -77,8 +77,8 @@ rewrite_pwd() {
 PROMPT_COMMAND=rewrite_pwd
 
 # Colors the root prompt red.
-UC=$C
-[ $UID -eq "0" ] && UC=$R
+UC=$FGC
+[ $UID -eq "0" ] && UC=$FGR
 
 # Override the prompt with readable color vars and git branch info.
-PS1="${G}\u@\h> \${NEW_PWD} ${C}\$(prompt_branch)${NONE}\n> "
+PS1="$FGG\u@\h> \$NEW_PWD $FGC\$(prompt_branch)$CNONE\n> "

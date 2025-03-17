@@ -21,27 +21,27 @@ TARGET_PATH=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -h|--help)
-      usage && exit 0
-      ;;
-    --)
+  -h | --help)
+    usage && exit 0
+    ;;
+  --)
+    shift
+    TARGET_PATH="$1"
+    shift
+    break
+    ;;
+  -*)
+    TMUX_OPTIONS+=("$1")
+    if [[ $# -gt 1 && ! "$2" =~ ^- ]]; then
+      TMUX_OPTIONS+=("$2")
       shift
-      TARGET_PATH="$1"
-      shift
-      break
-      ;;
-    -*)
-      TMUX_OPTIONS+=("$1")
-      if [[ $# -gt 1 && ! "$2" =~ ^- ]]; then
-        TMUX_OPTIONS+=("$2")
-        shift
-      fi
-      shift
-      ;;
-    *)
-      TARGET_PATH="$1"
-      shift
-      ;;
+    fi
+    shift
+    ;;
+  *)
+    TARGET_PATH="$1"
+    shift
+    ;;
   esac
 done
 
@@ -59,7 +59,7 @@ SESSION_NAME="$(basename "$TARGET_PATH" | sed 's/^\.//;s:/$::' | sed 's/[. ]/_/g
 
 # Check if the session already exists
 if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-  # A little trick: If we get errors we can simulate how tmux itself would 
+  # A little trick: If we get errors we can simulate how tmux itself would
   # respond by failing silently, and calling tmux with the options at hand.
   if ! tmux "${TMUX_OPTIONS[@]}" new-session -s "$SESSION_NAME" -n "editor" -d 2>/dev/null; then
     # Directly invoke tmux with the options to replicate the native behavior
@@ -67,7 +67,7 @@ if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
     exit 1
   fi
   tmux rename-window -t "$SESSION_NAME:1" "editor"
-  tmux send-keys -t "$SESSION_NAME:1" "cd '$TARGET_PATH' && clear && ${EDITOR}" C-m
+  tmux send-keys -t "$SESSION_NAME:1" "cd '$TARGET_PATH' && clear && $EDITOR" C-m
   tmux new-window -t "$SESSION_NAME" -n "cli"
   tmux send-keys -t "$SESSION_NAME:2" "cd '$TARGET_PATH' && clear" C-m
   tmux select-window -t "$SESSION_NAME:1"

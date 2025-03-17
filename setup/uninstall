@@ -11,7 +11,7 @@ while IFS= read -r line; do
   fi
 
   # Extract the file path before the ':'
-  file_path=$(echo "$line" | awk -F':' '{print $1}' | xargs)  # Removes surrounding spaces
+  file_path=$(echo "$line" | awk -F':' '{print $1}' | xargs) # Removes surrounding spaces
 
   # Expand the '~' to the home directory
   expanded_path="${file_path/#\~/$HOME}"
@@ -23,4 +23,4 @@ while IFS= read -r line; do
   else
     echo "File not found: $expanded_path"
   fi
-done <<< "$files"
+done <<<"$files"

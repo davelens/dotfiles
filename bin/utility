@@ -4,24 +4,28 @@
 set -e
 export_env_vars_from_file
 
-# Ensure we have at least two arguments
-[[ $# -lt 2 ]] && fail "Usage: $(basename "$0") <category> <command> [<args>...]"
+main() {
+  # Ensure we have at least two arguments
+  [[ $# -lt 2 ]] && fail "Usage: $(basename "$0") <category> <command> [<args>...]"
 
-# Define the base directory for scripts
-BASE_DIR="${DOTFILES_PATH}/bin/utilities"
-CATEGORY="$1"
-COMMAND="$2"
+  local category command
+  category="$1"
+  command="$2"
 
-# Shift off category and command, leaving any remaining arguments
-shift 2
+  # Define the base directory for scripts
+  BASE_DIR="$DOTFILES_PATH/bin/utilities"
+  SCRIPT_PATH="$BASE_DIR/$category/$command"
 
-# Construct the path to the script
-SCRIPT_PATH="$BASE_DIR/$CATEGORY/$COMMAND"
+  # Shift off category and command, leaving any remaining arguments
+  shift 2
 
-# Check if the script exists and is executable
-if [ -x "$SCRIPT_PATH" ]; then
-  "$SCRIPT_PATH" "$@"  # Execute the script with remaining arguments
-else
-  echo "Error: Script '$COMMAND' not found in '$BASE_DIR/$CATEGORY' or not executable."
-  exit 1
-fi
+  # Check if the script exists and is executable
+  if [ -x "$SCRIPT_PATH" ]; then
+    "$SCRIPT_PATH" "$@" # Execute the script with remaining arguments
+  else
+    echo "Error: Script '$command' not found in '$BASE_DIR/$category' or not executable."
+    exit 1
+  fi
+}
+
+main "$@"

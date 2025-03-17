@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ${DOTFILES_PATH}/bin/utilities/tmux/helpers.sh
+source "$DOTFILES_PATH/bin/utilities/tmux/helpers.sh"
 
 [[ ! -d ~/.local/state/tmux ]] && mkdir ~/.local/state/tmux
 
@@ -8,7 +8,7 @@ find ~/.local/state/tmux/ -name crypto-tracker -type f -mmin +5 -delete
 
 if [[ ! -f ~/.local/state/tmux/crypto-tracker ]]; then
   value=$(cointop price -c Cardano)
-  echo $value > ~/.local/state/tmux/crypto-tracker
+  echo $value >~/.local/state/tmux/crypto-tracker
 else
   value=$(<~/.local/state/tmux/crypto-tracker)
 fi

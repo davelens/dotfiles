@@ -11,4 +11,4 @@ fi
 LOGS=$HOME/.local/share/tmux/logs && mkdir -p $LOGS
 LOG_PATH="$LOGS/$(date +%Y%m%d%H%M%S).pane${TMUX_PANE//[^0-9]/}.log"
 
-tmux pipe-pane -t "${TMUX_PANE}" "exec cat - >> $LOG_PATH"
+tmux pipe-pane -t "$TMUX_PANE" "exec cat - >> $LOG_PATH"

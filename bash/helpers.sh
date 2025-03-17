@@ -62,10 +62,10 @@ function error_handler {
 }
 
 # Exports all ENV vars listed in a file.
-# Loads ${DOTFILES_CONFIG_PATH}/env by default.
+# Loads $DOTFILES_CONFIG_PATH/env by default.
 function export_env_vars_from_file {
-  local env_file=${1:-"${DOTFILES_CONFIG_PATH}/env"}
-  [ -f $env_file ] && source "$env_file"
+  local env_file=${1:-"$DOTFILES_CONFIG_PATH/env"}
+  [ -f "$env_file" ] && source "$env_file"
 }
 
 # Helps us hard stop our custom executables during fails.
@@ -152,7 +152,7 @@ function succeed {
 # Because we all want to know how many times we actually typed "gti" instead
 # of "git".
 function timesused {
-  [ -f "$HISTFILE" ] && grep -c "^${1}" "$HISTFILE"
+  [ -f "$HISTFILE" ] && grep -c "^$1" "$HISTFILE"
 }
 
 function yellow {

@@ -10,7 +10,7 @@ name="cursor"
 
 #
 # Note: the [-p|--for-prompt] option is specific to my dotfiles.
-# I wouldn't know how to go about calculating the bash prompt height. 
+# I wouldn't know how to go about calculating the bash prompt height.
 # I know in my case it's always 2.
 #
 # I suppose it could be a bit more flexible by reading the deficit value
@@ -19,7 +19,7 @@ name="cursor"
 usage() {
   echo
   echo "Usage: $name [-h|--help] <command(s)>"
-  echo 
+  echo
   echo "Move the cursor around the terminal quickly by chaining commands."
   echo
   echo "Examples:"
@@ -57,19 +57,19 @@ usage() {
 ###############################################################################
 
 declare -A sequences=(
-  ["move_start"]='033[G'
-  ["move_up"]='033[${steps}A'
-  ["move_down"]='033[${steps}B'
-  ["move_right"]='033[${steps}C'
-  ["move_left"]='033[${steps}D'
-  ["clear_down"]='033[0J'
-  ["clear_right"]='033[0K'
-  ["clear_left"]='033[1K'
-  ["clear_line"]='033[2K'
-  ["restore"]='033[u'
-  ["save"]='033[s'
-  ["col"]='033[${steps}G'
-  ["line"]='033[${steps};1H'
+  ["move_start"]="033[G"
+  ["move_up"]="033[\${steps}A"
+  ["move_down"]="033[\${steps}B"
+  ["move_right"]="033[\${steps}C"
+  ["move_left"]="033[\${steps}D"
+  ["clear_down"]="033[0J"
+  ["clear_right"]="033[0K"
+  ["clear_left"]="033[1K"
+  ["clear_line"]="033[2K"
+  ["restore"]="033[u"
+  ["save"]="033[s"
+  ["col"]="033[\${steps}G"
+  ["line"]="033[\$steps;1H"
 )
 
 # Dynamically create methods
@@ -82,29 +82,29 @@ done
 #############################################################################
 
 function seq_move_end {
-  seq_move_right $(tput cols) 
+  seq_move_right "$(tput cols)"
 }
 
 function seq_move_up {
   local jump=${1:-1}
   [[ $in_prompt -eq 1 ]] && jump=$((jump + $(prompt_correction)))
-  printf "\033[${jump}A"
+  printf "\033[%sA" "$jump"
 }
 
 function seq_move_down {
   local jump=${1:-1}
   [[ $in_prompt -eq 1 ]] && jump=$((jump - $(prompt_correction)))
-  printf "\033[${jump}B"
+  printf "\033[%sB" "$jump"
 }
 
 function seq_clear_up {
   local jump=${1:-1}
-  seq_move_up $jump
+  seq_move_up "$jump"
   seq_clear_down
 }
 
 function seq_print {
-  printf "$steps"
+  printf "%s" "$steps"
 }
 
 ###############################################################################
@@ -121,7 +121,7 @@ function prompt_correction {
 function chain_commands {
   for cmd in ${commands[@]}; do
     command="${cmd%%:*}" # Extract the part before `:`
-    steps=${cmd##*:}   # Extract the part after `:`
+    steps=${cmd##*:}     # Extract the part after `:`
     [[ "$command" == "$steps" ]] && steps=1
     $command $steps
   done
@@ -132,28 +132,28 @@ function chain_commands {
 function main {
   [[ $# -eq 0 ]] && usage && exit 0
 
-  local steps=1 in_prompt=0 raw=0 
+  local steps=1 in_prompt=0 raw=0
   local commands=() options=()
 
-  IFS=' ' read -r -a args <<< "$@"
+  IFS=' ' read -r -a args <<<"$@"
 
   # Isolate commands from options
   for arg in "${args[@]}"; do
-    if [[ $arg =~ ^- ]]; then 
+    if [[ $arg =~ ^- ]]; then
       case $arg in
-        -h | --help) usage && exit 0 ;;
-        -p | --for-prompt) in_prompt=1;;
-        -r | --raw) raw=1;;
-        *)
-          if [[ -z $1 ]]; then
-            $print_status -i error "Invalid options: $arg"
-            usage && exit 1
-          fi
-          ;;
+      -h | --help) usage && exit 0 ;;
+      -p | --for-prompt) in_prompt=1 ;;
+      -r | --raw) raw=1 ;;
+      *)
+        if [[ -z $1 ]]; then
+          $print_status -i error "Invalid options: $arg"
+          usage && exit 1
+        fi
+        ;;
       esac
 
       options+=("$arg")
-    else 
+    else
       commands+=("$arg")
     fi
   done
@@ -164,7 +164,7 @@ function main {
   for ((i = 0; i < ${#commands[@]}; i++)); do
     commands[i]="seq_${commands[i]/-/_}"
 
-    if ! command -v "${commands[i]%%:*}" &> /dev/null; then
+    if ! command -v "${commands[i]%%:*}" &>/dev/null; then
       $print_status -i error "Invalid command: ${commands[i]}"
       usage && exit 1
     fi

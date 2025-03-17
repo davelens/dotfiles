@@ -3,15 +3,15 @@
 # This opens a tmux session with a number of window/pane presets in order to
 # do **d**ev work on a project:
 #
-# * `d`: Will fuzzy find your project in ${REPO_NAMESPACE}/* using fzf.
-# * `d davelens/dotfiles`: Will search ${REPO_NAMESPACE}/* for the given namespace.
+# * `d`: Will fuzzy find your project in $REPO_NAMESPACE/* using fzf.
+# * `d davelens/dotfiles`: Will search $REPO_NAMESPACE/* for the given namespace.
 # * `d -n`: Query the GitHub API for my desired repo namespaces.
 # * `d -x`: Close opened sessions, using fzf as a selection tool.
 #
 # It assumes a very specific folder structure; a github repository namespace
-# inside the ${REPO_NAMESPACE} folder. An example:
+# inside the $REPO_NAMESPACE folder. An example:
 #
-#   ${REPO_NAMESPACE}/<git-org-or-user>/<git-repo>
+#   $REPO_NAMESPACE/<git-org-or-user>/<git-repo>
 #
 # All my dev work-related and personal projects reside on GitHub. It makes
 # sense for me to follow the same user/repo structure, as it allows me to
@@ -25,7 +25,7 @@
 set -e
 
 # Loading ENV vars enables us to pick up REPO_NAMESPACE.
-export_env_vars_from_file "${DOTFILES_CONFIG_PATH}/env"
+export_env_vars_from_file "$DOTFILES_CONFIG_PATH/env"
 
 me="bin/tmux/$(basename "$0")"
 namespace=${REPO_NAMESPACE:-"$HOME/Sites"}
@@ -49,7 +49,7 @@ if [[ $# -eq 1 && $1 == '--docker' ]] && [[ ! $(pgrep -n docker) ]]; then
 fi
 
 # Provide a fuzzy search for my projects so I don't have to type names anymore.
-[[ -z $1 ]] && set -- $(ls -d $namespace/**/* | sed -e "s|`echo `$namespace/||" | fzf)
+[[ -z $1 ]] && set -- $(ls -d $namespace/**/* | sed -e "s|$(echo)$namespace/||" | fzf)
 
 if [[ -z $1 ]]; then
   echo 'ERROR: No project namespace given.'
@@ -76,9 +76,9 @@ function rails_windows {
   tmux send-keys -t $1:repl 'export_env_vars_from_file; sleep 2 && clear && bin/rails c' C-m
 
   case $server in
-    [Yy]* ) tmux send-keys -t $1:server 'clear && bin/rails s' C-m;;
-    [Nn]* ) tmux send-keys -t $1:server 'clear && bin/rails s';;
-    * ) printf "\nPlease answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.\n";;
+  [Yy]*) tmux send-keys -t $1:server 'clear && bin/rails s' C-m ;;
+  [Nn]*) tmux send-keys -t $1:server 'clear && bin/rails s' ;;
+  *) printf "\nPlease answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.\n" ;;
   esac
 }
 
@@ -108,23 +108,23 @@ function phoenix_windows {
   tmux send-keys -t $1:server 'export_env_vars_from_file' C-m
 
   case $server in
-    [Yy]* ) tmux send-keys -t $1:server 'clear && mix phx.server' C-m;;
-    [Nn]* ) tmux send-keys -t $1:server 'clear && mix phx.server';;
-    * ) printf "\nPlease answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.\n";;
+  [Yy]*) tmux send-keys -t $1:server 'clear && mix phx.server' C-m ;;
+  [Nn]*) tmux send-keys -t $1:server 'clear && mix phx.server' ;;
+  *) printf "\nPlease answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.\n" ;;
   esac
 }
 
 tmux attach -t $1 >/dev/null 2>&1 || (
   tmux new-session -s $1 -n editor -c $destination -d
-  tmux send-keys -t $1 "export_env_vars_from_file; clear && ${EDITOR}" C-m
+  tmux send-keys -t $1 "export_env_vars_from_file; clear && $EDITOR" C-m
 
   if [ -z $(pgrep -n mysqld) ]; then
     read -n1 -p "[tmux/d] Launch local mysql server? (y/n) " mysql
     echo
     case $mysql in
-      [Yy]* ) mysql.server start >/dev/null 2>&1;;
-      [Nn]* ) echo;;
-      * ) printf "\nPlease answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.\n";;
+    [Yy]*) mysql.server start >/dev/null 2>&1 ;;
+    [Nn]*) echo ;;
+    *) printf "\nPlease answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.\n" ;;
     esac
   fi
 

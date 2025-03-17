@@ -1,6 +1,6 @@
 __mix_completion_debug() {
   if [[ -n ${BASH_COMP_DEBUG_FILE-} ]]; then
-    echo "$*" >>"${BASH_COMP_DEBUG_FILE}"
+    echo "$*" >>"$BASH_COMP_DEBUG_FILE"
   fi
 }
 
@@ -13,7 +13,7 @@ __mix_completion_handle_standard_completion_case() {
   while IFS='' read -r compline; do
     [[ -z $compline ]] && continue
     # Strip any description before checking the length
-    comp=${compline%%$tab*}
+    comp=${compline%%"$tab"*}
     # Only consider the completions that match
     [[ $comp == "$cur"* ]] || continue
     COMPREPLY+=("$compline")
@@ -41,8 +41,8 @@ __mix_completion_format_comp_descriptions() {
     comp=${COMPREPLY[ci]}
     # Properly format the description string which follows a tab character if there is one
     if [[ "$comp" == *$tab* ]]; then
-      desc=${comp#*$tab}
-      comp=${comp%%$tab*}
+      desc=${comp#*"$tab"}
+      comp=${comp%%"$tab"*}
 
       # $COLUMNS stores the current shell width.
       # Remove an extra 4 because we add 2 spaces and 2 parentheses.
@@ -114,4 +114,3 @@ _mix_complete_setup() {
 }
 
 _mix_complete_setup
-

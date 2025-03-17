@@ -26,10 +26,10 @@ usage() {
 
 function icon {
   case "$icon" in
-    pending)  symbol="$(pending $color)";;
-    ok)       symbol="$(check $color)";;
-    error)    symbol="$(cross $color)";;
-    *)        [[ -n $icon ]] && symbol="$(colorize $color [)${icon}$(colorize $color ])";;
+  pending) symbol="$(pending $color)" ;;
+  ok) symbol="$(check $color)" ;;
+  error) symbol="$(cross $color)" ;;
+  *) [[ -n $icon ]] && symbol="$(colorize $color [)$icon$(colorize $color ])" ;;
   esac
 
   echo "$symbol"
@@ -82,7 +82,7 @@ function main {
       if [[ -z $message ]]; then
         message="$1"
       else
-        # This used to use print_status itself, but that *has* to break 
+        # This used to use print_status itself, but that *has* to break
         # something.
         echo "[$name]: Invalid option: $1"
         usage && exit 1

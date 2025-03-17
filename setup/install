@@ -9,11 +9,11 @@ readonly DOTFILES_PATH
 source "$DOTFILES_PATH/bash/env/xdg.sh"
 
 # Get dotbot installed
-git -C "${DOTFILES_PATH}/${DOTBOT_DIR}" submodule sync --quiet --recursive
-git -C "${DOTFILES_PATH}/${DOTBOT_DIR}" submodule update --init --recursive
+git -C "$DOTFILES_PATH/$DOTBOT_DIR" submodule sync --quiet --recursive
+git -C "$DOTFILES_PATH/$DOTBOT_DIR" submodule update --init --recursive
 
 # Activate dotbot with the install configuration
-"${DOTFILES_PATH}/${DOTBOT_DIR}/bin/dotbot" -d "${DOTFILES_PATH}" -c "${DOTFILES_PATH}/setup/install.conf.yaml" "${@}"
+"$DOTFILES_PATH/$DOTBOT_DIR/bin/dotbot" -d "$DOTFILES_PATH" -c "$DOTFILES_PATH/setup/install.conf.yaml" "${@}"
 
 if [ ! -f "$DOTFILES_CONFIG_PATH"/env ]; then
   "$DOTFILES_PATH"/setup/env_wizard || touch "$DOTFILES_CONFIG_PATH"/env
@@ -21,7 +21,7 @@ fi
 
 # Create an executable that allows us to update our dotfiles, among other
 # things.
-dots_path="${XDG_BIN_HOME}/dots"
+dots_path="$XDG_BIN_HOME/dots"
 
 if [ ! -f "$dots_path" ]; then
   ln -s "$DOTFILES_PATH"/setup/dots "$dots_path"

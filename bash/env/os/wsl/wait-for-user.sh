@@ -1,5 +1,5 @@
 ###############################################################################
-# This script waits for WSL2 to finish its bootstrapping process before 
+# This script waits for WSL2 to finish its bootstrapping process before
 # granting my own user access.
 ###############################################################################
 

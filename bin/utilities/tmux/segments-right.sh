@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
-source ${DOTFILES_PATH}/bin/utilities/tmux/helpers.sh
+source "$DOTFILES_PATH/bin/utilities/tmux/helpers.sh"
 
-battery_info()
-{
+battery_info() {
   # Slightly modified from https://github.com/richoH/dotfiles/blob/master/bin/battery
   battery_charging=$(battery Charging)
   battery_discharging=$(battery Discharging)
 
   if [[ $battery_charging ]]; then
-    echo "$(segment "$battery_charging%" 150)"
+    segment "$battery_charging%" 150
   fi
 
   if [[ $battery_discharging ]]; then
@@ -27,13 +26,12 @@ battery_info()
       fgcolor=40
     fi
 
-    echo "$(segment "$battery_discharging%" $fgcolor $bgcolor)"
+    segment "$battery_discharging%" $fgcolor $bgcolor
   fi
 }
 
-song_playing()
-{
-  song_playing=$("${DOTFILES_PATH}/bin/utilities/tmux/current_track.sh")
+song_playing() {
+  song_playing=$("$DOTFILES_PATH/bin/utilities/tmux/current_track.sh")
 
   if [[ $song_playing ]]; then
     echo "#[fg=colour30]$song_playing"
@@ -45,4 +43,4 @@ segments+=$(song_playing)
 segments+=$(battery_info)
 segments+=$(product-trackers)
 segments+=$(crypto-tracker)
-echo $segments
+echo "$segments"

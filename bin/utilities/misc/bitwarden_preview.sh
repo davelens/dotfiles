@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-# NOTE: This file is currently only sourced as output for the Bitwarden 
+# NOTE: This file is currently only sourced as output for the Bitwarden
 # fzf preview of bin/utilities/bitwarden.
 # This keeps that command a bit more readable.
 
 function print_key_value {
   key="$1"
-  value="$(eval echo \"\$$key\")"
+  value="$(eval echo \"\$"$key"\")"
 
   if [[ "$key" != "null" && ! "$value" =~ "null" ]]; then
-    printf "${EM}${C}%s:${NONE} " "$key"
+    printf "${CEM}${FGC}%s:${CNONE} " "$key"
 
     if [[ "$value" == -* ]]; then
       printf "\n  %s\n" "${value//$'\n'/$'\n  '}"
@@ -38,7 +38,7 @@ function main {
   if [ "$totp_available" = "true" ]; then
     clear
     totp_secret=$(echo "$item" | jq -r ".login.totp")
-    if command -v oathtool &> /dev/null; then
+    if command -v oathtool &>/dev/null; then
       totp=$(oathtool --totp -b "$totp_secret")
     else
       totp=$(bw get totp "$item_id")

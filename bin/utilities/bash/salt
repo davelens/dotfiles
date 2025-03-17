@@ -11,9 +11,9 @@ name="salt"
 usage() {
   echo
   echo "Usage: $name [-h|--help] <options>"
-  echo 
+  echo
   echo "Operations related to the default salt used in encrypt/decrypt."
-  echo 
+  echo
   echo "Commands:"
   echo "  current               (Re)generate a new salt."
   echo "  reset                 Reset the salt along with all encrypted files."
@@ -54,7 +54,7 @@ function generate {
     passkey=$($prompt_user -i "$icon " -m "Enter your desired password: ") >&2
   fi
 
-  pass_confirmation=$($prompt_user -i "$(pending) " -m  "Confirm your entered password: ") >&2
+  pass_confirmation=$($prompt_user -i "$(pending) " -m "Confirm your entered password: ") >&2
 
   if [[ ${#passkey} -lt 3 ]]; then
     $cursor restore clear-down >&2
@@ -126,25 +126,25 @@ function main {
   local command options passkey
   options=()
 
-  IFS=' ' read -r -a args <<< "$@"
+  IFS=' ' read -r -a args <<<"$@"
 
   for arg in "${args[@]}"; do
-    if [[ $arg =~ ^- ]]; then 
+    if [[ $arg =~ ^- ]]; then
       case "$arg" in
-        -h | --help)
-          usage
-          exit 0
-          ;;
-        -k | --passkey)
-          passkey="$2" 
-          ;;
-        #-s | --silent) silent=1;;
-        -*)
-          if [[ -z $1 ]]; then
-            $print_status -i error "Invalid options: $arg"
-            usage && exit 1
-          fi
-          ;;
+      -h | --help)
+        usage
+        exit 0
+        ;;
+      -k | --passkey)
+        passkey="$2"
+        ;;
+      #-s | --silent) silent=1;;
+      -*)
+        if [[ -z $1 ]]; then
+          $print_status -i error "Invalid options: $arg"
+          usage && exit 1
+        fi
+        ;;
       esac
 
       options+=("$arg")
@@ -154,7 +154,7 @@ function main {
   # Last argument should always be the command.
   command="${@: -1}"
 
-  if ! command -v "$command" &> /dev/null; then
+  if ! command -v "$command" &>/dev/null; then
     $print_status -i error "Invalid command: $command"
     usage && exit 1
   fi

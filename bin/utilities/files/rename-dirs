@@ -7,7 +7,7 @@ set -e
 
 # TODO: Usage
 
-main () {
+main() {
   local pattern replacement old new
   pattern="$1"
   replacement="$2"
@@ -19,13 +19,13 @@ main () {
   # TODO: Optional disabling of git rm/add
   # TODO: Check for `fd` and fallback to `find`
 
-  for old in $(fd -t d -g "*${pattern}*"); do
+  for old in $(fd -t d -g "*$pattern*"); do
     new="${old/$pattern/$replacement}"
-    mv "$old" "$new" && \
+    mv "$old" "$new" &&
       echo "Renamed $old to $new"
 
-    git ls-files --error-unmatch $old &> /dev/null
-    if [ $? -eq 0 ]; then 
+    git ls-files --error-unmatch $old &>/dev/null
+    if [ $? -eq 0 ]; then
       git rm -r $old
       git add $new
     fi

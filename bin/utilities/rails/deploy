@@ -46,32 +46,31 @@ docker_prefix=
 # Make sure ssh-agent adds our default SSH key.
 [[ -z $(ssh-add -l) ]] && ssh-add
 
-for i in "$@"
-do
+for i in "$@"; do
   case $i in
-    -s|--staging)
-      env=staging
-      ;;
-    -L|--lock-users)
-      lock_users=1
-      ;;
-    -p|--production)
-      env=production
-      ;;
-    -b=*|--branch=*)
-      branch_name="${i#*=}"
-      ;;
-    --docker)
-      # TODO: Make sure an ssh-agent is running with our default key active.
-      docker_prefix="docker-compose run --rm -v $SSH_AUTH_SOCK:/tmp/ssh-agent.sock -e SSH_AUTH_SOCK=/tmp/ssh-agent.sock rails"
-      ;;
-    *)
-      # unknown options
-      echo "[rails/deploy] ERROR: Unknown option '${i}'"
-      echo "Usage: deploy [-spbL] [--docker] [--staging] [--production] [--lock-users]"
-      printf "\t[-b=branch] [--branch=branch]\n"
-      exit
-      ;;
+  -s | --staging)
+    env=staging
+    ;;
+  -L | --lock-users)
+    lock_users=1
+    ;;
+  -p | --production)
+    env=production
+    ;;
+  -b=* | --branch=*)
+    branch_name="${i#*=}"
+    ;;
+  --docker)
+    # TODO: Make sure an ssh-agent is running with our default key active.
+    docker_prefix="docker-compose run --rm -v $SSH_AUTH_SOCK:/tmp/ssh-agent.sock -e SSH_AUTH_SOCK=/tmp/ssh-agent.sock rails"
+    ;;
+  *)
+    # unknown options
+    echo "[rails/deploy] ERROR: Unknown option '$i'"
+    echo "Usage: deploy [-spbL] [--docker] [--staging] [--production] [--lock-users]"
+    printf "\t[-b=branch] [--branch=branch]\n"
+    exit
+    ;;
   esac
 done
 
@@ -81,18 +80,21 @@ else
   cmd="bundle exec cap $env deploy"
 fi
 
-[[ $branch_name != 'develop' && $branch_name != 'master' ]] && cmd="${cmd} BRANCH=$branch_name"
+[[ $branch_name != 'develop' && $branch_name != 'master' ]] && cmd="$cmd BRANCH=$branch_name"
 
-[[ $lock_users == 1 ]] && cmd="${cmd} LOCK_USERS=1"
+[[ $lock_users == 1 ]] && cmd="$cmd LOCK_USERS=1"
 
 while true; do
   printf "[rails/deploy] I want to run:\n\n"
-  printf "  ${cmd}\n\n"
-  read -n1 -p "[rails/deploy] Confirm? (y/n) " yn
+  printf "  %s\n\n" "$cmd"
+  read -r -n1 -p "[rails/deploy] Confirm? (y/n) " yn
   echo
   case $yn in
-    [Yy]* ) eval $cmd; break;;
-    [Nn]* ) exit;;
-    * ) echo "Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.";;
+  [Yy]*)
+    eval "$cmd"
+    break
+    ;;
+  [Nn]*) exit ;;
+  *) echo "Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o." ;;
   esac
 done

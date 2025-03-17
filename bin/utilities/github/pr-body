@@ -42,7 +42,7 @@ fi
 if [ ! -f ".git/$branch_name.md" ]; then
   echo "Creating .git/$branch_name.md"
   [ -f output.json ] && rm output.json
-  gh pr view $pr_id --json body --jq '.body' | tr -d '\r' > .git/$branch_name.md
+  gh pr view $pr_id --json body --jq '.body' | tr -d '\r' >.git/$branch_name.md
   #cat output.json
   #ruby -rjson -e 'j = JSON.parse(File.read("output.json"));puts j["body"]' > .git/$branch_name.md
   #rm output.json
@@ -50,7 +50,7 @@ fi
 
 # Storing the PR body locally, using the name of the branch. Commit it or add it
 # to your .gitignore.
-${EDITOR} ".git/$branch_name.md"
+$EDITOR ".git/$branch_name.md"
 
 # If for some reason you end up removing the file at this point, we just exit.
 [ ! -f ".git/$branch_name.md" ] && exit
@@ -64,8 +64,11 @@ echo
 while true; do
   read -n1 -p "Push to GitHub? (y/n) " yn
   case $yn in
-    [Yy]* ) echo && gh pr edit "$pr_id" --body "$(cat .git/$branch_name.md)"; break;;
-    [Nn]* ) echo && exit;;
-    * ) echo && echo "Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.";;
+  [Yy]*)
+    echo && gh pr edit "$pr_id" --body "$(cat .git/$branch_name.md)"
+    break
+    ;;
+  [Nn]*) echo && exit ;;
+  *) echo && echo "Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o." ;;
   esac
 done

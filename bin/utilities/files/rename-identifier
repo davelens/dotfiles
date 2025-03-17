@@ -4,7 +4,6 @@
 #
 #   https://github.com/garybernhardt/dotfiles
 
-
 # This script efficiently bulk-renames identifiers, with confirmation of each
 # change. For example, to rename the User class to Person in all files in app
 # and lib, do:
@@ -62,17 +61,18 @@
 set -e
 
 if [ $# -lt 3 ]; then
-    echo "usage: $(basename $0) old_identifier new_identifier paths ..." >&2
-    echo "example: rename-identifier User Person {app,lib}/**/*.rb" >&2
-    exit 1
+  echo "usage: $(basename $0) old_identifier new_identifier paths ..." >&2
+  echo "example: rename-identifier User Person {app,lib}/**/*.rb" >&2
+  exit 1
 fi
 
 old=$1
 new=$2
-shift; shift
+shift
+shift
 files=$*
 
 files=$(ack -l '\b'$old'\b' $files)
 leader_j='nnoremap <leader>j :%s/\<'$old'\>/'$new'/gc<cr>'
 leader_k='nnoremap <leader>k :update\|:bd<cr>'
-${EDITOR} -c "$leader_j" -c "$leader_k" $files
+$EDITOR -c "$leader_j" -c "$leader_k" $files

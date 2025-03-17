@@ -5,4 +5,4 @@ compopt -o nospace -o plusdirs
 
 # Complete directories with whatever we typed in the prompt.
 input="${COMP_WORDS[COMP_CWORD]}"
-COMPREPLY=( $(compgen -d -- "$input") )
+COMPREPLY=($(compgen -d -- "$input"))

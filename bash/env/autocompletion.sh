@@ -13,7 +13,7 @@ if command -v brew >/dev/null; then
 
   if [ -d "$BREW_PATH"/etc/bash_completion.d/ ]; then
     for completion in "$BREW_PATH"/etc/bash_completion.d/*; do
-      [ -r "${completion}" ] && source "${completion}"
+      [ -r "$completion" ] && source "$completion"
     done
     unset completion
   fi

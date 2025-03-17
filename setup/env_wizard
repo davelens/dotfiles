@@ -6,7 +6,7 @@
 # Handles interrupts with a clear and an "Aborted" message.
 trap 'clear && interrupt_handler' SIGINT
 
-# Derive the dotfiles' absolute path so we always have a sensible default for 
+# Derive the dotfiles' absolute path so we always have a sensible default for
 # the $DOTFILES_CONFIG_PATH/env file.
 export DOTFILES_PATH=$(dirname "$(dirname $(realpath "$0"))")
 
@@ -16,7 +16,7 @@ source "$DOTFILES_PATH/bash/env/xdg.sh"
 #############################################################################
 # This exposes all the box draw functions to this command.
 # This is much faster than calling `utility bash box` for every draw action.
-source "${DOTFILES_PATH}/bin/utilities/bash/box"
+source "$DOTFILES_PATH/bin/utilities/bash/box"
 
 # Command aliases for ease of use.
 bitwarden="utility misc bitwarden"
@@ -29,7 +29,7 @@ BOX_HIGHLIGHT=${1:-141} # Just to try out some easy colours for now.
 [ $(tput cols) -lt 80 ] && fail "$(print_status -i error "Terminal window too small; must be at least 80 columns wide or you might miss information.")"
 
 # Any time a status message is printed using this function, it will add
-# a closing _box_border_right to the active line. 
+# a closing _box_border_right to the active line.
 # Drawing the box retroactively seems appealing, but wouldn't work out due to
 # drawing chars not happening instantly.
 print_status() {
@@ -105,13 +105,13 @@ function bitwarden_data_intro {
   _box_print "   a. The 'Username' field entry (i.e. your Github e-mail address)"
   _box_print "   b. A custom field entry named 'Public username'"
   _box_print "   c. A custom field entry named 'Personal access token'"
-  _box_print 
+  _box_print
 }
 
 function setup_encryption {
   setup_encryption_intro
-  if [ -z "$DOTFILES_SALT" ]; then 
-    setup_salt 
+  if [ -z "$DOTFILES_SALT" ]; then
+    setup_salt
   else
     print_status -i ok "Encrypted salt is ready."
     _box_print
@@ -224,7 +224,7 @@ function env_data_wizard {
 
   REPO_NAMESPACE=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos? ")
 
-  if [ -z $OWNER_NAME ]; then 
+  if [ -z $OWNER_NAME ]; then
     OWNER_NAME=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "$OWNER_NAME" "Enter your first and last name: ")
   fi
 
@@ -232,7 +232,7 @@ function env_data_wizard {
     GITHUB_EMAIL=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "$GITHUB_EMAIL" "Enter the email address you log into Github with: ")
   fi
 
-  GITHUB_USERNAME=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "${GITHUB_USERNAME}" "Enter your public Github username: ")
+  GITHUB_USERNAME=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "$GITHUB_USERNAME" "Enter your public Github username: ")
 
   GITHUB_PERSONAL_ACCESS_TOKEN=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "$GITHUB_PERSONAL_ACCESS_TOKEN" "Enter your Github Personal access token: ")
 
@@ -257,22 +257,22 @@ function write_env_files {
     REPO_NAMESPACE \
     GITHUB_EMAIL \
     GITHUB_USERNAME \
-    GITHUB_PERSONAL_ACCESS_TOKEN |\
-    sed 's/declare --/declare -x/g' > "$env_file"
+    GITHUB_PERSONAL_ACCESS_TOKEN |
+    sed 's/declare --/declare -x/g' >"$env_file"
 
-  # Write to "$XDG_CONFIG_HOME/git/config.env" so we can keep our gitconfig 
+  # Write to "$XDG_CONFIG_HOME/git/config.env" so we can keep our gitconfig
   # user-agnostic.
   [ -f "$HOME/.ssh/id_rsa.pub" ] && export GITHUB_SIGNING_KEY="$HOME/.ssh/id_rsa.pub"
 
   # So every variable we need is exported before we write the config.env file.
-  source "${DOTFILES_CONFIG_PATH}/env"
-  content=$(envsubst < "${DOTFILES_PATH}/setup/gitconfig.env.template")
-  echo "$content" > "${XDG_CONFIG_HOME}/git/config.env"
+  source "$DOTFILES_CONFIG_PATH/env"
+  content=$(envsubst <"$DOTFILES_PATH/setup/gitconfig.env.template")
+  echo "$content" >"$XDG_CONFIG_HOME/git/config.env"
 
   # Include the allowed signers file, if it's there.
   if [ -f "$HOME/.ssh/allowed_signers" ]; then
     printf "[gpg \"ssh\"]\n  allowedSignersFile = ~/.ssh/allowed_signers" \
-      >> "${XDG_CONFIG_HOME}/git/config.env"
+      >>"$XDG_CONFIG_HOME/git/config.env"
   fi
 }
 
@@ -280,7 +280,7 @@ function main {
   intro
 
   local using_bitwarden=0
-  local env_file="${DOTFILES_CONFIG_PATH}/env"
+  local env_file="$DOTFILES_CONFIG_PATH/env"
   local env_file_label="${env_file/$HOME/"~"}"
 
   proceed="$($prompt_user -c -i "$(pending $BOX_HIGHLIGHT) " "Press any key to continue ... ")"

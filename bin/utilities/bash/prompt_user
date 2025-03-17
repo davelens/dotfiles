@@ -34,18 +34,18 @@ function confirm {
 }
 
 function yesno {
-  local input prompt="$(prompt_line)" 
+  local input prompt="$(prompt_line)"
   [[ $1 == "--clean" ]] && prompt="$question"
 
-  read -n1 -r -p "$prompt (y/n) " input < /dev/tty && echo 1>&1
+  read -n1 -r -p "$prompt (y/n) " input </dev/tty && echo 1>&1
 
   case $input in
-    [YyNn] ) echo -n "${input,,}" ;;
-    * )
-      output=
-      printf "\r\033[2K${indent}Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o: " >&2
-      yesno --clean && return
-      ;;
+  [YyNn]) echo -n "${input,,}" ;;
+  *)
+    output=
+    printf "\r\033[2K${indent}Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o: " >&2
+    yesno --clean && return
+    ;;
   esac
 }
 
@@ -70,8 +70,8 @@ function masked {
     # Handles backspace to delete the previous character/asterisk.
     if [[ "$char" == $'\177' ]]; then
       if [[ -n $input ]]; then
-        input=${input::-1} # Reflect the change in the end result.
-        echo -ne "\b \b" >&2  # Reflect the change in the output.
+        input=${input::-1}   # Reflect the change in the end result.
+        echo -ne "\b \b" >&2 # Reflect the change in the output.
       fi
       continue
     fi
@@ -89,7 +89,7 @@ function masked {
 function prompt_line {
   local string=""
   [[ -n "$question" ]] && string+="$(echo $question | xargs)"
-  [[ -n "$default" ]] && string+=" $BGK[${default}]$NONE "
+  [[ -n "$default" ]] && string+=" $BGK[$default]$NONE "
   printf "$indent$string"
 }
 

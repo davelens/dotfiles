@@ -21,7 +21,7 @@ usage() {
   echo "  $NAME \"This is pretty text in a pretty box.\""
   echo "  $NAME --center \"This box is dead center.\""
   echo "  $NAME -m 9 -w 120 \"This box has a margin, and a specific width.\""
-  echo 
+  echo
   echo "Commands:"
   echo "  top                       Draw the top of the box."
   echo "  bottom                    Draw the bottom of the box."
@@ -48,8 +48,8 @@ function _box_color {
 
 # ┌┬┐ ╭┬╮
 function _box_top {
-  printf "$(_box_margin)$(_box_color ╭)" && \
-    printf "%.s$(_box_color ─)" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) && \
+  printf "$(_box_margin)$(_box_color ╭)" &&
+    printf "%.s$(_box_color ─)" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) &&
     printf "$(_box_color ╮)\n"
 }
 
@@ -63,17 +63,17 @@ function _box_separator {
 }
 
 function _box_print {
-  printf "$(_box_margin)$(_box_color │) %-$(($BOX_WIDTH - 4))s $(_box_color │)\n" "$1"; 
+  printf "$(_box_margin)$(_box_color │) %-$(($BOX_WIDTH - 4))s $(_box_color │)\n" "$1"
 }
 
 # ╰┴╯└┴┘
 function _box_bottom {
-  printf "$(_box_margin)$(_box_color ╰)" && \
-    printf "%.s$(_box_color ─)" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) && \
+  printf "$(_box_margin)$(_box_color ╰)" &&
+    printf "%.s$(_box_color ─)" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) &&
     printf "$(_box_color ╯)\n"
 }
 
-function _box_border_right { 
+function _box_border_right {
   $cursor move-start move-up col:$(($BOX_WIDTH + 1)) print:$(_box_color │)\\n
 }
 
@@ -113,7 +113,7 @@ function box {
   #[[ ${#value} -gt $BOX_WIDTH ]] && wrap_lines
   _box_top
   _box_print
-  repeat _box_print "$value" 
+  repeat _box_print "$value"
   _box_print
   _box_bottom
 }
@@ -159,21 +159,21 @@ function main {
         usage && exit 1
       else
         case "$1" in
-          top|bottom|border-right|separator|line)
-            command="_box_${1/-/_}"
-            break
-            ;;
-          print)
-            command="_box_print"
-            shift
-            value="$1"
-            break
-            ;;
-          *)
-            command="box"
-            value="$@"
-            break
-            ;;
+        top | bottom | border-right | separator | line)
+          command="_box_${1/-/_}"
+          break
+          ;;
+        print)
+          command="_box_print"
+          shift
+          value="$1"
+          break
+          ;;
+        *)
+          command="box"
+          value="$@"
+          break
+          ;;
         esac
       fi
       ;;

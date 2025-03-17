@@ -16,7 +16,7 @@ if [ ! -d ".git" ]; then
   exit
 fi
 
-if [ -z ${GITLAB_API_ENDPOINT} ]; then
+if [ -z "$GITLAB_API_ENDPOINT" ]; then
   echo "EXIT: You need to set GITLAB_API_ENDPOINT, GITLAB_API_PRIVATE_TOKEN and GITLAB_USER_ID env variables."
   exit
 fi
@@ -35,7 +35,7 @@ else
   description="$2"
 fi
 
-if [ ! -z ${GITLAB_USER_ID} ]; then
+if [ ! -z "$GITLAB_USER_ID" ]; then
   gitlab users --only=id,name
   read -p "Enter the GitLab user ID that should be assigned for this merge request: " GITLAB_USER_ID
 fi
@@ -49,7 +49,7 @@ if [ ! -f ".gitlab-project-id" ]; then
     exit
   fi
 
-  echo $project_id > .gitlab-project-id
+  echo $project_id >.gitlab-project-id
 else
   project_id=$(cat .gitlab-project-id)
 fi

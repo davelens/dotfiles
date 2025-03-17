@@ -18,9 +18,9 @@ alias ipv6off='networksetup -setv6off Wi-Fi'
 alias ipv6on='networksetup -setv6automatic Wi-Fi'
 
 # Download the iTerm2 shell integration file and place it in the completions dir.
-if [ ! -f "${DOTFILES_PATH}/bash/env/autocompletions/iterm2_shell_integration.bash" ]; then
+if [ ! -f "$DOTFILES_PATH/bash/env/autocompletions/iterm2_shell_integration.bash" ]; then
   curl -L https://iterm2.com/shell_integration/bash \
-    -o "${DOTFILES_PATH}/bash/env/autocompletions/iterm2_shell_integration.bash"
+    -o "$DOTFILES_PATH/bash/env/autocompletions/iterm2_shell_integration.bash"
 fi
 
 # toggles a boolean setting in the com.apple environment

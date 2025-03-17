@@ -4,7 +4,7 @@
 # A hub for my custom bitwarden utilities.
 #
 # Original idea blatantly stolen from ... someone. I rewrote it to fit better
-# with what I want to do with my dotfiles, but can't remember or find the 
+# with what I want to do with my dotfiles, but can't remember or find the
 # original source. My apologies to the original author, you rock.
 #
 
@@ -37,7 +37,7 @@ prepare() {
   [[ ! -f $ITEMS_CACHE_FILE.enc ]] && cache-items
 
   tmp=$(mktemp)
-  echo "$($decrypt -f $ITEMS_CACHE_FILE.enc)" >> $tmp
+  echo "$($decrypt -f $ITEMS_CACHE_FILE.enc)" >>$tmp
 
   # So the preview code knows where to look.
   echo $tmp
@@ -67,7 +67,7 @@ function cache-items {
   fi
 
   tmp=$(mktemp)
-  echo "$ITEMS" > $tmp
+  echo "$ITEMS" >$tmp
   $encrypt -f "$tmp" -o "$ITEMS_CACHE_FILE.enc"
 
   $print_status -i ok "Items loaded from vault(s)."
@@ -82,14 +82,14 @@ function items {
   jq -r ".[] | \"\(.name)\t\(.id)\t\(.login.username)\"" "$tmp" |
     awk -F'\t' '{ printf "%-40s %-40s %-40s\n", $1, $3, $2}' |
     FZF_PREVIEW_FILE="$tmp" fzf \
-    --cycle --inline-info --ansi --no-mouse --layout=reverse --height 30% --border $exact $query \
-    --prompt="${prompt:-$name} -> " \
-    --header="$(printf "%-40s %-40s %-40s\n" 'Item' 'Username' 'ID')" \
-    --bind="enter:become(echo {2} | awk '{printf \$(NF-1)}')" \
-    --bind="ctrl-u:execute(username=\$(echo {2} | awk '{printf \$(NF-1)}'); echo -n \"\$username\" | cb)+abort" \
-    --bind="ctrl-y:execute(item_id=\$(echo -n {1..} | awk '{printf \$NF}'); password=\$(jq -r --arg id \"\$item_id\" '.[] | select(.id == \$id) | .login.password' \"$tmp\"); echo -n \"\$password\" | cb)+abort" \
-    --preview-window='right:50%' \
-    --preview='
+      --cycle --inline-info --ansi --no-mouse --layout=reverse --height 30% --border $exact $query \
+      --prompt="${prompt:-$name} -> " \
+      --header="$(printf "%-40s %-40s %-40s\n" 'Item' 'Username' 'ID')" \
+      --bind="enter:become(echo {2} | awk '{printf \$(NF-1)}')" \
+      --bind="ctrl-u:execute(username=\$(echo {2} | awk '{printf \$(NF-1)}'); echo -n \"\$username\" | cb)+abort" \
+      --bind="ctrl-y:execute(item_id=\$(echo -n {1..} | awk '{printf \$NF}'); password=\$(jq -r --arg id \"\$item_id\" '.[] | select(.id == \$id) | .login.password' \"$tmp\"); echo -n \"\$password\" | cb)+abort" \
+      --preview-window='right:50%' \
+      --preview='
       item_id=$(echo -n {1..} | awk "{printf \$NF}")
       item=$(jq -r --arg id "$item_id" ".[] | select(.id == \$id)" "$FZF_PREVIEW_FILE")
       source $SCRIPT_PATH/bitwarden_preview.sh
@@ -104,8 +104,8 @@ function identities {
   # context of the variables you've set in the main shell.
   jq -r ".[] | select(.identity != null) | .identity.firstName + \" \" + .identity.lastName" "$tmp" |
     FZF_PREVIEW_FILE="$tmp" fzf \
-    --cycle --inline-info --ansi --no-mouse --layout=reverse --height 30% --border $exact $query \
-    --prompt="${prompt:-$name} -> "
+      --cycle --inline-info --ansi --no-mouse --layout=reverse --height 30% --border $exact $query \
+      --prompt="${prompt:-$name} -> "
 }
 
 function clear-cache {

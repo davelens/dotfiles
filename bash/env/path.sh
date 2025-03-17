@@ -17,7 +17,7 @@
 #
 # If you want to load in all of them however, you can use this:
 #
-#   ${BREW_PATH}/opt/*/bin # All Homebrew binaries
+#   $BREW_PATH/opt/*/bin # All Homebrew binaries
 #
 paths_to_add=(
   "${ASDF_DATA_DIR:-$HOME/.asdf}"/shims # Always prefer asdf shims
