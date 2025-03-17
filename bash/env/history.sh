@@ -21,7 +21,7 @@ export HISTCONTROL=ignoredups
 
 # Keep track of the time the commands were executed.
 # The xterm colour escapes require special care when piping; e.g. "| less -R".
-export HISTTIMEFORMAT="${FG_BLUE}${FONT_BOLD}%Y/%m/%d %H:%M:%S${FONT_RESET} "
+export HISTTIMEFORMAT="$BFGB%Y/%m/%d %H:%M:%S$CNONE "
 
 # let the history ignore the following commands
 export HISTIGNORE="ls:lsa:ll:la:pwd:clear:h:j"

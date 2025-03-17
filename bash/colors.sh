@@ -48,12 +48,12 @@ BGC="$(tput setab 6)" # cyan
 BGW="$(tput setab 7)" # white
 export BGK BGR BGG BGY BGB BGM BGC BGW
 
-CBK=$CBOLD$K # Bold black
-CBR=$CBOLD$R # Bold red
-CBG=$CBOLD$G # Bold green
-CBY=$CBOLD$Y # Bold yellow
-CBB=$CBOLD$B # Bold blue
-CBM=$CBOLD$M # Bold magenta
-CBC=$CBOLD$C # Bold cyan
-CBW=$CBOLD$W # Bold white
-export CBK CBR CBG CBY CBB CBM CBC CBW
+BFGK=$CBOLD$FGK # Bold black
+BFGR=$CBOLD$FGR # Bold red
+BFGG=$CBOLD$FGG # Bold green
+BFGY=$CBOLD$FGY # Bold yellow
+BFGB=$CBOLD$FGB # Bold blue
+BFGM=$CBOLD$FGM # Bold magenta
+BFGC=$CBOLD$FGC # Bold cyan
+BFGW=$CBOLD$FGW # Bold white
+export BFGK BFGR BFGG BFGY BFGB BFGM BFGC BFGW

@@ -88,9 +88,9 @@ function masked {
 
 function prompt_line {
   local string=""
-  [[ -n "$question" ]] && string+="$(echo $question | xargs)"
-  [[ -n "$default" ]] && string+=" $BGK[$default]$NONE "
-  printf "$indent$string"
+  [[ -n "$question" ]] && string+="$(echo "$question" | xargs)"
+  [[ -n "$default" ]] && string+=" ${BGK}[$default]$CNONE "
+  printf "%s%s" "$indent" "$string"
 }
 
 ###############################################################################
