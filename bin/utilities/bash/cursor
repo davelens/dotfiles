@@ -56,7 +56,7 @@ usage() {
 
 ###############################################################################
 
-declare -A sequences=(
+sequences=(
   ["move_start"]="033[G"
   ["move_up"]="033[\${steps}A"
   ["move_down"]="033[\${steps}B"
