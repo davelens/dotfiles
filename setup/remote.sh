@@ -1,12 +1,6 @@
 #!/bin/bash
 # shellcheck disable=SC2317 # Unreachable commands are fiiine
-
 set -e
-
-function fail {
-  echo -e "\n$1" >&2
-  exit "${2-1}"
-}
 
 function cleanup {
   for helper in $(helpers); do
@@ -18,10 +12,14 @@ function cleanup {
   rm -f "$DOTFILES_STATE_HOME/tmp/dotfiles.zip"
 }
 
-function interrupt_handler {
-  cleanup
-  fail "Aborted."
-}
+function save_cursor { printf "\033[s"; }
+function restore_cursor { printf "\033[u"; }
+function clear_down { printf "\033[0J"; }
+function reset_prompt { restore_cursor && clear_down; }
+function wind_down { cleanup && reset_prompt; }
+function fail { echo -e "\n$1" >&2; exit "${2-1}"; }
+function interrupt_handler { wind_down && fail "Aborted."; }
+# function print_status { $print_status -hl "$BOX_HIGHLIGHT" "$@"; _box_border_right; }
 
 function helpers {
   local prefix helpers=()
@@ -53,25 +51,34 @@ function prepare {
 
   read -n1 -r -p "$prompt" input
   case $input in
-  [Yy]) printf "\033[G\033[2A\033[0J" ;;
+  [Yy]) reset_prompt ;;
   [Nn]) interrupt_handler ;;
   *)
-    printf "\033[G\033[13A"
+    reset_prompt
     prepare && return
     ;;
   esac
 
   for helper in $(helpers); do
-    local_file="$DOTFILES_STATE_HOME/tmp/${helper##*/}"
+    filename="${helper##*/}"
+    local_file="$DOTFILES_STATE_HOME/tmp/$filename"
     curl -so "$local_file" "$helper"
-    source "$local_file"
+
+    # shellcheck disable=SC2076
+    if [[ ! $filename =~ ".sh" ]]; then 
+      declare "$filename=$local_file"
+      chmod +x "$local_file"
+    else
+      source "$local_file"
+    fi
   done
 }
 
 function ask_for_repo_home {
-  echo "By default I keep them in $BGB$FGK${DOTFILES_CONFIG_HOME/$HOME/\~}$CNONE."
-  echo
-  echo "If that's OK, you can press Enter."
+  _box_top
+  _box_print "By default I keep them in $BGB$FGK${DOTFILES_CONFIG_HOME/$HOME/\~}$CNONE."
+  _box_print
+  _box_print "If that's OK, you can press Enter."
   local input prompt
   prompt="If you want another location, please tell me where: "
   read -r -p "$prompt" input
@@ -79,6 +86,8 @@ function ask_for_repo_home {
 }
 
 function main {
+  save_cursor
+
   local prompt input
   local DOTFILES_FOLDER DOTFILES_STATE_HOME DOTFILES_CONFIG_HOME
   DOTFILES_FOLDER="dots"
@@ -86,7 +95,8 @@ function main {
   DOTFILES_CONFIG_HOME="$XDG_CONFIG_HOME/$DOTFILES_FOLDER"
 
   prepare
-  interrupt_handler # TODO: Pick it up from here.
+  exit
+  # interrupt_handler # TODO: Pick it up from here.
   #############################################################################
 
   DOTFILES_REPO_HOME=$(ask_for_repo_home)
@@ -96,7 +106,7 @@ function main {
   # TODO: Replace with extracting a tarball when we're starting with releases.
   unzip -o "$DOTFILES_STATE_HOME/tmp/dotfiles.zip" -d "$DOTFILES_STATE_HOME/tmp"
   # "$DOTFILES_STATE_HOME/tmp/dotfiles-master/setup/install"
-  cleanup
+  wind_down
 }
 
 ###############################################################################
