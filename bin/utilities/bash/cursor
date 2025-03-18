@@ -119,11 +119,11 @@ function prompt_correction {
 }
 
 function chain_commands {
-  for cmd in ${commands[@]}; do
+  for cmd in "${commands[@]}"; do
     command="${cmd%%:*}" # Extract the part before `:`
     steps=${cmd##*:}     # Extract the part after `:`
     [[ "$command" == "$steps" ]] && steps=1
-    $command $steps
+    $command "$steps"
   done
 }
 
@@ -132,7 +132,7 @@ function chain_commands {
 function main {
   [[ $# -eq 0 ]] && usage && exit 0
 
-  local steps=1 in_prompt=0 raw=0
+  local steps=1 in_prompt=0
   local commands=() options=()
 
   IFS=' ' read -r -a args <<<"$@"
@@ -143,10 +143,13 @@ function main {
       case $arg in
       -h | --help) usage && exit 0 ;;
       -p | --for-prompt) in_prompt=1 ;;
-      -r | --raw) raw=1 ;;
       *)
         if [[ -z $1 ]]; then
-          $print_status -i error "Invalid options: $arg"
+          if [ -z "$print_status" ]; then
+            $print_status -i error "Invalid options: $arg"
+          else
+            echo "[Error] Invalid options: $arg"
+          fi
           usage && exit 1
         fi
         ;;
@@ -165,7 +168,12 @@ function main {
     commands[i]="seq_${commands[i]/-/_}"
 
     if ! command -v "${commands[i]%%:*}" &>/dev/null; then
-      $print_status -i error "Invalid command: ${commands[i]}"
+      if [ -z "$print_status" ]; then
+        $print_status -i error "Invalid command: ${commands[i]}"
+      else
+        echo "[Error] Invalid command: ${commands[i]}"
+      fi
+
       usage && exit 1
     fi
   done
