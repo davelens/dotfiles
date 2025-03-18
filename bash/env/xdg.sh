@@ -29,7 +29,7 @@ export DOTFILES_DATA_HOME="$XDG_DATA_HOME/$DOTFILES_FOLDER"
 [ ! -d "$DOTFILES_DATA_HOME" ] && mkdir -p "$DOTFILES_DATA_HOME"
 
 # TODO: These should go elsewhere, I think.
-# TODO: Find out if this can be $DOTFILES_STATE_HOME/tmp/ssh-agent.socket 
+# TODO: Find out if this can be $DOTFILES_STATE_HOME/tmp/ssh-agent.socket
 # on macos. Then I can just make it the same between macos/WSL2.
 # export DOTFILES_SSH_AUTH_SOCK="$SSH_AUTH_SOCKET"
 export DOTFILES_SALT_PATH="$DOTFILES_CACHE_HOME/salt.enc"
