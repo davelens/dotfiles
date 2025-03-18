@@ -9,19 +9,20 @@ function fail {
 [ -z "${BASH_VERSION:-}" ] && fail "Bash is required to interpret this script."
 
 # Either curl or wget will work.
-if ! command -v curl >/dev/null && ! command -v wget >/dev/null; then
+if ! command -v curl >/dev/null; then
   fail "Either curl or wget is required to download the dotfiles."
 fi
 
+XDG_BIN_HOME="$HOME/.local/bin"
+DOTFILES_FOLDER="dots"
 DOTFILES_REPO_HOME="$(dirname "$(dirname "$(realpath "$0")")")"
-readonly DOTFILES_REPO_HOME
-dotbot_path="$DOTFILES_REPO_HOME/dotbot"
-readonly dotbot_path
+DOTFILES_STATE_HOME="$XDG_STATE_HOME/$DOTFILES_FOLDER"
+readonly DOTFILES_FOLDER DOTFILES_REPO_HOME DOTFILES_STATE_HOME XDG_BIN_HOME
 
-# Trying to adhere to the XDG Base Directory Specification.
-source "$DOTFILES_REPO_HOME/bash/env/xdg.sh"
+[ ! -d "$DOTFILES_STATE_HOME" ] && mkdir -p "$DOTFILES_STATE_HOME/tmp"
 
 # Get dotbot installed
+dotbot_path="$DOTFILES_REPO_HOME/dotbot"
 git -C "$dotbot_path" submodule sync --quiet --recursive
 git -C "$dotbot_path" submodule update --init --recursive
 
