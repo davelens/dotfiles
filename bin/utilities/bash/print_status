@@ -26,26 +26,26 @@ usage() {
 
 function icon {
   case "$icon" in
-  pending) symbol="$(pending $color)" ;;
-  ok) symbol="$(check $color)" ;;
-  error) symbol="$(cross $color)" ;;
-  *) [[ -n $icon ]] && symbol="$(colorize $color [)$icon$(colorize $color ])" ;;
+  pending) symbol="$(pending "$color")" ;;
+  ok) symbol="$(check "$color")" ;;
+  error) symbol="$(cross "$color")" ;;
+  *) [ -n "$icon" ] && symbol="$(colorize "$color" "[")$icon$(colorize "$color" "]")" ;;
   esac
 
   echo "$symbol"
 }
 
 function newline {
-  [[ $newline -eq 1 ]] && echo "\n"
+  [ $newline -eq 1 ] && printf "\n"
 }
 
 function main {
   # Fail early if no arguments are given.
-  [[ $# -eq 0 ]] && usage && exit 0
+  [ $# -eq 0 ] && usage && exit 0
 
   local newline=1 clearline=1 icon="pending" color=255 message prefix
 
-  while [[ $# -gt 0 ]]; do
+  while [ $# -gt 0 ]; do
     case $1 in
     -h | --help)
       usage
@@ -79,12 +79,12 @@ function main {
       newline=0
       ;;
     *)
-      if [[ -z $message ]]; then
+      if [ -z "$message" ]; then
         message="$1"
       else
         # This used to use print_status itself, but that *has* to break
         # something.
-        echo "[$name]: Invalid option: $1"
+        echo "[Error] Invalid option: $1"
         usage && exit 1
       fi
       shift
@@ -92,12 +92,12 @@ function main {
     esac
   done
 
-  [[ $clearline -eq 1 ]] && $cursor move-start clear-line
+  [ $clearline -eq 1 ] && $cursor move-start clear-line
 
-  [[ -n $prefix ]] && result="$prefix"
-  [[ -n $icon ]] && result+="$(icon) "
+  [ -n "$prefix" ] && result="$prefix"
+  [ -n "$icon" ] && result+="$(icon) "
   result+="$message$(newline)"
-  printf "$result"
+  echo -n "$result"
 }
 
 #############################################################################

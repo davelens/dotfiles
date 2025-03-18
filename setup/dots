@@ -17,7 +17,7 @@ usage() {
   echo
   echo "Options:"
   echo "  -h|--help    Show this help message and exit."
-  exit 0
+  exit
 }
 
 logs() {
@@ -70,7 +70,7 @@ update() {
   if [ $error_occurred -eq 0 ]; then
     $print_status -i ok "Files updated to latest version"
     $print_status -n "Running installer ..."
-    "$DOTFILES_REPO_HOME"/setup/install &>>"$log_file" || error_occurred=1
+    "$DOTFILES_REPO_HOME/setup/install" &>>"$log_file" || error_occurred=1
   fi
 
   # Handle final status
@@ -83,26 +83,29 @@ update() {
   fi
 }
 
-# Parse arguments
-if [[ $# -eq 0 ]]; then
-  usage
-fi
+###############################################################################
 
-case "$1" in
--h | --help)
-  usage
-  ;;
-logs)
-  logs
-  ;;
-install)
-  install
-  ;;
-update)
-  update
-  ;;
-*)
-  echo "Unknown command: $1"
-  usage
-  ;;
-esac
+main() {
+  [ $# -eq 0 ] && usage
+
+  case "$1" in
+    -h | --help)
+      usage
+      ;;
+    logs)
+      logs
+      ;;
+    install)
+      install
+      ;;
+    update)
+      update
+      ;;
+    *)
+      echo "Unknown command: $1"
+      usage
+      ;;
+  esac
+}
+
+main "$@"
