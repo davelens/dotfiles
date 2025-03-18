@@ -77,8 +77,7 @@ for table in "${ignore_tables[@]}"; do
   ignored_tables_string+=" --ignore-table=$remote_db.$table"
 done
 
-ssh_credentials=$(utility rails ssh-credentials "$app/config/deploy.rb")
-declare -A ssh_credentials
+declare -A ssh_credentials=$(utility rails ssh-credentials "$app/config/deploy.rb")
 user=${ssh_credentials[user]}
 server=${ssh_credentials[server]}
 
