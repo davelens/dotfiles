@@ -12,15 +12,15 @@ name="box"
 
 usage() {
   echo
-  echo "Usage: $NAME [-h|--help] <option(s)> \"Line 1\" \"Line 2\" ... "
+  echo "Usage: $name [-h|--help] <option(s)> \"Line 1\" \"Line 2\" ... "
   echo
   echo "Draw a simple box around the given text. Useful for some basic"
   echo "section separating in terminal output."
   echo
   echo "Examples:"
-  echo "  $NAME \"This is pretty text in a pretty box.\""
-  echo "  $NAME --center \"This box is dead center.\""
-  echo "  $NAME -m 9 -w 120 \"This box has a margin, and a specific width.\""
+  echo "  $name \"this is pretty text in a pretty box.\""
+  echo "  $name --center \"this box is dead center.\""
+  echo "  $name -m 9 -w 120 \"This box has a margin, and a specific width.\""
   echo
   echo "Commands:"
   echo "  top                       Draw the top of the box."
@@ -43,48 +43,52 @@ usage() {
 ###############################################################################
 
 function _box_color {
-  printf "$(colorize $BOX_HIGHLIGHT $1)"
+  echo -n "$(colorize "$BOX_HIGHLIGHT" "$1")"
 }
 
 # ┌┬┐ ╭┬╮
+# shellcheck disable=SC2120
 function _box_top {
-  printf "$(_box_margin)$(_box_color ╭)" &&
-    printf "%.s$(_box_color ─)" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) &&
-    printf "$(_box_color ╮)\n"
+  echo -n "$(_box_margin)$(_box_color ╭)" &&
+    printf "%.s$(_box_color ─)" $(seq 1 "${1:-$((BOX_WIDTH - 2))}") &&
+    printf "%s\n" "$(_box_color ╮)"
 }
 
 function _box_line {
-  printf "%.s${2:-$(_box_color ─)}" $(seq 1 ${1:-$(($BOX_WIDTH - 2))})
+  printf "%.s${2:-$(_box_color ─)}" $(seq 1 "${1:-$((BOX_WIDTH - 2))}")
 }
 
 # Like a horizontal line within a box.
 function _box_separator {
-  printf "$(_box_margin)$(_box_color ├)$(_box_line $(($BOX_WIDTH - 2)))$(_box_color ┤)\n"
+  printf "%s\n" "$(_box_margin)$(_box_color ├)$(_box_line $((BOX_WIDTH - 2)))$(_box_color ┤)"
 }
 
+# shellcheck disable=SC2120
 function _box_print {
-  printf "$(_box_margin)$(_box_color │) %-$(($BOX_WIDTH - 4))s $(_box_color │)\n" "$1"
+  printf "$(_box_margin)$(_box_color │) %-$((BOX_WIDTH - 4))s $(_box_color │)\n" "$1"
 }
 
 # ╰┴╯└┴┘
+# shellcheck disable=SC2120
 function _box_bottom {
-  printf "$(_box_margin)$(_box_color ╰)" &&
-    printf "%.s$(_box_color ─)" $(seq 1 ${1:-$(($BOX_WIDTH - 2))}) &&
-    printf "$(_box_color ╯)\n"
+  echo -n "$(_box_margin)$(_box_color ╰)" &&
+    printf "%.s$(_box_color ─)" $(seq 1 "${1:-$((BOX_WIDTH - 2))}") &&
+    printf "%s\n" "$(_box_color ╯)"
 }
 
+# shellcheck disable=SC2154
 function _box_border_right {
-  $cursor move-start move-up col:$(($BOX_WIDTH + 1)) print:$(_box_color │)\\n
+  $cursor move-start move-up col:$((BOX_WIDTH + 1)) print:"$(_box_color │)"\\n
 }
 
 function _box_margin {
   if [[ $center -eq 1 ]]; then
-    BOX_MARGIN=$(expr $(expr $(tput cols) - $BOX_WIDTH) / 2)
+    BOX_MARGIN=$(($(($(tput cols) - BOX_WIDTH)) / 2))
   elif [[ $BOX_MARGIN -eq 0 ]]; then
     return 0
   fi
 
-  repeat $BOX_MARGIN echo -n "." | sed 's/./ /g'
+  repeat "$BOX_MARGIN" echo -n "." | sed 's/./ /g'
 }
 
 ###############################################################################
@@ -123,7 +127,7 @@ function box {
 function main {
   is_sourced && return
 
-  local value command center=0 args=()
+  local value command center=0
   BOX_WIDTH=80
   BOX_MARGIN=0
   BOX_HIGHLIGHT=255
@@ -155,7 +159,11 @@ function main {
       ;;
     *)
       if [[ "$1" =~ ^- ]]; then
-        $print_status -i error "Invalid option: $1"
+        if [ -z "$print_status" ]; then
+          $print_status -i error "Invalid option: $1"
+        else
+          echo "[Error] Invalid option: $1"
+        fi
         usage && exit 1
       else
         case "$1" in
@@ -171,7 +179,7 @@ function main {
           ;;
         *)
           command="box"
-          value="$@"
+          value="$*"
           break
           ;;
         esac
@@ -181,7 +189,11 @@ function main {
   done
 
   if [[ ! $(command -v "$command") ]]; then
-    $print_status -i error "Command not found: $command"
+    if [ -z "$print_status" ]; then
+      $print_status -i error "Command not found: $command"
+    else
+      echo "[Error] Command not found: $command"
+    fi
     exit 1
   fi
 
