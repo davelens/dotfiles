@@ -114,7 +114,7 @@ function prepare {
 }
 
 function repo_home {
-  echo "${DOTFILES_REPO_HOME/$HOME/\~}"
+  echo "~${DOTFILES_REPO_HOME/$HOME/}"
 }
 
 function ask_for_repo_home {
