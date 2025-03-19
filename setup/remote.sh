@@ -20,7 +20,7 @@ get_cursor_pos() {
   stty raw -echo
 
   # Request cursor position report
-  printf "\033[6n" > /dev/tty
+  printf "\033[6n" >/dev/tty
 
   # Read the response: it should look like ESC [ row ; col R
   local response
@@ -39,18 +39,21 @@ get_cursor_pos() {
 }
 
 function save_cursor {
-  IFS=';' read -r CURSOR_POS <<< "$(get_cursor_pos)";
+  IFS=';' read -r CURSOR_POS <<<"$(get_cursor_pos)"
   if [ "$CURSOR_POS" == "$(tput lines);1" ]; then
     CURSOR_POS="1;1"
   fi
-  export CURSOR_POS;
+  export CURSOR_POS
 }
 
 function restore_cursor { printf "\033[%sH" "$CURSOR_POS"; }
 function clear_down { printf "\033[0J"; }
 function reset_prompt { restore_cursor && clear_down; }
 function wind_down { cleanup && reset_prompt; }
-function fail { echo -e "\n$1" >&2; exit "${2-1}"; }
+function fail {
+  echo -e "\n$1" >&2
+  exit "${2-1}"
+}
 function interrupt_handler { wind_down && fail "Aborted."; }
 # function print_status { $print_status -hl "$BOX_HIGHLIGHT" "$@"; _box_border_right; }
 function green { echo "$BGG$FGK$1$CNONE"; }
@@ -101,7 +104,7 @@ function prepare {
     curl -so "$local_file" "$helper"
 
     # shellcheck disable=SC2076
-    if [[ ! $filename =~ ".sh" ]]; then 
+    if [[ ! $filename =~ ".sh" ]]; then
       declare "$filename=$local_file"
       chmod +x "$local_file"
     fi
@@ -119,11 +122,34 @@ function ask_for_repo_home {
   repo_home="$DOTFILES_CONFIG_HOME/"
 
   echo
-  echo "By default I keep my dotfiles in $(blue "${repo_home/$HOME/\~}")."
-  echo
-  echo -e "Press Enter to confirm that location, or specify a new one: \n"
+  echo "By default I keep my dotfiles in $(blue "~${repo_home/$HOME/}")."
 
-  read -r -e -i "$repo_home" -p "" DOTFILES_REPO_HOME
+  if [ -n "$(ls -A "$repo_home")" ]; then
+    echo "It looks like that directory's not empty though. 🤔"
+  fi
+
+  echo
+  echo -e "Specify where you want to store the dotfiles: \n"
+
+  if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
+    read -r -e -p "$HOME/" DOTFILES_REPO_HOME
+    DOTFILES_REPO_HOME="$HOME/$DOTFILES_REPO_HOME"
+
+    if [ -n "$(ls -A "$DOTFILES_REPO_HOME/")" ]; then
+      reset_prompt
+      ask_for_repo_home
+      return
+    fi
+  else
+    read -r -e -i "$repo_home" -p "" DOTFILES_REPO_HOME
+  fi
+
+  if [ -n "$(ls -A "$DOTFILES_REPO_HOME/")" ]; then
+    reset_prompt
+    ask_for_repo_home
+    return
+  fi
+
   DOTFILES_REPO_HOME="${DOTFILES_REPO_HOME:-$repo_home}"
   DOTFILES_REPO_HOME="${DOTFILES_REPO_HOME%/}"
 
@@ -138,7 +164,7 @@ function ask_for_repo_home {
 
 function download_dotfiles {
   if [ -d "$DOTFILES_REPO_HOME/.git" ]; then
-    echo "Looks like you already have my dotfiles there!" 
+    echo "Looks like you already have my dotfiles there!"
     echo -e "I'll just update them for you, and move on.\n"
     git -C "$DOTFILES_REPO_HOME" pull
     printf ""
