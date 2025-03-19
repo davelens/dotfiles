@@ -1,5 +1,5 @@
 #!/bin/bash
-# shellcheck disable=SC2317 # Unreachable commands are fiiine
+# shellcheck disable=SC2120,SC2317 # Unreachable commands are fiiine
 set -e
 
 function cleanup {
@@ -8,24 +8,59 @@ function cleanup {
     [ -f "$file" ] && rm -rf "$file"
   done
 
-  rm -rf "$DOTFILES_STATE_HOME/tmp/dotfiles-master"
   rm -f "$DOTFILES_STATE_HOME/tmp/dotfiles.zip"
 }
 
-function save_cursor { printf "\033[s"; }
-function restore_cursor { printf "\033[u"; }
+get_cursor_pos() {
+  # Save current terminal settings
+  local old_stty
+  old_stty=$(stty -g)
+
+  # Set terminal to raw mode, disable echo
+  stty raw -echo
+
+  # Request cursor position report
+  printf "\033[6n" > /dev/tty
+
+  # Read the response: it should look like ESC [ row ; col R
+  local response
+  IFS='R' read -d R -r response
+
+  # Restore terminal settings
+  stty "$old_stty"
+
+  # Strip the escape sequence prefix and split row and col
+  local row col
+  response=${response#*[}
+  row=${response%;*}
+  col=${response#*;}
+
+  echo "$row;$col"
+}
+
+function save_cursor {
+  IFS=';' read -r CURSOR_POS <<< "$(get_cursor_pos)";
+  if [ "$CURSOR_POS" == "$(tput lines);1" ]; then
+    CURSOR_POS="1;1"
+  fi
+  export CURSOR_POS;
+}
+
+function restore_cursor { printf "\033[%sH" "$CURSOR_POS"; }
 function clear_down { printf "\033[0J"; }
 function reset_prompt { restore_cursor && clear_down; }
 function wind_down { cleanup && reset_prompt; }
 function fail { echo -e "\n$1" >&2; exit "${2-1}"; }
 function interrupt_handler { wind_down && fail "Aborted."; }
 # function print_status { $print_status -hl "$BOX_HIGHLIGHT" "$@"; _box_border_right; }
+function green { echo "$BGG$FGK$1$CNONE"; }
+function blue { echo "$BGB$FGK$1$CNONE"; }
 
 function helpers {
   local prefix helpers=()
   prefix="https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master"
   helpers+=("$prefix/bash/colors.sh")
-  helpers+=("$prefix/bin/utilities/bash/box")
+  # helpers+=("$prefix/bin/utilities/bash/box")
   echo "${helpers[@]}"
 }
 
@@ -33,6 +68,7 @@ function prepare {
   [ ! -d "$DOTFILES_STATE_HOME/tmp" ] && mkdir -p "$DOTFILES_STATE_HOME/tmp"
   [ ! -d "$DOTFILES_CONFIG_HOME" ] && mkdir -p "$DOTFILES_CONFIG_HOME"
 
+  echo
   echo "Hi! My name's Dave. Looks like you're about to install my dotfiles."
   echo
   echo "The remote install script needs a couple of files from my repo to proceed."
@@ -51,7 +87,7 @@ function prepare {
 
   read -n1 -r -p "$prompt" input
   case $input in
-  [Yy]) reset_prompt ;;
+  [Yy]) ;;
   [Nn]) interrupt_handler ;;
   *)
     reset_prompt
@@ -68,44 +104,91 @@ function prepare {
     if [[ ! $filename =~ ".sh" ]]; then 
       declare "$filename=$local_file"
       chmod +x "$local_file"
-    else
-      source "$local_file"
     fi
+
+    source "$local_file"
   done
 }
 
+function repo_home {
+  echo "${DOTFILES_REPO_HOME/$HOME/\~}"
+}
+
 function ask_for_repo_home {
-  _box_top
-  _box_print "By default I keep them in $BGB$FGK${DOTFILES_CONFIG_HOME/$HOME/\~}$CNONE."
-  _box_print
-  _box_print "If that's OK, you can press Enter."
-  local input prompt
-  prompt="If you want another location, please tell me where: "
-  read -r -p "$prompt" input
-  echo "$input"
+  local repo_home
+  repo_home="$DOTFILES_CONFIG_HOME/"
+
+  echo
+  echo "By default I keep my dotfiles in $(blue "${repo_home/$HOME/\~}")."
+  echo
+  echo -e "Press Enter to confirm that location, or specify a new one: \n"
+
+  read -r -e -i "$repo_home" -p "" DOTFILES_REPO_HOME
+  DOTFILES_REPO_HOME="${DOTFILES_REPO_HOME:-$repo_home}"
+  DOTFILES_REPO_HOME="${DOTFILES_REPO_HOME%/}"
+
+  if [ -f "$DOTFILES_REPO_HOME" ]; then
+    echo "The path you provided is a file. Please provide a directory."
+    ask_for_repo_home && return
+  fi
+
+  [ ! -d "$DOTFILES_REPO_HOME" ] && mkdir -p "$DOTFILES_REPO_HOME"
+  echo
+}
+
+function download_dotfiles {
+  if [ -d "$DOTFILES_REPO_HOME/.git" ]; then
+    echo "Looks like you already have my dotfiles there!" 
+    echo -e "I'll just update them for you, and move on.\n"
+    git -C "$DOTFILES_REPO_HOME" pull
+    printf ""
+    return
+  fi
+
+  if command -v git >/dev/null; then
+    git clone https://github.com/davelens/dotfiles.git "$DOTFILES_REPO_HOME/"
+    printf ""
+    return
+  fi
+
+  local dotfiles_zip
+  dotfiles_zip="$DOTFILES_STATE_HOME/tmp/dotfiles.zip"
+
+  echo "Alright, I'll download the dotfiles into $(green "$(repo_home)")."
+
+  # TODO: Replace with extracting a tarball when we're starting with releases.
+  curl -L -o "$dotfiles_zip" https://github.com/davelens/dotfiles/archive/refs/heads/master.zip
+  unzip -o "$dotfiles_zip" -d "$DOTFILES_REPO_HOME/"
+  mv "$DOTFILES_REPO_HOME/dotfiles-master"/* "$DOTFILES_REPO_HOME/"
+  rm -rf "$DOTFILES_REPO_HOME/dotfiles-master"
+  # "$DOTFILES_STATE_HOME/tmp/dotfiles-master/setup/install"
 }
 
 function main {
-  save_cursor
-
   local prompt input
-  local DOTFILES_FOLDER DOTFILES_STATE_HOME DOTFILES_CONFIG_HOME
+  local DOTFILES_FOLDER DOTFILES_STATE_HOME DOTFILES_CONFIG_HOME CURSOR_POS
   DOTFILES_FOLDER="dots"
   DOTFILES_STATE_HOME="$XDG_STATE_HOME/$DOTFILES_FOLDER"
   DOTFILES_CONFIG_HOME="$XDG_CONFIG_HOME/$DOTFILES_FOLDER"
+  CURSOR_POS="1;1"
 
+  save_cursor
   prepare
-  exit
-  # interrupt_handler # TODO: Pick it up from here.
-  #############################################################################
+  reset_prompt
+  green "✓ Prerequisites met"
+  save_cursor
 
-  DOTFILES_REPO_HOME=$(ask_for_repo_home)
-  echo "$DOTFILES_REPO_HOME"
+  ask_for_repo_home
+  reset_prompt
+  green "✓ Primed $(repo_home)"
+  save_cursor
 
-  curl -L -o "$DOTFILES_CONFIG_HOME/" https://github.com/davelens/dotfiles/archive/refs/heads/master.zip
-  # TODO: Replace with extracting a tarball when we're starting with releases.
-  unzip -o "$DOTFILES_STATE_HOME/tmp/dotfiles.zip" -d "$DOTFILES_STATE_HOME/tmp"
-  # "$DOTFILES_STATE_HOME/tmp/dotfiles-master/setup/install"
+  download_dotfiles
+  reset_prompt
+  green "✓ Dotfiles downloaded into $(repo_home)"
+  save_cursor
+
+  cleanup && exit
   wind_down
 }
 
