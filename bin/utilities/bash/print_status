@@ -38,7 +38,7 @@ function icon {
 }
 
 function newline {
-  [ $newline -eq 1 ] && printf "\n"
+  [ $newline -eq 1 ] && echo
 }
 
 function main {
@@ -99,7 +99,7 @@ function main {
   [ -n "$prefix" ] && result="$prefix"
   [ -n "$icon" ] && result+="$(icon) "
   result+="$message$(newline)"
-  echo -n "$result"
+  echo "$result"
 }
 
 #############################################################################
