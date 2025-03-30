@@ -3,11 +3,14 @@
 # Original author = @janmoesen
 # https://github.com/janmoesen/tilde/blob/master/.bash/commands#L473
 
-# Show what a given command really is. It is a combination of "type", "file"
-# and "ls". Unlike "which", it does not only take $PATH into account. This
-# means it works for aliases and hashes, too. (The name "whatis" was taken,
-# and I did not want to overwrite "which", hence "wtfis".)
-# The return value is the result of "type" for the last command specified.
+# From Jan's dotfiles:
+# > Show what a given command really is. It is a combination of "type", "file"
+# > and "ls". Unlike "which", it does not only take $PATH into account. This
+# > means it works for aliases and hashes, too. (The name "whatis" was taken,
+# > and I did not want to overwrite "which", hence "wtfis".)
+# > The return value is the result of "type" for the last command specified.
+#
+# I did land on whatis since `u bash wh<TAB>` is easier than `u bash wt<Tab>`.
 
 function main {
   local cmd type i=1 ret=0
