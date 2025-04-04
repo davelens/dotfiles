@@ -1,3 +1,4 @@
+# shellcheck disable=SC2142,SC2154
 # Default command overrides. Generally trying to avoid serious ones, but to
 # my knowledge these are not considered harmful.
 alias ls='ls -G'
