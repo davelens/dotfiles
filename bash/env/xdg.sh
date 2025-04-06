@@ -62,3 +62,8 @@ export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export REDISCLI_HISTFILE="$XDG_DATA_HOME/redis/rediscli_history"
 export WGETRC="$XDG_CONFIG_HOME/wgetrc"
+
+# NixOS-specific XDG settings
+if [ -d "$XDG_STATE_HOME/nix" ]; then
+  export NIX_STATE_DIR="$XDG_STATE_HOME/nix/profiles/profile"
+fi

@@ -43,3 +43,4 @@ esac
 # User-specific settings and/or overrides.
 ###############################################################################
 [ -f "$DOTFILES_CONFIG_HOME/env" ] && source "$DOTFILES_CONFIG_HOME/env"
+[ -d "$NIX_STATE_DIR" ] && source "$NIX_STATE_DIR/etc/profile.d/nix.sh"
