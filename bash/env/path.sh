@@ -20,7 +20,7 @@
 #   $BREW_PATH/opt/*/bin # All Homebrew binaries
 #
 paths_to_add=(
-  "${ASDF_DATA_DIR:-$HOME/.asdf}"/shims # Always prefer asdf shims
+  "${ASDF_DATA_DIR:-$XDG_DATA_HOME/asdf}"/shims # Always prefer asdf shims
   "$BREW_PATH"/{,s}bin                  # unbound in sbin/, most Homebrew binaries in bin/
   "$BREW_PATH"/opt/mysql@8.4/bin        # Brew wants you to use `brew services`, but I want direct access
   "$XDG_BIN_HOME"                       # User-made and controlled binaries
