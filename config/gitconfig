@@ -63,6 +63,7 @@
   pr-body = "!utility github pr-body"
   pullff = pull --ff-only
   r = !git --no-pager l -20 && echo
+  repo = "!utility github repo"
   s = "!utility git switch-branch"
 
   # Uses the GitHub API to perform a search query and find repos.
