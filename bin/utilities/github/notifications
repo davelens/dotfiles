@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -e
+[ ! -d .git ] && fail "ERROR: Local working directory is not a git repo."
+
+notifications=$(gh notify -s -a -n4 -f "$(git repo)")
+
+if [[ -z "$notifications" || "$notifications" == *"results found"* ]]; then
+  echo "No new notifications."
+  exit 0
+fi
+
+echo "$notifications" | awk '{
+  # print the fixed columns
+  printf "%s %s %s %s %s\n", $2, $3, $5, $6, $7
+
+  # rebuild the rest of the line
+  rest = ""
+  for (i = 8; i <= NF; i++) rest = rest $i " "
+  sub(/[[:space:]]+$/, "", rest)
+
+  # single printf: if rest > 58 chars, show first 55 + "…"
+  printf "%s\n\n", (length(rest) > 58 ? substr(rest, 1, 55) "…" : rest)
+}'
+

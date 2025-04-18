@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 set -e
 [ ! -d .git ] && fail "ERROR: Local working directory is not a git repo."
-modified="$(git st | wc -l)"
+modified=$(git st "$PWD" | wc -l)
+subject="files"
 
 if [ "$modified" -eq 0 ]; then 
-  git status
+  git status "$PWD"
 else
-  git status | awk 'BEGIN { p = 1 } /^$/ { exit } p'
+  [ "$modified" -eq 1 ] && subject="file"
+
+  git status "$PWD" | awk 'BEGIN { p = 1 } /^$/ { exit } p'
   echo
-  echo "$modified files in the staging area"
+  echo "$modified $subject in the staging area"
 fi
 
