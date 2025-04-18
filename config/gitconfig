@@ -21,6 +21,7 @@
   b = rev-parse --abbrev-ref HEAD
   ci = commit
   ci-status = "!utility github ci-status"
+  changes = "!utility git changes"
   co = checkout
   dc = diff --cached
 
