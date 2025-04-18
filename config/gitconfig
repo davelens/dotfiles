@@ -58,6 +58,7 @@
   pod = push origin develop
   pom = push origin master
   pr = "!f() { base=${1:-develop}; gh pr create --base \"$base\"; }; f"
+  prs = "!utility github prs"
 
   # remove local branches that were created from `git pr`
   pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
