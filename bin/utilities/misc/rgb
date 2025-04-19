@@ -5,5 +5,5 @@ counter=0
 while :; do
   counter=$((counter + 2))
   tput cup 0 0
-  lolcat "$1" --spread=20 -S $counter -f
+  lolcat "$1" --spread=20 -F .05 -S $counter -f
 done
