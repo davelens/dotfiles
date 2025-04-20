@@ -37,6 +37,7 @@ config.window_padding = {
 
 -- stylua: ignore
 config.keys = {
+  { key = 'r', mods = 'CMD|SHIFT', action = wezterm.action.ReloadConfiguration },
   -- Disable most keybinds associated with tab management, I don't use em.
   { mods = 'SUPER',         key = '1', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(0)
   { mods = 'SUPER',         key = '2', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(1)
