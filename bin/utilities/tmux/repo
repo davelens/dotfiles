@@ -49,7 +49,7 @@ if [[ $# -eq 1 && $1 == '--docker' ]] && [[ ! $(pgrep -n docker) ]]; then
 fi
 
 # Provide a fuzzy search for my projects so I don't have to type names anymore.
-[ -z "$1" ] && set -- "$("ls -d $namespace/**/*" | sed -e "s|$(echo)$namespace/||" | fzf)"
+[ -z "$1" ] && set -- "$(ls -d $namespace/**/* | sed -e "s|$(echo)$namespace/||" | fzf)"
 
 if [ -z "$1" ]; then
   echo 'ERROR: No project namespace given.'
@@ -113,6 +113,9 @@ function phoenix_windows {
   *) printf "\nPlease answer %s or %s.\n" "$(tput smul)Y$(tput rmul)es" "$(tput smul)N$(tput rmul)o" ;;
   esac
 }
+
+# Dots aren't allowed in tmux pane names.
+set -- "${1/./_}"
 
 tmux attach -t "$1" >/dev/null 2>&1 || (
   tmux new-session -s "$1" -n editor -c "$destination" -d
