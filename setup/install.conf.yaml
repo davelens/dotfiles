@@ -24,7 +24,7 @@
     $WGETRC: config/wgetrc
     $BASHRC: config/bashrc
     $BASH_PROFILE: config/bash_profile
-    $XDG_CONFIG_HOME/tmux: config/tmux
+    $XDG_CONFIG_HOME/aerospace: config/macos/aerospace
     $XDG_CONFIG_HOME/git/config: config/gitconfig
     $XDG_CONFIG_HOME/git/ignore: config/gitignore_global
     $XDG_CONFIG_HOME/rspec/options: config/rspec
@@ -33,6 +33,7 @@
     $XDG_CONFIG_HOME/shellcheckrc: config/shellcheckrc
     $XDG_CONFIG_HOME/sketchybar: config/macos/sketchybar
     $XDG_CONFIG_HOME/starship.toml: config/starship.toml
+    $XDG_CONFIG_HOME/tmux: config/tmux
     $XDG_CONFIG_HOME/wezterm/wezterm.lua: config/wezterm.lua
     $XDG_BIN_HOME/utility: bin/utility
     $XDG_BIN_HOME/:
