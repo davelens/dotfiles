@@ -27,7 +27,6 @@ source "$DOTFILES_REPO_HOME/bash/env/misc.sh"           # The kitchen sink
 ###############################################################################
 source "$DOTFILES_REPO_HOME/bash/colors.sh"
 source "$DOTFILES_REPO_HOME/bash/aliases.sh"
-source "$DOTFILES_REPO_HOME/bash/prompt.sh"
 source "$DOTFILES_REPO_HOME/bash/dots.sh"
 
 ###############################################################################
@@ -40,7 +39,8 @@ linux) source "$DOTFILES_REPO_HOME/bash/env/os/linux/init.sh" ;;
 esac
 
 ###############################################################################
-# User-specific settings and/or overrides.
+# User-specific settings and/or overrides + setting prompt as the final step.
 ###############################################################################
 [ -f "$DOTFILES_CONFIG_HOME/env" ] && source "$DOTFILES_CONFIG_HOME/env"
 [ -d "$NIX_STATE_DIR" ] && source "$NIX_STATE_DIR/etc/profile.d/nix.sh"
+source "$DOTFILES_REPO_HOME/bash/prompt.sh"
