@@ -1,84 +1,57 @@
-# Simplified Git branch info formatted for bash prompts.
-# Picks up on `git b` if that alias exists. This way you could inject
-# your own branch logic into the prompt.
+# Git branch info for our prompt. Picks up on `git b` if that alias exists.
 prompt_branch() {
   # Only write branch info in actual git repos.
   [ ! -d ".git" ] && return
+  local git_branch
 
-  # The default branch retrieval in case `git b` is not available.
-  #
-  # Note that in this repo, `git b` is aliased to the same value as this
-  # assignment. No other reason, othern than I like having that alias on hand
-  # regardless of the prompt logic.
-  local cmd="git rev-parse --abbrev-ref HEAD"
-
-  # If `git b` exists as an alias, use that instead.
-  if [ git config --get alias.b ] &>/dev/null; then
-    cmd="git b"
+  if git config --get alias.b &>/dev/null; then
+    git_branch=$(git b)
+  else
+    git_branch=$(git rev-parse --abbrev-ref HEAD)
   fi
 
-  # Get the current branch or detached HEAD state
-  # As an aside; `git b` used to be `git branch --show-current`, which works
-  # fine for basic branch retrieval, but would not work when you're in a
-  # detached HEAD state.
-  current_branch=$($cmd 2>/dev/null)
-
-  if [ "$current_branch" = "HEAD" ]; then # Detached HEAD state
+  if [ -n "$git_branch" ]; then
+    echo "(branch: $git_branch)"
+  else
     echo "(no branch selected)"
-
-  elif [ -n "$current_branch" ]; then # Valid branch is valid
-    echo "(branch: $current_branch)"
-
-  else # Fallback, should never see this though.
-    echo "(no branch)"
   fi
 }
 
-# This rewrites PWD to something more readable.
-#   * The home directory is replaced with a ~
-#   * The last pwdmaxlen characters of the PWD are displayed
-#   * Leading partial directory names are stripped off
-#
-# Example: $REPO_NAMESPACE/blimp/abcdefghij
-# if pwdmaxlen=25: $REPO_NAMESPACE/blimp/abcdefghij
-# if pwdmaxlen=20: ~/blimp/abcdefghij
-rewrite_pwd() {
-  # how many characters of the $PWD should remain visible.
-  local pwdmaxlen=25
-
-  # Indicate that dir truncation took place.
+# Rewrites PWD to something more readable. Example: $REPO_NAMESPACE/blimp/abcd
+# if pwdmaxlen=25: $REPO_NAMESPACE/blimp/abcd
+# if pwdmaxlen=20: ~/blimp/abcd
+prompt_pwd() {
+  NEW_PWD=${PWD/${HOME}/"~"} # Replace $HOME with `~`
+  local char_limit=25
   local trunc_symbol=".."
-  local dir=${PWD##*/} # Remove all strings until the last forward slash.
+  local dir=${PWD##*/} # Remove all characters until the last forward slash.
 
-  # Make sure the last dir does not exceed $pwdmaxlen, otherwise take
-  # the length of the last dir as new pwdmaxlen.
-  pwdmaxlen=$(((pwdmaxlen < ${#dir}) ? ${#dir} : pwdmaxlen))
-
-  # Substitute $HOME with ~
-  NEW_PWD=${PWD/${HOME}/"~"}
+  # Make sure the last dir does not exceed $char_limit, otherwise take
+  # the length of the last dir as new char_limit.
+  char_limit=$(((char_limit < ${#dir}) ? ${#dir} : char_limit))
 
   # Calculate how many characters we have to truncate
-  local pwdoffset=$((${#NEW_PWD} - pwdmaxlen))
+  local pwdoffset=$((${#NEW_PWD} - char_limit))
 
   # If the PWD string is too long, then we will truncate it.
   if [ $pwdoffset -gt "0" ]; then
-    NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
+    NEW_PWD=${NEW_PWD:$pwdoffset:$char_limit}
     NEW_PWD=$trunc_symbol/${NEW_PWD#*/} # Remove until the first forward slash
   fi
 }
 
-# Make sure that whenever our Terminal starts a new session, it sets $NEW_PWD
-# and colorizes the prompt. Subsequent commands will pick up any changes in the
-# same state we initialize here.
-#
-# PROMPT_COMMAND is a special environment variable in Bash. It allows you to
-# specify a command or function that gets executed just before the Bash prompt
-# is displayed. I use it to update the active working dir after every cmd.
-PROMPT_COMMAND=rewrite_pwd
+# Use starship when available, or fall back to my homebrew.
+if command -v starship >/dev/null; then
+  eval "$(starship init bash)"
+else
+  # PROMPT_COMMAND comes with bash. It allows you to specify a command or
+  # function that gets executed just before the prompt is displayed.
+  PROMPT_COMMAND=prompt_pwd
 
-# Colors the root prompt red.
-UC=$FGC
-[ $UID -eq "0" ] && UC=$FGR
+  # Root prompt = red
+  UC=$FGC
+  # shellcheck disable=SC2034
+  [ $UID -eq "0" ] && UC=$FGR
 
-# Override the prompt with readable color vars and git branch info.
-PS1="$FGG\u@\h> \$NEW_PWD $FGC\$(prompt_branch)$CNONE\n> "
+  PS1="$FGG\u@\h> \$NEW_PWD $FGC\$(prompt_branch)$CNONE\n> "
+fi

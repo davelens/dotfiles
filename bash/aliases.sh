@@ -22,7 +22,6 @@ alias ds='du -sh */' # Short for "directory sizes"
 alias lsa='gls -hal --group-directories-first --color=auto'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
 alias s="exec \$SHELL"
-alias sp='eval "$(starship init bash)"' # [s]tarship [p]rompt. Trying it out!
 alias ta='tmux attach'
 alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
 alias u='utility'
