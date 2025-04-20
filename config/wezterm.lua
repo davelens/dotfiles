@@ -1,11 +1,11 @@
 -- PREFACE:
 -- For years I've been used to iTerm2's non-native full screen mode on macos.
 -- The config below is as close as I can get to that.
-local wezterm = require 'wezterm'
+local wezterm = require('wezterm')
 local config = wezterm.config_builder()
 local platforms = {
-  macos = wezterm.target_triple:find("apple"),
-  windows = wezterm.target_triple:find("windows")
+  macos = wezterm.target_triple:find('apple'),
+  windows = wezterm.target_triple:find('windows'),
 }
 
 -- Defaults!
@@ -25,6 +25,7 @@ config.window_padding = {
   bottom = 0,
 }
 
+-- stylua: ignore
 config.keys = {
   -- Disable most keybinds associated with tab management, I don't use em.
   { mods = 'SUPER',         key = '1', action = wezterm.action.DisableDefaultAssignment }, -- ActivateTab(0)
@@ -58,15 +59,19 @@ if platforms.macos then
   config.line_height = 1.03
   config.cell_width = 1.01
   config.font_size = 16.0
-  config.font = wezterm.font_with_fallback {
-    { family = "Monaco",           weight = "Regular" },
-    { family = "Hack Nerd Font" },
-    { family = "Apple Color Emoji" },
-  }
+  config.font = wezterm.font_with_fallback({
+    { family = 'Monaco', weight = 'Regular' },
+    { family = 'Hack Nerd Font' },
+    { family = 'Apple Color Emoji' },
+  })
 
   -- CMD+Enter is how I've been triggering full screen for years.
   config.keys = {
-    { mods = 'ALT',   key = 'Enter', action = wezterm.action.DisableDefaultAssignment }, -- ToggleFullScreen
+    {
+      mods = 'ALT',
+      key = 'Enter',
+      action = wezterm.action.DisableDefaultAssignment,
+    }, -- ToggleFullScreen
     { mods = 'SUPER', key = 'Enter', action = wezterm.action.ToggleFullScreen },
   }
 end
@@ -74,17 +79,27 @@ end
 -- Load platform specific configurations
 if platforms.windows then
   -- The default for me is "wslhost.exe", not very descriptive.
-  wezterm.on('format-window-title', function() return "Wezterm" end)
+  wezterm.on('format-window-title', function()
+    return 'Wezterm'
+  end)
 
   config.line_height = 1.08
   config.default_prog = {
-    "wsl.exe", "-d", "Arch", "-u", "davelens", "--", "bash", "-c", "cd ~ && exec bash"
+    'wsl.exe',
+    '-d',
+    'Arch',
+    '-u',
+    'davelens',
+    '--',
+    'bash',
+    '-c',
+    'cd ~ && exec bash',
   }
 
-  config.font = wezterm.font_with_fallback {
-    { family = "NotoMono NF",   weight = "Regular" },
-    { family = "Hack Nerd Font" },
-  }
+  config.font = wezterm.font_with_fallback({
+    { family = 'NotoMono NF', weight = 'Regular' },
+    { family = 'Hack Nerd Font' },
+  })
 end
 
 return config
