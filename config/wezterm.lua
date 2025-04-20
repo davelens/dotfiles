@@ -7,6 +7,16 @@ local platforms = {
   macos = wezterm.target_triple:find('apple'),
   windows = wezterm.target_triple:find('windows'),
 }
+local function is_process_running(name)
+  local handle = io.popen("pgrep '" .. name .. "'")
+  if not handle then
+    return false
+  end
+
+  local result = handle:read('*a')
+  handle:close()
+  return result ~= ''
+end
 
 -- Defaults!
 config.max_fps = 120 -- Fixes the (s)low default of 60, this feels snappier.
@@ -51,10 +61,16 @@ config.keys = {
 if platforms.macos then
   config.native_macos_fullscreen_mode = false
 
-  config.window_frame = {
-    border_top_height = '.7cell',
-    border_top_color = 'black',
-  }
+  -- No title bar or notch space reservation necessary when Aerospace runs.
+  if is_process_running('AeroSpace') then
+    config.window_decorations = 'RESIZE'
+    config.window_frame = { border_top_color = 'black' }
+  else
+    config.window_frame = {
+      border_top_color = 'black',
+      border_top_height = '.7cell',
+    }
+  end
 
   config.line_height = 1.03
   config.cell_width = 1.01
@@ -67,11 +83,8 @@ if platforms.macos then
 
   -- CMD+Enter is how I've been triggering full screen for years.
   config.keys = {
-    {
-      mods = 'ALT',
-      key = 'Enter',
-      action = wezterm.action.DisableDefaultAssignment,
-    }, -- ToggleFullScreen
+    -- stylua: ignore
+    { mods = 'ALT', key = 'Enter', action = wezterm.action.DisableDefaultAssignment, },
     { mods = 'SUPER', key = 'Enter', action = wezterm.action.ToggleFullScreen },
   }
 end
@@ -84,16 +97,10 @@ if platforms.windows then
   end)
 
   config.line_height = 1.08
-  config.default_prog = {
-    'wsl.exe',
-    '-d',
-    'Arch',
-    '-u',
-    'davelens',
-    '--',
-    'bash',
-    '-c',
-    'cd ~ && exec bash',
+  -- stylua: ignore
+  config.default_prog = { 
+    'wsl.exe', '-d', 'Arch', '-u', 'davelens',
+    '--', 'bash', '-c', 'cd ~ && exec bash',
   }
 
   config.font = wezterm.font_with_fallback({
