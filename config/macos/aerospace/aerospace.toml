@@ -37,15 +37,15 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
   '''
 
   # Window controls; i3 wraps focus by default
-  cmd-h = 'focus --boundaries-action wrap-around-the-workspace left'
-  cmd-j = 'focus --boundaries-action wrap-around-the-workspace down'
-  cmd-k = 'focus --boundaries-action wrap-around-the-workspace up'
-  cmd-l = 'focus --boundaries-action wrap-around-the-workspace right'
-  cmd-shift-h = 'move left'
-  cmd-shift-j = 'move down'
-  cmd-shift-k = 'move up'
-  cmd-shift-l = 'move right'
-  cmd-shift-c = 'reload-config'
+  alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
+  alt-j = 'focus --boundaries-action wrap-around-the-workspace down'
+  alt-k = 'focus --boundaries-action wrap-around-the-workspace up'
+  alt-l = 'focus --boundaries-action wrap-around-the-workspace right'
+  alt-shift-h = 'move left'
+  alt-shift-j = 'move down'
+  alt-shift-k = 'move up'
+  alt-shift-l = 'move right'
+  alt-shift-c = 'reload-config'
 
   # Workspace controls
   ctrl-1 = 'workspace 1'
@@ -53,11 +53,11 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
   ctrl-3 = 'workspace 3'
   ctrl-4 = 'workspace 4'
   ctrl-5 = 'workspace 5'
-  shift-ctrl-1 = 'move-node-to-workspace 1'
-  shift-ctrl-2 = 'move-node-to-workspace 2'
-  shift-ctrl-3 = 'move-node-to-workspace 3'
-  shift-ctrl-4 = 'move-node-to-workspace 4'
-  shift-ctrl-5 = 'move-node-to-workspace 5'
+  ctrl-cmd-1 = 'move-node-to-workspace 1'
+  ctrl-cmd-2 = 'move-node-to-workspace 2'
+  ctrl-cmd-3 = 'move-node-to-workspace 3'
+  ctrl-cmd-4 = 'move-node-to-workspace 4'
+  ctrl-cmd-5 = 'move-node-to-workspace 5'
 
   # Some toggles and i3-inspired toggles 
   alt-f = 'fullscreen'
