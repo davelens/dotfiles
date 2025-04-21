@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 options=(
-  style=square
+  style=round
   width=3.0
   hidpi=on
   active_color=0xc0b7bdf8
