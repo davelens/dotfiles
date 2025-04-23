@@ -151,7 +151,7 @@ sketchybar --add item volume right \
   --subscribe volume volume_change
 
 osascript -e 'quit app "Rectangle"'
-open -a Rectangle
+# open -a Rectangle
 
 ##### Finalizing Setup #####
 sketchybar --update
