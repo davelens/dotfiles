@@ -5,7 +5,7 @@
         "parameters": { "basic.to_if_held_down_threshold_milliseconds": 150 },
         "rules": [
           {
-            "description": "Home row mods - CAGS",
+            "description": "Homerow mods - CAGS",
             "manipulators": [
               {
                 "from": {
