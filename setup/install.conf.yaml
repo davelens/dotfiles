@@ -33,6 +33,7 @@
     $XDG_CONFIG_HOME/rubocop/config.yml: config/rubocop.yml
     $XDG_CONFIG_HOME/shellcheckrc: config/shellcheckrc
     $XDG_CONFIG_HOME/sketchybar: config/macos/sketchybar
+    $XDG_CONFIG_HOME/karabiner: config/macos/karabiner
     $XDG_CONFIG_HOME/starship.toml: config/starship.toml
     $XDG_CONFIG_HOME/tmux: config/tmux
     $XDG_CONFIG_HOME/wezterm/wezterm.lua: config/wezterm.lua
