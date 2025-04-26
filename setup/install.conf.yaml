@@ -28,12 +28,12 @@
     $XDG_CONFIG_HOME/borders: config/macos/borders
     $XDG_CONFIG_HOME/git/config: config/gitconfig
     $XDG_CONFIG_HOME/git/ignore: config/gitignore_global
+    $XDG_CONFIG_HOME/karabiner: config/macos/karabiner
     $XDG_CONFIG_HOME/rspec/options: config/rspec
     $XDG_CONFIG_HOME/rsyncignore: config/rsyncignore
     $XDG_CONFIG_HOME/rubocop/config.yml: config/rubocop.yml
     $XDG_CONFIG_HOME/shellcheckrc: config/shellcheckrc
     $XDG_CONFIG_HOME/sketchybar: config/macos/sketchybar
-    $XDG_CONFIG_HOME/karabiner: config/macos/karabiner
     $XDG_CONFIG_HOME/starship.toml: config/starship.toml
     $XDG_CONFIG_HOME/tmux: config/tmux
     $XDG_CONFIG_HOME/wezterm/wezterm.lua: config/wezterm.lua
