@@ -24,10 +24,6 @@ config.enable_tab_bar = false
 config.color_scheme = 'Catppuccin Mocha'
 config.font_size = 14.0
 
-config.window_frame = {
-  border_bottom_height = '0',
-}
-
 config.window_padding = {
   left = 10,
   right = 10,
@@ -62,17 +58,19 @@ config.keys = {
 if platforms.macos then
   config.native_macos_fullscreen_mode = false
 
+  local window_frame_table = {
+    border_top_color = 'black',
+    border_bottom_height = '0',
+  }
+
   -- No title bar or notch space reservation necessary when Aerospace runs.
   if is_process_running('AeroSpace') then
     config.window_decorations = 'RESIZE'
-    config.window_frame = { border_top_color = 'black' }
   else
-    config.window_frame = {
-      border_top_color = 'black',
-      border_top_height = '.7cell',
-    }
+    window_frame_table.border_top_height = '.7cell'
   end
 
+  config.window_frame = window_frame_table
   config.line_height = 1.03
   config.cell_width = 1.01
   config.font_size = 16.0
