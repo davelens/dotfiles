@@ -71,9 +71,19 @@ if platforms.macos then
     window_frame_table.border_top_height = '.7cell'
   end
 
+  -- Make it so my external monitors that run at 72 dpi don't do anything with
+  -- the fonts. On high dpi screens though, the slight line height/cell width
+  -- adjustments are welcome.
+  wezterm.on('window-resized', function(window, _)
+    local dims = window:get_dimensions()
+
+    if dims.dpi > 72 then
+      config.line_height = 1.03
+      config.cell_width = 1.01
+    end
+  end)
+
   config.window_frame = window_frame_table
-  config.line_height = 1.03
-  config.cell_width = 1.01
   config.font_size = 16.0
   config.font = wezterm.font_with_fallback({
     { family = 'Monaco', weight = 'Regular' },
