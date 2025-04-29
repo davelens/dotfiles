@@ -2,7 +2,7 @@
   "profiles": [
     {
       "complex_modifications": {
-        "parameters": { "basic.to_if_held_down_threshold_milliseconds": 150 },
+        "parameters": { "basic.to_if_held_down_threshold_milliseconds": 200 },
         "rules": [
           {
             "description": "Homerow mods - CAGS",
