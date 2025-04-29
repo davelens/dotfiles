@@ -5,9 +5,6 @@
 
 MAX_LENGTH=50
 
-# Logic starts here, do not modify
-HALF_LENGTH=$(((MAX_LENGTH + 1) / 2))
-
 # Spotify JSON / $INFO comes in malformed, line below sanitizes it
 SPOTIFY_JSON="$INFO"
 
@@ -29,6 +26,8 @@ update_track() {
     ARTIST_LENGTH=${#ARTIST}
 
     if [ $((TRACK_LENGTH + ARTIST_LENGTH)) -gt $MAX_LENGTH ]; then
+      HALF_LENGTH=$(((MAX_LENGTH + 1) / 2))
+
       # If the total length exceeds the max
       if [ $TRACK_LENGTH -gt $HALF_LENGTH ] && [ $ARTIST_LENGTH -gt $HALF_LENGTH ]; then
         # If both the track and artist are too long, cut both at half length - 1
