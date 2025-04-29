@@ -65,6 +65,8 @@ if platforms.macos then
 
   -- No title bar or notch space reservation necessary when Aerospace runs.
   if is_process_running('AeroSpace') then
+    config.window_background_opacity = 0.9
+    config.macos_window_background_blur = 20
     config.window_decorations = 'RESIZE'
     config.window_padding = { left = 14, right = 14, top = 18, bottom = 0 }
   else
