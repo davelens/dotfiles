@@ -44,7 +44,7 @@ update_track() {
         ARTIST="${ARTIST:0:$((MAX_LENGTH - TRACK_LENGTH - 1))}…"
       fi
     fi
-    sketchybar --set $NAME label="${TRACK}  ${ARTIST}" label.drawing=yes icon.color=0xffa6da95
+    sketchybar --set $NAME label="${ARTIST} ➟ ${TRACK}" label.drawing=yes icon.color=0xffa6da95
 
   elif [ $PLAYER_STATE = "Paused" ]; then
     sketchybar --set $NAME icon.color=0xffeed49f
