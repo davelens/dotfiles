@@ -21,4 +21,3 @@ echo "$notifications" | awk '{
   # single printf: if rest > 58 chars, show first 55 + "…"
   printf "%s\n\n", (length(rest) > 58 ? substr(rest, 1, 55) "…" : rest)
 }'
-
