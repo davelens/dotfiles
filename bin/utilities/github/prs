@@ -4,26 +4,43 @@ set -e
 # ensure we're in a git repo
 [ ! -d .git ] && fail "ERROR: Local working directory is not a git repo."
 
-# fetch last 4 PRs as TSV: number, author, date, title
-pr_list=$(gh pr list -L 4 \
-  --json number,author,updatedAt,title \
-  --jq '.[] | "\(.number)\t\(.author.login)\t\(.updatedAt[:10])\t\(.title)"')
+# Clean up the block another time, I cba right now.
+if [ "$1" == '-n' ]; then
 
-if [[ -z "$pr_list" ]]; then
-  echo "No pull requests are open."
+  total=$(gh pr list --state open --json number --jq 'length')
+
+  if [ "$total" -eq 0 ]; then
+    echo "No pull requests are open."
+  else
+    echo "There are $total open pull requests."
+  fi
+
   exit 0
+
+else
+
+  # fetch last 4 PRs as TSV: number, author, date, title
+  pr_list=$(gh pr list -L 4 \
+    --json number,author,updatedAt,title \
+    --jq '.[] | "\(.number)\t\(.author.login)\t\(.updatedAt[:10])\t\(.title)"')
+
+  if [ -z "$pr_list" ]; then
+    echo "No pull requests are open."
+    exit 0
+  fi
+
+  # format and truncate titles
+  echo "$pr_list" | awk -F'\t' '{
+      num    = $1
+      author = $2
+      date   = $3
+      title  = $4
+
+      # print metadata
+      printf "%s #%s (%s)\n", date, num, author
+
+      # truncate title to 58 chars max (55 + "...")
+      printf "%s\n\n", (length(title) > 58 ? substr(title, 1, 55) "..." : title)
+    }'
+
 fi
-
-# format and truncate titles
-echo "$pr_list" | awk -F'\t' '{
-    num    = $1
-    author = $2
-    date   = $3
-    title  = $4
-
-    # print metadata
-    printf "%s #%s (%s)\n", date, num, author
-
-    # truncate title to 58 chars max (55 + "...")
-    printf "%s\n\n", (length(title) > 58 ? substr(title, 1, 55) "..." : title)
-  }'
