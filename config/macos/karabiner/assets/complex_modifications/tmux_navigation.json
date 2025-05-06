@@ -1,0 +1,190 @@
+{
+  "title": "WezTerm: Hold 1–9 for tmux windows (no extra key-up)",
+  "rules": [
+    {
+      "description": "WezTerm: Hold 1–9 for tmux windows (no extra key-up)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "1",
+            "modifiers": { "optional": ["any"] }
+          },
+          "to_if_held_down": [
+            { "key_code": "a", "modifiers": ["left_control"] },
+            { "key_code": "1", "halt": true }
+          ],
+          "to_after_key_up": [
+            { "key_code": "1" }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.github\\.wez\\.wezterm$"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "2",
+            "modifiers": { "optional": ["any"] }
+          },
+          "to_if_held_down": [
+            { "key_code": "a", "modifiers": ["left_control"] },
+            { "key_code": "2", "halt": true }
+          ],
+          "to_after_key_up": [
+            { "key_code": "2" }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.github\\.wez\\.wezterm$"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "3",
+            "modifiers": { "optional": ["any"] }
+          },
+          "to_if_held_down": [
+            { "key_code": "a", "modifiers": ["left_control"] },
+            { "key_code": "3", "halt": true }
+          ],
+          "to_after_key_up": [
+            { "key_code": "3" }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.github\\.wez\\.wezterm$"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "4",
+            "modifiers": { "optional": ["any"] }
+          },
+          "to_if_held_down": [
+            { "key_code": "a", "modifiers": ["left_control"] },
+            { "key_code": "4", "halt": true }
+          ],
+          "to_after_key_up": [
+            { "key_code": "4" }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.github\\.wez\\.wezterm$"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "5",
+            "modifiers": { "optional": ["any"] }
+          },
+          "to_if_held_down": [
+            { "key_code": "a", "modifiers": ["left_control"] },
+            { "key_code": "5", "halt": true }
+          ],
+          "to_after_key_up": [
+            { "key_code": "5" }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.github\\.wez\\.wezterm$"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "6",
+            "modifiers": { "optional": ["any"] }
+          },
+          "to_if_held_down": [
+            { "key_code": "a", "modifiers": ["left_control"] },
+            { "key_code": "6", "halt": true }
+          ],
+          "to_after_key_up": [
+            { "key_code": "6" }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.github\\.wez\\.wezterm$"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "7",
+            "modifiers": { "optional": ["any"] }
+          },
+          "to_if_held_down": [
+            { "key_code": "a", "modifiers": ["left_control"] },
+            { "key_code": "7", "halt": true }
+          ],
+          "to_after_key_up": [
+            { "key_code": "7" }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.github\\.wez\\.wezterm$"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "8",
+            "modifiers": { "optional": ["any"] }
+          },
+          "to_if_held_down": [
+            { "key_code": "a", "modifiers": ["left_control"] },
+            { "key_code": "8", "halt": true }
+          ],
+          "to_after_key_up": [
+            { "key_code": "8" }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.github\\.wez\\.wezterm$"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "9",
+            "modifiers": { "optional": ["any"] }
+          },
+          "to_if_held_down": [
+            { "key_code": "a", "modifiers": ["left_control"] },
+            { "key_code": "9", "halt": true }
+          ],
+          "to_after_key_up": [
+            { "key_code": "9" }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.github\\.wez\\.wezterm$"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
