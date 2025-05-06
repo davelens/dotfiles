@@ -4,8 +4,29 @@
 #
 # TODO:
 # - [x] Move this to an os-unisex command
-# - [ ] Have it detect whether I'm home. If I'm not: Boot up a VPN connection
+# - [x] Have it detect whether I'm home. If I'm not: Boot up Tailscale
+# - [ ] Test it externally
 #
+
+# TODO: in ENV var ...
+LOCATION=alexandria.local
+
+get_wifi_interface() {
+  # finds the device name for Wi-Fi (usually en0 or en1)
+  networksetup -listallhardwareports |
+    awk '/Wi-?Fi|AirPort/{getline; print $2}'
+}
+
+get_ssid() {
+  local iface
+  iface=$(get_wifi_interface)
+  networksetup -getairportnetwork "$iface" 2>/dev/null |
+    awk -F': ' '{print $2}'
+}
+
+if [[ "$(get_ssid)" != "jura" ]] >/dev/null; then
+  LOCATION=100.73.75.7
+fi
 
 mountpoint="$HOME/Network/alexandria"
 [ ! -d "$mountpoint" ] && mkdir -p "$mountpoint"
@@ -18,7 +39,12 @@ cmd="mount -l"
 
 if ! command $cmd | grep Network/alexandria >/dev/null; then
   if [ $macos -eq 1 ]; then
-    mount_smbfs //davelens@alexandria.local/storage/projects/notes ~/Network/alexandria
+    if [ "$LOCATION" != "alexandria.local" ]; then
+      tailscale rungui &
+      tailscale up
+    fi
+
+    mount_smbfs "//davelens@${LOCATION}/storage/projects/notes" "${HOME}/Network/alexandria"
   else
     sudo mount -t drvfs '\\alexandria\storage\projects\notes' "$mountpoint"
   fi
