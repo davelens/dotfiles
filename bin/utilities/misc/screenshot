@@ -6,7 +6,7 @@ set -e
 
 # Explicitly export all environment variables from the .env file here to make
 # sure we have our $SCREENSHOT_* vars available.
-export_env_vars_from_file
+eval "$(source_env)"
 
 # TODO: More explanation what each variable represents.
 [[ -z $SCREENSHOT_HOST ]] && fail "ERROR: No host defined in \$SCREENSHOT_HOST."
@@ -16,6 +16,6 @@ export_env_vars_from_file
 filename="$(date +%Y-%m-%d-%H-%M-%S).jpg"
 full_path=$TMPDIR/$filename
 
-screencapture -ix $full_path && scp $full_path $SCREENSHOT_HOST:$SCREENSHOT_REMOTE_PATH/$filename
+screencapture -ix "$full_path" && scp "$full_path" "$SCREENSHOT_HOST":"$SCREENSHOT_REMOTE_PATH"/"$filename"
 echo "$SCREENSHOT_URL/$filename" | cb
-rm $full_path
+rm "$full_path"

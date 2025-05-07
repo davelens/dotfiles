@@ -63,9 +63,15 @@ function error_handler {
 
 # Exports all ENV vars listed in a file.
 # Loads $DOTFILES_CONFIG_HOME/env by default.
-function export_env_vars_from_file {
-  local env_file=${1:-"$DOTFILES_CONFIG_HOME/env"}
-  [ -f "$env_file" ] && source "$env_file"
+function source_env {
+  local env_file
+
+  if [ -z "$1" ]; then
+    [ -f "$PWD/.env" ] && env_file="$PWD/.env"
+  fi
+
+  [ ! -f "$env_file" ] && env_file="$DOTFILES_CONFIG_HOME/env"
+  echo source "$env_file"
 }
 
 # Helps us hard stop our custom executables during fails.

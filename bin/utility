@@ -2,7 +2,7 @@
 
 # Stops further execution after any error.
 set -e
-export_env_vars_from_file
+eval "$(source_env)"
 
 main() {
   # Ensure we have at least two arguments
