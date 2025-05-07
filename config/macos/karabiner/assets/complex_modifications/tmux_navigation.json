@@ -1,8 +1,33 @@
 {
-  "title": "WezTerm: Hold 1–9 for tmux windows (no extra key-up)",
+  "title": "WezTerm: tmux navigation",
   "rules": [
     {
-      "description": "WezTerm: Hold 1–9 for tmux windows (no extra key-up)",
+      "description": "WezTerm: Hold § to trigger tmux's switch-session",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "non_us_backslash",
+            "modifiers": { "optional": ["any"] }
+          },
+          "to_if_held_down": [
+            { "key_code": "a", "modifiers": ["left_control"] },
+            { "key_code": "s", "halt": true }
+          ],
+          "to_after_key_up": [
+            { "key_code": "non_us_backslash" }
+          ],
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.github\\.wez\\.wezterm$"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "WezTerm: Hold 1–9 to navigate tmux windows",
       "manipulators": [
         {
           "type": "basic",
