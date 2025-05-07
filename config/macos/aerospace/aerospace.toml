@@ -4,6 +4,9 @@
 after-startup-command = [
   'exec-and-forget borders',
   'exec-and-forget sketchybar',
+  'exec-and-forget open -a WezTerm',
+  'exec-and-forget open -g -a Firefox',
+  'exec-and-forget open -g -a Discord',
 ]
 
 # Reflect workspace changes in Sketchybar
@@ -15,6 +18,27 @@ exec-on-workspace-change = [
 # Mouse follows focus when focused monitor changes
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
+# Move each window to where it belongs
+[[on-window-detected]]
+if.app-id = 'com.github.wez.wezterm'
+run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+if.app-id = 'org.mozilla.firefox'
+run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+run = 'move-node-to-workspace 4'
+
+[[on-window-detected]]
+if.app-id = 'com.spotify.client'
+run = 'move-node-to-workspace 5'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.ActivityMonitor'
+run = 'move-node-to-workspace 5'
+
 [gaps]
   inner.horizontal = 10
   inner.vertical = 10
@@ -22,21 +46,13 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
   outer.bottom = 5
   outer.right = 10
   outer.top = [
+    { monitor."27E1N1600AE" = 40 }, # 2k monitor at home
     { monitor."LG HDR 4K" = 40 }, # 4k monitor at work
     { monitor."Sidecar Display" = 40 }, # iPad display
-    { monitor."27E1N1600AE" = 40 }, # iPad display
     5,
   ]
 
 [mode.main.binding]
-  # See: https://nikitabobko.github.io/AeroSpace/goodies#open-a-new-window-with-applescript
-  alt-enter = '''exec-and-forget osascript -e '
-  tell application "Terminal"
-      do script
-      activate
-  end tell'
-  '''
-
   # Window controls; i3 wraps focus by default
   alt-h = 'focus --boundaries-action wrap-around-the-workspace left'
   alt-j = 'focus --boundaries-action wrap-around-the-workspace down'
@@ -63,15 +79,15 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
   # Some toggles and i3-inspired toggles 
   alt-f = 'fullscreen'
   alt-r = 'mode resize'
-  alt-e = 'layout tiles horizontal vertical' # 'layout toggle split' in i3
+  alt-p = 'layout tiles horizontal vertical' # 'layout toggle split' in i3
   alt-shift-space = 'layout floating tiling' # 'floating toggle' in i3
-  # alt-s = 'layout v_accordion' # 'layout stacking' in i3
-  # alt-w = 'layout h_accordion' # 'layout tabbed' in i3
+  # alt-i = 'layout v_accordion' # 'layout stacking' in i3
+  # alt-u = 'layout h_accordion' # 'layout tabbed' in i3
 
 [mode.resize.binding]
-    h = 'resize width +50'
-    j = 'resize height -50'
-    k = 'resize height +50'
-    l = 'resize width -50'
-    enter = 'mode main'
-    esc = 'mode main'
+  h = 'resize width +50'
+  j = 'resize height -50'
+  k = 'resize height +50'
+  l = 'resize width -50'
+  enter = 'mode main'
+  esc = 'mode main'
