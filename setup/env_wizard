@@ -191,7 +191,7 @@ function setup_bitwarden {
   # you will see "Not found" and the script will break.
   # Catch the error after every bw call, or use fzf to get the right values.
   #if [ $? -gt 0 ]; then
-    #clear_prompt_line
+  #clear_prompt_line
   #fi
 
   GITHUB_USERNAME="$(echo $bitwarden_data | jq -r '.fields[] | select(.name == "Public username").value')"
@@ -265,7 +265,7 @@ function write_env_files {
   [ -f "$HOME/.ssh/id_rsa.pub" ] && export GITHUB_SIGNING_KEY="$HOME/.ssh/id_rsa.pub"
 
   # So every variable we need is exported before we write the config.env file.
-  source "$DOTFILES_CONFIG_HOME/env"
+  eval "$(source_env)"
   content=$(envsubst <"$DOTFILES_REPO_HOME/setup/gitconfig.env.template")
   echo "$content" >"$XDG_CONFIG_HOME/git/config.env"
 

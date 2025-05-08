@@ -23,9 +23,10 @@
 # As an afterthought; Yes, I'm aware of tmuxinator and yes, I've tried it.
 # I don't know, I still like a simple bash script better.
 set -e
+eval "$(source_env)"
 
 me="bin/tmux/$(basename "$0")"
-namespace=${REPO_NAMESPACE:-"$HOME/Sites"}
+namespace=${REPO_NAMESPACE:-"$HOME/Repositories"}
 lockfile=/tmp/mix-done.lock
 
 # An elegant exit with a fuzzy search to select the namespace to exit.
