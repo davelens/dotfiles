@@ -10,22 +10,22 @@
 # with my Up/Down key bindings history-search-{back,for}ward.
 set history-preserve-point on
 
-# Autocompletion
+# Completion
 # -----------------------------------------------------------------------------
-# Make Tab autocompletion case-insensitive (cd ~/dow<Tab> => cd ~/Downloads/).
+# Make Tab completion case-insensitive (cd ~/dow<Tab> => cd ~/Downloads/).
 set completion-ignore-case On
 
-# When autocompleting symlinks to directories, immediately add a trailing "/".
+# When completing symlinks to directories, immediately add a trailing "/".
 set mark-symlinked-directories on
 
-# Flip through autocompletion matches with Shift-Tab.
+# Flip through completion matches with Shift-Tab.
 "\e[Z": menu-complete
 
-# Do not autocomplete hidden files ("dot files") unless the pattern explicitly
+# Do not complete hidden files ("dot files") unless the pattern explicitly
 # begins with a dot.
 set match-hidden-files off
 
-# Show all autocomplete results at once.
+# Show all complete results at once.
 set page-completions off
 
 # If there are more than 200 possible completions for a word, ask to show them
@@ -38,9 +38,9 @@ set show-all-if-ambiguous on
 # Show extra file information when completing, like ls -F does.
 set visible-stats on
 
-# Be more intelligent when autocompleting by also looking at the text after
+# Be more intelligent when completing by also looking at the text after
 # the cursor. For example, when the current line is "cd ~/src/mozil", and
-# the cursor is on the "z", pressing Tab will not autocomplete it to "cd
+# the cursor is on the "z", pressing Tab will not complete it to "cd
 # ~/src/mozillail", but to "cd ~/src/mozilla". (This is supported by the
 # Readline used by Bash 4.)
 set skip-completed-text on

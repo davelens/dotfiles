@@ -4,12 +4,12 @@ _utility_completions() {
   local input subcommand subcommand_completion_path subfolders scripts
   input="${COMP_WORDS[COMP_CWORD]}"
   subcommand="${COMP_WORDS[1]}"
-  subcommand_completion_path="$DOTFILES_REPO_HOME/bash/env/autocompletions/${subcommand}_${COMP_WORDS[2]}"
+  subcommand_completion_path="$DOTFILES_REPO_HOME/bash/env/completions/${subcommand}_${COMP_WORDS[2]}"
 
   # Define the root directory for the scripts
   local utilities_root="$DOTFILES_REPO_HOME/bin/utilities"
 
-  # We autoload all bash/env/autocompletions/*.bash files, so don't add the .bash
+  # We autoload all bash/env/completions/*.bash files, so don't add the .bash
   # extension to specific subcommands' completion files.
   if [ -f "$subcommand_completion_path" ]; then
     # NOTE: Because we source the scripts here rather than having them as

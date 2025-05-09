@@ -31,7 +31,7 @@ You can call custom bash scripts using the `utility` command, which is also alia
 ```bash
 Usage: utility <category> <command> [<args>...]
 ```
-It comes with autocompletion on both category and command to help you find what you're looking for.
+It comes with completion on both category and command to help you find what you're looking for.
 
 ### Linking your own homebrew scripts
 You can symlink a directory with some of your personal scripts into `bin/utilities/`, and `utility` will pick them up automagically.

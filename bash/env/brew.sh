@@ -17,7 +17,7 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 [[ -f /usr/bin/brew ]] && BREW_PATH=$(/usr/bin/brew --prefix)
 export BREW_PATH
 
-# If HOMEBREW_REPOSITORY isn't set properly, brew's bash autocompletion won't
+# If HOMEBREW_REPOSITORY isn't set properly, brew's bash completion won't
 # work properly [GH issue](https://github.com/orgs/Homebrew/discussions/4227).
 #
 # I leave out the PATH override though. Homebrew wants its shims to be at the

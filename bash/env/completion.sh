@@ -1,5 +1,5 @@
 ########################################################################
-# Env settings and configuration related to bash's autocompletion.
+# Env settings and configuration related to bash's completion.
 ########################################################################
 
 # Set up fzf key bindings and fuzzy completion
@@ -20,7 +20,7 @@ if command -v brew >/dev/null; then
 fi
 
 # Source all downloaded completion files.
-for file in "$DOTFILES_REPO_HOME"/bash/env/autocompletions/*.bash; do
+for file in "$DOTFILES_REPO_HOME"/bash/env/completions/*.bash; do
   [ -r "$file" ] && source "$file"
 done
 unset file
