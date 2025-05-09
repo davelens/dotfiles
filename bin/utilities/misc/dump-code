@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Useful to feed file structures to one of my local AI models.
+
+if [ -z "$1" ]; then
+  if [ -d 'lib' ]; then
+    set -- "./lib"
+  else
+    set -- "."
+  fi
+fi
+
+find "$1" -type f -name "*" -exec sh -c 'echo "=== $1 ==="; cat "$1"; echo ""' _ {} \;
