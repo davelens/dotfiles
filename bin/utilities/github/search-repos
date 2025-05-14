@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -e
+eval "$(source_env)"
 
 # Gracefully handle Ctrl-C to get out of this thing.
 handle_interrupt() {
