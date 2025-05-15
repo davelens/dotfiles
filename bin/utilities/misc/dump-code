@@ -4,10 +4,10 @@
 
 if [ -z "$1" ]; then
   if [ -d 'lib' ]; then
-    set -- "./lib"
+    set -- "lib"
   else
     set -- "."
   fi
 fi
 
-find "$1" -type f -name "*" -exec sh -c 'echo "=== $1 ==="; cat "$1"; echo ""' _ {} \;
+find "$1" -type f -name "*" -exec sh -c 'echo -en "---\n# File: $1\n"; cat "$1"; echo ""' _ {} \;
