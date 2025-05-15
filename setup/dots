@@ -89,22 +89,22 @@ main() {
   [ $# -eq 0 ] && usage
 
   case "$1" in
-    -h | --help)
-      usage
-      ;;
-    logs)
-      logs
-      ;;
-    install)
-      install
-      ;;
-    update)
-      update
-      ;;
-    *)
-      echo "Unknown command: $1"
-      usage
-      ;;
+  -h | --help)
+    usage
+    ;;
+  logs)
+    logs
+    ;;
+  install)
+    install
+    ;;
+  update)
+    update
+    ;;
+  *)
+    echo "Unknown command: $1"
+    usage
+    ;;
   esac
 }
 
