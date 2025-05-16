@@ -31,7 +31,7 @@ fi
 
 usage() {
   echo
-  echo "Usage: utility github $(basename $0) <qualifier>"
+  echo "Usage: utility github $(basename "$0") <qualifier>"
   echo
   echo "Options:"
   echo "  -h|--help            Show this help message and exit."
@@ -71,20 +71,16 @@ while [[ $# -gt 0 ]]; do
 done
 
 # No query, no results.
-[[ -z $query ]] && usage && exit 1
-
-# Sanitize the query for use in the Github API call.
-# Only spaces are a problem, for now.
-query=$(echo "${query// /+}")
+[ -z "$query" ] && usage && exit 1
 
 # Recursively search for repositories.
 search() {
-  local url="https://api.github.com/search/repositories?q=$query&per_page=100&page=$page"
+  local url="https://api.github.com/search/repositories?q=${query// /+}&per_page=100&page=$page"
 
   # Print out the requests if verbal mode is enabled.
   $verbal && echo "GET $url"
 
-  local repositories=($(curl -s --header "Authorization: token $GITHUB_PERSONAL_ACCESS_TOKEN" --url "$url" | jq -r 'try .items[] .full_name'))
+  local repositories=("$(curl -s --header "Authorization: token $GITHUB_PERSONAL_ACCESS_TOKEN" --url "$url" | jq -r 'try .items[] .full_name')")
 
   results=("${results[@]}" "${repositories[@]}")
 
