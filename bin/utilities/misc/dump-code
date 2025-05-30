@@ -10,4 +10,4 @@ if [ -z "$1" ]; then
   fi
 fi
 
-find "$1" -type f -name "*" -exec bash -c 'echo -en "---\n# File: $1\n"; cat "$1"; echo ""' _ {} \;
+find "$1" -type f -name "*" -exec bash -c 'file=${1/\/\//\/};echo -en "---\n# File: $file\n"; cat "$file"; echo ""' _ {} \;
