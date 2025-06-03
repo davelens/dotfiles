@@ -115,7 +115,7 @@ function phoenix_windows {
 # Dots aren't allowed in tmux pane names.
 set -- "${1/./_}"
 
-tmux attach -t "$1" >/dev/null 2>&1 || (
+tmux attach -t "=$1" >/dev/null 2>&1 || (
   tmux new-session -s "$1" -n editor -c "$destination" -d
   tmux send-keys -t "$1" "eval '$(source_env)'; clear && $EDITOR" C-m
 
