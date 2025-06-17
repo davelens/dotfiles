@@ -2,6 +2,10 @@
 # shellcheck disable=SC2154
 set -e
 
+# TODO
+# - [ ] Header indicating we're in a "special conflict edit"-mode.
+# - [ ] Keymap to go to next diff in file (`/====`)
+# - [ ] Keymap to "save and go to next buffer" (`!git add % | bd`)
 main() {
   mapfile -t files < <(git st | grep UU | awk '{ print $2 }')
 
