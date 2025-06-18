@@ -9,12 +9,25 @@ set -e
 main() {
   mapfile -t files < <(git st | grep UU | awk '{ print $2 }')
 
-  if [[ ${#files[@]} -eq 0 ]]; then
+  if [ ${#files[@]} -eq 0 ]; then
     $print_status -i ok "No conflicts to resolve."
     exit 0
   fi
 
-  $EDITOR "${files[@]}"
+  if [[ "$EDITOR" == *vim* ]]; then
+    winbar='Press "q" to stop and exit or "s" to save and move on to the next diff'
+
+    $EDITOR \
+      -c 'highlight WinBarMsg guifg=#ffcc00 guibg=#44475a gui=bold' \
+      -c "lua vim.o.winbar = '%#WinBarMsg#$winbar'" \
+      -c 'nnoremap q :q!<CR>' \
+      -c 'nnoremap s :execute "!git add %" | bd' \
+      -c 'nnoremap <C-n> /^====<CR>' \
+      -c 'nnoremap <C-p> ?^====<CR>' \
+      + "${files[@]}"
+  else
+    $EDITOR "${files[@]}"
+  fi
 }
 
 main "$@"
