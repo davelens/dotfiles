@@ -21,7 +21,7 @@ main() {
       -c 'highlight WinBarMsg guifg=#ffcc00 guibg=#44475a gui=bold' \
       -c "lua vim.o.winbar = '%#WinBarMsg#$winbar'" \
       -c 'nnoremap q :q!<CR>' \
-      -c 'nnoremap s :execute "!git add %" | bd' \
+      -c 'nnoremap s :execute "!git add %" \| bd<CR>' \
       -c 'nnoremap <C-n> /^====<CR>' \
       -c 'nnoremap <C-p> ?^====<CR>' \
       + "${files[@]}"
