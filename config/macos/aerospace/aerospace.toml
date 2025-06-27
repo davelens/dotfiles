@@ -47,7 +47,7 @@ run = 'move-node-to-workspace 5'
   outer.right = 10
   outer.top = [
     { monitor."27E1N1600AE" = 40 }, # 2k monitor at home
-    { monitor."LG HDR 4K" = 40 }, # 4k monitor at work
+    { monitor."LG UltraFine" = 40 }, # 4k monitor at work
     { monitor."Sidecar Display" = 40 }, # iPad display
     5,
   ]
