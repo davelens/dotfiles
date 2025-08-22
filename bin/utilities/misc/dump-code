@@ -10,4 +10,11 @@ if [ -z "$1" ]; then
   fi
 fi
 
-find "$1" -type f -name "*" -exec bash -c 'file=${1/\/\//\/};echo -en "---\n# File: $file\n"; cat "$file"; echo ""' _ {} \;
+find "$1" \
+  -type d \( -name .git -o -name node_modules -o -name tmp \) -prune -false -o \
+  -type f -exec bash -c '
+    file=${1//\/\//\/}
+    echo -en "---\n# File: $file\n"
+    cat "$file"
+    echo ""
+  ' _ {} \;
