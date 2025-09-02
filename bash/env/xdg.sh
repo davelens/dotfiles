@@ -61,6 +61,7 @@ export NETHACKOPTIONS="$XDG_CONFIG_HOME/nethackrc"
 export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export REDISCLI_HISTFILE="$XDG_DATA_HOME/redis/rediscli_history"
+export WATSON_DIR="$XDG_CONFIG_HOME/watson"
 export WGETRC="$XDG_CONFIG_HOME/wgetrc"
 
 # NixOS-specific XDG settings
