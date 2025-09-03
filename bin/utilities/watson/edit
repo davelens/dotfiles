@@ -3,12 +3,26 @@ set -e
 
 [[ ! $(which watson) ]] && fail "ERROR: Watson is not installed. Aborting."
 
-if [ $(os) == 'macos' ]; then
-  frames_file="$HOME/Library/Application Support/watson/frames"
-else
-  frames_file="$HOME/.config/watson/frames"
-fi
+__watson_dir() {
+  if [ -d "$WATSON_DIR" ]; then
+    echo -n "$WATSON_DIR" && return
+  fi
 
-[[ ! -f $frames_file ]] && fail "ERROR: Watson frames file not found. Aborting."
+  if [ -d "$XDG_CONFIG_HOME" ]; then
+    echo -n "$XDG_CONFIG_HOME/watson" && return
+  fi
 
-$EDITOR "$frames_file"
+  if [ -d "$HOME/Library/Application Support/watson" ]; then
+    echo -n "$HOME/Library/Application Support/watson" && return
+  fi
+
+  local fallback="$HOME/.config/watson"
+  [ ! -d "$fallback" ] && mkdir -p "$fallback"
+  echo "$fallback"
+}
+
+frames="$(__watson_dir)/frames"
+[ ! -f "$frames" ] && touch "$frames"
+
+$EDITOR "$frames"
+unset frames
