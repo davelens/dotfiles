@@ -5,7 +5,7 @@
 # NOTE: Category entries should always be at the bottom of the file.
 
 # Disable the additional linebreak that separates the output from a prompt.
-add_newline = false
+#add_newline = false
 
 # Separators:    
 format = """
