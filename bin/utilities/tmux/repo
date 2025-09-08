@@ -69,9 +69,9 @@ function rails_windows {
   fi
 
   tmux send-keys -t "$1":server "eval '$(source_env)'" C-m
-  tmux send-keys -t "$1":server 'bin/rails db:environment:set RAILS_ENV=test' C-m
-  tmux send-keys -t "$1":server 'bin/spring server 2>&1 >/dev/null &' C-m
-  tmux send-keys -t "$1":repl "eval '$(source_env)'; sleep 2 && clear && bin/rails c" C-m
+  tmux send-keys -t "$1":server 'bin/spring rails db:environment:set RAILS_ENV=test' C-m
+  tmux send-keys -t "$1":server 'bin/spring rails s' C-m
+  tmux send-keys -t "$1":repl "eval '$(source_env)'; sleep 2 && clear && bin/spring rails c" C-m
 
   case $server in
   [Yy]*) tmux send-keys -t "$1":server 'clear && bin/rails s' C-m ;;
