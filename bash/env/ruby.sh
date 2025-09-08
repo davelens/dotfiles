@@ -45,3 +45,6 @@ export BUNDLE_DISABLE_SHARED_GEMS=1
 
 # Fix annoying Spring forking errors on Apple silicon.
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+# So fresh terminal windows hook spring logs into the project's log folder.
+export SPRING_LOG="$PWD/log/spring.log"
