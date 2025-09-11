@@ -21,13 +21,18 @@
 #
 paths_to_add=(
   "${ASDF_DATA_DIR:-$XDG_DATA_HOME/asdf}"/shims # Always prefer asdf shims
-  "$BREW_PATH"/{,s}bin                  # unbound in sbin/, most Homebrew binaries in bin/
-  "$BREW_PATH"/opt/mysql@8.4/bin        # Brew wants you to use `brew services`, but I want direct access
-  "$XDG_BIN_HOME"                       # User-made and controlled binaries
-  /usr/local/{,s}bin                    # Docker, npm, Private Internet Access,...
-  /usr/{,s}bin                          # User specific system binaries. A *lot* of them.
-  /{,s}bin                              # *nix shells and binaries, and basic commands like ls, cp, echo,...
+  "$XDG_BIN_HOME"                               # User-made and controlled binaries
+  /usr/local/{,s}bin                            # Docker, npm, Private Internet Access,...
+  /usr/{,s}bin                                  # User specific system binaries. A *lot* of them.
+  /{,s}bin                                      # *nix shells and binaries, and basic commands like ls, cp, echo,...
 )
+
+if [ -n "$BREW_PATH" ]; then
+  paths_to_add+=(
+    "$BREW_PATH"/{,s}bin           # unbound in sbin/, most Homebrew binaries in bin/
+    "$BREW_PATH"/opt/mysql@8.4/bin # Brew wants you to use `brew services`, but I want direct access
+  )
+fi
 
 if [ "$("$XDG_BIN_HOME/os")" == "windows" ] >/dev/null; then
   paths_to_add+=(
@@ -36,6 +41,8 @@ if [ "$("$XDG_BIN_HOME/os")" == "windows" ] >/dev/null; then
     /mnt/c/Windows/SysWOW64
   )
 fi
+
+[ -d $HOME/.cargo ] && paths_to_add+=("$HOME"/.cargo/bin)
 
 # Now implode everything into the new PATH variable.
 printf -v PATH "%s:" "${paths_to_add[@]}"
