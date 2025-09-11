@@ -42,46 +42,46 @@ usage() {
 
 ###############################################################################
 
-function _box_color {
+_box_color() {
   echo -n "$(colorize "$BOX_HIGHLIGHT" "$1")"
 }
 
 # ┌┬┐ ╭┬╮
 # shellcheck disable=SC2120
-function _box_top {
+_box_top() {
   echo -n "$(_box_margin)$(_box_color ╭)" &&
     printf "%.s$(_box_color ─)" $(seq 1 "${1:-$((BOX_WIDTH - 2))}") &&
     printf "%s\n" "$(_box_color ╮)"
 }
 
-function _box_line {
+_box_line() {
   printf "%.s${2:-$(_box_color ─)}" $(seq 1 "${1:-$((BOX_WIDTH - 2))}")
 }
 
 # Like a horizontal line within a box.
-function _box_separator {
+_box_separator() {
   printf "%s\n" "$(_box_margin)$(_box_color ├)$(_box_line $((BOX_WIDTH - 2)))$(_box_color ┤)"
 }
 
 # shellcheck disable=SC2120
-function _box_print {
+_box_print() {
   printf "$(_box_margin)$(_box_color │) %-$((BOX_WIDTH - 4))s $(_box_color │)\n" "$1"
 }
 
 # ╰┴╯└┴┘
 # shellcheck disable=SC2120
-function _box_bottom {
+_box_bottom() {
   echo -n "$(_box_margin)$(_box_color ╰)" &&
     printf "%.s$(_box_color ─)" $(seq 1 "${1:-$((BOX_WIDTH - 2))}") &&
     printf "%s\n" "$(_box_color ╯)"
 }
 
 # shellcheck disable=SC2154
-function _box_border_right {
+_box_border_right() {
   $cursor move-start move-up col:$((BOX_WIDTH + 1)) print:"$(_box_color │)"\\n
 }
 
-function _box_margin {
+_box_margin() {
   if [[ $center -eq 1 ]]; then
     BOX_MARGIN=$(($(($(tput cols) - BOX_WIDTH)) / 2))
   elif [[ $BOX_MARGIN -eq 0 ]]; then
@@ -112,7 +112,7 @@ fi
 
 ###############################################################################
 
-function box {
+box() {
   # TODO: Implement some kind of word wrapping.
   #[[ ${#value} -gt $BOX_WIDTH ]] && wrap_lines
   _box_top
@@ -124,7 +124,7 @@ function box {
 
 ###############################################################################
 
-function main {
+main() {
   is_sourced && return
 
   local value command center=0

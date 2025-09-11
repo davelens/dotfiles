@@ -25,7 +25,7 @@ usage() {
 
 MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_HOME/tmp/$name.XXXXXX")
 
-function call_openssl {
+call_openssl() {
   local string="openssl aes-256-cbc -d -pbkdf2"
 
   if [[ -z "$passkey" ]]; then
@@ -39,7 +39,7 @@ function call_openssl {
   cmd "$string"
 }
 
-function main {
+main() {
   # Fail early if no arguments are given.
   [[ $# -eq 0 ]] && usage && exit 0
 

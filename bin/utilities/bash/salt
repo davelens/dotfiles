@@ -19,7 +19,7 @@ usage() {
 
 #############################################################################
 
-function reset {
+reset() {
   $print_status "Resetting salt and all encrypted files ..."
   rm -f "$DOTFILES_STATE_HOME"/*.enc
   $cursor move-up move-start
@@ -28,7 +28,7 @@ function reset {
   echo
 }
 
-function generate {
+generate() {
   local looping passkey pass_confirmation icon
   looping=0
   icon="$(pending)"
@@ -77,7 +77,7 @@ function generate {
   fi
 }
 
-function decrypt_salt {
+decrypt_salt() {
   local passkey icon
   [[ -n $1 ]] && passkey="$1"
 
@@ -94,7 +94,7 @@ function decrypt_salt {
   fi
 }
 
-function current {
+current() {
   local salt
 
   if [[ -f "$DOTFILES_SALT_PATH" ]]; then
@@ -113,7 +113,7 @@ function current {
 
 #############################################################################
 
-function main {
+main() {
   # Fail early if no arguments are given.
   [[ $# -eq 0 ]] && usage && exit 0
 

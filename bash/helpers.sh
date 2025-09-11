@@ -5,11 +5,11 @@ if declare -F "fn_exists" >/dev/null; then
   return 0
 fi
 
-function fn_exists {
+fn_exists() {
   declare -F "$1" >/dev/null
 }
 
-function block_unless_sourced {
+block_unless_sourced() {
   if is_sourced; then
     echo "$(cross) This script is meant to be sourced, not executed directly." >&2
     return 1
@@ -18,21 +18,21 @@ function block_unless_sourced {
   return 0
 }
 
-function check {
+check() {
   [ -z "$1" ] && set -- 255
   echo "$(colorize "$1" "[")$(green ✓)$(colorize "$1" "]")"
 }
 
-function cross {
+cross() {
   [ -z "$1" ] && set -- 255
   echo "$(colorize "$1" "[")$(red x)$(colorize "$1" "]")"
 }
 
-function colorize {
+colorize() {
   echo "$(tput setaf "$1")$2$(tput sgr0)"
 }
 
-function ensure_brew_dependency {
+ensure_brew_dependency() {
   for package in "$@"; do
     local name=${package%:*}    # Extract the package name before ":"
     local command=${package#*:} # Extract optional command name after ":"
@@ -53,7 +53,7 @@ function ensure_brew_dependency {
 }
 
 # To help us centralize how errors look throughout our scripts.
-function error_handler {
+error_handler() {
   echo "$(cross) An error occurred. Check the log file for details: $DOTFILES_STATE_HOME/dots.log"
 
   if ! is_sourced; then
@@ -63,7 +63,7 @@ function error_handler {
 
 # Exports all ENV vars listed in a file.
 # Loads $DOTFILES_CONFIG_HOME/env by default.
-function source_env {
+source_env() {
   local env_file
 
   if [ -z "$1" ]; then
@@ -75,27 +75,27 @@ function source_env {
 }
 
 # Helps us hard stop our custom executables during fails.
-function fail {
+fail() {
   printf "%s\n" "$1" >&2 # Sends a message to stderr.
   exit "${2-1}"          # Returns a code specified by $2 or 1 by default.
 }
 
-function green {
+green() {
   colorize 2 "$1"
 }
 
-function interrupt_handler {
+interrupt_handler() {
   print_status -i error "Aborted."
   exit 1
 }
 
-function is_sourced {
+is_sourced() {
   local script="${BASH_SOURCE[1]}"
   [[ "$script" != "" && "$script" != "$0" ]]
 }
 
 # Join an array by a given delimiter string
-function join_by() {
+join_by() {
   local d f
   d="${1-}" f="${2-}"
 
@@ -104,7 +104,7 @@ function join_by() {
   fi
 }
 
-function pending {
+pending() {
   [ -z "$1" ] && set -- 255
   echo "$(colorize "$1" "[")$(yellow \~)$(colorize "$1" "]")"
 }
@@ -114,11 +114,11 @@ function pending {
 #   pid '/d$/'
 #
 # Would find pids of all processes with names ending in 'd'
-function pid {
+pid() {
   lsof -t -c "$@"
 }
 
-function red {
+red() {
   colorize 1 "$1"
 }
 
@@ -126,7 +126,7 @@ function red {
 #
 #   repeat-do 4 echo lol
 #
-function repeat {
+repeat() {
   local times commands arguments
 
   case $1 in
@@ -150,18 +150,18 @@ function repeat {
   fi
 }
 
-function succeed {
+succeed() {
   echo "$1" # Sends a message to stderr.
   exit 0
 }
 
 # Because we all want to know how many times we actually typed "gti" instead
 # of "git".
-function timesused {
+timesused() {
   [ -f "$HISTFILE" ] && grep -c "^$1" "$HISTFILE"
 }
 
-function yellow {
+yellow() {
   colorize 3 "$1"
 }
 

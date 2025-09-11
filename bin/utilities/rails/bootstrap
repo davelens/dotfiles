@@ -6,7 +6,7 @@ set -e
 [[ ! -f $1/config.ru ]] && fail '[rails/bootstrap] ERROR: You can only run this from a folder containing a Rails project.'
 [[ ! $(command -v asdf) ]] && fail '[rails/bootstrap] ERROR: No asdf executable found. Check your $PATH or install asdf with `brew install asdf`.'
 
-function copy_config {
+copy_config() {
   src=$project_root/$1$2
   dest=$project_root/$1.yml
 
@@ -23,7 +23,7 @@ function copy_config {
   done
 }
 
-function check_and_copy {
+check_and_copy() {
   [[ -f $project_root/$1.yml ]] && return
   [[ -f $project_root/$1.yml.dist ]] && copy_config $1 .yml.dist
   [[ -f $project_root/$1.dist.yml ]] && copy_config $1 .dist.yml

@@ -38,7 +38,7 @@ print_status() {
 }
 #############################################################################
 
-function intro {
+intro() {
   _box_top
   _box_print
   _box_print "This script will prime your terminal to use my dotfiles."
@@ -47,7 +47,7 @@ function intro {
   _box_print
 }
 
-function setup_encryption_intro {
+setup_encryption_intro() {
   _box_print
   _box_separator
   _box_print
@@ -57,7 +57,7 @@ function setup_encryption_intro {
   _box_print
 }
 
-function setup_secrets_management_intro {
+setup_secrets_management_intro() {
   _box_separator
   _box_print
   _box_print "SECRETS MANAGEMENT                                               (part 2/4)"
@@ -68,7 +68,7 @@ function setup_secrets_management_intro {
   _box_print
 }
 
-function setup_environment_variables_intro {
+setup_environment_variables_intro() {
   _box_separator
   _box_print
   _box_print "ENVIRONMENT VARIABLES                                            (part 3/4)"
@@ -77,7 +77,7 @@ function setup_environment_variables_intro {
   _box_print
 }
 
-function finishing_up_intro {
+finishing_up_intro() {
   _box_separator
   _box_print
   _box_print "STATUS (TODO)                                                    (part 4/4)"
@@ -87,7 +87,7 @@ function finishing_up_intro {
   _box_print
 }
 
-function bitwarden_intro {
+bitwarden_intro() {
   _box_print
   _box_print "My various secrets and API keys are stored in Bitwarden."
   _box_print "I built in support to retrieve and use them in these dotfiles."
@@ -95,7 +95,7 @@ function bitwarden_intro {
   _box_print
 }
 
-function bitwarden_data_intro {
+bitwarden_data_intro() {
   _box_print
   _box_print "You need the following two items ready in Bitwarden:"
   _box_print
@@ -108,7 +108,7 @@ function bitwarden_data_intro {
   _box_print
 }
 
-function setup_encryption {
+setup_encryption() {
   setup_encryption_intro
   if [ -z "$DOTFILES_SALT" ]; then
     setup_salt
@@ -118,7 +118,7 @@ function setup_encryption {
   fi
 }
 
-function setup_salt {
+setup_salt() {
   local looping icon passkey salt_value
   looping=${1:-0}
   icon="$(pending $BOX_HIGHLIGHT)"
@@ -143,7 +143,7 @@ function setup_salt {
   return
 }
 
-function setup_secrets_management {
+setup_secrets_management() {
   setup_secrets_management_intro
 
   bitwarden_prompt="$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -yn "Would you like to use Bitwarden to retrieve your secrets?")"
@@ -156,7 +156,7 @@ function setup_secrets_management {
   fi
 }
 
-function setup_bitwarden {
+setup_bitwarden() {
   print_status -n "Unlocking vault(s) ... "
 
   BW_SESSION="$($bitwarden unlock)"
@@ -199,7 +199,7 @@ function setup_bitwarden {
   print_status -i ok "Vault data prepared."
 }
 
-function setup_env {
+setup_env() {
   setup_environment_variables_intro
 
   if [ -f $env_file ]; then
@@ -213,13 +213,13 @@ function setup_env {
   #GITHUB_EMAIL=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "$GITHUB_EMAIL" "Enter the e-mail address you log into Github with: ")
 }
 
-function setup_finish {
+setup_finish() {
   finishing_up_intro
   # TODO: Overview of all actions. Will probably have to have a central array
   # so I can just loop that and print messages.
 }
 
-function env_data_wizard {
+env_data_wizard() {
   _box_print
 
   REPO_NAMESPACE=$($prompt_user -i "$(pending $BOX_HIGHLIGHT) " -d "${REPO_NAMESPACE:-$HOME/Repositories}" "Where do you keep your local Git(hub) repos? ")
@@ -250,7 +250,7 @@ function env_data_wizard {
   fi
 }
 
-function write_env_files {
+write_env_files() {
   # TODO: I think I might've broken macos support here, so double check!
   declare -p \
     OWNER_NAME \
@@ -276,7 +276,7 @@ function write_env_files {
   fi
 }
 
-function main {
+main() {
   intro
 
   local using_bitwarden=0

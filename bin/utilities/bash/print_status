@@ -26,7 +26,7 @@ usage() {
 
 #############################################################################
 
-function icon {
+icon() {
   case "$icon" in
   pending) symbol="$(pending "$color")" ;;
   ok) symbol="$(check "$color")" ;;
@@ -37,11 +37,11 @@ function icon {
   echo "$symbol"
 }
 
-function newline {
+newline() {
   [ $newline -eq 1 ] && echo
 }
 
-function main {
+main() {
   # Fail early if no arguments are given.
   [ $# -eq 0 ] && usage && exit 0
 

@@ -45,7 +45,7 @@ prepare() {
 
 #############################################################################
 
-function unlock {
+unlock() {
   if [[ ! -f "$mp_file" ]]; then
     $encrypt \
       -i $($prompt_user -m "$(pending) Enter your Bitwarden master password: ") \
@@ -55,7 +55,7 @@ function unlock {
   echo $(echo "$(mp)" | bw unlock --raw 2>/dev/null)
 }
 
-function cache-items {
+cache-items() {
   local ITEMS
   $print_status "Loading items from vault(s) ... "
 
@@ -73,7 +73,7 @@ function cache-items {
   $print_status -i ok "Items loaded from vault(s)."
 }
 
-function items {
+items() {
   tmp=$(prepare)
 
   # You need to pass the jq queries for $item_id and $item here in order to
@@ -96,7 +96,7 @@ function items {
       '
 }
 
-function identities {
+identities() {
   tmp=$(prepare)
 
   # You need to pass the jq queries for $item_id and $item here in order to
@@ -108,14 +108,14 @@ function identities {
       --prompt="${prompt:-$name} -> "
 }
 
-function clear-cache {
+clear-cache() {
   rm -f $ITEMS_CACHE_FILE.enc
   $print_status -i ok "Items cache cleared."
 }
 
 #############################################################################
 
-function main {
+main() {
   ensure_brew_dependency "fzf"
 
   local ITEMS_CACHE_FILE=$(items_cache_file)

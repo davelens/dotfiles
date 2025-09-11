@@ -2,7 +2,7 @@
 # shellcheck disable=SC2120,SC2317 # Unreachable commands are fiiine
 set -e
 
-function cleanup {
+cleanup() {
   for helper in $(helpers); do
     file="$DOTFILES_STATE_HOME/tmp/${helper##*/}"
     [ -f "$file" ] && rm -rf "$file"
@@ -38,7 +38,7 @@ get_cursor_pos() {
   echo "$row;$col"
 }
 
-function save_cursor {
+save_cursor() {
   IFS=';' read -r CURSOR_POS <<<"$(get_cursor_pos)"
   if [ "$CURSOR_POS" == "$(tput lines);1" ]; then
     CURSOR_POS="1;1"
@@ -46,20 +46,20 @@ function save_cursor {
   export CURSOR_POS
 }
 
-function restore_cursor { printf "\033[%sH" "$CURSOR_POS"; }
-function clear_down { printf "\033[0J"; }
-function reset_prompt { restore_cursor && clear_down; }
-function wind_down { cleanup && reset_prompt; }
-function fail {
+restore_cursor() { printf "\033[%sH" "$CURSOR_POS"; }
+clear_down() { printf "\033[0J"; }
+reset_prompt() { restore_cursor && clear_down; }
+wind_down() { cleanup && reset_prompt; }
+fail() {
   echo -e "\n$1" >&2
   exit "${2-1}"
 }
-function interrupt_handler { wind_down && fail "Aborted."; }
-# function print_status { $print_status -hl "$BOX_HIGHLIGHT" "$@"; _box_border_right; }
-function green { echo "$BGG$FGK$1$CNONE"; }
-function blue { echo "$BGB$FGK$1$CNONE"; }
+interrupt_handler() { wind_down && fail "Aborted."; }
+# print_status() { $print_status -hl "$BOX_HIGHLIGHT" "$@"; _box_border_right; }
+green() { echo "$BGG$FGK$1$CNONE"; }
+blue() { echo "$BGB$FGK$1$CNONE"; }
 
-function helpers {
+helpers() {
   local prefix helpers=()
   prefix="https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master"
   helpers+=("$prefix/bash/colors.sh")
@@ -67,7 +67,7 @@ function helpers {
   echo "${helpers[@]}"
 }
 
-function prepare {
+prepare() {
   [ ! -d "$DOTFILES_STATE_HOME/tmp" ] && mkdir -p "$DOTFILES_STATE_HOME/tmp"
   [ ! -d "$DOTFILES_CONFIG_HOME" ] && mkdir -p "$DOTFILES_CONFIG_HOME"
 
@@ -113,11 +113,11 @@ function prepare {
   done
 }
 
-function repo_home {
+repo_home() {
   echo "~${DOTFILES_REPO_HOME/$HOME/}"
 }
 
-function ask_for_repo_home {
+ask_for_repo_home() {
   local repo_home
   repo_home="$DOTFILES_CONFIG_HOME/"
 
@@ -162,7 +162,7 @@ function ask_for_repo_home {
   echo
 }
 
-function download_dotfiles {
+download_dotfiles() {
   if [ -d "$DOTFILES_REPO_HOME/.git" ]; then
     echo "Looks like you already have my dotfiles there!"
     echo -e "I'll just update them for you, and move on.\n"
@@ -190,7 +190,7 @@ function download_dotfiles {
   # "$DOTFILES_STATE_HOME/tmp/dotfiles-master/setup/install"
 }
 
-function main {
+main() {
   local prompt input
   local DOTFILES_FOLDER DOTFILES_STATE_HOME DOTFILES_CONFIG_HOME CURSOR_POS
   DOTFILES_FOLDER="dots"

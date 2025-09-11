@@ -12,7 +12,7 @@
 #
 # I did land on whatis since `u bash wh<TAB>` is easier than `u bash wt<Tab>`.
 
-function main {
+main() {
   local cmd type i=1 ret=0
   if [ $# -eq 0 ]; then
     # Use "fc" to get the last command, and use that when no command

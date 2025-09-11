@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Flattens any string you give it. Made to format user input like Y/N -> y/n.
-function usage {
+usage() {
   echo
   echo "Usage: $(basename $0) [-h|--help] <text>"
   echo
@@ -12,16 +12,16 @@ function usage {
 
 text=""
 
-function main {
+main() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -h | --help)
-        usage
-        ;;
-      *)
-        text="$*"
-        break
-        ;;
+    -h | --help)
+      usage
+      ;;
+    *)
+      text="$*"
+      break
+      ;;
     esac
   done
 
