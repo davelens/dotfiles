@@ -38,8 +38,8 @@ fi
 # Brew needs to go before /usr/bin e.a.
 if [ -n "$BREW_PATH" ]; then
   paths_to_add+=(
-    "$BREW_PATH"/{,s}bin # unbound in sbin, most other stuff in bin
-    # "$BREW_PATH"/opt/mysql@8.4/bin # Brew wants you to use `brew services`, but I want direct access
+    "$BREW_PATH"/{,s}bin           # unbound in sbin, most other stuff in bin
+    "$BREW_PATH"/opt/mysql@8.4/bin # Brew wants you to use `brew services`, but I want direct access
   )
 fi
 
