@@ -47,6 +47,7 @@ export BASH_PROFILE="$XDG_CONFIG_HOME/bash/bash_profile"
 export BUNDLE_USER_CACHE="$XDG_CACHE_HOME/bundle"
 export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME/bundle/config"
 export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME/bundle"
+export CARGO_HOME="$XDG_DATA_HOME"/cargo
 export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
 export HISTFILE="$XDG_STATE_HOME/bash/history"
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"

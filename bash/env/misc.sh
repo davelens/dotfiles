@@ -45,7 +45,7 @@ if [ -f "$BREW_PATH" ]; then
   KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl)"
   export KERL_CONFIGURE_OPTIONS
 
-  # MySQL 8.4 compilation flags
+  # MySQL 8.4 compile flags
   if [ -n "$BREW_PATH" ]; then
     LDFLAGS="$LDFLAGS -L$BREW_PATH/opt/mysql@8.4/lib"
     CPPFLAGS="$CPPFLAGS -I$BREW_PATH/opt/mysql@8.4/include"

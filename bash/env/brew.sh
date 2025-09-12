@@ -3,9 +3,6 @@
 # Primarily used to bootstrap BREW_PATH and HOMEBREW_REPOSITORY.
 ########################################################################
 
-# Don't force an update of all packages when target upgrading single packages.
-export HOMEBREW_NO_AUTO_UPDATE=1
-
 # Homebrew's location has changed over the years, and I still have several
 # setups from different eras:
 # On macos with M1 chips: /opt/homebrew
@@ -18,6 +15,9 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 
 if [ -n "$BREW_PATH" ]; then
   export BREW_PATH
+
+  # Don't force an update of all packages when target upgrading single packages.
+  export HOMEBREW_NO_AUTO_UPDATE=1
 
   # If HOMEBREW_REPOSITORY isn't set properly, brew's bash completion won't
   # work properly [GH issue](https://github.com/orgs/Homebrew/discussions/4227).
