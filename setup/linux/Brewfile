@@ -1,9 +1,7 @@
 tap "browsh-org/browsh"               # browsh
 tap "cormacrelf/tap"                  # dark-notify
 tap "cxreiff/tap"                     # ttysvr
-tap "felixkratz/formulae"             # borders
 tap "github/gh"                       # gh
-tap "nikitabobko/tap"                 # Aerospace
 tap "puma/puma"                       # Puma
 tap "sst/tap"                         # Opencode
 tap "uptech/oss"                      # alt
@@ -35,7 +33,6 @@ brew "libavif"                        # dep for chafa
 brew "pango"                          # dep for imagemagick, ffmpeg, chafa,...
 brew "librsvg"                        # dep for chafa
 brew "chafa"                          # Image to ANSI/unicode art generator
-brew "cliclick"                       # Mouse/keyboard emulation for macos
 brew "clipboard"                      # Clipboard manager
 brew "cmake"                          # Cross-platform meta build tool
 brew "cmatrix"                        # Follow the white rabbit ...
@@ -99,11 +96,9 @@ brew "ncftp"                          # FTP browser
 brew "nethack"                        # One of the best games ever made
 brew "nmap"                           # Open source network exploration tool 
 brew "pandoc"                         # Markup conversion tool
-brew "pinentry-mac"                   # Alternative pinentry that works on mac
 brew "pipes-sh"                       # Terminal screensaver, win95 style
 brew "pipx"                           # Package manager for python
 brew "pv"                             # Progress bar for the terminal
-brew "reattach-to-user-namespace"     # Pasteboard fix for tmux in macos
 brew "redis"                          # In-memory key/value database
 brew "ripgrep"                        # Fuzzy search
 brew "rsync"                          # Local and remote file copying tool
@@ -113,7 +108,6 @@ brew "shellcheck"                     # Shell script analysis tool
 brew "spicetify-cli"                  # Provides theming for Spotify
 brew "starship"                       # Customizable shell prompt
 brew "tmux"                           # Terminal multiplexer
-brew "trash", link: true              # Recoverable `rm` for macos
 brew "tree"                           # Dumps visual file trees for folders
 brew "tree-sitter"                    # Parser generator and library
 brew "v8"                             # Google's JS/wasm engine
@@ -125,32 +119,8 @@ brew "yt-dlp"                         # YouTube video downloader
 brew "browsh-org/browsh/browsh"       # TUI webpage browser
 brew "cormacrelf/tap/dark-notify"     # Display mode change listener
 brew "cxreiff/tap/ttysvr"             # Terminal screensaver, win95 style
-brew "felixkratz/formulae/borders"    # Customizable window borders for macos
-brew "felixkratz/formulae/sketchybar" # Customizable menu bar for macos
 brew "puma/puma/puma-dev"             # Low config web server for development
 brew "sst/tap/opencode"               # TUI coding agent
 brew "uptech/oss/alt"                 # Guess related file paths for files.
 
-cask "aerospace"                      # i3-like tiling window manager for macos
-cask "alfred"                         # App launcher for macos
-cask "bitwarden"                      # Password manager
-cask "cloudflare-warp"                # DNS resolver for speed & better privacy
-cask "discord"                        # IM for communities
-cask "firefox"                        # Still best in spite of privacy concerns
-cask "homerow"                        # Vimium-esque navigation, but everywhere
-cask "imageoptim"                     # GUI to bulk convert image formats
-cask "karabiner-elements"             # Low-effort keyboard customizer
-cask "libreoffice"                    # Office suite for poor people
-cask "little-snitch"                  # Proprietary network monitor
 cask "ngrok"                          # Runs local ports to public URLs
-cask "private-internet-access"        # VPN
-cask "rar"                            # RAR unpacker
-cask "rectangle"                      # Spare window manager, more basic
-cask "skim"                           # PDF reader for macos
-cask "spotify"                        # Music streaming service
-cask "steam"                          # Gaming platform service
-cask "tailscale-app"                  # Free VPN service for my home server
-cask "thunderbird"                    # Mozilla's e-mail client
-cask "vlc"                            # The MVP open source media player
-cask "wezterm"                        # Terminal emulator and multiplexer
-cask "whatsapp"                       # Because my family keeps using it
