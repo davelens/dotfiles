@@ -39,16 +39,16 @@ fi
 if [ -n "$BREW_PATH" ]; then
   paths_to_add+=(
     "$BREW_PATH"/{,s}bin           # unbound in sbin, most other stuff in bin
-    "$BREW_PATH"/opt/mysql@8.4/bin # Brew wants you to use `brew services`, but I want direct access
+    "$BREW_PATH"/opt/mysql@8.4/bin # Make available mysqldump, mysql.server,...
   )
 fi
 
 # User + system defined
 paths_to_add+=(
   "$XDG_BIN_HOME"    # User-made and controlled binaries
-  /usr/local/{,s}bin # Docker, npm, Private Internet Access,...
+  /usr/local/{,s}bin # Docker, npm, kubernetes,...
   /usr/{,s}bin       # User specific system binaries. A *lot* of them.
-  /{,s}bin           # *nix shells and binaries, and basic commands like ls, cp, echo,...
+  /{,s}bin           # *nix shells, bins, and basic commands like ls, cp,...
 )
 
 if [ "$("$XDG_BIN_HOME/os")" == "windows" ] >/dev/null; then
