@@ -27,11 +27,11 @@
 
 paths_to_add=()
 
-if [ -f "$ASDF_DATA_DIR" ]; then
+if [ -d "$ASDF_DATA_DIR" ]; then
   paths_to_add+=("${ASDF_DATA_DIR:-$XDG_DATA_HOME/asdf}"/shims)
 fi
 
-if [ -f "$CARGO_HOME" ]; then
+if [ -d "$CARGO_HOME" ]; then
   paths_to_add+=("${CARGO_HOME:-$XDG_DATA_HOME/cargo}"/bin)
 fi
 
