@@ -35,7 +35,7 @@ brew "libavif"                        # dep for chafa
 brew "pango"                          # dep for imagemagick, ffmpeg, chafa,...
 brew "librsvg"                        # dep for chafa
 brew "chafa"                          # Image to ANSI/unicode art generator
-brew "cliclick"                       # Emulates mouse/keyboard actions
+brew "cliclick"                       # Mouse/keyboard emulation for macos
 brew "clipboard"                      # Clipboard manager
 brew "cmake"                          # Cross-platform meta build tool
 brew "cmatrix"                        # Follow the white rabbit ...
