@@ -122,5 +122,3 @@ brew "cxreiff/tap/ttysvr"             # Terminal screensaver, win95 style
 brew "puma/puma/puma-dev"             # Low config web server for development
 brew "sst/tap/opencode"               # TUI coding agent
 brew "uptech/oss/alt"                 # Guess related file paths for files.
-
-cask "ngrok"                          # Runs local ports to public URLs
