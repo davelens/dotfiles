@@ -10,7 +10,11 @@ if [ -n "$BREW_PATH" ]; then
 fi
 
 # No setxkbmap on Wayland.
-if [ $XDG_SESSION_TYPE != "wayland" ]; then
+if [ $XDG_SESSION_TYPE == "wayland" ]; then
+  export WLR_RENDERER_ALLOW_SOFTWARE=1
+  export WLR_RENDERER=pixman
+  export WLR_NO_HARDWARE_CURSORS=1
+else
   setxkbmap -option altwin:ctrl_win # Switch win/command key with ctrl
   setxkbmap -option ctrl:nocaps     # Switch capslock with ctrl
 fi
