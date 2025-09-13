@@ -119,10 +119,10 @@ repo_home() {
 
 ask_for_repo_home() {
   local repo_home
-  repo_home="$DOTFILES_CONFIG_HOME/"
+  repo_home="$HOME/Repositories/davelens/dotfiles"
 
   echo
-  echo "By default I keep my dotfiles in $(blue "~${repo_home/$HOME/}")."
+  echo "By default I keep my dotfiles in $(blue "${repo_home/$HOME/\~}")."
 
   if [ -n "$(ls -A "$repo_home")" ]; then
     echo "It looks like that directory's not empty though. 🤔"
@@ -133,20 +133,14 @@ ask_for_repo_home() {
 
   if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
     read -r -e -p "$HOME/" DOTFILES_REPO_HOME
-    DOTFILES_REPO_HOME="$HOME/$DOTFILES_REPO_HOME"
-
-    if [ -n "$(ls -A "$DOTFILES_REPO_HOME/")" ]; then
-      reset_prompt
-      ask_for_repo_home
-      return
-    fi
+    DOTFILES_REPO_HOME="${repo_home/\~/$HOME}"
   else
     read -r -e -i "$repo_home" -p "" DOTFILES_REPO_HOME
   fi
 
   if [ -n "$(ls -A "$DOTFILES_REPO_HOME/")" ]; then
     reset_prompt
-    ask_for_repo_home
+    # ask_for_repo_home
     return
   fi
 
@@ -164,30 +158,54 @@ ask_for_repo_home() {
 
 download_dotfiles() {
   if [ -d "$DOTFILES_REPO_HOME/.git" ]; then
-    echo "Looks like you already have my dotfiles there!"
-    echo -e "I'll just update them for you, and move on.\n"
-    git -C "$DOTFILES_REPO_HOME" pull
-    printf ""
-    return
+
+    # TODO: Verify that this is in fact my dotfiles
+    check_repo=$(git config --get remote.origin.url 2>/dev/null |
+      sed -E 's#(git@|https://)github.com[:/](.+)(\.git)?#\2#')
+
+    if [ "$check_repo" == "davelens/dotfiles" ]; then
+      echo "Looks like you already have my dotfiles there!"
+
+      if command -v git >/dev/null; then
+        echo -e "I'll just update them for you, and move on.\n"
+        git -C "$DOTFILES_REPO_HOME" pull
+        printf ""
+      fi
+
+      return
+    fi
+
+  else
+
+    local dotfiles_zip extraction_dir
+    dotfiles_zip="$DOTFILES_STATE_HOME/tmp/dotfiles.zip"
+    extraction_dir="$(dirname "$dotfiles_zip")"
+
+    echo "Alright, I'll download the dotfiles into $(blue "$(repo_home)")."
+    echo
+
+    if command -v git >/dev/null; then
+      git clone git@github.com:davelens/dotfiles.git "$DOTFILES_REPO_HOME"
+    else
+      # TODO: Replace with extracting a tarball when we're starting with releases.
+      curl -L -o "$dotfiles_zip" https://github.com/davelens/dotfiles/archive/refs/heads/master.zip
+      unzip -o "$dotfiles_zip" -d "$extraction_dir"
+      shopt -s dotglob
+      mv "$extraction_dir"/dotfiles-master/* "$DOTFILES_REPO_HOME/"
+      shopt -u dotglob
+    fi
+
   fi
+}
 
-  if command -v git >/dev/null; then
-    git clone https://github.com/davelens/dotfiles.git "$DOTFILES_REPO_HOME/"
-    printf ""
-    return
-  fi
-
-  local dotfiles_zip
-  dotfiles_zip="$DOTFILES_STATE_HOME/tmp/dotfiles.zip"
-
-  echo "Alright, I'll download the dotfiles into $(green "$(repo_home)")."
-
-  # TODO: Replace with extracting a tarball when we're starting with releases.
-  curl -L -o "$dotfiles_zip" https://github.com/davelens/dotfiles/archive/refs/heads/master.zip
-  unzip -o "$dotfiles_zip" -d "$DOTFILES_REPO_HOME/"
-  mv "$DOTFILES_REPO_HOME/dotfiles-master"/* "$DOTFILES_REPO_HOME/"
-  rm -rf "$DOTFILES_REPO_HOME/dotfiles-master"
+install_dotfiles() {
+  # TODO: Install the `dots` command
+  # TODO: Change the `dots` command to git init DOTFILES_REPO_HOME, if necessary.
+  # TODO: Ask to run setup/install
+  # prompt="Do you want to proceed with installing the dotfiles?"
+  # read -n1 -r -p "$prompt" input
   # "$DOTFILES_STATE_HOME/tmp/dotfiles-master/setup/install"
+  return
 }
 
 main() {
@@ -210,6 +228,11 @@ main() {
   save_cursor
 
   download_dotfiles
+  reset_prompt
+  green "✓ Dotfiles downloaded into $(repo_home)"
+  save_cursor
+
+  install_dotfiles
   reset_prompt
   green "✓ Dotfiles downloaded into $(repo_home)"
   save_cursor
