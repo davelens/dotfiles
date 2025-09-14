@@ -19,7 +19,8 @@ git -C "$dotbot_path" submodule update --init --recursive
 # TODO: I'll be phasing out the env wizard. I've learned a lot, but I'm not
 # going to be using it.
 if [ ! -f "$DOTFILES_CONFIG_HOME/env" ]; then
-  "$DOTFILES_REPO_HOME/setup/env_wizard" || touch "$DOTFILES_CONFIG_HOME/env"
+  # "$DOTFILES_REPO_HOME/setup/env_wizard" || touch "$DOTFILES_CONFIG_HOME/env"
+  touch "$DOTFILES_CONFIG_HOME/env"
 fi
 
 # Create an executable that allows us to update our dotfiles, among other
@@ -31,7 +32,8 @@ if [ ! -f "$dots_path" ]; then
   chmod +x "$dots_path"
   $dots_path
   echo
-  echo "$(check) dots command installed!"
-  echo "Please source $BASHRC or restart your shell to apply changes."
-  echo
+  green "==> \`dots\` command installed!"
 fi
+
+echo
+green "==> Apply changes by running \`source ${BASHRC/$HOME/~}\` to reload your shell."
