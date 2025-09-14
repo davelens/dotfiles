@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=SC2120,SC2317 # Unreachable commands are fiiine
 set -e
 
