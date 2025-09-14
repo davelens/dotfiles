@@ -10,7 +10,7 @@ if [ -n "$BREW_PATH" ]; then
 fi
 
 # No setxkbmap on Wayland.
-if [ $XDG_SESSION_TYPE == "wayland" ]; then
+if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
   export WLR_RENDERER_ALLOW_SOFTWARE=1
   export WLR_RENDERER=pixman
   export WLR_NO_HARDWARE_CURSORS=1
