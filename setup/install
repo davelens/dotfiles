@@ -6,20 +6,7 @@ fail() {
   exit "${2-1}"
 }
 
-[ -z "${BASH_VERSION:-}" ] && fail "Bash is required to interpret this script."
-
-# Either curl or wget will work.
-if ! command -v curl >/dev/null; then
-  fail "Either curl or wget is required to download the dotfiles."
-fi
-
-XDG_BIN_HOME="$HOME/.local/bin"
-DOTFILES_FOLDER="dots"
-DOTFILES_REPO_HOME="$(dirname "$(dirname "$(realpath "$0")")")"
-DOTFILES_STATE_HOME="$XDG_STATE_HOME/$DOTFILES_FOLDER"
-readonly DOTFILES_FOLDER DOTFILES_REPO_HOME DOTFILES_STATE_HOME XDG_BIN_HOME
-
-[ ! -d "$DOTFILES_STATE_HOME" ] && mkdir -p "$DOTFILES_STATE_HOME/tmp"
+source "$DOTFILES_REPO_HOME"/bash/env/xdg.sh
 
 # Get dotbot installed
 dotbot_path="$DOTFILES_REPO_HOME/dotbot"
@@ -29,6 +16,8 @@ git -C "$dotbot_path" submodule update --init --recursive
 # Activate dotbot with the install configuration
 "$dotbot_path/bin/dotbot" -d "$DOTFILES_REPO_HOME" -c "$DOTFILES_REPO_HOME/setup/install.conf.yaml" "$@"
 
+# TODO: I'll be phasing out the env wizard. I've learned a lot, but I'm not
+# going to be using it.
 if [ ! -f "$DOTFILES_CONFIG_HOME/env" ]; then
   "$DOTFILES_REPO_HOME/setup/env_wizard" || touch "$DOTFILES_CONFIG_HOME/env"
 fi

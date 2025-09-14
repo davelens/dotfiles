@@ -55,22 +55,18 @@ fail() {
   exit "${2-1}"
 }
 interrupt_handler() { wind_down && fail "Aborted."; }
-# print_status() { $print_status -hl "$BOX_HIGHLIGHT" "$@"; _box_border_right; }
 green() { echo "$BGG$FGK$1$CNONE"; }
 blue() { echo "$BGB$FGK$1$CNONE"; }
 
 helpers() {
   local prefix helpers=()
   prefix="https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master"
+  helpers+=("$prefix/bash/env/xdg.sh")
   helpers+=("$prefix/bash/colors.sh")
-  # helpers+=("$prefix/bin/utilities/bash/box")
   echo "${helpers[@]}"
 }
 
 prepare() {
-  [ ! -d "$DOTFILES_STATE_HOME/tmp" ] && mkdir -p "$DOTFILES_STATE_HOME/tmp"
-  [ ! -d "$DOTFILES_CONFIG_HOME" ] && mkdir -p "$DOTFILES_CONFIG_HOME"
-
   echo
   echo "Hi! My name's Dave. Looks like you're about to install my dotfiles."
   echo
@@ -98,9 +94,13 @@ prepare() {
     ;;
   esac
 
+  local temp_dir
+  temp_dir="$HOME"/.local/state/dots/tmp
+  [ ! -d "$temp_dir" ] && mkdir -p "$temp_dir"
+
   for helper in $(helpers); do
     filename="${helper##*/}"
-    local_file="$DOTFILES_STATE_HOME/tmp/$filename"
+    local_file="$temp_dir/$filename"
     curl -so "$local_file" "$helper"
 
     # shellcheck disable=SC2076
@@ -111,10 +111,8 @@ prepare() {
 
     source "$local_file"
   done
-}
 
-repo_home() {
-  echo "~${DOTFILES_REPO_HOME/$HOME/}"
+  unset temp_dir
 }
 
 ask_for_repo_home() {
@@ -156,10 +154,13 @@ ask_for_repo_home() {
   echo
 }
 
+repo_home() {
+  echo "~${DOTFILES_REPO_HOME/$HOME/}"
+}
+
 download_dotfiles() {
   if [ -d "$DOTFILES_REPO_HOME/.git" ]; then
 
-    # TODO: Verify that this is in fact my dotfiles
     check_repo=$(git config --get remote.origin.url 2>/dev/null |
       sed -E 's#(git@|https://)github.com[:/](.+)(\.git)?#\2#')
 
@@ -199,21 +200,28 @@ download_dotfiles() {
 }
 
 install_dotfiles() {
-  # TODO: Install the `dots` command
   # TODO: Change the `dots` command to git init DOTFILES_REPO_HOME, if necessary.
-  # TODO: Ask to run setup/install
-  # prompt="Do you want to proceed with installing the dotfiles?"
-  # read -n1 -r -p "$prompt" input
-  # "$DOTFILES_STATE_HOME/tmp/dotfiles-master/setup/install"
+
+  prompt="Do you want to proceed with installing the dotfiles? "
+  read -n1 -r -p "$prompt" input
+
+  case $input in
+  [Yy])
+    echo
+    "$DOTFILES_REPO_HOME/setup/install"
+    ;;
+  [Nn]) interrupt_handler ;;
+  *)
+    reset_prompt
+    install_dotfiles && return
+    ;;
+  esac
   return
 }
 
 main() {
   local prompt input
-  local DOTFILES_FOLDER DOTFILES_STATE_HOME DOTFILES_CONFIG_HOME CURSOR_POS
-  DOTFILES_FOLDER="dots"
-  DOTFILES_STATE_HOME="$XDG_STATE_HOME/$DOTFILES_FOLDER"
-  DOTFILES_CONFIG_HOME="$XDG_CONFIG_HOME/$DOTFILES_FOLDER"
+  local CURSOR_POS
   CURSOR_POS="1;1"
 
   save_cursor
@@ -233,9 +241,6 @@ main() {
   save_cursor
 
   install_dotfiles
-  reset_prompt
-  green "✓ Dotfiles downloaded into $(repo_home)"
-  save_cursor
 
   cleanup && exit
   wind_down
