@@ -126,7 +126,7 @@ itemhelp_color = (WHITE,BLACK,OFF)
 form_active_text_color = button_active_color
 
 # Form text color
-form_text_color = (WHITE,CYAN,ON)
+form_text_color = (BLUE,BLACK,ON)
 
 # Readonly form item color
 form_item_readonly_color = (CYAN,WHITE,ON)
