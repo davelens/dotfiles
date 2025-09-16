@@ -8,7 +8,7 @@ download_and_compile_dialog() {
     https://invisible-island.net/datafiles/release/dialog.tar.gz
   reset_prompt && progress "$compile_message" 4
 
-  dir=$(tar -xvzf "$tarball" | tee /dev/null | head -1 | cut -f1 -d"/")
+  dir=$(tar -xvzf "$tarball" -C "$INSTALLER_TMP_HOME" | tee /dev/null | head -1 | cut -f1 -d"/")
   reset_prompt && progress "$compile_message" 8
 
   cd "$dir" && ./configure --prefix="$HOME/.local" >/dev/null
