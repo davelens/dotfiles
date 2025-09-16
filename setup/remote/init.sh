@@ -80,18 +80,20 @@ reset_prompt() { restore_cursor && clear_down; }
 ###############################################################################
 
 main() {
-  REMOTE_FILES=()
-  REMOTE_FILES+=("bash/env/xdg.sh")
-  REMOTE_FILES+=("bash/colors.sh")
-  REMOTE_FILES+=("setup/remote/bootstrap_packages.sh")
-  # REMOTE_FILES+=("setup/remote/set_repo_namespace.sh")
-  # REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
-  # REMOTE_FILES+=("setup/remote/install_dotfiles.sh")
   INSTALLER_TMP_HOME="$HOME/.local/state/dots/tmp/remote_install"
   mkdir -p "$INSTALLER_TMP_HOME"
 
+  REMOTE_FILES=()
+  REMOTE_FILES+=("bash/env/xdg.sh")
+  REMOTE_FILES+=("bash/colors.sh")
+  cp setup/remote/bootstrap_packages.sh "$INSTALLER_TMP_HOME"/
+  # REMOTE_FILES+=("setup/remote/bootstrap_packages.sh")
+  # REMOTE_FILES+=("setup/remote/set_repo_namespace.sh")
+  # REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
+  # REMOTE_FILES+=("setup/remote/install_dotfiles.sh")
+
   for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
-  source setup/remote/bootstrap_packages.sh
+  source "$INSTALLER_TMP_HOME"/bootstrap_packages.sh
   cleanup
 }
 
