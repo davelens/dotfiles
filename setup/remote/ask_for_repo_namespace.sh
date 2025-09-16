@@ -10,7 +10,7 @@ ask_for_repo_namespace() {
   fi
 
   contents+="\nSpecify where you want to store the dotfiles:"
-  DOTFILES_REPO_HOME=$(dialog --colors --inputbox "$contents" 12 72 "$repo_home" 2>&1 >/dev/tty)
+  DOTFILES_REPO_HOME=$(dialog --clear --colors --inputbox "$contents" 12 72 "$repo_home" 2>&1 >/dev/tty)
 
   response=$?
   if [ $response -eq 0 ]; then
