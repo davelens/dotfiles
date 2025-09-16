@@ -87,6 +87,7 @@ main() {
   REMOTE_FILES+=("bash/env/xdg.sh")
   REMOTE_FILES+=("bash/colors.sh")
   cp setup/remote/bootstrap_packages.sh "$INSTALLER_TMP_HOME"/
+  cp setup/remote/ask_for_repo_namespace.sh "$INSTALLER_TMP_HOME"/
   # REMOTE_FILES+=("setup/remote/bootstrap_packages.sh")
   # REMOTE_FILES+=("setup/remote/set_repo_namespace.sh")
   # REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
@@ -94,6 +95,7 @@ main() {
 
   for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
   source "$INSTALLER_TMP_HOME"/bootstrap_packages.sh
+  source "$INSTALLER_TMP_HOME"/ask_for_repo_namespace.sh
   cleanup
 }
 
