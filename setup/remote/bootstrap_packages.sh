@@ -30,5 +30,10 @@ fi
 
 reset_prompt
 
+contents="Hi! My name's Dave. Looks like you're about to install my dotfiles.\n\n"
+contents+="You will need to supply some personal data to continue.\n\n"
+
 dialog --clear --yes-label "OK" --no-label "Abort" --yesno \
-  "Hi! My name's Dave. Looks like you're about to install my dotfiles." 8 72
+  "$contents" 8 72
+
+unset contents
