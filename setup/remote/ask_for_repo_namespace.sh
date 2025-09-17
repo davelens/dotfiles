@@ -1,32 +1,91 @@
-ask_for_repo_namespace() {
-  local repo_home contents
-  repo_home="$HOME/Repositories/davelens/dotfiles"
-  contents="By default I keep my dotfiles in \Z4${repo_home/$HOME/\~}\Zn.\n"
+DEFAULT_REPO_PATH="$HOME/Repositories/$REPO_URI"
 
-  if [ -n "$1" ]; then
-    contents="\n$1\n"
-  elif [ -n "$(ls -A "$repo_home")" ]; then
-    contents+="\nIt looks like that directory's not empty though. 🤔\n"
-  fi
-
-  DOTFILES_REPO_HOME=$(dialog --clear --colors --title "Specify where you want to store the dotfiles" --dselect "$repo_home" 12 72 2>&1 >/dev/tty)
-
-  response=$?
-  if [ $response -eq 0 ]; then
-    # Use $DOTFILES_REPO_HOME as needed
-    :
+path_writeable() {
+  local path="$1"
+  if [ -e "$path" ]; then
+    [ -w "$path" ] && return 0 || return 1
   else
-    echo "Cancelled by user."
-    exit 1
-  fi
-
-  DOTFILES_REPO_HOME="${DOTFILES_REPO_HOME:-$repo_home}"
-  DOTFILES_REPO_HOME="${DOTFILES_REPO_HOME%/}" # No trailing slash
-
-  if [ -f "$DOTFILES_REPO_HOME" ]; then
-    ask_for_repo_namespace "The path you provided is a file. Please provide a directory." && return
+    local parent
+    parent="$(dirname "$path")"
+    [ -w "$parent" ] && return 0 || return 1
   fi
 }
 
-ask_for_repo_namespace
-[ ! -d "$DOTFILES_REPO_HOME" ] && mkdir -p "$DOTFILES_REPO_HOME"
+path_prohibited() {
+  local path="$1"
+  if ! path_writeable "$path"; then
+    return 0
+  elif [ "$path" == "$HOME" ]; then
+    return 0
+  elif [ "$path" == "$HOME/Desktop" ]; then
+    return 0
+  elif [ -f "$path" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+validate_path() {
+  local path="$1"
+
+  if path_prohibited "$path"; then
+    echo -e "x $(fred 'That location is not writeable (or prohibited by me).')\n"
+  else
+    if [ ! -d "$path" ]; then
+      echo -e "✓ $(fgreen "That folder does not exist yet, but I'll create it.")\n"
+    else
+      if [ -n "$(ls -A "$path")" ]; then
+        if [ -f "$path/.git/config" ]; then
+          if grep -q "$REPO_URI" "$path/.git/config"; then
+            echo -e "✓ $(fgreen "That folder already contains my dotfiles, so I'll update them instead.")\n"
+          else
+            echo -e "! $(fyellow "Looks like that folder already contains the \`$REPO_URI\` repository.")\n"
+          fi
+        else
+          echo -e "! $(fyellow "That folder is not empty. I might overwrite files. Are you sure?")\n"
+        fi
+      else
+        echo -e "✓ $(fgreen "That folder exists and is empty.")\n"
+      fi
+    fi
+  fi
+}
+
+ask_for_repo_namespace() {
+  reset_prompt
+
+  local path="$1"
+  [ "$path" == "" ] && path="$DEFAULT_REPO_PATH"
+  [[ "$path" =~ "~" ]] && path="${path/\~/$HOME}"
+  path="${path#\\}"
+
+  validate_path "$path"
+
+  if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
+    read -r -e -p "$BGK$FGW$path/$CNONE" choice
+    choice="${choice/\~/$HOME}"
+  else
+    read -r -e -i "$path" -p "Please confirm: $FGB" choice
+    printf %s "$CNONE"
+  fi
+
+  choice="${choice:-$repo_home}"
+  [ "$choice" != "/" ] && choice="${choice%/}" # No trailing slash
+
+  if [ "$choice" != "$path" ] || path_prohibited "$choice"; then
+    ask_for_repo_namespace "$choice" && return
+  fi
+}
+
+reset_prompt
+
+echo
+echo "Hi! My name's Dave. Looks like you're about to install my dotfiles."
+echo
+echo "By default I keep the repo in $(black "${DEFAULT_REPO_PATH/$HOME/\~}")."
+echo
+
+save_cursor
+ask_for_repo_namespace "$DEFAULT_REPO_PATH"
+unset DEFAULT_REPO_PATH

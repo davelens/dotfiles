@@ -2,7 +2,10 @@
 # shellcheck disable=SC2120 # Unreachable commands are fiiine
 set -e
 
+export REPO_URI="davelens/dotfiles"
+
 fail() {
+  printf %s "$CNONE"
   cleanup
   echo -e "\n$1" >&2
   exit "${2-1}"
@@ -49,13 +52,6 @@ load_remote_file() {
   source "$local_file"
 }
 
-progress() {
-  msg="$1"
-  blocks=${2:-20}
-  printf "$BGB$FGK%s $CNONE => $BGK$FGW%s%s$CNONE\n" "$msg" "$(printf '%0.s█' $(seq 1 "$blocks"))" \
-    "$([ "$blocks" -lt 20 ] && printf '%0.s ' $(seq 1 $((20 - blocks))))"
-}
-
 restore_cursor() {
   printf "\033[%sH" "$CURSOR_POS"
 }
@@ -70,9 +66,13 @@ save_cursor() {
 
 ###############################################################################
 
+black() { echo "$BGK$FGW$1$CNONE"; }
 blue() { echo "$BGB$FGK$1$CNONE"; }
 cleanup() { rm -rf "$INSTALLER_TMP_HOME"; }
 clear_down() { printf "\033[0J"; }
+fgreen() { echo "$FGG$1$CNONE"; }
+fred() { echo "$FGR$1$CNONE"; }
+fyellow() { echo "$FGY$1$CNONE"; }
 green() { echo "$BGG$FGK$1$CNONE"; }
 repo_home() { echo "~${DOTFILES_REPO_HOME/$HOME/}"; }
 reset_prompt() { restore_cursor && clear_down; }
@@ -86,16 +86,16 @@ main() {
   REMOTE_FILES=()
   REMOTE_FILES+=("bash/env/xdg.sh")
   REMOTE_FILES+=("bash/colors.sh")
-  cp setup/remote/bootstrap_packages.sh "$INSTALLER_TMP_HOME"/
   cp setup/remote/ask_for_repo_namespace.sh "$INSTALLER_TMP_HOME"/
-  # REMOTE_FILES+=("setup/remote/bootstrap_packages.sh")
-  # REMOTE_FILES+=("setup/remote/set_repo_namespace.sh")
+  # cp setup/remote/download_dotfiles.sh "$INSTALLER_TMP_HOME"/
+  # cp setup/remote/install_dotfiles.sh "$INSTALLER_TMP_HOME"/
   # REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
   # REMOTE_FILES+=("setup/remote/install_dotfiles.sh")
 
   for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
-  source "$INSTALLER_TMP_HOME"/bootstrap_packages.sh
   source "$INSTALLER_TMP_HOME"/ask_for_repo_namespace.sh
+  # source "$INSTALLER_TMP_HOME"/download_dotfiles.sh
+  # source "$INSTALLER_TMP_HOME"/install_dotfiles.sh
   cleanup
 }
 
