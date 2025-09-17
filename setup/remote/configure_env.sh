@@ -12,6 +12,7 @@ configure_env() {
   echo "- GITHUB_PERSONAL_ACCESS_TOKEN"
   echo "TODO: Ask for OWNER_NAME as well? Potentially useful for bitwarden-cli"
   echo "TODO: Generate $XDG_CONFIG_HOME/git/config.env using setup/gitconfig.env.template"
+  echo
 }
 
 echo
