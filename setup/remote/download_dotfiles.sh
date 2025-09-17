@@ -4,11 +4,9 @@ init() {
     check_repo=$(git config --get remote.origin.url 2>/dev/null |
       sed -E 's#(git@|https://)github.com[:/](.+)(\.git)?#\2#')
 
-    if [ "$check_repo" == "davelens/dotfiles" ]; then
-      echo "Looks like you already have my dotfiles there!"
-
+    if [[ "$check_repo" =~ $REPO_URI ]]; then
       if command -v git >/dev/null; then
-        echo -e "I'll just update them for you, and move on.\n"
+        echo -e "Pulling changes into $DOTFILES_REPO_HOME.\n"
         git -C "$DOTFILES_REPO_HOME" pull
         printf ""
       fi
@@ -40,6 +38,6 @@ init() {
 }
 
 init
-reset_prompt
-green "✓ Downloaded dotfiles into $(repo_home)"
-save_cursor
+# reset_prompt
+# green "✓ Downloaded dotfiles into $(repo_home)"
+# save_cursor

@@ -87,14 +87,14 @@ main() {
   REMOTE_FILES+=("bash/env/xdg.sh")
   REMOTE_FILES+=("bash/colors.sh")
   cp setup/remote/ask_for_repo_namespace.sh "$INSTALLER_TMP_HOME"/
-  # cp setup/remote/download_dotfiles.sh "$INSTALLER_TMP_HOME"/
+  cp setup/remote/download_dotfiles.sh "$INSTALLER_TMP_HOME"/
   # cp setup/remote/install_dotfiles.sh "$INSTALLER_TMP_HOME"/
   # REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
   # REMOTE_FILES+=("setup/remote/install_dotfiles.sh")
 
   for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
   source "$INSTALLER_TMP_HOME"/ask_for_repo_namespace.sh
-  # source "$INSTALLER_TMP_HOME"/download_dotfiles.sh
+  source "$INSTALLER_TMP_HOME"/download_dotfiles.sh
   # source "$INSTALLER_TMP_HOME"/install_dotfiles.sh
   cleanup
 }

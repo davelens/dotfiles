@@ -76,6 +76,8 @@ ask_for_repo_namespace() {
   if [ "$choice" != "$path" ] || path_prohibited "$choice"; then
     ask_for_repo_namespace "$choice" && return
   fi
+
+  DOTFILES_REPO_HOME="$choice"
 }
 
 reset_prompt
@@ -88,4 +90,5 @@ echo
 
 save_cursor
 ask_for_repo_namespace "$DEFAULT_REPO_PATH"
+export DOTFILES_REPO_HOME
 unset DEFAULT_REPO_PATH
