@@ -1,7 +1,7 @@
 install_dotfiles() {
   # TODO: Change the `dots` command to git init DOTFILES_REPO_HOME, if necessary.
 
-  prompt="Do you want to proceed with installing the dotfiles? "
+  prompt="Do you want to proceed with installing the dotfiles? [y/n] "
   read -n1 -r -p "$prompt" input
 
   case $input in
