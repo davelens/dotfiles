@@ -1,8 +1,8 @@
 download_and_compile_dialog() {
   save_cursor
-  compile_message="⏲ Compiling \`dialog\`"
+  compile_message="⧖ Compiling \`dialog\`"
   tarball="$INSTALLER_TMP_HOME"/dialog.tar.gz
-  progress "⏲ Downloading \`dialog\`" 1
+  progress "⧖ Downloading \`dialog\`" 1
 
   curl -so "$tarball" \
     https://invisible-island.net/datafiles/release/dialog.tar.gz
