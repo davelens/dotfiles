@@ -27,7 +27,7 @@ configure_env
 if [ $? -eq 0 ]; then
   # TODO: Enable when the step is done.
   # reset_prompt
-  echo "✓ $(fgreen "Environment configured")"
+  echo "✓ $(fgreen "Environment configured! Remember to use $(black "dots update")")$(fgreen " once in a while")"
 else
   fail "x $(fred "Something went wrong during step 4.")"
 fi
