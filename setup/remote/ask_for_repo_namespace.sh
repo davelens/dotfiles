@@ -9,8 +9,7 @@ ask_for_repo_namespace() {
     contents+="\nIt looks like that directory's not empty though. 🤔\n"
   fi
 
-  contents+="\nSpecify where you want to store the dotfiles:"
-  DOTFILES_REPO_HOME=$(dialog --clear --colors --inputbox "$contents" 12 72 "$repo_home" 2>&1 >/dev/tty)
+  DOTFILES_REPO_HOME=$(dialog --clear --colors --title "Specify where you want to store the dotfiles" --dselect "$repo_home" 12 72 2>&1 >/dev/tty)
 
   response=$?
   if [ $response -eq 0 ]; then
