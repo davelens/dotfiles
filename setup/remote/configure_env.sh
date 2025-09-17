@@ -24,7 +24,8 @@ configure_env
 
 # shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
-  reset_prompt
+  # TODO: Enable when the step is done.
+  # reset_prompt
   echo "✓ $(fgreen "Environment configured")"
 else
   fail "x $(fred "Something went wrong during step 4.")"
