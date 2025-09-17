@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+# TODO: Change the `dots` command to git init DOTFILES_REPO_HOME, if necessary.
+
 source "$DOTFILES_CONFIG_HOME"/env
 
 log_file="$DOTFILES_STATE_HOME"/dots.log

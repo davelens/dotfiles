@@ -18,4 +18,18 @@ install_dotfiles() {
   return
 }
 
+echo
+echo "3. $(underline "SYMLINK ALL THE THINGS")"
+echo
+
+save_cursor
+
 install_dotfiles
+
+# shellcheck disable=SC2181
+if [ $? -eq 0 ]; then
+  reset_prompt
+  echo "✓ $(fgreen "Dotfiles installed and symlinked")"
+else
+  fail "x $(fred "Something went wrong during step 3.")"
+fi

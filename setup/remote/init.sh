@@ -76,10 +76,42 @@ fyellow() { echo "$FGY$1$CNONE"; }
 green() { echo "$BGG$FGK$1$CNONE"; }
 repo_home() { echo "~${DOTFILES_REPO_HOME/$HOME/}"; }
 reset_prompt() { restore_cursor && clear_down; }
+underline() { echo "$CUN$1$CNONE"; }
 
 ###############################################################################
 
+preface() {
+  reset_prompt
+  save_cursor
+
+  echo
+  echo "Hi! My name's Dave. Looks like you're about to install my dotfiles."
+  echo
+  echo "This script will do the following:"
+  echo "1. Clone the dotfiles repository somewhere on your system. You choose where."
+  echo "2. Symlink the necessary files to their required locations."
+  echo "3. Ask you for some personal data, such as your GitHub username and e-mail address."
+  echo "4. Use said data to configure some tooling, like $(black git) and $(black gh)."
+  echo
+  echo "You can stop the installation at any time by pressing $(black Ctrl+c),"
+  echo "but depending on where you opt out you might need to run the uninstall script."
+  echo
+  echo "You can review what the remote install does on GitHub:"
+  echo
+  echo "  $(black https://github.com/davelens/dotfiles/tree/master/setup/remote)"
+  echo
+
+  read -n 1 -r -p "Do you want to continue? [y/n]: " yn
+  case $yn in
+  [Yy]*) return ;;
+  [Nn]*) interrupt_handler ;;
+  *) preface ;;
+  esac
+}
+
 main() {
+  preface
+
   INSTALLER_TMP_HOME="$HOME/.local/state/dots/tmp/remote_install"
   mkdir -p "$INSTALLER_TMP_HOME"
 
@@ -88,14 +120,18 @@ main() {
   REMOTE_FILES+=("bash/colors.sh")
   cp setup/remote/ask_for_repo_namespace.sh "$INSTALLER_TMP_HOME"/
   cp setup/remote/download_dotfiles.sh "$INSTALLER_TMP_HOME"/
-  # cp setup/remote/install_dotfiles.sh "$INSTALLER_TMP_HOME"/
+  cp setup/remote/install_dotfiles.sh "$INSTALLER_TMP_HOME"/
+  cp setup/remote/configure_env.sh "$INSTALLER_TMP_HOME"/
+  # REMOTE_FILES+=("setup/remote/ask_for_repo_namespace.sh")
   # REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
   # REMOTE_FILES+=("setup/remote/install_dotfiles.sh")
+  # REMOTE_FILES+=("setup/remote/configure_env.sh")
 
   for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
   source "$INSTALLER_TMP_HOME"/ask_for_repo_namespace.sh
   source "$INSTALLER_TMP_HOME"/download_dotfiles.sh
-  # source "$INSTALLER_TMP_HOME"/install_dotfiles.sh
+  source "$INSTALLER_TMP_HOME"/install_dotfiles.sh
+  source "$INSTALLER_TMP_HOME"/configure_env.sh
   cleanup
 }
 

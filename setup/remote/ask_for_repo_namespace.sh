@@ -55,6 +55,9 @@ validate_path() {
 ask_for_repo_namespace() {
   reset_prompt
 
+  echo "I keep my dotfiles repo in $(black "${DEFAULT_REPO_PATH/$HOME/\~}")."
+  echo
+
   local path="$1"
   [ "$path" == "" ] && path="$DEFAULT_REPO_PATH"
   [[ "$path" =~ "~" ]] && path="${path/\~/$HOME}"
@@ -83,12 +86,19 @@ ask_for_repo_namespace() {
 reset_prompt
 
 echo
-echo "Hi! My name's Dave. Looks like you're about to install my dotfiles."
-echo
-echo "By default I keep the repo in $(black "${DEFAULT_REPO_PATH/$HOME/\~}")."
+echo "1. $(underline "REPO DOWNLOAD LOCATION")"
 echo
 
 save_cursor
+
 ask_for_repo_namespace "$DEFAULT_REPO_PATH"
 export DOTFILES_REPO_HOME
 unset DEFAULT_REPO_PATH
+
+# shellcheck disable=SC2181
+if [ $? -eq 0 ]; then
+  reset_prompt
+  echo "✓ $(fgreen "Repository will live in $(black "$(repo_home)")")"
+else
+  fail "x $(fred "Something went wrong during step 1.")"
+fi
