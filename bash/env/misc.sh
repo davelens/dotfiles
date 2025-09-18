@@ -16,7 +16,7 @@ export GH_EDITOR="bash -c '$EDITOR'"
 export CLICOLOR=1
 
 # PAGER is the path to the program used to list the contents of files through
-export PAGER='cat'
+export PAGER='less'
 
 # Erlang history settings to have a cmd history in iex sessions.
 export ERL_AFLAGS="-kernel shell_history enabled"
