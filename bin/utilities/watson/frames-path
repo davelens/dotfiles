@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -e
+
+[ ! "$(which watson)" ] && fail "ERROR: Watson is not installed. Aborting."
+
+__watson_dir() {
+  if [ -d "$WATSON_DIR" ]; then
+    echo -n "$WATSON_DIR" && return
+  fi
+
+  if [ -d "$XDG_CONFIG_HOME" ]; then
+    echo -n "$XDG_CONFIG_HOME/watson" && return
+  fi
+
+  if [ -d "$HOME/Library/Application Support/watson" ]; then
+    echo -n "$HOME/Library/Application Support/watson" && return
+  fi
+
+  local fallback="$HOME/.config/watson"
+  [ ! -d "$fallback" ] && mkdir -p "$fallback"
+  echo "$fallback"
+}
+
+frames="$(__watson_dir)/frames"
+[ ! -f "$frames" ] && touch "$frames"
+echo "$frames"

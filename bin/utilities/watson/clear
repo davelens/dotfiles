@@ -1,16 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-[[ ! $(which watson) ]] && fail "ERROR: Watson is not installed. Aborting."
-
-frames_file=
-[ -n "$WATSON_DIR" ] && frames_file="$WATSON_DIR/frames"
-[ -z "$frames_file" ] && [ -n "$XDG_CONFIG_HOME" ] && frames_file="$XDG_CONFIG_HOME/watson/frames"
-[ -z "$frames_file" ] && frames_file="$HOME/.config/watson/frames"
-
-[ ! -f "$frames_file" ] && fail "ERROR: Watson frames file not found. Aborting."
-
+[ ! "$(which watson)" ] && fail "ERROR: Watson is not installed. Aborting."
 # Wipe the file clean; Using >| to override my default noclobber setting.
 # shellcheck disable=2188
->|"$frames_file"
-unset frames_file
+>|"$(utility watson frames-path)"
