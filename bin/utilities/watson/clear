@@ -3,13 +3,14 @@ set -e
 
 [[ ! $(which watson) ]] && fail "ERROR: Watson is not installed. Aborting."
 
-if [ $(os) == 'macos' ]; then
-  frames_file="$HOME/Library/Application Support/watson/frames"
-else
-  frames_file="$HOME/.config/watson/frames"
-fi
+frames_file=
+[ -n "$WATSON_DIR" ] && frames_file="$WATSON_DIR/frames"
+[ -z "$frames_file" ] && [ -n "$XDG_CONFIG_HOME" ] && frames_file="$XDG_CONFIG_HOME/watson/frames"
+[ -z "$frames_file" ] && frames_file="$HOME/.config/watson/frames"
 
-[[ ! -f $frames_file ]] && fail "ERROR: Watson frames file not found. Aborting."
+[ ! -f "$frames_file" ] && fail "ERROR: Watson frames file not found. Aborting."
 
 # Wipe the file clean; Using >| to override my default noclobber setting.
+# shellcheck disable=2188
 >|"$frames_file"
+unset frames_file
