@@ -108,8 +108,8 @@ preface() {
   fi
 
   echo
-  echo "You can stop the installation at any time by pressing $(black Ctrl+c),"
-  echo "but depending on where you opt out you might need to run the uninstall script."
+  echo "You can stop the installation at any time by pressing $(black Ctrl+c)."
+  echo "You might need to run the uninstall script if you do."
   echo
   echo "You can review what the remote install does on GitHub:"
   echo
@@ -133,22 +133,25 @@ main() {
   REMOTE_FILES=()
   REMOTE_FILES+=("bash/env/xdg.sh")
   REMOTE_FILES+=("bash/colors.sh")
-  cp setup/remote/preflight.sh "$INSTALLER_TMP_HOME"/
-  cp setup/remote/ask_for_repo_namespace.sh "$INSTALLER_TMP_HOME"/
-  cp setup/remote/download_dotfiles.sh "$INSTALLER_TMP_HOME"/
-  cp setup/remote/install_dotfiles.sh "$INSTALLER_TMP_HOME"/
-  cp setup/remote/configure_env.sh "$INSTALLER_TMP_HOME"/
+  # REMOTE_FILES+=("setup/remote/preflight.sh")
   # REMOTE_FILES+=("setup/remote/ask_for_repo_namespace.sh")
   # REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
   # REMOTE_FILES+=("setup/remote/install_dotfiles.sh")
   # REMOTE_FILES+=("setup/remote/configure_env.sh")
 
   for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
+
+  cp setup/remote/preflight.sh "$INSTALLER_TMP_HOME"/
+  cp setup/remote/ask_for_repo_namespace.sh "$INSTALLER_TMP_HOME"/
+  cp setup/remote/download_dotfiles.sh "$INSTALLER_TMP_HOME"/
+  cp setup/remote/install_dotfiles.sh "$INSTALLER_TMP_HOME"/
+  cp setup/remote/configure_env.sh "$INSTALLER_TMP_HOME"/
   source "$INSTALLER_TMP_HOME"/preflight.sh
   source "$INSTALLER_TMP_HOME"/ask_for_repo_namespace.sh
   source "$INSTALLER_TMP_HOME"/download_dotfiles.sh
   source "$INSTALLER_TMP_HOME"/install_dotfiles.sh
   source "$INSTALLER_TMP_HOME"/configure_env.sh
+
   cleanup
 }
 
