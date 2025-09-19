@@ -1,4 +1,5 @@
-DEFAULT_REPO_PATH="$HOME/Repositories/$REPO_URI"
+REPO_NAMESPACE="$HOME/Repositories"
+DEFAULT_DOTFILES_HOME="$REPO_NAMESPACE/$REPO_URI"
 
 path_writeable() {
   local path="$1"
@@ -58,11 +59,14 @@ validate_path() {
 ask_for_repo_namespace() {
   reset_prompt
 
-  echo "I keep my dotfiles repo in $(black "${DEFAULT_REPO_PATH/$HOME/\~}")."
+  echo "I keep my GitHub repositories in $(black "${REPO_NAMESPACE/$HOME/\~}")."
+  echo "It has subfolders by GitHub username, which contain subfolders per repository."
+  echo
+  echo "That means I keep my dotfiles repo in $(black "${DEFAULT_DOTFILES_HOME/$HOME/\~}")."
   echo
 
   local path="$1"
-  [ "$path" == "" ] && path="$DEFAULT_REPO_PATH"
+  [ "$path" == "" ] && path="$DEFAULT_DOTFILES_HOME"
   [[ "$path" =~ "~" ]] && path="${path/\~/$HOME}"
   path="${path#\\}"
 
@@ -94,9 +98,10 @@ echo
 
 save_cursor
 
-ask_for_repo_namespace "$DEFAULT_REPO_PATH"
+ask_for_repo_namespace "$DEFAULT_DOTFILES_HOME"
 export DOTFILES_REPO_HOME
-unset DEFAULT_REPO_PATH
+export REPO_NAMESPACE
+unset DEFAULT_REPO_NAMESPACE
 
 # shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
