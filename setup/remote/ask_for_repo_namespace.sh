@@ -27,6 +27,7 @@ path_prohibited() {
 }
 
 validate_path() {
+  local repo
   local path="$1"
 
   if path_prohibited "$path"; then
@@ -37,10 +38,12 @@ validate_path() {
     else
       if [ -n "$(ls -A "$path")" ]; then
         if [ -f "$path/.git/config" ]; then
-          if grep -q "$REPO_URI" "$path/.git/config"; then
+          repo="$(git -C "$path" repo)"
+
+          if [ "$repo" == "$REPO_URI" ]; then
             echo -e "✓ $(fgreen "That folder already contains my dotfiles, so I'll update them instead.")\n"
           else
-            echo -e "! $(fyellow "Looks like that folder already contains the \`$REPO_URI\` repository.")\n"
+            echo -e "!$FGY Looks like that folder already contains the $(black "$repo")$FGY repository$CNONE\n"
           fi
         else
           echo -e "! $(fyellow "That folder is not empty. I might overwrite files. Are you sure?")\n"
