@@ -1,17 +1,20 @@
 #!/usr/bin/env bash
 
+# TODO: This is very old and needs a better/more configurable solution.
+# I moved the SCREENSHOT_* env vars from my global env file in here for now.
+
+###############################################################################
+
 # Stops further execution after any error.
 set -e
 [[ $(os) != 'macos' ]] && fail "ERROR: This command only works on macos, for now. Sorry!"
 
-# Explicitly export all environment variables from the .env file here to make
-# sure we have our $SCREENSHOT_* vars available.
-eval "$(source_env)"
-
-# TODO: More explanation what each variable represents.
-[[ -z $SCREENSHOT_HOST ]] && fail "ERROR: No host defined in \$SCREENSHOT_HOST."
-[[ -z $SCREENSHOT_URL ]] && fail "ERROR: No destination URL defined in \$SCREENSHOT_URL."
-[[ -z $SCREENSHOT_REMOTE_PATH ]] && fail "ERROR: No remote path defined in \$SCREENSHOT_REMOTE_PATH."
+SCREENSHOT_HOST=davelens
+SCREENSHOT_URL=https://www.davelens.be/screenshots
+SCREENSHOT_REMOTE_PATH=screenshots
+# [[ -z $SCREENSHOT_HOST ]] && fail "ERROR: No host defined in \$SCREENSHOT_HOST."
+# [[ -z $SCREENSHOT_URL ]] && fail "ERROR: No destination URL defined in \$SCREENSHOT_URL."
+# [[ -z $SCREENSHOT_REMOTE_PATH ]] && fail "ERROR: No remote path defined in \$SCREENSHOT_REMOTE_PATH."
 
 filename="$(date +%Y-%m-%d-%H-%M-%S).jpg"
 full_path=$TMPDIR/$filename
