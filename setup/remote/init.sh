@@ -11,6 +11,14 @@ fail() {
   exit "${2-1}"
 }
 
+macos_needs_newer_bash() {
+  if [ "$(uname)" = "Darwin" ]; then
+    [ -n "$BASH_VERSION" ] && [ "${BASH_VERSINFO[0]}" -lt 4 ] && return 1
+  fi
+
+  return 0
+}
+
 get_cursor_pos() {
   # Save current terminal settings
   local old_stty
@@ -92,6 +100,13 @@ preface() {
   echo "2. Symlink the necessary files to their required locations."
   echo "3. Ask you for some personal data, such as your GitHub username and e-mail address."
   echo "4. Use said data to configure some tooling, like $(black git) and $(black gh)."
+
+  if macos_needs_newer_bash; then
+    echo
+    echo -n "! ${FGY}On macos it also installs $(black brew) "
+    echo -e -n "${FGY}and the latest version of Bash.$CNONE\n"
+  fi
+
   echo
   echo "You can stop the installation at any time by pressing $(black Ctrl+c),"
   echo "but depending on where you opt out you might need to run the uninstall script."
@@ -118,6 +133,7 @@ main() {
   REMOTE_FILES=()
   REMOTE_FILES+=("bash/env/xdg.sh")
   REMOTE_FILES+=("bash/colors.sh")
+  cp setup/remote/preflight.sh "$INSTALLER_TMP_HOME"/
   cp setup/remote/ask_for_repo_namespace.sh "$INSTALLER_TMP_HOME"/
   cp setup/remote/download_dotfiles.sh "$INSTALLER_TMP_HOME"/
   cp setup/remote/install_dotfiles.sh "$INSTALLER_TMP_HOME"/
@@ -128,6 +144,7 @@ main() {
   # REMOTE_FILES+=("setup/remote/configure_env.sh")
 
   for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
+  source "$INSTALLER_TMP_HOME"/preflight.sh
   source "$INSTALLER_TMP_HOME"/ask_for_repo_namespace.sh
   source "$INSTALLER_TMP_HOME"/download_dotfiles.sh
   source "$INSTALLER_TMP_HOME"/install_dotfiles.sh
