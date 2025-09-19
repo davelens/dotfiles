@@ -63,7 +63,7 @@ write_gitconfig_env_file() {
 }
 
 main() {
-  if [ "$(uname)" == "Darwin" ]; then
+  if macos; then
     use_bitwarden
   else
     ask_questions

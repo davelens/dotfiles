@@ -11,12 +11,18 @@ fail() {
   exit "${2-1}"
 }
 
-macos_needs_newer_bash() {
-  if [ "$(uname)" = "Darwin" ]; then
-    [ -n "$BASH_VERSION" ] && [ "${BASH_VERSINFO[0]}" -lt 4 ] && return 1
-  fi
+macos() {
+  [ "$(uname)" == "Darwin" ] && return 0
+  return 1
+}
 
-  return 0
+macos_needs_newer_bash() {
+  macos &&
+    [ -n "$BASH_VERSION" ] &&
+    [ "${BASH_VERSINFO[0]}" -lt 4 ] &&
+    return 0
+
+  return 1
 }
 
 get_cursor_pos() {
@@ -93,17 +99,22 @@ preface() {
   save_cursor
 
   echo
-  echo "Hi! My name's Dave. Looks like you're about to install my dotfiles."
+  underline "DAVE'S DOTFILES INSTALLATION"
   echo
-  echo "This script will do the following:"
+  echo "Steps:"
   echo "1. Clone the dotfiles repository somewhere on your system. You choose where."
-  echo "2. Symlink the necessary files to their required locations."
-  echo "3. Ask you for some personal data, such as your GitHub username and e-mail address."
-  echo "4. Use said data to configure some tooling, like $(black git) and $(black gh)."
+  echo "2. Symlink the necessary files and folders to their relevant paths."
+  echo -n "3. Configure $(black git) and $(black gh) "
+
+  if macos; then
+    echo -en "using data from my Bitwarden vault.\n"
+  else
+    echo -en "by asking for the required data.\n"
+  fi
 
   if macos_needs_newer_bash; then
     echo
-    echo -n "! ${FGY}On macos it also installs $(black brew) "
+    echo -n "! ${FGY}This is a macos machine so it also installs $(black brew) "
     echo -e -n "${FGY}and the latest version of Bash.$CNONE\n"
   fi
 
