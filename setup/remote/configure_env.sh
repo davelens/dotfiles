@@ -1,12 +1,8 @@
 ask_questions() {
+  read -rp "GitHub username: " GITHUB_USERNAME
+  read -rp "GitHub email: " GITHUB_EMAIL
+  read -rsp "GitHub personal access token: " GITHUB_PERSONAL_ACCESS_TOKEN
   echo
-  echo "TODO: Ask for:"
-  echo "- Github username"
-  echo "- Github email"
-  echo "- Git signing key"
-  echo "- GitHub personal access token"
-  echo "TODO: call \`write_dots_env_file\`"
-  echo "TODO: Generate $XDG_CONFIG_HOME/git/config.env using setup/gitconfig.env.template"
   echo
 }
 
@@ -34,7 +30,6 @@ use_bitwarden() {
   GITHUB_PERSONAL_ACCESS_TOKEN=$(echo "$github_data" | jq -r '.[].fields | map(select(.name == "Personal access token"))[0].value')
   GITHUB_USERNAME=$(echo "$github_data" | jq -r '.[].fields | map(select(.name == "Public username"))[0].value')
   GITHUB_EMAIL=$(echo "$github_data" | jq -r '.[].login.username')
-  GITHUB_SIGNING_KEY="$HOME/.ssh/id_rsa.pub"
 }
 
 write_dots_env_file() {
@@ -68,6 +63,8 @@ main() {
   else
     ask_questions
   fi
+
+  [ -f "$HOME"/.ssh/id_rsa.pub ] && GITHUB_SIGNING_KEY="$HOME/.ssh/id_rsa.pub"
 
   export GITHUB_EMAIL
   export GITHUB_USERNAME
