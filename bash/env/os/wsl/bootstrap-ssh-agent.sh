@@ -14,4 +14,4 @@ fi
 # Does two things:
 # 1. Make sure keychain doesn't create files in the home dir
 # 2. Store / keep alive our initialized ssh-agent
-keychain --inherit any --agents ssh id_rsa --absolute --dir "${XDG_RUNTIME_DIR}keychain" --quiet
+keychain --ssh-allow-forwarded id_rsa --absolute --dir "${XDG_RUNTIME_DIR}keychain" --quiet
