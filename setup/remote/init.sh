@@ -99,7 +99,7 @@ preface() {
   save_cursor
 
   echo
-  underline "DAVE'S DOTFILES INSTALLATION"
+  underline "INSTALLING https://github.com/$REPO_URI"
   echo
   echo "Steps:"
   echo "1. Clone the dotfiles repository somewhere on your system. You choose where."
