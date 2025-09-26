@@ -62,6 +62,7 @@ brew "entr"                           # File change listener
 brew "fastfetch"                      # System information tool
 brew "fd"                             # File search
 brew "fdupes"                         # Duplicate file finder
+brew "figlet"                         # Text to ASCII generator
 brew "fswatch"                        # Directory change listener
 brew "fzf"                            # Fuzzy finder
 brew "gawk"                           # awk, but the GNU version
