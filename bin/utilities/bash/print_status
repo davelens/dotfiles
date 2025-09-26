@@ -94,7 +94,7 @@ main() {
     esac
   done
 
-  [ $clearline -eq 1 ] && $cursor move-up clear-line
+  [ $clearline -eq 1 ] && $cursor move-up:1 clear-down
 
   [ -n "$prefix" ] && result="$prefix"
   [ -n "$icon" ] && result+="$(icon) "
