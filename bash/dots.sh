@@ -6,7 +6,7 @@
 # TODO: Add a mild warning when the salt file hasn't changed for a while.
 
 # If the salt file is gone, we don't want to keep the old value.
-if [[ ! -f "$DOTFILES_SALT_PATH" ]]; then
+if [ ! -f "$DOTFILES_SALT_PATH" ]; then
   unset DOTFILES_SALT
   unset BW_SESSION
 fi
