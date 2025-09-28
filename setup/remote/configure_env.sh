@@ -24,7 +24,13 @@ bw_session() {
 }
 
 use_bitwarden() {
-  ! command -v bw >/dev/null && brew install bitwarden-cli
+  if command -v bw >/dev/null; then
+    if [ -n "$(brew outdated bitwarden-cli)" ]; then
+      brew upgrade bitwarden-cli
+    fi
+  else
+    brew install bitwarden-cli
+  fi
 
   github_data="$(bw_github)"
   GITHUB_PERSONAL_ACCESS_TOKEN=$(echo "$github_data" | jq -r '.[].fields | map(select(.name == "Personal access token"))[0].value')
@@ -58,7 +64,7 @@ write_gitconfig_env_file() {
 }
 
 main() {
-  if macos; then
+  if command -v bw >/dev/null; then
     use_bitwarden
   else
     ask_questions
