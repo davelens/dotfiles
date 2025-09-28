@@ -1,6 +1,6 @@
-########################################################################
+###############################################################################
 # I try and adhere to the [XDG Base Directory Specification](https://xdgbasedirectoryspecification.com/).
-########################################################################
+###############################################################################
 
 # These names are "reserved" in XDG, so make sure the dirs exist.
 export XDG_CACHE_HOME="$HOME/.cache"

@@ -51,7 +51,8 @@ paths_to_add+=(
   /{,s}bin           # *nix shells, bins, and basic commands like ls, cp,...
 )
 
-if [ "$("$XDG_BIN_HOME/os")" == "windows" ] >/dev/null; then
+# Add all system32 executables on WSL.
+if [ "$("$XDG_BIN_HOME"/os)" == "windows" ] >/dev/null; then
   paths_to_add+=(
     /mnt/c/Windows/System32
     /mnt/c/Windows/System32/WindowsPowerShell/v1.0
