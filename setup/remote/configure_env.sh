@@ -81,11 +81,11 @@ main() {
   write_gitconfig_env_file
 }
 
-save_cursor
-
 echo
 echo "4. $(underline "CONFIGURE ENVIRONMENT")"
 echo
+
+save_cursor
 
 main "$@"
 
