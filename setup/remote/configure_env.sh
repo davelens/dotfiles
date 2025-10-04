@@ -50,7 +50,7 @@ write_dots_env_file() {
     GITHUB_USERNAME \
     GITHUB_PERSONAL_ACCESS_TOKEN \
     GITHUB_SIGNING_KEY |
-    sed 's/declare -[-x] //g' >>"$env_file"
+    sed 's/declare -[-x] /export /g' >>"$env_file"
 }
 
 write_gitconfig_env_file() {
