@@ -75,6 +75,7 @@ brew "git-delta"                      # Diff tool
 brew "git-lfs"                        # Git system to version large files
 brew "gnu-sed"                        # sed, but the GNU version
 brew "gnupg"                          # GNU Privacy Guard
+brew "pastel"                         # Terminal colour manipulation
 brew "pkgconf"                        # Helps configure compiler/linker flags
 brew "gpgme"                          # GnuPG library access
 brew "gum"                            # Fancy input processing for the terminal
