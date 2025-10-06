@@ -9,6 +9,7 @@ tap "gromgit/brewtils"                # taproom
 
 brew "ack"                            # Grep-like text finder
 brew "act"                            # Run GitHub Actions locally
+brew "atuin"                          # Shell history with syncing
 brew "zstd"                           # dep for elixir, erlang,...
 brew "openssl@3"                      # dep for pretty much everything
 brew "asciinema"                      # Records shareable terminal sessions
