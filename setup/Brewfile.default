@@ -5,6 +5,7 @@ tap "github/gh"                       # gh
 tap "puma/puma"                       # Puma
 tap "sst/tap"                         # Opencode
 tap "uptech/oss"                      # alt
+tap "gromgit/brewtils"                # taproom
 
 brew "ack"                            # Grep-like text finder
 brew "act"                            # Run GitHub Actions locally
@@ -118,6 +119,7 @@ brew "wget"                           # Network downloader
 brew "yarn"                           # JavaScript package manager
 brew "yt-dlp"                         # YouTube video downloader
 brew "yq"                             # Convert YAML to JSON
+brew "gromgit/brewtils/taproom"       # Manage Homebrew packages
 brew "browsh-org/browsh/browsh"       # TUI webpage browser
 brew "cormacrelf/tap/dark-notify"     # Display mode change listener
 brew "cxreiff/tap/ttysvr"             # Terminal screensaver, win95 style
