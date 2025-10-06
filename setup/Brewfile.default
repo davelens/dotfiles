@@ -110,6 +110,7 @@ brew "sd"                             # Find/replace tool
 brew "shellcheck"                     # Shell script analysis tool
 brew "spicetify-cli"                  # Provides theming for Spotify
 brew "starship"                       # Customizable shell prompt
+brew "tealdeer"                       # TL;DR client for man pages
 brew "tmux"                           # Terminal multiplexer
 brew "tree"                           # Dumps visual file trees for folders
 brew "tree-sitter"                    # Parser generator and library
