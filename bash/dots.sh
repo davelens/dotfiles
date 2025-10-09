@@ -1,23 +1,23 @@
-########################################################################
+###############################################################################
 # ENCRYPTED SALT / BITWARDEN (WIP)
-########################################################################
+###############################################################################
 # Salt is used to encrypt and decrypt sensitive values or files with a passkey.
 #
 # TODO: Add a mild warning when the salt file hasn't changed for a while.
 
 # If the salt file is gone, we don't want to keep the old value.
-if [[ ! -f "$DOTFILES_SALT_PATH" ]]; then
+if [ ! -f "$DOTFILES_SALT_PATH" ]; then
   unset DOTFILES_SALT
   unset BW_SESSION
 fi
 
-########################################################################
+###############################################################################
 # TODO: There is bug with salt generation where undesired characters end
 # up as part of the salt. I think forward slashes are the main issue.
 # As a potential solution, I should continue generating a salt until a "clean"
 # value is born. That should solve all lingering inconsistencies with salt
 # generation!
-########################################################################
+###############################################################################
 
 #
 # Outside of tmux, we ask for the salt passkey once and store it in an ENV var.

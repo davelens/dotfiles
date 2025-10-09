@@ -1,6 +1,6 @@
-##############################################################################
+###############################################################################
 # Env settings and exports related to locale/language settings.
-##############################################################################
+###############################################################################
 
 # General case-insensitive globbing
 shopt -s nocaseglob
@@ -19,6 +19,8 @@ for lang in en_US en_GB en; do
   for locale in "$lang".{UTF-8,utf8}; do
     if [[ "$available_locales" =~ $locale ]]; then
       export LC_ALL="$locale"
+      export LC_CTYPE="en_US.UTF-8"
+      export LC_COLLATE="en_US.UTF-8"
       export LANG="$lang"
       break 2
     fi

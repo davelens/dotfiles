@@ -40,13 +40,13 @@ ensure_brew_dependency() {
     [[ -z $command || $command == "$package" ]] && command=$name
 
     if [[ ! $(command -v "$command") ]]; then
-      print_status -n "Installing $package ... "
+      $print_status -n "Installing $package ... "
       output=$(HOMEBREW_COLOR=1 brew install --quiet "$name" 2>&1 >/dev/null)
 
       if [[ $? -gt 0 ]]; then
-        print_status -n -i error "Failed to install package '$package': $output"
+        $print_status -n -i error "Failed to install package '$package': $output"
       else
-        print_status -i ok "Installed $package."
+        $print_status -i ok "Installed $package."
       fi
     fi
   done
@@ -85,7 +85,7 @@ green() {
 }
 
 interrupt_handler() {
-  print_status -i error "Aborted."
+  $print_status -i error "Aborted."
   exit 1
 }
 

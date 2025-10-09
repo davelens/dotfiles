@@ -29,26 +29,26 @@ MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_HOME/tmp/$name
 call_openssl() {
   local string="openssl aes-256-cbc -e -pbkdf2"
 
-  if [[ -z "$passkey" ]]; then
+  if [ -z "$passkey" ]; then
     # TODO: Run command to generate and set the salt.
     passkey="$DOTFILES_SALT"
   fi
 
-  [[ -n $passkey ]] && string+=" -k $passkey"
+  [ -n "$passkey" ] && string+=" -k $passkey"
   string+=" -in $input"
 
-  if [[ -n $output ]]; then
+  if [ -n "$output" ]; then
     string+=" -out $output"
   fi
 
-  cmd "$string"
+  $string
 }
 
 main() {
   # Fail early if no arguments are given.
   [[ $# -eq 0 ]] && usage && exit 0
 
-  local input output passkey
+  local input output passkey tempfile
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -73,8 +73,9 @@ main() {
         input="$(cat /dev/stdin)"
       fi
 
-      local tempfile=$(mktemp -p "$MYTMPDIR")
-      printf "%s" "$input" >$tempfile
+      tempfile=$(mktemp -p "$MYTMPDIR")
+
+      printf "%s" "$input" >"$tempfile"
       input="$tempfile"
       shift
       ;;
@@ -103,6 +104,6 @@ main() {
   call_openssl
 }
 
-#############################################################################
+###############################################################################
 unset name
 main "$@"

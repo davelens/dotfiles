@@ -26,6 +26,8 @@
     $BASH_PROFILE: config/bash_profile
     $XDG_CONFIG_HOME/aerospace: config/macos/aerospace
     $XDG_CONFIG_HOME/borders: config/macos/borders
+    $XDG_CONFIG_HOME/btop: config/btop
+    $XDG_CONFIG_HOME/dialog/dialogrc: config/dialogrc
     $XDG_CONFIG_HOME/git/config: config/gitconfig
     $XDG_CONFIG_HOME/git/ignore: config/gitignore_global
     $XDG_CONFIG_HOME/irb: config/irb

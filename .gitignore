@@ -1,6 +1,7 @@
 .DS_Store
 .env
 .install_path
+.notes
 dotbot
 bash/env/autocompletions/iterm2_shell_integration.bash
 bash/private

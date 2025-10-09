@@ -1,6 +1,6 @@
-##############################################################################
+###############################################################################
 # Env settings and exports related to the command history in bash.
-##############################################################################
+###############################################################################
 
 # When the command contains an invalid history operation (for instance when
 # using an unescaped "!" (I get that a lot in quick e-mails and commit

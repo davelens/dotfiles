@@ -1,6 +1,6 @@
-########################################################################
+###############################################################################
 # I try and adhere to the [XDG Base Directory Specification](https://xdgbasedirectoryspecification.com/).
-########################################################################
+###############################################################################
 
 # These names are "reserved" in XDG, so make sure the dirs exist.
 export XDG_CACHE_HOME="$HOME/.cache"
@@ -47,6 +47,8 @@ export BASH_PROFILE="$XDG_CONFIG_HOME/bash/bash_profile"
 export BUNDLE_USER_CACHE="$XDG_CACHE_HOME/bundle"
 export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME/bundle/config"
 export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME/bundle"
+export CARGO_HOME="$XDG_DATA_HOME"/cargo
+export DIALOGRC="${XDG_CONFIG_HOME}/dialog/dialogrc"
 export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
 export HISTFILE="$XDG_STATE_HOME/bash/history"
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"

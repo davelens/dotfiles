@@ -24,7 +24,7 @@ usage() {
   echo "  -nc|--no-clear              Does not clear the line before output."
 }
 
-#############################################################################
+###############################################################################
 
 icon() {
   case "$icon" in
@@ -94,7 +94,7 @@ main() {
     esac
   done
 
-  [ $clearline -eq 1 ] && $cursor move-start clear-line
+  [ $clearline -eq 1 ] && $cursor move-up:1 clear-down
 
   [ -n "$prefix" ] && result="$prefix"
   [ -n "$icon" ] && result+="$(icon) "
@@ -102,6 +102,6 @@ main() {
   echo "$result"
 }
 
-#############################################################################
+###############################################################################
 unset name
 main "$@"

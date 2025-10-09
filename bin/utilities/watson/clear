@@ -1,15 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-[[ ! $(which watson) ]] && fail "ERROR: Watson is not installed. Aborting."
-
-if [ $(os) == 'macos' ]; then
-  frames_file="$HOME/Library/Application Support/watson/frames"
-else
-  frames_file="$HOME/.config/watson/frames"
-fi
-
-[[ ! -f $frames_file ]] && fail "ERROR: Watson frames file not found. Aborting."
-
+[ ! "$(which watson)" ] && fail "ERROR: Watson is not installed. Aborting."
 # Wipe the file clean; Using >| to override my default noclobber setting.
->|"$frames_file"
+# shellcheck disable=2188
+>|"$(utility watson frames-path)"

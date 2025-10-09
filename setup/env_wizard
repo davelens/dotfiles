@@ -13,7 +13,7 @@ export DOTFILES_REPO_HOME=$(dirname "$(dirname $(realpath "$0"))")
 # Make sure we have all necessary paths available.
 source "$DOTFILES_REPO_HOME/bash/env/xdg.sh"
 
-#############################################################################
+###############################################################################
 # This exposes all the box draw functions to this command.
 # This is much faster than calling `utility bash box` for every draw action.
 source "$DOTFILES_REPO_HOME/bin/utilities/bash/box"
@@ -36,7 +36,7 @@ print_status() {
   $print_status -hl $BOX_HIGHLIGHT "$@"
   _box_border_right
 }
-#############################################################################
+###############################################################################
 
 intro() {
   _box_top

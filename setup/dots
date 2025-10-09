@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154
 set -e
+
+# TODO: Change the `dots` command to git init DOTFILES_REPO_HOME, if necessary.
 
 source "$DOTFILES_CONFIG_HOME"/env
 
@@ -56,7 +59,7 @@ update() {
   fi
 
   # Pull the latest changes
-  $print_status -n "Pulling in changes ..."
+  $print_status -nc "Pulling in changes ..."
 
   if git -C "$DOTFILES_REPO_HOME" fetch origin >/dev/null; then
     if ! git -C "$DOTFILES_REPO_HOME" merge --no-commit origin/"$(git -C "$DOTFILES_REPO_HOME" b)" &>>"$log_file"; then
@@ -69,7 +72,7 @@ update() {
   # Run the installer if no errors occurred
   if [ $error_occurred -eq 0 ]; then
     $print_status -i ok "Files updated to latest version"
-    $print_status -n "Running installer ..."
+    $print_status -nc "Running installer ..."
     "$DOTFILES_REPO_HOME/setup/install" &>>"$log_file" || error_occurred=1
   fi
 

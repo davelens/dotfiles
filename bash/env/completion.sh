@@ -1,9 +1,9 @@
-########################################################################
+###############################################################################
 # Env settings and configuration related to bash's completion.
-########################################################################
+###############################################################################
 
 # Set up fzf key bindings and fuzzy completion
-[[ ! $(which fzf) ]] && eval "$(fzf --bash)"
+[[ $(which fzf) ]] && eval "$(fzf --bash)"
 
 # Load brew's bash_completion, if available.
 if command -v brew >/dev/null; then

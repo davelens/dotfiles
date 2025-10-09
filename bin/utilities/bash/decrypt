@@ -36,14 +36,14 @@ call_openssl() {
   [[ -n $passkey ]] && string+=" -k $passkey"
   string+=" -in $input"
 
-  cmd "$string"
+  $string
 }
 
 main() {
   # Fail early if no arguments are given.
   [[ $# -eq 0 ]] && usage && exit 0
 
-  local input output passkey
+  local input output passkey tempfile
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -68,8 +68,8 @@ main() {
         input="$(cat /dev/stdin)"
       fi
 
-      local tempfile=$(mktemp -p "$MYTMPDIR")
-      printf "%s" "$input" >$tempfile
+      tempfile=$(mktemp -p "$MYTMPDIR")
+      printf "%s" "$input" >"$tempfile"
       input="$tempfile"
       shift
       ;;
@@ -93,6 +93,6 @@ main() {
   call_openssl
 }
 
-#############################################################################
+###############################################################################
 unset name
 main "$@"

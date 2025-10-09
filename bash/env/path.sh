@@ -1,35 +1,58 @@
-########################################################################
+###############################################################################
 # $PATH configuration
-########################################################################
+###############################################################################
 
-# List the directories we want to add to the PATH variable, if they exist.
-# The order is important, as the first directory in the list will be the first
-# one to be searched (and used) for binaries.
+# Adds all necessary directories to the PATH variable, if they exist.
 #
-# So Homebrew binaries are typically installed in the Cellar/ directory.
-# If a package has multiple possible versions however, it will get symlinked
-# into the opt/ directory (e.g. python@3, mysql@8.4, ...).
+# The order is important, as the first directory in the list will be the first
+# one to be searched (and used) for binaries. The order is:
+#
+#   Package managers > user made bins > system bins > everything else
+
+# About mysql@8.4: Homebrew binaries are typically installed in the Cellar/
+# directory. If a package has multiple possible versions however, it will get
+# symlinked into the opt/ directory (e.g. python@3, mysql@8.4, ...).
 #
 # We *could* load in all homebrew binaries in opt/, but that would be a LOT
-# of binaries added to $PATH one by one. That can't be healthy for the shell,
-# and at the very least it's not readable for humans. Instead, we add specific
-# packages like mysql to $PATH manually.
+# of binaries added to $PATH one by one. That can't be healthy, but here's how
+# you'd do it:
 #
-# If you want to load in all of them however, you can use this:
+#   $BREW_PATH/opt/*/bin
 #
-#   $BREW_PATH/opt/*/bin # All Homebrew binaries
+# Another alternative is to set up our own symlinks into our $XDG_BIN_HOME.
+# This would benefit from a helper that targets a source dir and symlinks all
+# executables into a target dir. But that's a lot of effort for a single tool.
 #
-paths_to_add=(
-  "${ASDF_DATA_DIR:-$XDG_DATA_HOME/asdf}"/shims # Always prefer asdf shims
-  "$BREW_PATH"/{,s}bin                  # unbound in sbin/, most Homebrew binaries in bin/
-  "$BREW_PATH"/opt/mysql@8.4/bin        # Brew wants you to use `brew services`, but I want direct access
-  "$XDG_BIN_HOME"                       # User-made and controlled binaries
-  /usr/local/{,s}bin                    # Docker, npm, Private Internet Access,...
-  /usr/{,s}bin                          # User specific system binaries. A *lot* of them.
-  /{,s}bin                              # *nix shells and binaries, and basic commands like ls, cp, echo,...
+# For now though, I add specific packages like mysql to $PATH manually.
+
+paths_to_add=()
+
+if [ -d "$ASDF_DATA_DIR" ]; then
+  paths_to_add+=("${ASDF_DATA_DIR:-$XDG_DATA_HOME/asdf}"/shims)
+fi
+
+if [ -d "$CARGO_HOME" ]; then
+  paths_to_add+=("${CARGO_HOME:-$XDG_DATA_HOME/cargo}"/bin)
+fi
+
+# Brew needs to go before /usr/bin e.a.
+if [ -n "$BREW_PATH" ]; then
+  paths_to_add+=(
+    "$BREW_PATH"/{,s}bin           # unbound in sbin, most other stuff in bin
+    "$BREW_PATH"/opt/mysql@8.4/bin # Make available mysqldump, mysql.server,...
+  )
+fi
+
+# User + system defined
+paths_to_add+=(
+  "$XDG_BIN_HOME"    # User-made and controlled binaries
+  /usr/local/{,s}bin # Docker, npm, kubernetes,...
+  /usr/{,s}bin       # User specific system binaries. A *lot* of them.
+  /{,s}bin           # *nix shells, bins, and basic commands like ls, cp,...
 )
 
-if [ "$("$XDG_BIN_HOME/os")" == "windows" ] >/dev/null; then
+# Add all system32 executables on WSL.
+if [ "$("$XDG_BIN_HOME"/os 2>/dev/null)" == "windows" ]; then
   paths_to_add+=(
     /mnt/c/Windows/System32
     /mnt/c/Windows/System32/WindowsPowerShell/v1.0
