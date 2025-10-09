@@ -43,7 +43,7 @@ ensure_brew_dependency() {
       $print_status -n "Installing $package ... "
       output=$(HOMEBREW_COLOR=1 brew install --quiet "$name" 2>&1 >/dev/null)
 
-      if [[ $? -gt 0 ]]; then
+      if test $? -gt 0; then
         $print_status -n -i error "Failed to install package '$package': $output"
       else
         $print_status -i ok "Installed $package."
