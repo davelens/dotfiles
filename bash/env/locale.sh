@@ -12,19 +12,19 @@ shopt -s no_empty_cmd_completion
 # Note that you can still override this with ">|".
 set -o noclobber
 
-# Prefer English and use UTF-8.
-printf -v available_locales ' %s ' "$(locale -a)"
-
+# Prefer English and use UTF-8. The loop ensures the shell uses a locale that
+# supports UTF-8 encoding and matches the user's language preference.
 for lang in en_US en_GB en; do
-  for locale in "$lang".{UTF-8,utf8}; do
-    if [[ "$available_locales" =~ $locale ]]; then
-      export LC_ALL="$locale"
-      export LC_CTYPE="en_US.UTF-8"
-      export LC_COLLATE="en_US.UTF-8"
-      export LANG="$lang"
+  for encoding in UTF-8 utf8; do
+    locale="${lang}.${encoding}"
+    if locale -a | grep -qx "$locale"; then
+      export LC_ALL="$locale"     # Overrides all other locale settings
+      export LC_CTYPE="$locale"   # Set character encoding type
+      export LC_COLLATE="$locale" # String sorting and comparison
+      export LANG="$locale"       # Default locale for programs
       break 2
     fi
   done
 done
 
-unset available_locales lang locale
+unset lang encoding locale
