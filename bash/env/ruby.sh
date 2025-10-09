@@ -37,6 +37,12 @@ export RUBY_YJIT_ENABLE=1
 export RUBY_YJIT_STATS=0
 export RUBY_YJIT_MIN_CODE_SIZE=16384
 
+# Lower value triggers major GC (old objects) more often, reducing memory usage
+# but increasing CPU load. Raise for better performance (less frequent GC),
+# lower for less memory usage. Default is 2.0; 1.5 is a good starting point for
+# local development.
+export RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR=1.5
+
 # Make sure bootsnap caches to the right location.
 export BOOTSNAP_CACHE_DIR="$XDG_CACHE_HOME"
 
