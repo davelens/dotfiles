@@ -48,6 +48,7 @@ export BUNDLE_USER_CACHE="$XDG_CACHE_HOME/bundle"
 export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME/bundle/config"
 export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME/bundle"
 export CARGO_HOME="$XDG_DATA_HOME"/cargo
+export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME"/claude
 export DIALOGRC="${XDG_CONFIG_HOME}/dialog/dialogrc"
 export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
 export HISTFILE="$XDG_STATE_HOME/bash/history"
