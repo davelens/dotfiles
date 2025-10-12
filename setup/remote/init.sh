@@ -68,8 +68,13 @@ interrupt_handler() {
 load_remote_file() {
   local filename="${1##*/}"
   local local_file="$INSTALLER_TMP_HOME/$filename"
-  curl -so "$local_file" \
-    https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master/"$1"
+  local base_url="https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master"
+
+  if [ "$DOTS_DEBUG" = "1" ]; then
+    base_url="http://localhost:8000"
+  fi
+
+  curl -so "$local_file" "$base_url/$1"
   source "$local_file"
 }
 
@@ -141,6 +146,11 @@ preface() {
   *) preface ;;
   esac
 }
+
+# To make and test changes locally I run a simple http server on port 8000,
+# and then call this command:
+#
+# DOTS_DEBUG=1 bash <(curl -s http://localhost:8000/setup/remote/init.sh)
 
 main() {
   preface
