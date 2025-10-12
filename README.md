@@ -11,15 +11,16 @@ As for context: I've been (mostly) a backend developer for web apps in my career
 * Included my Vim setup until 2020, when I moved it to [a separate repository](https://github.com/davelens/dotvim)
 
 ## Installation
-You can clone this repo wherever you want, but this assumes you'll save the files in `~/.dotfiles`:
-```bash
-git clone git@github.com:davelens/dotfiles.git ~/.dotfiles
-~/.dotfiles/setup/install
-```
-### User-specific configuration and Bitwarden
-Because [Bitwarden](https://bitwarden.com/) is my password manager of choice, I tailored the installer to ask you if you want to use `bitwarden-cli` to retrieve some data related to your Github account and `~/.gitconfig`.
+**DISCLAIMER**: This script is tailor made ***for me***, and still in development.
 
-This is entirely **optional**; you will still get prompted to enter the data manually.
+```bash
+curl -fsSL https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master/setup/remote/init.sh | bash
+```
+
+### A note on my user-specific configuration and Bitwarden
+I keep a couple of sensitive data points in [Bitwarden](https://bitwarden.com/), my password and secrets manager of choice. The remote install script will look for a `bitwarden-cli` install, and attempt to unlock your vault by asking your master password in order to retrieve said data. 
+
+Without Bitwarden, it will fall back to a prompt asking for the data points one by one.
 
 ### Uninstall
 ```bash
