@@ -1,23 +1,24 @@
 ask_questions() {
-  read -rp "GitHub username: " GITHUB_USERNAME
-  read -rp "GitHub email: " GITHUB_EMAIL
-  read -rsp "GitHub personal access token: " GITHUB_PERSONAL_ACCESS_TOKEN
-  read -rsp "Claude Code OAuth token: " CLAUDE_CODE_OAUTH_TOKEN
+  read -rp "GitHub username: " GITHUB_USERNAME </dev/tty
+  read -rp "GitHub email: " GITHUB_EMAIL </dev/tty
+  read -rsp "GitHub personal access token: " GITHUB_PERSONAL_ACCESS_TOKEN </dev/tty
+  read -rsp "Claude Code OAuth token: " CLAUDE_CODE_OAUTH_TOKEN </dev/tty
   echo
   echo
 }
 
 bw_search() {
-  bw list items --search "$1" --session "$(bw_session)"
+  session="$BW_SESSION"
+  [ -z "$session" ] && session="$(bw_session)"
+  bw list items --search "$1" --session "$session"
 }
 
 bw_session() {
   if [ "$(bw status | jq '.status')" == '"unauthenticated"' ]; then
-    BW_SESSION=$(bw login --raw)
-  fi
-
-  if [ -z "$BW_SESSION" ]; then
-    BW_SESSION=$(bw unlock --raw)
+    BW_SESSION=$(bw login --raw </dev/tty)
+    export BW_SESSION
+  elif [ -z "$BW_SESSION" ]; then
+    BW_SESSION=$(bw unlock --raw </dev/tty)
     export BW_SESSION
   fi
 
@@ -32,6 +33,10 @@ use_bitwarden() {
   else
     brew install bitwarden-cli
   fi
+
+  # Establish session once upfront
+  BW_SESSION=$(bw_session)
+  export BW_SESSION
 
   github_data="$(bw_search "GitHub")"
   GITHUB_PERSONAL_ACCESS_TOKEN=$(echo "$github_data" | jq -r '.[].fields | map(select(.name == "Personal access token"))[0].value')

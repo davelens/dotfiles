@@ -26,6 +26,13 @@ macos_needs_newer_bash() {
 }
 
 get_cursor_pos() {
+  # When piped from curl, stdin is not a terminal, so we need to use /dev/tty
+  if [ ! -t 0 ]; then
+    # If stdin is not a terminal, we can't reliably get cursor position
+    echo "1;1"
+    return
+  fi
+
   # Save current terminal settings
   local old_stty
   old_stty=$(stty -g)
@@ -38,7 +45,7 @@ get_cursor_pos() {
 
   # Read the response: it should look like ESC [ row ; col R
   local response
-  IFS='R' read -d R -r response
+  IFS='R' read -d R -r response </dev/tty
 
   # Restore terminal settings
   stty "$old_stty"
@@ -127,7 +134,7 @@ preface() {
   echo "  $(black https://github.com/davelens/dotfiles/tree/master/setup/remote)"
   echo
 
-  read -n 1 -r -p "Do you want to continue? [y/n]: " yn
+  read -n 1 -r -p "Do you want to continue? [y/n]: " yn </dev/tty
   case $yn in
   [Yy]*) return ;;
   [Nn]*) interrupt_handler ;;
@@ -144,24 +151,24 @@ main() {
   REMOTE_FILES=()
   REMOTE_FILES+=("bash/env/xdg.sh")
   REMOTE_FILES+=("bash/colors.sh")
-  # REMOTE_FILES+=("setup/remote/preflight.sh")
-  # REMOTE_FILES+=("setup/remote/ask_for_repo_namespace.sh")
-  # REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
-  # REMOTE_FILES+=("setup/remote/install_dotfiles.sh")
-  # REMOTE_FILES+=("setup/remote/configure_env.sh")
+  REMOTE_FILES+=("setup/remote/preflight.sh")
+  REMOTE_FILES+=("setup/remote/ask_for_repo_namespace.sh")
+  REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
+  REMOTE_FILES+=("setup/remote/install_dotfiles.sh")
+  REMOTE_FILES+=("setup/remote/configure_env.sh")
 
   for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
 
-  cp setup/remote/preflight.sh "$INSTALLER_TMP_HOME"/
-  cp setup/remote/ask_for_repo_namespace.sh "$INSTALLER_TMP_HOME"/
-  cp setup/remote/download_dotfiles.sh "$INSTALLER_TMP_HOME"/
-  cp setup/remote/install_dotfiles.sh "$INSTALLER_TMP_HOME"/
-  cp setup/remote/configure_env.sh "$INSTALLER_TMP_HOME"/
-  source "$INSTALLER_TMP_HOME"/preflight.sh
-  source "$INSTALLER_TMP_HOME"/ask_for_repo_namespace.sh
-  source "$INSTALLER_TMP_HOME"/download_dotfiles.sh
-  source "$INSTALLER_TMP_HOME"/install_dotfiles.sh
-  source "$INSTALLER_TMP_HOME"/configure_env.sh
+  # cp setup/remote/preflight.sh "$INSTALLER_TMP_HOME"/
+  # cp setup/remote/ask_for_repo_namespace.sh "$INSTALLER_TMP_HOME"/
+  # cp setup/remote/download_dotfiles.sh "$INSTALLER_TMP_HOME"/
+  # cp setup/remote/install_dotfiles.sh "$INSTALLER_TMP_HOME"/
+  # cp setup/remote/configure_env.sh "$INSTALLER_TMP_HOME"/
+  # source "$INSTALLER_TMP_HOME"/preflight.sh
+  # source "$INSTALLER_TMP_HOME"/ask_for_repo_namespace.sh
+  # source "$INSTALLER_TMP_HOME"/download_dotfiles.sh
+  # source "$INSTALLER_TMP_HOME"/install_dotfiles.sh
+  # source "$INSTALLER_TMP_HOME"/configure_env.sh
 
   cleanup
 }

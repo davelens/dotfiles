@@ -73,10 +73,10 @@ ask_for_repo_namespace() {
   validate_path "$path"
 
   if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
-    read -r -e -p "$BGK$FGW$path/$CNONE" choice
+    read -r -e -p "$BGK$FGW$path/$CNONE" choice </dev/tty
     choice="${choice/\~/$HOME}"
   else
-    read -r -e -i "$path" -p "Please confirm: $FGB" choice
+    read -r -e -i "$path" -p "Please confirm: $FGB" choice </dev/tty
     printf %s "$CNONE"
   fi
 

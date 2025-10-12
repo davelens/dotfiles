@@ -43,7 +43,7 @@ if [ -d "$DOTFILES_REPO_HOME" ]; then
     echo -e "No .git folder present at this location, will attempt to init.\n"
     echo -e "! $(fyellow "Continuing might override files and result in data loss.")\n"
 
-    read -n 1 -r -p "Do you want to continue? [y/n]: " yn
+    read -n 1 -r -p "Do you want to continue? [y/n]: " yn </dev/tty
     case $yn in
     [Yy]*)
       echo
