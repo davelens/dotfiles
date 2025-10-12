@@ -15,9 +15,11 @@ bw_search() {
 
 bw_session() {
   if [ "$(bw status | jq '.status')" == '"unauthenticated"' ]; then
+    echo "Bitwarden requires authentication. Please enter your master password." >&2
     BW_SESSION=$(bw login --raw </dev/tty)
     export BW_SESSION
   elif [ -z "$BW_SESSION" ]; then
+    echo "Bitwarden vault is locked. Please enter your master password." >&2
     BW_SESSION=$(bw unlock --raw </dev/tty)
     export BW_SESSION
   fi
