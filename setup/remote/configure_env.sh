@@ -2,12 +2,13 @@ ask_questions() {
   read -rp "GitHub username: " GITHUB_USERNAME
   read -rp "GitHub email: " GITHUB_EMAIL
   read -rsp "GitHub personal access token: " GITHUB_PERSONAL_ACCESS_TOKEN
+  read -rsp "Claude Code OAuth token: " CLAUDE_CODE_OAUTH_TOKEN
   echo
   echo
 }
 
-bw_github() {
-  bw list items --search "GitHub" --session "$(bw_session)"
+bw_search() {
+  bw list items --search "$1" --session "$(bw_session)"
 }
 
 bw_session() {
@@ -32,10 +33,13 @@ use_bitwarden() {
     brew install bitwarden-cli
   fi
 
-  github_data="$(bw_github)"
+  github_data="$(bw_search "GitHub")"
   GITHUB_PERSONAL_ACCESS_TOKEN=$(echo "$github_data" | jq -r '.[].fields | map(select(.name == "Personal access token"))[0].value')
   GITHUB_USERNAME=$(echo "$github_data" | jq -r '.[].fields | map(select(.name == "Public username"))[0].value')
   GITHUB_EMAIL=$(echo "$github_data" | jq -r '.[].login.username')
+
+  anthropic_data="$(bw_search "Anthropic")"
+  CLAUDE_CODE_OAUTH_TOKEN=$(echo "$anthropic_data" | jq -r '.[].fields | map(select(.name == "CLAUDE_CODE_OAUTH_TOKEN"))[0].value')
 }
 
 write_dots_env_file() {
@@ -49,7 +53,8 @@ write_dots_env_file() {
     GITHUB_EMAIL \
     GITHUB_USERNAME \
     GITHUB_PERSONAL_ACCESS_TOKEN \
-    GITHUB_SIGNING_KEY |
+    GITHUB_SIGNING_KEY \
+    CLAUDE_CODE_OAUTH_TOKEN |
     sed 's/declare -[-x] /export /g' >>"$env_file"
 }
 
@@ -76,6 +81,7 @@ main() {
   export GITHUB_USERNAME
   export GITHUB_PERSONAL_ACCESS_TOKEN
   export GITHUB_SIGNING_KEY
+  export CLAUDE_CODE_OAUTH_TOKEN
 
   write_dots_env_file
   write_gitconfig_env_file
