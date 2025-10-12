@@ -169,17 +169,6 @@ main() {
 
   for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
 
-  # cp setup/remote/preflight.sh "$INSTALLER_TMP_HOME"/
-  # cp setup/remote/ask_for_repo_namespace.sh "$INSTALLER_TMP_HOME"/
-  # cp setup/remote/download_dotfiles.sh "$INSTALLER_TMP_HOME"/
-  # cp setup/remote/install_dotfiles.sh "$INSTALLER_TMP_HOME"/
-  # cp setup/remote/configure_env.sh "$INSTALLER_TMP_HOME"/
-  # source "$INSTALLER_TMP_HOME"/preflight.sh
-  # source "$INSTALLER_TMP_HOME"/ask_for_repo_namespace.sh
-  # source "$INSTALLER_TMP_HOME"/download_dotfiles.sh
-  # source "$INSTALLER_TMP_HOME"/install_dotfiles.sh
-  # source "$INSTALLER_TMP_HOME"/configure_env.sh
-
   cleanup
 }
 
