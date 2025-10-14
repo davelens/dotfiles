@@ -1,0 +1,11 @@
+(defcfg
+  process-unmapped-keys yes
+)
+
+;; Remap capslock to left Ctrl.
+(defsrc
+  caps
+)
+
+(deflayer base lctl)
+(defalias caps lctl)
