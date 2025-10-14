@@ -121,4 +121,11 @@ if platforms.windows then
   })
 end
 
+if platforms.linux then
+  config.font = wezterm.font_with_fallback({
+    { family = 'NotoMono NF', weight = 'Regular' },
+    { family = 'Hack Nerd Font' },
+  })
+end
+
 return config
