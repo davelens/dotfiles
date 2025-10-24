@@ -42,7 +42,7 @@ if [ -f "$BREW_PATH" ]; then
   [ -f "$BREW_PATH"/bin/bash ] && export SHELL="$BREW_PATH/bin/bash"
 
   # This makes sure asdf can configure Erlang with Homebrew's openssl pkg.
-  KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl)"
+  KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl@3)"
   export KERL_CONFIGURE_OPTIONS
 
   # MySQL 8.4 compile flags
