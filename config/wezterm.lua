@@ -110,7 +110,7 @@ if platforms.windows then
 
   config.line_height = 1.08
   -- stylua: ignore
-  config.default_prog = { 
+  config.default_prog = {
     'wsl.exe', '-d', 'Arch', '-u', 'davelens',
     '--', 'bash', '-c', 'cd ~ && exec bash',
   }

@@ -35,6 +35,10 @@ if [ -d "$CARGO_HOME" ]; then
   paths_to_add+=("${CARGO_HOME:-$XDG_DATA_HOME/cargo}"/bin)
 fi
 
+if [ -f "$NPM_CONFIG_USERCONFIG" ]; then
+  paths_to_add+=("$XDG_DATA_HOME"/npm/bin)
+fi
+
 # Brew needs to go before /usr/bin e.a.
 if [ -n "$BREW_PATH" ]; then
   paths_to_add+=(
