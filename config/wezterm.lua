@@ -57,6 +57,8 @@ config.keys = {
 
 if platforms.macos then
   config.native_macos_fullscreen_mode = false
+  local brew_path = os.getenv('BREW_PATH') or '/opt/homebrew'
+  config.default_prog = { brew_path .. '/bin/bash', '-l' }
 
   local window_frame_table = {
     border_top_color = 'black',
