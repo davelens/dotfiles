@@ -19,6 +19,7 @@ alias cdir='cd "${_%/*}"' # Fix accidentally cd'ing into a filename
 alias d="utility tmux repo"
 alias dc='docker compose'
 alias ds='du -sh */' # Short for "directory sizes"
+alias kodi='mycli -h 192.168.0.184 -P 3307 -u kodi -p"$KODI_DB_PASSWORD" kodi_video131'
 alias lsa='gls -hal --group-directories-first --color=auto'
 alias mysqldump='mysqldump --set-gtid-purged=OFF' # MySQL 5.6 "global-transaction-error on dump"-fix
 alias s="exec \$SHELL"
