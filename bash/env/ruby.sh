@@ -54,3 +54,4 @@ export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 # So fresh terminal windows hook spring logs into the project's log folder.
 export SPRING_LOG="$PWD/log/spring.log"
+export SPRING_TMP_PATH="/tmp"
