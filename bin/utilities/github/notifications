@@ -2,7 +2,7 @@
 set -e
 [ ! -d .git ] && fail "ERROR: Local working directory is not a git repo."
 
-notifications=$(gh notify -s -a -n4 -f "$(git repo)")
+notifications=$(gh notify -s -a -n4 -f "$(git origin)")
 
 if [[ -z "$notifications" || "$notifications" == *"results found"* ]]; then
   echo "No new notifications."
