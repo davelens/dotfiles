@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -e
-[ ! -d .git ] && fail "ERROR: Local working directory is not a git repo."
-[ $(command -v gsed) ] && cmd=gsed || cmd=sed
-origin="${1:-origin}"
-
-git remote get-url "$origin" | \
-  sed -E 's#(git@|https://)github.com[:/]##; s/\.git$//'
