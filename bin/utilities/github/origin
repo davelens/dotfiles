@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 [ ! -d .git ] && fail "ERROR: Local working directory is not a git repo."
-command -v gsed && cmd="gsed" || cmd="sed"
+cmd=$(command -v gsed >/dev/null 2>&1 && echo gsed || echo sed)
 origin="${1:-origin}"
 
 git remote get-url "$origin" |
