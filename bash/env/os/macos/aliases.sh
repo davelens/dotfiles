@@ -1,6 +1,7 @@
 alias allow='xattr -d com.apple.quarantine'
 alias rm='$(which trash) &>/dev/null && trash' # Puts rm'ed files in the OS trash
-alias ss="osascript \"\$DOTFILES_REPO_HOME/config/macos/hide-terminal.scpt\" && utility misc screenshot && killall Terminal"
+alias ss='utility misc screenshot'
+
 alias toggle_desktop='toggle_default finder CreateDesktop'
 alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
 
@@ -13,4 +14,3 @@ alias clearcache='sudo dscacheutil -flushcache'
 # I also haven't used this in AGES now. Consider removing these.
 alias ipv6off='networksetup -setv6off Wi-Fi'
 alias ipv6on='networksetup -setv6automatic Wi-Fi'
-

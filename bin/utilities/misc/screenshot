@@ -7,18 +7,49 @@
 
 # Stops further execution after any error.
 set -e
-[[ $(os) != 'macos' ]] && fail "ERROR: This command only works on macos, for now. Sorry!"
-
 SCREENSHOT_HOST=davelens
 SCREENSHOT_URL=https://www.davelens.be/screenshots
 SCREENSHOT_REMOTE_PATH=screenshots
-# [[ -z $SCREENSHOT_HOST ]] && fail "ERROR: No host defined in \$SCREENSHOT_HOST."
-# [[ -z $SCREENSHOT_URL ]] && fail "ERROR: No destination URL defined in \$SCREENSHOT_URL."
-# [[ -z $SCREENSHOT_REMOTE_PATH ]] && fail "ERROR: No remote path defined in \$SCREENSHOT_REMOTE_PATH."
+
+clipboard_text() {
+  if command -v pbcopy &>/dev/null; then
+    pbcopy
+  elif command -v wl-copy &>/dev/null; then
+    wl-copy
+  elif command -v xclip &>/dev/null; then
+    xclip -selection clipboard
+  elif command -v clip.exe &>/dev/null; then
+    clip.exe
+  else
+    echo "No clipboard utility found" >&2
+    return 1
+  fi
+}
+
+clipboard_image() {
+  local file="$1"
+  if [[ "$(uname)" == "Darwin" ]]; then
+    osascript -e "set the clipboard to (read (POSIX file \"$file\") as JPEG picture)"
+  elif command -v wl-copy &>/dev/null; then
+    wl-copy < "$file"
+  elif command -v xclip &>/dev/null; then
+    xclip -selection clipboard -t image/png -i "$file"
+  else
+    echo "No clipboard utility found for images" >&2
+    return 1
+  fi
+}
 
 filename="$(date +%Y-%m-%d-%H-%M-%S).jpg"
 full_path=$TMPDIR/$filename
 
-screencapture -ix "$full_path" && scp "$full_path" "$SCREENSHOT_HOST":"$SCREENSHOT_REMOTE_PATH"/"$filename"
-echo "$SCREENSHOT_URL/$filename" | cb
+screencapture -ix "$full_path"
+
+if [[ "$1" == "--no-link" ]]; then
+  clipboard_image "$full_path"
+else
+  scp "$full_path" "$SCREENSHOT_HOST":"$SCREENSHOT_REMOTE_PATH"/"$filename"
+  echo "$SCREENSHOT_URL/$filename" | clipboard_text
+fi
+
 rm "$full_path"
