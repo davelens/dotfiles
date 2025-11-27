@@ -1,0 +1,11 @@
+Host github.com
+  # Prevent checking for identity files other than ~/.ssh/id_rsa.
+  IdentityFile ~/.ssh/id_rsa
+  IdentitiesOnly yes
+  # Enables SSH multiplexing for 1 hour, so it can reuse SSH connections.
+  ControlMaster auto
+  ControlPath ~/.ssh/sockets/%r@%h-%p
+  ControlPersist 3600
+  # Check for dead connections every 30s; fail 2 times and sockets get purged.
+  ServerAliveInterval 60
+  ServerAliveCountMax 3
