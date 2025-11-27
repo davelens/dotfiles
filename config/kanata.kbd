@@ -9,3 +9,40 @@
 
 (deflayer base lctl)
 (defalias caps lctl)
+
+#|
+;; home row-mods
+
+;; un-mapped keys behave as normally
+(defcfg
+  process-unmapped-keys yes
+)
+
+;; define the keys to remap
+(defsrc
+ caps a s d f n ;
+)
+
+;; define values for tap time and hold time
+(defvar
+  tap-time 150
+  hold-time 200
+)
+
+;; alias definitions
+(defalias
+  escctrl (tap-hold $tap-time $hold-time esc lctl)
+  a (tap-hold $tap-time $hold-time a lctrl)
+  s (tap-hold $tap-time $hold-time s lalt)
+  d (tap-hold $tap-time $hold-time d lmet)
+  f (tap-hold $tap-time $hold-time f lsft)
+  ;; j (tap-hold $tap-time $hold-time j rsft)
+  n (tap-hold $tap-time $hold-time n rmet)
+  ;; l (tap-hold $tap-time $hold-time l ralt)
+  ; (tap-hold $tap-time $hold-time ; rctrl)
+)
+
+(deflayer base
+  @escctrl @a @s @d @f @n @;
+)
+|#
