@@ -50,11 +50,11 @@ if [ -d "$BREW_PATH" ]; then
     LDFLAGS="$LDFLAGS -L$BREW_PATH/opt/mysql@8.4/lib"
     CPPFLAGS="$CPPFLAGS -I$BREW_PATH/opt/mysql@8.4/include"
 
-    LDFLAGS="$LDFLAGS -L$BREW_PATH/opt/postgresql@16/lib"
-    CPPFLAGS="$CPPFLAGS -I$BREW_PATH/opt/postgresql@16/include"
+    LDFLAGS="$LDFLAGS -L$BREW_PATH/opt/postgresql@18/lib"
+    CPPFLAGS="$CPPFLAGS -I$BREW_PATH/opt/postgresql@18/include"
 
     # TODO: Check if PKG_CONFIG_PATH is empty first
     PKG_CONFIG_PATH="$BREW_PATH/opt/mysql@8.4/lib/pkgconfig"
-    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$BREW_PATH/opt/postgresql@16/lib/pkgconfig"
+    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$BREW_PATH/opt/postgresql@18/lib/pkgconfig"
   fi
 fi
