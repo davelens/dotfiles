@@ -42,8 +42,9 @@ fi
 # Brew needs to go before /usr/bin e.a.
 if [ -n "$BREW_PATH" ]; then
   paths_to_add+=(
-    "$BREW_PATH"/{,s}bin           # unbound in sbin, most other stuff in bin
-    "$BREW_PATH"/opt/mysql@8.4/bin # Make available mysqldump, mysql.server,...
+    "$BREW_PATH"/{,s}bin               # unbound in sbin, most other stuff in bin
+    "$BREW_PATH"/opt/mysql@8.4/bin     # Make available mysqldump, mysql.server,...
+    "$BREW_PATH"/opt/postgresql@16/bin # Make available pg_dump, postgres,...
   )
 fi
 

@@ -37,7 +37,7 @@ if [ -n "$(which openssl)" ]; then
 fi
 
 # Some Homebrew specific settings.
-if [ -f "$BREW_PATH" ]; then
+if [ -d "$BREW_PATH" ]; then
   # So we can load in brew-installed bash versions.
   [ -f "$BREW_PATH"/bin/bash ] && export SHELL="$BREW_PATH/bin/bash"
 
@@ -45,10 +45,16 @@ if [ -f "$BREW_PATH" ]; then
   KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl@3)"
   export KERL_CONFIGURE_OPTIONS
 
-  # MySQL 8.4 compile flags
+  # Specific compiler & pkgconf helpers
   if [ -n "$BREW_PATH" ]; then
     LDFLAGS="$LDFLAGS -L$BREW_PATH/opt/mysql@8.4/lib"
     CPPFLAGS="$CPPFLAGS -I$BREW_PATH/opt/mysql@8.4/include"
-    export PKG_CONFIG_PATH="$BREW_PATH/opt/mysql@8.4/lib/pkgconfig"
+
+    LDFLAGS="$LDFLAGS -L$BREW_PATH/opt/postgresql@16/lib"
+    CPPFLAGS="$CPPFLAGS -I$BREW_PATH/opt/postgresql@16/include"
+
+    # TODO: Check if PKG_CONFIG_PATH is empty first
+    PKG_CONFIG_PATH="$BREW_PATH/opt/mysql@8.4/lib/pkgconfig"
+    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$BREW_PATH/opt/postgresql@16/lib/pkgconfig"
   fi
 fi
