@@ -6,6 +6,6 @@ Host github.com
   ControlMaster auto
   ControlPath ~/.ssh/sockets/%r@%h-%p
   ControlPersist 3600
-  # Check for dead connections every 30s; fail 2 times and sockets get purged.
+  # Check for dead connections every 60s; fail 2 times and sockets get purged.
   ServerAliveInterval 60
-  ServerAliveCountMax 3
+  ServerAliveCountMax 2
