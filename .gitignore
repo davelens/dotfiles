@@ -6,8 +6,6 @@
 dotbot
 bash/env/autocompletions/iterm2_shell_integration.bash
 bash/private
-# ac is a symlink to my ActiveCollab commands, which live in a private repo.
-bin/utilities/ac
 vim/.netrwhist
 vim/bundle/**
 vim/bundle/vundle
@@ -17,3 +15,6 @@ vim/swp
 node_modules
 config/tmux/plugins
 config/macos/karabiner/automatic_backups
+# These are symlinks to bin folders of some private repos.
+bin/utilities/ac
+bin/utilities/opencode
