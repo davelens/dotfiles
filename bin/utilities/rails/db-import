@@ -101,8 +101,10 @@ $docker_prefix $mysql -e "drop database if exists $test_database"
 $docker_prefix $mysql -e "create database $local_db"
 $docker_prefix $mysql -e "create database $test_database"
 
+sed -E 's/ (tiny|small|medium|big)?int\([0-9]+\)/ \1int/g' "$app/db/dump/dump.sql" >"$app/db/dump/dump.clean.sql"
+
 spinner "Importing dump.sql into $local_db"
-$docker_prefix $mysql "$local_db" -e "source $app/db/dump/dump.sql"
+$docker_prefix $mysql "$local_db" -e "source $app/db/dump/dump.clean.sql"
 
 spinner "Importing dump.test.sql into $test_database"
 # "db" here will dynamically fill in the service worker's IP address.
@@ -113,7 +115,7 @@ $docker_prefix $mysql $test_database -e "source $app/db/dump/dump.test.sql"
 $docker_prefix $mysql $test_database -e "source $app/db/dump/migrations.test.sql"
 
 spinner "[$user@$server] Cleaning up"
-ssh $user@$server 'rm -f dump.sql dump.sql.tar'
+ssh $user@$server 'rm -f dump.sql dump.clean.sql dump.sql.tar'
 
 spinner "Cleaning up"
 rm -f $app/db/dump/*
