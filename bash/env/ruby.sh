@@ -55,3 +55,29 @@ export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 # So fresh terminal windows hook spring logs into the project's log folder.
 export SPRING_LOG="$PWD/log/spring.log"
 export SPRING_TMP_PATH="/tmp"
+
+# Compilation configuration options for fresh Ruby installations.
+if command -v brew >/dev/null; then
+  # Configure compilation options for Ruby installs via asdf/ruby-build.
+  # Only add libraries that are actually installed via Homebrew.
+  RUBY_CONFIGURE_OPTS=""
+
+  # OpenSSL - SSL/TLS support
+  if brew --prefix openssl &>/dev/null; then
+    RUBY_CONFIGURE_OPTS+="--with-openssl-dir=$(brew --prefix openssl) "
+  fi
+
+  # Readline - IRB/console line editing support
+  if brew --prefix readline &>/dev/null; then
+    RUBY_CONFIGURE_OPTS+="--with-readline-dir=$(brew --prefix readline) "
+  fi
+
+  # libyaml - YAML parsing (Psych gem)
+  if brew --prefix libyaml &>/dev/null; then
+    RUBY_CONFIGURE_OPTS+="--with-libyaml-dir=$(brew --prefix libyaml) "
+  fi
+
+  # Remove trailing space
+  RUBY_CONFIGURE_OPTS="${RUBY_CONFIGURE_OPTS% }"
+  export RUBY_CONFIGURE_OPTS
+fi
