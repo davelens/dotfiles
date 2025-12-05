@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -e
+
+current_rubygems=$(gem --version)
+latest_rubygems=$(gem list rubygems-update --remote 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+
+# Fallback: if rubygems-update isn't found, check via gem update --system output
+if [ -z "$latest_rubygems" ]; then
+  latest_rubygems=$(gem update --system --dry-run 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | tail -1)
+fi
+
+current_bundler=$(bundler --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+latest_bundler=$(gem list bundler --remote --exact 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+
+echo "RubyGems: $current_rubygems (latest: ${latest_rubygems:-unknown})"
+echo "Bundler:  $current_bundler (latest: ${latest_bundler:-unknown})"
+echo
+
+if [ "$current_rubygems" = "$latest_rubygems" ] && [ "$current_bundler" = "$latest_bundler" ]; then
+  echo "Already up to date!"
+  exit 0
+fi
+
+if [ "$current_rubygems" != "$latest_rubygems" ] && [ -n "$latest_rubygems" ]; then
+  echo "Updating RubyGems..."
+  gem update --system
+  echo
+fi
+
+if [ "$current_bundler" != "$latest_bundler" ] && [ -n "$latest_bundler" ]; then
+  echo "Installing latest Bundler..."
+  gem install bundler
+  echo
+fi
+
+echo "Updating Bundler in Gemfile.lock..."
+bundle update --bundler
+
+if [ -f "config/application.rb" ]; then
+  echo
+  echo "Rails project detected. Running bundle install..."
+  bundle install
+  echo
+  echo "Done!"
+else
+  echo
+  echo "Done! Remember to run \`bundle install\` in your Rails projects."
+fi
