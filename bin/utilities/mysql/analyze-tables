@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+set -e
+
+# Analyzes tables with zero cardinality indexes in a MySQL database.
+# Zero cardinality typically indicates stale statistics, causing the query
+# optimizer to make bad decisions (eg. full table scans instead of index usage).
+#
+# I've had it happen to me that my index stats got messed up/corrupted when I
+# was switching branches in a Rails project mid-pageload. Every subsequent
+# request was very very slow because MySQL's query optimizer was doing table
+# lookups for indices (which were corrupt) constantly. ANALYZE TABLE fixes that.
+
+if [ $# -lt 1 ]; then
+  echo
+  echo "Usage: utility mysql $(basename "$0") <database> [--fix]"
+  echo
+  echo "Options:"
+  echo "  --fix    Run ANALYZE TABLE on tables with zero cardinality indexes"
+  echo
+  echo "Without --fix, only reports tables that need analysis."
+  exit 1
+fi
+
+database="$1"
+fix_mode=false
+
+if [ "$2" == "--fix" ]; then
+  fix_mode=true
+fi
+
+# Query to find tables with zero cardinality on non-empty indexes
+query="
+SELECT DISTINCT TABLE_NAME
+FROM information_schema.STATISTICS s
+JOIN information_schema.TABLES t USING (TABLE_SCHEMA, TABLE_NAME)
+WHERE s.TABLE_SCHEMA = '$database'
+  AND s.CARDINALITY = 0
+  AND t.TABLE_ROWS > 0
+ORDER BY TABLE_NAME;
+"
+
+tables=$(mysql -N -B -e "$query" 2>/dev/null)
+
+if [ -z "$tables" ]; then
+  echo "No tables with zero cardinality indexes found in '$database'."
+  exit 0
+fi
+
+echo "Tables with zero cardinality indexes in '$database':"
+echo
+
+for table in $tables; do
+  # Get index details for this table
+  index_info=$(mysql -N -B -e "
+    SELECT CONCAT('  - ', INDEX_NAME, ' (', COLUMN_NAME, '): cardinality ', CARDINALITY)
+    FROM information_schema.STATISTICS
+    WHERE TABLE_SCHEMA = '$database'
+      AND TABLE_NAME = '$table'
+      AND CARDINALITY = 0;
+  " 2>/dev/null)
+
+  echo "$table"
+  echo "$index_info"
+  echo
+done
+
+if [ "$fix_mode" = true ]; then
+  echo "Running ANALYZE TABLE on affected tables..."
+  echo
+
+  for table in $tables; do
+    echo -n "  Analyzing $table... "
+    mysql -e "ANALYZE TABLE \`$database\`.\`$table\`;" >/dev/null 2>&1
+    echo "done"
+  done
+
+  echo
+  echo "Analysis complete. Index statistics have been refreshed."
+else
+  echo "Run with --fix to analyze these tables."
+fi
