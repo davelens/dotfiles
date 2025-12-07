@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+# Rebuilds the cached com.apple.* domains used by toggle completion.
+#
+# Usage: refresh-defaults-cache
+
+set -euo pipefail
+
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/toggle_domains"
+
+echo "Caching com.apple.* domains (may take a moment)..."
+defaults domains 2>/dev/null | tr ',' '\n' | grep 'com\.apple\.' | sed 's/^ *com\.apple\.//' >"$cache"
+echo "Done."

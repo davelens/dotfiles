@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Toggles a boolean setting in the com.apple environment.
+#
+# Usage:    toggle <domain> <key>
+#           toggle --<alias>
+# Example:  toggle finder CreateDesktop
+#           toggle --desktop
+
+set -euo pipefail
+
+# Predefined aliases: --name -> "domain key"
+declare -A ALIASES=()
+ALIASES["--desktop"]="finder CreateDesktop"
+ALIASES["--hidden-files"]="finder AppleShowAllFiles"
+
+if [[ $# -eq 1 ]] && [[ -v "ALIASES[$1]" ]]; then
+  read -r domain key <<<"${ALIASES[$1]}"
+elif [[ $# -eq 2 ]]; then
+  domain="$1"
+  key="$2"
+else
+  echo "Usage: toggle <domain> <key>"
+  echo "       toggle --<alias>"
+  echo ""
+  echo "Aliases:"
+  for alias in "${!ALIASES[@]}"; do
+    echo "  $alias -> ${ALIASES[$alias]}"
+  done
+  exit 1
+fi
+
+value="$(defaults read "com.apple.$domain" "$key" 2>/dev/null || echo "0")"
+
+# Handle both integer (0/1) and string (true/false/TRUE/FALSE) values
+case "${value,,}" in
+0 | false | no) new="TRUE" ;;
+*) new="FALSE" ;;
+esac
+
+defaults write "com.apple.$domain" "$key" -bool "$new"
+killall Finder
+
+echo "$key is now $new."

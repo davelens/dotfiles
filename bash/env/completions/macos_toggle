@@ -1,0 +1,51 @@
+# Completion for: u macos toggle <domain> <key>
+#                  u macos toggle --<alias>
+# COMP_WORDS: [0]=u, [1]=macos, [2]=toggle, [3]=domain|alias, [4]=key
+
+local cur="${COMP_WORDS[COMP_CWORD]}"
+local cur_lower="${cur,,}"
+local cache="${XDG_CACHE_HOME:-$HOME/.cache}/toggle_domains"
+
+# Predefined aliases (keep in sync with toggle script)
+local aliases="--desktop --hidden-files"
+
+# Case-insensitive matching helper
+_match_nocase() {
+  local word word_lower
+  while IFS= read -r word; do
+    word_lower="${word,,}"
+    [[ "$word_lower" == "$cur_lower"* ]] && printf '%s\n' "$word"
+  done
+}
+
+# Third argument: aliases or com.apple.* domains
+if [[ $COMP_CWORD -eq 3 ]]; then
+  local max_age=$((7 * 24 * 60 * 60)) # 7 days in seconds
+
+  # Refresh cache if missing or stale
+  if [[ ! -f "$cache" ]] || (($(date +%s) - $(stat -f %m "$cache") > max_age)); then
+    printf '\n'
+    "$DOTFILES_REPO_HOME/bin/utilities/macos/refresh-defaults-cache"
+  fi
+
+  # If input starts with -, complete aliases only
+  if [[ "$cur" == -* ]]; then
+    mapfile -t COMPREPLY < <(compgen -W "$aliases" -- "$cur")
+  else
+    mapfile -t COMPREPLY < <(_match_nocase < "$cache")
+  fi
+  return 0
+fi
+
+# Fourth argument: keys from the selected domain (skip if alias was used)
+if [[ $COMP_CWORD -eq 4 ]]; then
+  local domain="${COMP_WORDS[3]}"
+
+  # If an alias was used, no further completion needed
+  [[ "$domain" == --* ]] && return 0
+
+  local keys
+  keys=$(defaults read "com.apple.$domain" 2>/dev/null | grep -E '^\s+\w+ =' | awk '{print $1}')
+  mapfile -t COMPREPLY < <(printf '%s\n' $keys | _match_nocase)
+  return 0
+fi
