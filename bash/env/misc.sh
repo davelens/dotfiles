@@ -30,31 +30,33 @@ export NODE_OPTIONS="--no-deprecation"
 # Go lang work dir
 export GOPATH="$HOME/.go"
 
-# This makes sure asdf can configure Erlang.
-if [ -n "$(which openssl)" ]; then
-  KERL_CONFIGURE_OPTIONS="--with-ssl=$(which openssl)"
-  export KERL_CONFIGURE_OPTIONS
-fi
-
 # Some Homebrew specific settings.
 if [ -d "$BREW_PATH" ]; then
-  # So we can load in brew-installed bash versions.
+  # Ensure brew-installed bash versions as our active shell.
   [ -f "$BREW_PATH"/bin/bash ] && export SHELL="$BREW_PATH/bin/bash"
 
   # This makes sure asdf can configure Erlang with Homebrew's openssl pkg.
-  KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl@3)"
-  export KERL_CONFIGURE_OPTIONS
+  if [ -d "$BREW_PATH/opt/openssl@3" ]; then
+    KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl@3)"
+    export KERL_CONFIGURE_OPTIONS
+  fi
 
   # Specific compiler & pkgconf helpers
-  if [ -n "$BREW_PATH" ]; then
-    LDFLAGS="$LDFLAGS -L$BREW_PATH/opt/mysql@8.4/lib"
-    CPPFLAGS="$CPPFLAGS -I$BREW_PATH/opt/mysql@8.4/include"
+  _add_to_var() {
+    local var="$1" val="$2" sep="${3:- }"
+    [[ "${!var}" != *"$val"* ]] && export "$var"="${!var:+${!var}$sep}$val"
+  }
 
-    LDFLAGS="$LDFLAGS -L$BREW_PATH/opt/postgresql@18/lib"
-    CPPFLAGS="$CPPFLAGS -I$BREW_PATH/opt/postgresql@18/include"
+  _add_brew_pkg_to_compile_flags() {
+    local pkg="$BREW_PATH/opt/$1"
+    [ -d "$pkg" ] || return 0
+    _add_to_var LDFLAGS "-L$pkg/lib"
+    _add_to_var CPPFLAGS "-I$pkg/include"
+    _add_to_var PKG_CONFIG_PATH "$pkg/lib/pkgconfig" ":"
+  }
 
-    # TODO: Check if PKG_CONFIG_PATH is empty first
-    PKG_CONFIG_PATH="$BREW_PATH/opt/mysql@8.4/lib/pkgconfig"
-    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$BREW_PATH/opt/postgresql@18/lib/pkgconfig"
-  fi
+  _add_brew_pkg_to_compile_flags mysql@8.4
+  _add_brew_pkg_to_compile_flags postgresql@18
+
+  unset -f _add_to_var _add_brew_pkg_to_compile_flags
 fi

@@ -1,6 +1,6 @@
 # This script is loaded once through BASH_ENV.
-# Function checks are there to ensure they only get declared once.
-
+#
+# Only declare functions once.
 if declare -F "fn_exists" >/dev/null; then
   return 0
 fi
