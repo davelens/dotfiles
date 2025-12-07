@@ -1,7 +1,5 @@
 alias allow='xattr -d com.apple.quarantine'
 alias rm='$(which trash) &>/dev/null && trash' # Puts rm'ed files in the OS trash
-alias ss='utility misc screenshot'
-
 alias toggle_desktop='toggle_default finder CreateDesktop'
 alias toggle_hidden_files='toggle_default finder AppleShowAllFiles'
 
