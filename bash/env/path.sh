@@ -28,15 +28,15 @@
 paths_to_add=()
 
 if [ -d "$ASDF_DATA_DIR" ]; then
-  paths_to_add+=("${ASDF_DATA_DIR:-$XDG_DATA_HOME/asdf}"/shims)
+  paths_to_add+=("$ASDF_DATA_DIR"/shims)
 fi
 
 if [ -d "$CARGO_HOME" ]; then
-  paths_to_add+=("${CARGO_HOME:-$XDG_DATA_HOME/cargo}"/bin)
+  paths_to_add+=("$CARGO_HOME"/bin)
 fi
 
-if [ -f "$NPM_CONFIG_USERCONFIG" ]; then
-  paths_to_add+=("$XDG_DATA_HOME"/npm/bin)
+if [ -d "$NPM_DATA_HOME" ]; then
+  paths_to_add+=("$NPM_DATA_HOME"/bin)
 fi
 
 # Brew needs to go before /usr/bin e.a.
