@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+
+# NOTE: pg_ctl-18 is provided by the basic installation via Homebrew, but I
+# treat postgresql the same as mysql here to make sure just `pg_ctl` is
+# symlinked from $BREW_PATH/opt/<version>/bin directly.
+pg_ctl -D "$BREW_PATH/var/$_DOTS_POSTGRESQL_VERSION" start
