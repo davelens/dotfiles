@@ -55,8 +55,8 @@ if [ -d "$BREW_PATH" ]; then
     _add_to_var PKG_CONFIG_PATH "$pkg/lib/pkgconfig" ":"
   }
 
-  _add_brew_pkg_to_compile_flags mysql@8.4
-  _add_brew_pkg_to_compile_flags postgresql@18
+  _add_brew_pkg_to_compile_flags "$_DOTS_MYSQL_VERSION"
+  _add_brew_pkg_to_compile_flags "$_DOTS_POSTGRESQL_VERSION"
 
   unset -f _add_to_var _add_brew_pkg_to_compile_flags
 fi

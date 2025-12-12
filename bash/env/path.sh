@@ -9,9 +9,9 @@
 #
 #   Package managers > user made bins > system bins > everything else
 
-# About mysql@8.4: Homebrew binaries are typically installed in the Cellar/
+# A note on Homebrew binaries: They are typically installed in the Cellar/
 # directory. If a package has multiple possible versions however, it will get
-# symlinked into the opt/ directory (e.g. python@3, mysql@8.4, ...).
+# symlinked into the opt/ directory (e.g. python@3, mysql@8.4,...).
 #
 # We *could* load in all homebrew binaries in opt/, but that would be a LOT
 # of binaries added to $PATH one by one. That can't be healthy, but here's how
@@ -23,7 +23,8 @@
 # This would benefit from a helper that targets a source dir and symlinks all
 # executables into a target dir. But that's a lot of effort for a single tool.
 #
-# For now though, I add specific packages like mysql to $PATH manually.
+# For now, I chose to filter those particular packages (mysql and postgresql)
+# myself, and include them in $PATH dynamically.
 
 paths_to_add=()
 
@@ -41,11 +42,15 @@ fi
 
 # Brew needs to go before /usr/bin e.a.
 if [ -n "$BREW_PATH" ]; then
-  paths_to_add+=(
-    "$BREW_PATH"/{,s}bin               # Default bin files (mount, unbound,...)
-    "$BREW_PATH"/opt/mysql@8.4/bin     # mysqldump, mysql.server,...
-    "$BREW_PATH"/opt/postgresql@18/bin # pg_dump, psql,...
-  )
+  paths_to_add+=("$BREW_PATH"/{,s}bin) # Default bin files (mount, unbound,...)
+
+  if [ -d "$BREW_PATH/opt/$_DOTS_MYSQL_VERSION/bin" ]; then
+    paths_to_add+=("$BREW_PATH/opt/$_DOTS_MYSQL_VERSION/bin")
+  fi
+
+  if [ -d "$BREW_PATH/opt/$_DOTS_POSTGRESQL_VERSION/bin" ]; then
+    paths_to_add+=("$BREW_PATH/opt/$_DOTS_POSTGRESQL_VERSION/bin")
+  fi
 fi
 
 # User + system defined
