@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+
+# This opens a tmux session with a number of window/pane presets in order to
+# do **d**ev work on a project:
+#
+# * `d`: Will fuzzy find your project in $REPO_NAMESPACE/* using fzf.
+# * `d davelens/dotfiles`: Will search $REPO_NAMESPACE/* for the given namespace.
+# * `d -n`: Query the GitHub API for my desired repo namespaces.
+# * `d -x`: Close opened sessions, using fzf as a selection tool.
+#
+# It assumes a very specific folder structure; a github repository namespace
+# inside the $REPO_NAMESPACE folder. An example:
+#
+#   $REPO_NAMESPACE/<git-org-or-user>/<git-repo>
+#
+# All my dev work-related and personal projects reside on GitHub. It makes
+# sense for me to follow the same user/repo structure, as it allows me to
+# separate my professional projects from my personal ones.
+#
+# ${REPO_NAMESPACE} as my top level project folder because I mainly work on webapps, and
+# it's the macos default for them.
+#
+# As an afterthought; Yes, I'm aware of tmuxinator and yes, I've tried it.
+# I don't know, I still like a simple bash script better.
+set -e
+eval "$(source_env)"
+
+me="bin/tmux/$(basename "$0")"
+namespace=${REPO_NAMESPACE:-"$HOME/Repositories"}
+lockfile=/tmp/mix-done.lock
+
+# An elegant exit with a fuzzy search to select the namespace to exit.
+if [[ $# -eq 1 && $1 == '-x' ]]; then
+  tmux kill-session -t "$(tmux ls | sed -e 's|:.*||' | fzf)"
+  exit
+fi
+
+# Requesting to pull in a new project will query GitHub's API for namespaces
+[[ -n $TMUX ]] && fail 'ERROR: No nested tmux sessions allowed. Detach first, then try again.'
+
+# Requesting to pull in a new project will query GitHub's API for namespaces
+[[ $# -eq 1 && $1 == '-n' ]] && set -- "$(utility github search-repos user:davelens+user:blimp)"
+
+if [[ $# -eq 1 && $1 == '--docker' ]] && [[ ! $(pgrep -n docker) ]]; then
+  echo ERROR: You requested to bootstrap the project for docker, but no docker server is running.
+  exit
+fi
+
+# Provide a fuzzy search for my projects so I don't have to type names anymore.
+[ -z "$1" ] && set -- "$(ls -d $namespace/**/* | sed -e "s|$(echo)$namespace/||" | fzf)"
+
+if [ -z "$1" ]; then
+  echo 'ERROR: No project namespace given.'
+  echo "  Usage: $me [-x|-n|--docker] [<github-user>/<github-repo>]" && exit
+fi
+
+destination=$namespace/$1
+# Clone the git repo, fail with error output from `git clone`.
+[ ! -d "$destination" ] && bootstrap=1 && (git clone "git@github.com:$1.git" "$destination" || fail)
+
+rails_windows() {
+  tmux new-window -n db -c "$destination" -t "$1"
+  tmux new-window -n repl -c "$destination" -t "$1"
+  tmux new-window -n server -c "$destination" -t "$1"
+  sleep 1
+
+  if [ -n "$(pgrep -n mysqld)" ]; then
+    tmux send-keys -t "$1":db "clear && mycli \$(utility rails lookup-db-credentials --key=database) -h localhost" C-m
+  fi
+
+  tmux send-keys -t "$1":server "eval '$(source_env)'" C-m
+  tmux send-keys -t "$1":server 'bin/rails db:environment:set RAILS_ENV=test' C-m
+  tmux send-keys -t "$1":repl "eval '$(source_env)'; clear && bin/spring rails c && bin/spring stop" C-m
+  tmux send-keys -t "$1":server 'clear && bin/rails s' C-m
+
+  case $server in
+  [Yy]*) tmux send-keys -t "$1":server 'clear && bin/rails s' C-m ;;
+  [Nn]*) tmux send-keys -t "$1":server 'clear && bin/rails s' ;;
+  *) printf "\nPlease answer %s or %s.\n" "$(tput smul)Y$(tput rmul)es" "$(tput smul)N$(tput rmul)o" ;;
+  esac
+}
+
+phoenix_windows() {
+  tmux new-window -n db -c "$destination" -t "$1"
+  tmux new-window -n repl -c "$destination" -t "$1"
+  tmux new-window -n server -c "$destination" -t "$1"
+  sleep 1
+
+  if [ -n "$(pgrep -n mysqld)" ]; then
+    # TODO: Extract database name from config/dev.exs
+    tmux send-keys -t "$1":db "clear && mycli -h localhost" C-m
+  fi
+
+  # We need this before running both REPL and server.
+  # TODO: There is something called "tmux wait" that might be useful here, but
+  # the simple example I tried did not work. Try again later when time permits.
+  tmux send-keys -t "$1":repl "mix do deps.get, deps.compile && touch $lockfile" C-m
+
+  # Wait for the lock file to be created, indicating the commands are complete
+  while [ ! -f "$lockfile" ]; do
+    sleep 1
+  done
+  rm $lockfile
+
+  tmux send-keys -t "$1":repl 'iex -S mix' C-m
+  tmux send-keys -t "$1":server "eval '$(source_env)'" C-m
+
+  case $server in
+  [Yy]*) tmux send-keys -t "$1":server 'clear && mix phx.server' C-m ;;
+  [Nn]*) tmux send-keys -t "$1":server 'clear && mix phx.server' ;;
+  *) printf "\nPlease answer %s or %s.\n" "$(tput smul)Y$(tput rmul)es" "$(tput smul)N$(tput rmul)o" ;;
+  esac
+}
+
+# Dots aren't allowed in tmux pane names.
+set -- "${1/./_}"
+
+tmux attach -t "=$1" >/dev/null 2>&1 || (
+  tmux new-session -s "$1" -n editor -c "$destination" -d
+  tmux send-keys -t "$1" "eval '$(source_env)'; clear && $EDITOR" C-m
+
+  if [ -z $(pgrep -n mysqld) ]; then
+    read -r -n1 -p "[tmux/d] Launch local mysql server? (y/n) " mysql
+    echo
+    case $mysql in
+    [Yy]*) mysql.server start >/dev/null 2>&1 ;;
+    [Nn]*) echo ;;
+    *) printf "\nPlease answer %s or %s.\n" "$(tput smul)Y$(tput rmul)es" "$(tput smul)N$(tput rmul)o" ;;
+    esac
+  fi
+
+  if [[ -f $destination/config.ru ]]; then
+    read -r -n1 -p "[tmux/d] Launch local puma server? (y/n) " server
+    echo
+    [ -n "$bootstrap" ] && cd "$destination" && utility rails db-import -i=logs && cd - >/dev/null
+    rails_windows "$1"
+  fi
+
+  if [[ -f $destination/mix.exs ]]; then
+    read -r -n1 -p "[tmux/d] Launch local phoenix server? (y/n) " server
+    echo
+    phoenix_windows "$1"
+  fi
+
+  tmux attach -d -t "$1":1
+)

@@ -1,146 +1,336 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154
 
-# This opens a tmux session with a number of window/pane presets in order to
-# do **d**ev work on a project:
+# Opens a tmux session with preset windows for development work on a project.
 #
-# * `d`: Will fuzzy find your project in $REPO_NAMESPACE/* using fzf.
-# * `d davelens/dotfiles`: Will search $REPO_NAMESPACE/* for the given namespace.
-# * `d -n`: Query the GitHub API for my desired repo namespaces.
-# * `d -x`: Close opened sessions, using fzf as a selection tool.
+# Usage:
+#   repo                         Fuzzy find a project in $REPO_NAMESPACE
+#   repo <user>/<repo>           Open or clone a specific namespace
+#   repo -n                      Search GitHub API for repos to clone
+#   repo -x                      Kill a tmux session via fuzzy selection
 #
-# It assumes a very specific folder structure; a github repository namespace
-# inside the $REPO_NAMESPACE folder. An example:
-#
+# The script assumes a folder structure mirroring GitHub namespaces:
 #   $REPO_NAMESPACE/<git-org-or-user>/<git-repo>
 #
-# All my dev work-related and personal projects reside on GitHub. It makes
-# sense for me to follow the same user/repo structure, as it allows me to
-# separate my professional projects from my personal ones.
-#
-# ${REPO_NAMESPACE} as my top level project folder because I mainly work on webapps, and
-# it's the macos default for them.
-#
-# As an afterthought; Yes, I'm aware of tmuxinator and yes, I've tried it.
-# I don't know, I still like a simple bash script better.
+# Supports automatic window setup for:
+#   - Rails projects (detected via config.ru)
+#   - Phoenix projects (detected via mix.exs + phoenix dependency)
+
 set -e
-eval "$(source_env)"
 
-me="bin/tmux/$(basename "$0")"
-namespace=${REPO_NAMESPACE:-"$HOME/Repositories"}
-lockfile=/tmp/mix-done.lock
+me="tmux/$(basename "$0")"
+NAMESPACE="${REPO_NAMESPACE:-$HOME/Repositories}"
 
-# An elegant exit with a fuzzy search to select the namespace to exit.
-if [[ $# -eq 1 && $1 == '-x' ]]; then
-  tmux kill-session -t "$(tmux ls | sed -e 's|:.*||' | fzf)"
-  exit
-fi
+###############################################################################
+# Helpers
+###############################################################################
 
-# Requesting to pull in a new project will query GitHub's API for namespaces
-[[ -n $TMUX ]] && fail 'ERROR: No nested tmux sessions allowed. Detach first, then try again.'
-
-# Requesting to pull in a new project will query GitHub's API for namespaces
-[[ $# -eq 1 && $1 == '-n' ]] && set -- "$(utility github search-repos user:davelens+user:blimp)"
-
-if [[ $# -eq 1 && $1 == '--docker' ]] && [[ ! $(pgrep -n docker) ]]; then
-  echo ERROR: You requested to bootstrap the project for docker, but no docker server is running.
-  exit
-fi
-
-# Provide a fuzzy search for my projects so I don't have to type names anymore.
-[ -z "$1" ] && set -- "$(ls -d $namespace/**/* | sed -e "s|$(echo)$namespace/||" | fzf)"
-
-if [ -z "$1" ]; then
-  echo 'ERROR: No project namespace given.'
-  echo "  Usage: $me [-x|-n|--docker] [<github-user>/<github-repo>]" && exit
-fi
-
-destination=$namespace/$1
-# Clone the git repo, fail with error output from `git clone`.
-[ ! -d "$destination" ] && bootstrap=1 && (git clone "git@github.com:$1.git" "$destination" || fail)
-
-rails_windows() {
-  tmux new-window -n db -c "$destination" -t "$1"
-  tmux new-window -n repl -c "$destination" -t "$1"
-  tmux new-window -n server -c "$destination" -t "$1"
-  sleep 1
-
-  if [ -n "$(pgrep -n mysqld)" ]; then
-    tmux send-keys -t "$1":db "clear && mycli \$(utility rails lookup-db-credentials --key=database) -h localhost" C-m
-  fi
-
-  tmux send-keys -t "$1":server "eval '$(source_env)'" C-m
-  tmux send-keys -t "$1":server 'bin/rails db:environment:set RAILS_ENV=test' C-m
-  tmux send-keys -t "$1":repl "eval '$(source_env)'; clear && bin/spring rails c && bin/spring stop" C-m
-  tmux send-keys -t "$1":server 'clear && bin/rails s' C-m
-
-  case $server in
-  [Yy]*) tmux send-keys -t "$1":server 'clear && bin/rails s' C-m ;;
-  [Nn]*) tmux send-keys -t "$1":server 'clear && bin/rails s' ;;
-  *) printf "\nPlease answer %s or %s.\n" "$(tput smul)Y$(tput rmul)es" "$(tput smul)N$(tput rmul)o" ;;
-  esac
+usage() {
+  echo
+  echo "Usage: utility tmux repo [-h|--help] [-x] [-n] [<namespace>]"
+  echo
+  echo "Options:"
+  echo "  -h|--help      Show this help message and exit."
+  echo "  -x             Kill a tmux session via fuzzy selection."
+  echo "  -n             Search GitHub for repos (uses GITHUB_PERSONAL_ACCESS_TOKEN)."
+  echo "  <namespace>    A github namespace (e.g. 'davelens/dotfiles')."
+  echo
+  echo "Environment:"
+  echo "  REPO_NAMESPACE   Base directory for projects (default: ~/Repositories)"
 }
 
-phoenix_windows() {
-  tmux new-window -n db -c "$destination" -t "$1"
-  tmux new-window -n repl -c "$destination" -t "$1"
-  tmux new-window -n server -c "$destination" -t "$1"
-  sleep 1
+is_rails_project() {
+  [[ -f "$1/config.ru" ]]
+}
 
-  if [ -n "$(pgrep -n mysqld)" ]; then
-    # TODO: Extract database name from config/dev.exs
-    tmux send-keys -t "$1":db "clear && mycli -h localhost" C-m
+is_phoenix_project() {
+  [[ -f "$1/mix.exs" ]] && grep -q "{:phoenix" "$1/mix.exs" 2>/dev/null
+}
+
+is_elixir_project() {
+  [[ -f "$1/mix.exs" ]]
+}
+
+session_name_from_path() {
+  # Dots and colons aren't allowed in tmux session names
+  local name="$1"
+  name="${name//./_}"
+  name="${name//:/_}"
+  echo "$name"
+}
+
+ensure_mysql_running() {
+  if [[ -z $(pgrep -x mysqld) ]]; then
+    local answer
+    answer=$($prompt_user -yn "[$me] Start local MySQL server?")
+    echo
+    [[ "$answer" =~ [Yy] ]] && mysql.server start >/dev/null 2>&1
   fi
+}
 
-  # We need this before running both REPL and server.
-  # TODO: There is something called "tmux wait" that might be useful here, but
-  # the simple example I tried did not work. Try again later when time permits.
-  tmux send-keys -t "$1":repl "mix do deps.get, deps.compile && touch $lockfile" C-m
+ensure_postgres_running() {
+  if ! pg_isready -q 2>/dev/null; then
+    local answer
+    answer=$($prompt_user -yn "[$me] Start local PostgreSQL server?")
+    echo
+    [[ "$answer" =~ [Yy] ]] && utility postgresql start >/dev/null
+  fi
+}
 
-  # Wait for the lock file to be created, indicating the commands are complete
-  while [ ! -f "$lockfile" ]; do
-    sleep 1
+clone_repo() {
+  local namespace="$1"
+  local destination="$2"
+
+  $print_status -i pending "Cloning $namespace..."
+  if git clone "git@github.com:$namespace.git" "$destination" 2>/dev/null; then
+    $print_status -i ok "Cloned $namespace"
+    return 0
+  else
+    $print_status -i error "Failed to clone $namespace"
+    return 1
+  fi
+}
+
+###############################################################################
+# Window setup functions
+###############################################################################
+
+setup_base_session() {
+  local session="$1"
+  local path="$2"
+
+  tmux new-session -s "$session" -n editor -c "$path" -d
+  tmux send-keys -t "$session:editor" "eval \"\$(source_env)\"; clear && $EDITOR" C-m
+}
+
+setup_rails_windows() {
+  local session="$1"
+  local path="$2"
+  local start_server="$3"
+
+  tmux new-window -n db -c "$path" -t "$session"
+  tmux new-window -n console -c "$path" -t "$session"
+  tmux new-window -n server -c "$path" -t "$session"
+
+  # Give windows time to initialize
+  sleep 0.5
+
+  # Set up environment in all windows
+  for window in db console server; do
+    tmux send-keys -t "$session:$window" "eval \"\$(source_env)\"" C-m
   done
-  rm $lockfile
 
-  tmux send-keys -t "$1":repl 'iex -S mix' C-m
-  tmux send-keys -t "$1":server "eval '$(source_env)'" C-m
+  # Database client (only if mysql is running)
+  if [[ -n $(pgrep -x mysqld) ]]; then
+    tmux send-keys -t "$session:db" "clear && mycli \$(utility rails lookup-db-credentials --key=database) -h localhost" C-m
+  elif pg_isready -q 2>/dev/null; then
+    tmux send-keys -t "$session:db" "clear && pgcli" C-m
+  else
+    tmux send-keys -t "$session:db" "clear" C-m
+  fi
 
-  case $server in
-  [Yy]*) tmux send-keys -t "$1":server 'clear && mix phx.server' C-m ;;
-  [Nn]*) tmux send-keys -t "$1":server 'clear && mix phx.server' ;;
-  *) printf "\nPlease answer %s or %s.\n" "$(tput smul)Y$(tput rmul)es" "$(tput smul)N$(tput rmul)o" ;;
-  esac
+  # Rails console
+  tmux send-keys -t "$session:console" "clear && bin/rails console" C-m
+
+  # Rails server
+  if [[ "$start_server" =~ [Yy] ]]; then
+    tmux send-keys -t "$session:server" "clear && bin/rails server" C-m
+  else
+    tmux send-keys -t "$session:server" "clear && bin/rails server"
+  fi
 }
 
-# Dots aren't allowed in tmux pane names.
-set -- "${1/./_}"
+setup_phoenix_windows() {
+  local session="$1"
+  local path="$2"
+  local start_server="$3"
 
-tmux attach -t "=$1" >/dev/null 2>&1 || (
-  tmux new-session -s "$1" -n editor -c "$destination" -d
-  tmux send-keys -t "$1" "eval '$(source_env)'; clear && $EDITOR" C-m
+  tmux new-window -n db -c "$path" -t "$session"
+  tmux new-window -n iex -c "$path" -t "$session"
+  tmux new-window -n server -c "$path" -t "$session"
 
-  if [ -z $(pgrep -n mysqld) ]; then
-    read -r -n1 -p "[tmux/d] Launch local mysql server? (y/n) " mysql
-    echo
-    case $mysql in
-    [Yy]*) mysql.server start >/dev/null 2>&1 ;;
-    [Nn]*) echo ;;
-    *) printf "\nPlease answer %s or %s.\n" "$(tput smul)Y$(tput rmul)es" "$(tput smul)N$(tput rmul)o" ;;
+  # Give windows time to initialize
+  sleep 0.5
+
+  # Set up environment in all windows
+  for window in db iex server; do
+    tmux send-keys -t "$session:$window" "eval \"\$(source_env)\"" C-m
+  done
+
+  # Database client
+  # TODO:
+  # - [ ] Read out working directory to learn if the Phoenix project uses MySQL
+  #       or PostgreSQL.
+  # - [ ] Extract the configured dev database name for the project.
+  if pg_isready -q 2>/dev/null; then
+    tmux send-keys -t "$session:db" "clear && pgcli" C-m
+  elif [[ -n $(pgrep -x mysqld) ]]; then
+    tmux send-keys -t "$session:db" "clear && mycli" C-m
+  else
+    tmux send-keys -t "$session:db" "clear" C-m
+  fi
+
+  # Interactive Elixir shell
+  tmux send-keys -t "$session:iex" "clear && iex -S mix" C-m
+
+  # Phoenix server
+  if [[ "$start_server" =~ [Yy] ]]; then
+    tmux send-keys -t "$session:server" "clear && mix phx.server" C-m
+  else
+    tmux send-keys -t "$session:server" "clear && mix phx.server"
+  fi
+}
+
+setup_elixir_windows() {
+  local session="$1"
+  local path="$2"
+
+  tmux new-window -n iex -c "$path" -t "$session"
+
+  sleep 0.5
+
+  tmux send-keys -t "$session:iex" "eval \"\$(source_env)\"" C-m
+  tmux send-keys -t "$session:iex" "clear && iex -S mix" C-m
+}
+
+bootstrap_rails() {
+  local path="$1"
+
+  $print_status -i pending "Bootstrapping Rails project..."
+
+  # Run the rails bootstrap utility if it exists
+  if [[ -x "$(command -v utility)" ]]; then
+    utility rails bootstrap "$path" && return 0
+  fi
+
+  # Fallback: basic setup
+  cd "$path" || return 1
+  [[ -f "Gemfile" ]] && bundle install --quiet
+  cd - >/dev/null
+}
+
+bootstrap_phoenix() {
+  local path="$1"
+
+  $print_status -i pending "Bootstrapping Phoenix project..."
+
+  cd "$path" || return 1
+  mix local.hex --force >/dev/null 2>&1
+  mix deps.get >/dev/null 2>&1
+  mix deps.compile >/dev/null 2>&1
+
+  # Set up database if ecto is present
+  if grep -q "{:ecto" mix.exs 2>/dev/null; then
+    mix ecto.setup 2>/dev/null || mix ecto.create 2>/dev/null || true
+  fi
+
+  cd - >/dev/null
+  $print_status -i ok "Phoenix project bootstrapped"
+}
+
+###############################################################################
+# Main
+###############################################################################
+
+main() {
+  local target destination session bootstrap=0 start_server
+
+  # Parse arguments
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    -h | --help)
+      usage && exit 0
+      ;;
+    -x)
+      # Kill session via fuzzy selection
+      local sessions
+      sessions=$(tmux ls 2>/dev/null | sed 's/:.*//') || fail "[$me] No tmux sessions found."
+      local selected
+      selected=$(echo "$sessions" | fzf --prompt="Kill session: ") || exit 0
+      tmux kill-session -t "$selected"
+      exit 0
+      ;;
+    -n)
+      # Search GitHub for repos
+      shift
+      set -- "$(utility github search-repos user:davelens+user:blimp)"
+      ;;
+    *)
+      target="$1"
+      shift
+      ;;
     esac
+  done
+
+  # Block nested tmux sessions
+  [[ -n "$TMUX" ]] && fail "[$me] Cannot create nested tmux sessions. Detach first (prefix + d)."
+
+  # Fuzzy find if no target specified
+  if [[ -z "$target" ]]; then
+    target=$(find "$NAMESPACE" -mindepth 2 -maxdepth 2 -type d 2>/dev/null |
+      sed "s|$NAMESPACE/||" |
+      fzf --prompt="Select project: ") || exit 0
   fi
 
-  if [[ -f $destination/config.ru ]]; then
-    read -r -n1 -p "[tmux/d] Launch local puma server? (y/n) " server
-    echo
-    [ -n "$bootstrap" ] && cd "$destination" && utility rails db-import -i=logs && cd - >/dev/null
-    rails_windows "$1"
+  [[ -z "$target" ]] && fail "[$me] No project selected."
+
+  destination="$NAMESPACE/$target"
+
+  # Clone if directory doesn't exist
+  if [[ ! -d "$destination" ]]; then
+    bootstrap=1
+    clone_repo "$target" "$destination" || exit 1
   fi
 
-  if [[ -f $destination/mix.exs ]]; then
-    read -r -n1 -p "[tmux/d] Launch local phoenix server? (y/n) " server
-    echo
-    phoenix_windows "$1"
+  session=$(session_name_from_path "$target")
+
+  # Attach to existing session if it exists
+  if tmux has-session -t "=$session" 2>/dev/null; then
+    tmux attach -t "=$session"
+    exit 0
   fi
 
-  tmux attach -d -t "$1":1
-)
+  # Detect project type and set up accordingly
+  if is_rails_project "$destination"; then
+    ensure_mysql_running
+
+    if [[ $bootstrap -eq 1 ]]; then
+      bootstrap_rails "$destination"
+    fi
+
+    start_server=$($prompt_user -yn "[$me] Start Rails server?")
+
+    setup_base_session "$session" "$destination"
+    setup_rails_windows "$session" "$destination" "$start_server"
+
+  elif is_phoenix_project "$destination"; then
+    ensure_postgres_running
+
+    if [[ $bootstrap -eq 1 ]]; then
+      bootstrap_phoenix "$destination"
+    fi
+
+    start_server=$($prompt_user -yn "[$me] Start Phoenix server?")
+
+    setup_base_session "$session" "$destination"
+    setup_phoenix_windows "$session" "$destination" "$start_server"
+
+  elif is_elixir_project "$destination"; then
+    if [[ $bootstrap -eq 1 ]]; then
+      cd "$destination" && mix deps.get && cd - >/dev/null
+    fi
+
+    setup_base_session "$session" "$destination"
+    setup_elixir_windows "$session" "$destination"
+
+  else
+    # Generic project: just editor window
+    setup_base_session "$session" "$destination"
+  fi
+
+  # Attach to the session, focusing on the editor window
+  tmux select-window -t "$session:editor"
+  tmux attach -t "$session"
+}
+
+main "$@"
