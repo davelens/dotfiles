@@ -7,6 +7,11 @@ alias rsync='rsync --exclude-from="$XDG_CONFIG_HOME/rsyncignore"'
 alias vim="\$EDITOR" # My usecase here is that I use `dvim` as my Neovim profile.
 alias vi='vim'
 
+# XDG related overrides - Commands that need some help adhering to XDG.
+alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME"/yarn/config'
+alias wget='wget --hsts-file="$XDG_CACHE_HOME"/wget-hsts'
+alias mycli='mycli --myclirc "$MYCLIRC"'
+
 # Spelling corrections
 # NOTE: `timesused <alias>` to find out how many times you made a mistake.
 alias gti='git'
@@ -35,8 +40,3 @@ alias notes='utility misc notes'
 # Generic helpers and custom commands
 alias colors='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'
 alias http='ruby -run -ehttpd . -p3000' # Run a quick & basic local HTTP server
-
-# XDG related overrides
-alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME"/yarn/config'
-alias wget='wget --hsts-file="$XDG_CACHE_HOME"/wget-hsts'
-alias mycli='mycli --myclirc "$MYCLIRC"'
