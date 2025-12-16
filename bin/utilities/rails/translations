@@ -1,39 +1,65 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-unless File.exist?('config.ru')
-  puts 'ERROR: You can only run this from a folder containing a Rails project.'
-  return
-end
-
-unless ARGV[0]
-  puts 'ERROR: No translation key given for lookup.'
-  puts 'Usage: utility rails translations <translation key>'
-  return
-end
+# Lookup translation keys across all locale files in a Rails project.
+# Parses YAML files from config/locales and displays values for each locale.
+#
+# Usage:
+#   utility rails translations activerecord.errors.messages.blank
+#   utility rails translations --app=/path/to/app users.index.title
 
 require 'yaml'
+require 'optparse'
+
+ME = "rails/#{File.basename(__FILE__)}"
+
+options = {
+  app: '.'
+}
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: utility rails #{File.basename(__FILE__)} <translation.key> [options]"
+
+  opts.on('--app=PATH', 'Path to Rails application (default: current directory)') do |v|
+    options[:app] = v
+  end
+
+  opts.on('-h', '--help', 'Show this help message') do
+    puts opts
+    exit
+  end
+end
+
+begin
+  parser.parse!
+rescue OptionParser::InvalidOption => e
+  warn "[#{ME}] ERROR: #{e.message}"
+  warn parser.banner
+  exit 1
+end
+
+app_path = File.expand_path(options[:app])
+
+unless File.exist?(File.join(app_path, 'config.ru'))
+  warn "[#{ME}] ERROR: You can only run this from a folder containing a Rails project."
+  exit 1
+end
+
+if ARGV.empty?
+  warn "[#{ME}] ERROR: No translation key given for lookup."
+  warn ""
+  warn "Usage: utility #{ME} <translation.key> [--app=PATH]"
+  exit 1
+end
+
+translation_key = ARGV[0]
 
 # As taken from active_support/core_ext/hash/deep_merge.rb
 class Hash
-  # Returns a new hash with +self+ and +other_hash+ merged recursively.
-  #
-  #   h1 = { a: true, b: { c: [1, 2, 3] } }
-  #   h2 = { a: false, b: { x: [3, 4, 5] } }
-  #
-  #   h1.deep_merge(h2) # => { a: false, b: { c: [1, 2, 3], x: [3, 4, 5] } }
-  #
-  # Like with Hash#merge in the standard library, a block can be provided
-  # to merge values:
-  #
-  #   h1 = { a: 100, b: 200, c: { c1: 100 } }
-  #   h2 = { b: 250, c: { c1: 200 } }
-  #   h1.deep_merge(h2) { |key, this_val, other_val| this_val + other_val }
-  #   # => { a: 100, b: 450, c: { c1: 300 } }
   def deep_merge(other_hash, &block)
     dup.deep_merge!(other_hash, &block)
   end
 
-  # Same as +deep_merge+, but modifies +self+.
   def deep_merge!(other_hash, &block)
     merge!(other_hash) do |key, this_val, other_val|
       if this_val.is_a?(Hash) && other_val.is_a?(Hash)
@@ -47,17 +73,24 @@ class Hash
   end
 end
 
-def files
-  files ||= Dir.glob('config/locales/*.yml')
+locale_files = Dir.glob(File.join(app_path, 'config/locales/**/*.yml'))
+
+if locale_files.empty?
+  warn "[#{ME}] ERROR: No locale files found in #{app_path}/config/locales/"
+  exit 1
 end
 
-hash = files.each_with_object({}) do |file, stack|
+translations = locale_files.each_with_object({}) do |file, stack|
   stack.deep_merge!(YAML.load_file(file, aliases: true))
-  stack
 end
 
-hash.keys.each do |locale|
-  identifier = ARGV[0].split('.').unshift(locale)
-  value = hash.dig(*identifier)
-  puts "#{locale}: ".concat(value ? "\"#{value}\"" : "Missing translation for #{ARGV[0]}")
+translations.keys.sort.each do |locale|
+  identifier = translation_key.split('.').unshift(locale)
+  value = translations.dig(*identifier)
+
+  if value
+    puts "#{locale}: \"#{value}\""
+  else
+    puts "#{locale}: Missing translation for #{translation_key}"
+  end
 end
