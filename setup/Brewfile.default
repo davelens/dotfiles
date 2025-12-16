@@ -79,7 +79,7 @@ brew "lolcat"                         # Rainbow colours for ASCII text
 brew "luarocks"                       # Package manager for Lua
 brew "m4"                             # dep for elixir, erlang,...
 brew "markdown"                       # Formatting syntax for text files
-brew "mycli"                          # A client for a proprietary database
+brew "mycli"                          # A better MySQL client
 brew "mysql@8.4"                      # Some proprietary database crap
 brew "navi"                           # Terminal cheatsheet
 brew "ncdu"                           # Disk usage monitor written in ncurses
@@ -94,6 +94,7 @@ brew "pango"                          # dep for imagemagick, ffmpeg, chafa,...
 brew "pastel"                         # Terminal colour manipulation
 brew "pipes-sh"                       # Terminal screensaver, win95 style
 brew "pipx"                           # Package manager for python
+brew "pgcli"                          # A better PostgreSQL client
 brew "pkgconf"                        # Helps configure compiler/linker flags
 brew "pv"                             # Progress bar for the terminal
 brew "redis"                          # In-memory key/value database
