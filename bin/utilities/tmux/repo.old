@@ -65,7 +65,7 @@ rails_windows() {
   sleep 1
 
   if [ -n "$(pgrep -n mysqld)" ]; then
-    tmux send-keys -t "$1":db "clear && mycli \$(utility rails lookup-db-credentials --key=database) -h localhost" C-m
+    tmux send-keys -t "$1":db "clear && mycli \$(utility rails db-credentials --key=database) -h localhost" C-m
   fi
 
   tmux send-keys -t "$1":server "eval '$(source_env)'" C-m

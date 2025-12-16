@@ -122,7 +122,7 @@ setup_rails_windows() {
 
   # Database client (only if mysql is running)
   if [[ -n $(pgrep -x mysqld) ]]; then
-    tmux send-keys -t "$session:db" "clear && mycli \$(utility rails lookup-db-credentials --key=database) -h localhost" C-m
+    tmux send-keys -t "$session:db" "clear && mycli \$(utility rails db-credentials --key=database) -h localhost" C-m
   elif pg_isready -q 2>/dev/null; then
     tmux send-keys -t "$session:db" "clear && pgcli" C-m
   else
@@ -130,13 +130,13 @@ setup_rails_windows() {
   fi
 
   # Rails console
-  tmux send-keys -t "$session:console" "clear && bin/rails console" C-m
+  tmux send-keys -t "$session:console" "clear && bin/rails c" C-m
 
   # Rails server
   if [[ "$start_server" =~ [Yy] ]]; then
-    tmux send-keys -t "$session:server" "clear && bin/rails server" C-m
+    tmux send-keys -t "$session:server" "clear && bin/rails s" C-m
   else
-    tmux send-keys -t "$session:server" "clear && bin/rails server"
+    tmux send-keys -t "$session:server" "clear && bin/rails s"
   fi
 }
 

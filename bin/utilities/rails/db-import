@@ -58,8 +58,8 @@ done
 
 [[ ! -d $app/db/dump ]] && mkdir -p "$app/db/dump"
 
-[[ -z "$remote_db" ]] && remote_db=$(utility rails lookup-db-credentials -p --key=database --app="$app")
-[[ -z "$local_db" ]] && local_db=$(utility rails lookup-db-credentials --key=database --app="$app")
+[[ -z "$remote_db" ]] && remote_db=$(utility rails db-credentials -p --key=database --app="$app")
+[[ -z "$local_db" ]] && local_db=$(utility rails db-credentials --key=database --app="$app")
 [[ -z "$local_db" ]] && fail "[$me] ERROR: No local configuration found in $app/config/database.yml. Aborting."
 
 if [[ -z "$remote_db" ]]; then
@@ -94,7 +94,7 @@ scp "$user@$server:dump.sql.tar" "$app/db/dump/"
 spinner "Unpacking dump.sql.tar"
 tar -C "$app/db/dump/" -xvf "$app/db/dump/dump.sql.tar" >/dev/null 2>&1
 
-test_database=$(utility rails lookup-db-credentials -t --key=database --app="$app")
+test_database=$(utility rails db-credentials -t --key=database --app="$app")
 
 $docker_prefix $mysql -e "drop database if exists $local_db"
 $docker_prefix $mysql -e "drop database if exists $test_database"
