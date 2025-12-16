@@ -55,7 +55,7 @@ is_elixir_project() {
 rails_db_adapter() {
   local path="$1"
   local adapter
-  adapter=$(utility rails db-credentials --app="$path" --key=adapter 2>/dev/null) || return 1
+  adapter=$(utility rails db-credentials --key=adapter 2>/dev/null) || return 1
   echo "$adapter"
 }
 
@@ -154,7 +154,7 @@ setup_rails_windows() {
   done
 
   # Database client based on project adapter
-  database="\$(utility rails db-credentials --app=\"$path\" --key=database)"
+  database="\$(utility rails db-credentials --key=database)"
   case "$adapter" in
   mysql | mysql2)
     tmux send-keys -t "$session:db" "clear && mycli $database -h localhost" C-m
@@ -199,7 +199,7 @@ setup_phoenix_windows() {
   done
 
   # Database client based on project adapter
-  database="\$(utility phoenix db-credentials --app=\"$path\" --key=database)"
+  database="\$(utility phoenix db-credentials --key=database)"
   case "$adapter" in
   mysql)
     tmux send-keys -t "$session:db" "clear && mycli $database -h localhost" C-m
