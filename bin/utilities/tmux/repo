@@ -55,7 +55,7 @@ is_elixir_project() {
 rails_db_adapter() {
   local path="$1"
   local adapter
-  adapter=$(utility rails db-credentials --key=adapter 2>/dev/null) || return 1
+  adapter=$(utility rails db-credentials --app="$path" --key=adapter 2>/dev/null) || return 1
   echo "$adapter"
 }
 
@@ -142,14 +142,14 @@ setup_rails_windows() {
   adapter=$(rails_db_adapter "$path")
 
   tmux new-window -n db -c "$path" -t "$session"
-  tmux new-window -n console -c "$path" -t "$session"
+  tmux new-window -n repl -c "$path" -t "$session"
   tmux new-window -n server -c "$path" -t "$session"
 
   # Give windows time to initialize
   sleep 0.5
 
   # Set up environment in all windows
-  for window in db console server; do
+  for window in db repl server; do
     tmux send-keys -t "$session:$window" "eval \"\$(source_env)\"" C-m
   done
 
@@ -168,7 +168,7 @@ setup_rails_windows() {
   esac
 
   # Rails console
-  tmux send-keys -t "$session:console" "clear && bin/rails c" C-m
+  tmux send-keys -t "$session:repl" "clear && bin/rails c" C-m
 
   # Rails server
   if [[ "$start_server" =~ [Yy] ]]; then
@@ -187,14 +187,14 @@ setup_phoenix_windows() {
   adapter=$(phoenix_db_adapter "$path")
 
   tmux new-window -n db -c "$path" -t "$session"
-  tmux new-window -n iex -c "$path" -t "$session"
+  tmux new-window -n repl -c "$path" -t "$session"
   tmux new-window -n server -c "$path" -t "$session"
 
   # Give windows time to initialize
   sleep 0.5
 
   # Set up environment in all windows
-  for window in db iex server; do
+  for window in db repl server; do
     tmux send-keys -t "$session:$window" "eval \"\$(source_env)\"" C-m
   done
 
@@ -213,7 +213,7 @@ setup_phoenix_windows() {
   esac
 
   # Interactive Elixir shell
-  tmux send-keys -t "$session:iex" "clear && iex -S mix" C-m
+  tmux send-keys -t "$session:repl" "clear && iex -S mix" C-m
 
   # Phoenix server
   if [[ "$start_server" =~ [Yy] ]]; then
@@ -227,12 +227,12 @@ setup_elixir_windows() {
   local session="$1"
   local path="$2"
 
-  tmux new-window -n iex -c "$path" -t "$session"
+  tmux new-window -n repl -c "$path" -t "$session"
 
   sleep 0.5
 
-  tmux send-keys -t "$session:iex" "eval \"\$(source_env)\"" C-m
-  tmux send-keys -t "$session:iex" "clear && iex -S mix" C-m
+  tmux send-keys -t "$session:repl" "eval \"\$(source_env)\"" C-m
+  tmux send-keys -t "$session:repl" "clear && iex -S mix" C-m
 }
 
 bootstrap_rails() {
