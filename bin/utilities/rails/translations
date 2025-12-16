@@ -86,7 +86,13 @@ end
 
 translations.keys.sort.each do |locale|
   identifier = translation_key.split('.').unshift(locale)
-  value = translations.dig(*identifier)
+
+  begin
+    value = translations.dig(*identifier)
+  rescue TypeError
+    # dig fails if it hits a non-Hash (e.g., String) mid-path
+    value = nil
+  end
 
   if value
     puts "#{locale}: \"#{value}\""
