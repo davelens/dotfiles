@@ -130,7 +130,7 @@ setup_base_session() {
   local path="$2"
 
   tmux new-session -s "$session" -n editor -c "$path" -d
-  tmux send-keys -t "$session:editor" "eval \"\$(source_env)\"; clear && $EDITOR" C-m
+  tmux send-keys -t "$session:editor" "clear && $EDITOR" C-m
 }
 
 setup_rails_windows() {
@@ -147,11 +147,6 @@ setup_rails_windows() {
 
   # Give windows time to initialize
   sleep 0.5
-
-  # Set up environment in all windows
-  for window in db repl server; do
-    tmux send-keys -t "$session:$window" "eval \"\$(source_env)\"" C-m
-  done
 
   # Database client based on project adapter
   database="\$(utility rails db-credentials --key=database)"
@@ -193,11 +188,6 @@ setup_phoenix_windows() {
   # Give windows time to initialize
   sleep 0.5
 
-  # Set up environment in all windows
-  for window in db repl server; do
-    tmux send-keys -t "$session:$window" "eval \"\$(source_env)\"" C-m
-  done
-
   # Database client based on project adapter
   database="\$(utility phoenix db-credentials --key=database)"
   case "$adapter" in
@@ -231,7 +221,6 @@ setup_elixir_windows() {
 
   sleep 0.5
 
-  tmux send-keys -t "$session:repl" "eval \"\$(source_env)\"" C-m
   tmux send-keys -t "$session:repl" "clear && iex -S mix" C-m
 }
 
