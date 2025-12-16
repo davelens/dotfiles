@@ -158,14 +158,10 @@ setup_phoenix_windows() {
   done
 
   # Database client
-  # TODO:
-  # - [ ] Read out working directory to learn if the Phoenix project uses MySQL
-  #       or PostgreSQL.
-  # - [ ] Extract the configured dev database name for the project.
   if pg_isready -q 2>/dev/null; then
-    tmux send-keys -t "$session:db" "clear && pgcli" C-m
+    tmux send-keys -t "$session:db" "clear && pgcli \$(utility phoenix db-credentials --key=database)" C-m
   elif [[ -n $(pgrep -x mysqld) ]]; then
-    tmux send-keys -t "$session:db" "clear && mycli" C-m
+    tmux send-keys -t "$session:db" "clear && mycli \$(utility phoenix db-credentials --key=database)" C-m
   else
     tmux send-keys -t "$session:db" "clear" C-m
   fi
