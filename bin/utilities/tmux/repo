@@ -12,13 +12,15 @@
 # The script assumes a folder structure mirroring GitHub namespaces:
 #   $REPO_NAMESPACE/<git-org-or-user>/<git-repo>
 #
-# Supports automatic window setup for:
-#   - Rails projects (detected via config.ru)
-#   - Phoenix projects (detected via mix.exs + phoenix dependency)
+# Framework support is modular - see repo.d/ for available frameworks.
+# To add a new framework, create a new .sh file in repo.d/ implementing
+# the interface defined in repo.d/_base.sh
 
 set -e
 
 me="tmux/$(basename "$0")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FRAMEWORK_DIR="$SCRIPT_DIR/repo.d"
 NAMESPACE="${REPO_NAMESPACE:-$HOME/Repositories}"
 
 ###############################################################################
@@ -39,69 +41,9 @@ usage() {
   echo "  REPO_NAMESPACE   Base directory for projects (default: ~/Repositories)"
 }
 
-is_rails_project() {
-  [[ -f "$1/config.ru" ]]
-}
-
-is_phoenix_project() {
-  [[ -f "$1/mix.exs" ]] && grep -q "{:phoenix" "$1/mix.exs" 2>/dev/null
-}
-
-is_elixir_project() {
-  [[ -f "$1/mix.exs" ]]
-}
-
-# Detect database adapter from Rails database.yml
-rails_db_adapter() {
-  local path="$1"
-  local adapter
-  adapter=$(utility rails db-credentials --app="$path" --key=adapter 2>/dev/null) || return 1
-  echo "$adapter"
-}
-
-# Detect database adapter from Phoenix config
-phoenix_db_adapter() {
-  local path="$1"
-  local mix_file="$path/mix.exs"
-
-  [[ -f "$mix_file" ]] || return 1
-
-  if grep -q "postgrex" "$mix_file" 2>/dev/null; then
-    echo "postgresql"
-  elif grep -q "myxql\|mariaex" "$mix_file" 2>/dev/null; then
-    echo "mysql"
-  else
-    return 1
-  fi
-}
-
-# Ensure the appropriate database server is running
-ensure_db_running() {
-  local adapter="$1"
-
-  case "$adapter" in
-  mysql | mysql2)
-    if [[ -z $(pgrep -x mysqld) ]]; then
-      local answer
-      answer=$($prompt_user -yn "[$me] Start local MySQL server?")
-      echo
-      [[ "$answer" =~ [Yy] ]] && mysql.server start >/dev/null 2>&1
-    fi
-    ;;
-  postgresql | postgres)
-    if ! pg_isready -q 2>/dev/null; then
-      local answer
-      answer=$($prompt_user -yn "[$me] Start local PostgreSQL server?")
-      echo
-      [[ "$answer" =~ [Yy] ]] && utility postgresql start >/dev/null
-    fi
-    ;;
-  esac
-}
-
 session_name_from_path() {
-  # Dots and colons aren't allowed in tmux session names
   local name="$1"
+  # Dots and colons aren't allowed in tmux session names
   name="${name//./_}"
   name="${name//:/_}"
   echo "$name"
@@ -122,141 +64,51 @@ clone_repo() {
 }
 
 ###############################################################################
-# Window setup functions
+# Framework detection
 ###############################################################################
 
-setup_base_session() {
-  local session="$1"
-  local path="$2"
+# Load base interface
+# shellcheck source=repo.d/_base.sh
+source "$FRAMEWORK_DIR/_base.sh"
 
-  tmux new-session -s "$session" -n editor -c "$path" -d
-  tmux send-keys -t "$session:editor" "clear && $EDITOR" C-m
-}
-
-setup_rails_windows() {
-  local session="$1"
-  local path="$2"
-  local start_server="$3"
-  local adapter database
-
-  adapter=$(rails_db_adapter "$path")
-
-  tmux new-window -n db -c "$path" -t "$session"
-  tmux new-window -n repl -c "$path" -t "$session"
-  tmux new-window -n server -c "$path" -t "$session"
-
-  # Give windows time to initialize
-  sleep 0.5
-
-  # Database client based on project adapter
-  database="\$(utility rails db-credentials --key=database)"
-  case "$adapter" in
-  mysql | mysql2)
-    tmux send-keys -t "$session:db" "clear && mycli $database -h localhost" C-m
-    ;;
-  postgresql | postgres)
-    tmux send-keys -t "$session:db" "clear && pgcli $database" C-m
-    ;;
-  *)
-    tmux send-keys -t "$session:db" "clear" C-m
-    ;;
-  esac
-
-  # Rails console
-  tmux send-keys -t "$session:repl" "clear && bin/rails c" C-m
-
-  # Rails server
-  if [[ "$start_server" =~ [Yy] ]]; then
-    tmux send-keys -t "$session:server" "clear && bin/rails s" C-m
-  else
-    tmux send-keys -t "$session:server" "clear && bin/rails s"
-  fi
-}
-
-setup_phoenix_windows() {
-  local session="$1"
-  local path="$2"
-  local start_server="$3"
-  local adapter database
-
-  adapter=$(phoenix_db_adapter "$path")
-
-  tmux new-window -n db -c "$path" -t "$session"
-  tmux new-window -n repl -c "$path" -t "$session"
-  tmux new-window -n server -c "$path" -t "$session"
-
-  # Give windows time to initialize
-  sleep 0.5
-
-  # Database client based on project adapter
-  database="\$(utility phoenix db-credentials --key=database)"
-  case "$adapter" in
-  mysql)
-    tmux send-keys -t "$session:db" "clear && mycli $database -h localhost" C-m
-    ;;
-  postgresql)
-    tmux send-keys -t "$session:db" "clear && pgcli $database" C-m
-    ;;
-  *)
-    tmux send-keys -t "$session:db" "clear" C-m
-    ;;
-  esac
-
-  # Interactive Elixir shell
-  tmux send-keys -t "$session:repl" "clear && iex -S mix" C-m
-
-  # Phoenix server
-  if [[ "$start_server" =~ [Yy] ]]; then
-    tmux send-keys -t "$session:server" "clear && mix phx.server" C-m
-  else
-    tmux send-keys -t "$session:server" "clear && mix phx.server"
-  fi
-}
-
-setup_elixir_windows() {
-  local session="$1"
-  local path="$2"
-
-  tmux new-window -n repl -c "$path" -t "$session"
-
-  sleep 0.5
-
-  tmux send-keys -t "$session:repl" "clear && iex -S mix" C-m
-}
-
-bootstrap_rails() {
+# Detect framework and source appropriate module
+# Returns the framework name via FRAMEWORK_NAME variable
+detect_framework() {
   local path="$1"
+  local priorities=()
+  local files=()
+  local sorted=()
 
-  $print_status -i pending "Bootstrapping Rails project..."
+  # Collect all framework files (excluding _base.sh)
+  for f in "$FRAMEWORK_DIR"/*.sh; do
+    [ "$(basename "$f")" == "_base.sh" ] && continue
+    [ -f "$f" ] || continue
+    files+=("$f")
+  done
 
-  # Run the rails bootstrap utility if it exists
-  if [[ -x "$(command -v utility)" ]]; then
-    utility rails bootstrap "$path" && return 0
-  fi
+  # Sort by priority
+  for f in "${files[@]}"; do
+    # shellcheck source=/dev/null
+    source "$f"
+    priorities+=("$FRAMEWORK_PRIORITY:$f")
+  done
 
-  # Fallback: basic setup
-  cd "$path" || return 1
-  [[ -f "Gemfile" ]] && bundle install --quiet
-  cd - >/dev/null
-}
+  # Sort and test each framework
+  mapfile -t sorted < <(printf '%s\n' "${priorities[@]}" | sort -t: -k1 -n)
 
-bootstrap_phoenix() {
-  local path="$1"
+  for entry in "${sorted[@]}"; do
+    local file="${entry#*:}"
+    # Unset optional functions before sourcing to prevent bleed-through
+    unset -f use_minimal_windows 2>/dev/null
+    # shellcheck source=/dev/null
+    source "$file"
+    if detect "$path"; then
+      return 0
+    fi
+  done
 
-  $print_status -i pending "Bootstrapping Phoenix project..."
-
-  cd "$path" || return 1
-  mix local.hex --force >/dev/null 2>&1
-  mix deps.get >/dev/null 2>&1
-  mix deps.compile >/dev/null 2>&1
-
-  # Set up database if ecto is present
-  if grep -q "{:ecto" mix.exs 2>/dev/null; then
-    mix ecto.setup 2>/dev/null || mix ecto.create 2>/dev/null || true
-  fi
-
-  cd - >/dev/null
-  $print_status -i ok "Phoenix project bootstrapped"
+  # Should not reach here if default.sh exists with priority 999
+  return 1
 }
 
 ###############################################################################
@@ -266,25 +118,22 @@ bootstrap_phoenix() {
 main() {
   local target destination session bootstrap=0 start_server
 
-  # Parse arguments
-  while [[ $# -gt 0 ]]; do
+  while [ $# -gt 0 ]; do
     case "$1" in
     -h | --help)
       usage && exit 0
       ;;
-    -x)
-      # Kill session via fuzzy selection
-      local sessions
+    -x) # Kill session via fuzzy selection
+      local sessions selected
       sessions=$(tmux ls 2>/dev/null | sed 's/:.*//') || fail "[$me] No tmux sessions found."
-      local selected
       selected=$(echo "$sessions" | fzf --prompt="Kill session: ") || exit 0
+
       tmux kill-session -t "$selected"
       exit 0
       ;;
-    -n)
-      # Search GitHub for repos
+    -n) # Search GitHub for repos
+      target="$(utility github search-repos user:davelens+user:blimp)"
       shift
-      set -- "$(utility github search-repos user:davelens+user:blimp)"
       ;;
     *)
       target="$1"
@@ -294,21 +143,21 @@ main() {
   done
 
   # Block nested tmux sessions
-  [[ -n "$TMUX" ]] && fail "[$me] Cannot create nested tmux sessions. Detach first (prefix + d)."
+  [ -n "$TMUX" ] && fail "[$me] Cannot create nested tmux sessions. Detach first (prefix + d)."
 
   # Fuzzy find if no target specified
-  if [[ -z "$target" ]]; then
+  if [ -z "$target" ]; then
     target=$(find "$NAMESPACE" -mindepth 2 -maxdepth 2 -type d 2>/dev/null |
       sed "s|$NAMESPACE/||" |
       fzf --prompt="Select project: ") || exit 0
   fi
 
-  [[ -z "$target" ]] && fail "[$me] No project selected."
+  [ -z "$target" ] && fail "[$me] No project selected."
 
   destination="$NAMESPACE/$target"
 
   # Clone if directory doesn't exist
-  if [[ ! -d "$destination" ]]; then
+  if [ ! -d "$destination" ]; then
     bootstrap=1
     clone_repo "$target" "$destination" || exit 1
   fi
@@ -321,42 +170,31 @@ main() {
     exit 0
   fi
 
-  # Detect project type and set up accordingly
-  if is_rails_project "$destination"; then
-    ensure_db_running "$(rails_db_adapter "$destination")"
+  # Detect framework and load its module
+  detect_framework "$destination"
 
-    if [[ $bootstrap -eq 1 ]]; then
-      bootstrap_rails "$destination"
-    fi
+  # Get database adapter for DB startup check
+  local adapter
+  adapter=$(db_adapter "$destination")
 
-    start_server=$($prompt_user -yn "[$me] Start Rails server?")
+  # Ensure database is running if needed
+  [ -n "$adapter" ] && ensure_db_running "$adapter"
 
-    setup_base_session "$session" "$destination"
-    setup_rails_windows "$session" "$destination" "$start_server"
+  # Bootstrap if freshly cloned
+  [ $bootstrap -eq 1 ] && bootstrap "$destination"
 
-  elif is_phoenix_project "$destination"; then
-    ensure_db_running "$(phoenix_db_adapter "$destination")"
-
-    if [[ $bootstrap -eq 1 ]]; then
-      bootstrap_phoenix "$destination"
-    fi
-
-    start_server=$($prompt_user -yn "[$me] Start Phoenix server?")
-
-    setup_base_session "$session" "$destination"
-    setup_phoenix_windows "$session" "$destination" "$start_server"
-
-  elif is_elixir_project "$destination"; then
-    if [[ $bootstrap -eq 1 ]]; then
-      cd "$destination" && mix deps.get && cd - >/dev/null
-    fi
-
-    setup_base_session "$session" "$destination"
-    setup_elixir_windows "$session" "$destination"
-
+  # Check if framework wants minimal windows
+  if type -t use_minimal_windows &>/dev/null && use_minimal_windows; then
+    setup_minimal_windows "$session" "$destination"
   else
-    # Generic project: just editor window
-    setup_base_session "$session" "$destination"
+    # Ask about starting server if framework has a server
+    local prompt
+    prompt=$(server_prompt)
+    if [ -n "$prompt" ]; then
+      start_server=$($prompt_user -yn "[$me] $prompt")
+    fi
+
+    setup_standard_windows "$session" "$destination" "$start_server"
   fi
 
   # Attach to the session, focusing on the editor window
