@@ -125,7 +125,8 @@ main() {
       ;;
     -x) # Kill session via fuzzy selection
       local sessions selected
-      sessions=$(tmux ls 2>/dev/null | sed 's/:.*//') || fail "[$me] No tmux sessions found."
+      sessions=$(tmux ls 2>/dev/null | sed 's/:.*//')
+      [ -z "$sessions" ] && fail "[$me] No tmux sessions found."
       selected=$(echo "$sessions" | fzf --prompt="Kill session: ") || exit 0
 
       tmux kill-session -t "$selected"
