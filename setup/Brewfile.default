@@ -9,88 +9,75 @@ tap "gromgit/brewtils"                # taproom
 
 brew "ack"                            # Grep-like text finder
 brew "act"                            # Run GitHub Actions locally
-brew "atuin"                          # Shell history with syncing
-brew "zstd"                           # dep for elixir, erlang,...
-brew "openssl@3"                      # dep for pretty much everything
 brew "asciinema"                      # Records shareable terminal sessions
-brew "git"                            # The stupid content tracker
 brew "asdf"                           # Runtime version manager
-brew "m4"                             # dep for elixir, erlang,...
+brew "atuin"                          # Shell history with syncing
 brew "autoconf"                       # dep for automake
 brew "automake"                       # Generates Makefiles
 brew "bash"                           # Bourne Again SHell
 brew "bash-completion@2"              # Generates completion for bash commands
-brew "node"                           # Headache in a box
 brew "bash-language-server"           # LSP server for Bash
-brew "libssh2"                        # dep for bat, git-delta,...
 brew "bat"                            # Cat clone with git integration + colors
 brew "bitwarden-cli"                  # Access Bitwarden vaults in shell
 brew "btop"                           # Resource monitor
-brew "glib"                           # dep for imagemagick, ffmpeg, chafa,...
-brew "libx11"                         # dep for imagemagick, ffmpeg, chafa,...
 brew "cairo"                          # dep for imagemagick, ffmpeg, chafa,...
-brew "gdk-pixbuf"                     # dep for chafa
-brew "harfbuzz"                       # dep for imagemagick, ffmpeg, chafa,...
-brew "libavif"                        # dep for chafa
-brew "pango"                          # dep for imagemagick, ffmpeg, chafa,...
-brew "librsvg"                        # dep for chafa
 brew "chafa"                          # Image to ANSI/unicode art generator
 brew "clipboard"                      # Clipboard manager
 brew "cmake"                          # Cross-platform meta build tool
 brew "cmatrix"                        # Follow the white rabbit ...
-brew "dav1d"                          # Open source AV1 decoder
-brew "gmp"                            # dep for coreutils, gcc,...
-brew "p11-kit"                        # dep for ffmpeg
-brew "unbound"                        # Caching DNS resolver
-brew "gnutls"                         # Sets up TLS connections
-brew "libass"                         # dep for ffmpeg
-brew "libmicrohttpd"                  # dep for ffmpeg
-brew "sdl2"                           # dep for ffmpeg
-brew "srt"                            # dep for ffmpeg
-brew "tesseract"                      # Open source text recognition engine
-brew "x264"                           # dep for ffmpeg
-brew "ffmpeg"                         # Media conversion tool
 brew "cmus"                           # Music player
 brew "coreutils"                      # GNU Core Utils, helps do work in Unix
 brew "ctags"                          # Generates tag files for source code
+brew "dav1d"                          # Open source AV1 decoder
 brew "ddgr"                           # DuckDuckGo from the terminal
 brew "deno"                           # Modern JS and TypeScript runtime
 brew "dialog"                         # Swiss army knife of CLI dialog boxes
 brew "dos2unix"                       # DOS to Unix and back file format converter
 brew "duf"                            # Like df, but humanized
-brew "libtool"                        # dep for imagemagick, elixir,...
 brew "elixir-ls"                      # Language server for Elixir
 brew "entr"                           # File change listener
 brew "fastfetch"                      # System information tool
 brew "fd"                             # File search
 brew "fdupes"                         # Duplicate file finder
+brew "ffmpeg"                         # Media conversion tool
 brew "figlet"                         # Text to ASCII generator
 brew "fswatch"                        # Directory change listener
 brew "fzf"                            # Fuzzy finder
 brew "gawk"                           # awk, but the GNU version
-brew "libmpc"                         # dep for gcc
 brew "gcc"                            # GNU compiler collection
+brew "gdk-pixbuf"                     # dep for chafa
 brew "gh"                             # GitHub CLI tool
 brew "ghostscript"                    # dep for imagemagick
+brew "git"                            # The stupid content tracker
 brew "git-delta"                      # Diff tool
 brew "git-lfs"                        # Git system to version large files
+brew "glib"                           # dep for imagemagick, ffmpeg, chafa,...
+brew "gmp"                            # dep for coreutils, gcc,...
 brew "gnu-sed"                        # sed, but the GNU version
 brew "gnupg"                          # GNU Privacy Guard
-brew "pastel"                         # Terminal colour manipulation
-brew "pkgconf"                        # Helps configure compiler/linker flags
+brew "gnutls"                         # Sets up TLS connections
 brew "gpgme"                          # GnuPG library access
 brew "gum"                            # Fancy input processing for the terminal
-brew "shared-mime-info"               # dep for imagemagick
-brew "libheif"                        # dep for imagemagick
-brew "libraw"                         # dep for imagemagick
+brew "harfbuzz"                       # dep for imagemagick, ffmpeg, chafa,...
 brew "imagemagick"                    # Image manipulation tools, v7+
 brew "imagemagick@6"                  # Image manipulation tools, v6
 brew "inetutils"                      # GNU network utilities
 brew "jq"                             # JSON processor
 brew "less"                           # Like `more`, but with more features
+brew "libass"                         # dep for ffmpeg
+brew "libavif"                        # dep for chafa
+brew "libheif"                        # dep for imagemagick
+brew "libmicrohttpd"                  # dep for ffmpeg
+brew "libmpc"                         # dep for gcc
+brew "libraw"                         # dep for imagemagick
+brew "librsvg"                        # dep for chafa
+brew "libssh2"                        # dep for bat, git-delta,...
+brew "libtool"                        # dep for imagemagick, elixir,...
+brew "libx11"                         # dep for imagemagick, ffmpeg, chafa,...
 brew "libzip"                         # Library to manipulate ZIP archives
 brew "lolcat"                         # Rainbow colours for ASCII text
 brew "luarocks"                       # Package manager for Lua
+brew "m4"                             # dep for elixir, erlang,...
 brew "markdown"                       # Formatting syntax for text files
 brew "mycli"                          # A client for a proprietary database
 brew "mysql@8.4"                      # Some proprietary database crap
@@ -99,29 +86,42 @@ brew "ncdu"                           # Disk usage monitor written in ncurses
 brew "ncftp"                          # FTP browser
 brew "nethack"                        # One of the best games ever made
 brew "nmap"                           # Open source network exploration tool 
+brew "node"                           # Headache in a box
+brew "openssl@3"                      # dep for pretty much everything
+brew "p11-kit"                        # dep for ffmpeg
 brew "pandoc"                         # Markup conversion tool
+brew "pango"                          # dep for imagemagick, ffmpeg, chafa,...
+brew "pastel"                         # Terminal colour manipulation
 brew "pipes-sh"                       # Terminal screensaver, win95 style
 brew "pipx"                           # Package manager for python
+brew "pkgconf"                        # Helps configure compiler/linker flags
 brew "pv"                             # Progress bar for the terminal
 brew "redis"                          # In-memory key/value database
 brew "ripgrep"                        # Fuzzy search
 brew "rsync"                          # Local and remote file copying tool
 brew "scc"                            # Counts lines of code; cloc alternative
 brew "sd"                             # Find/replace tool
+brew "sdl2"                           # dep for ffmpeg
+brew "shared-mime-info"               # dep for imagemagick
 brew "shellcheck"                     # Shell script analysis tool
 brew "spicetify-cli"                  # Provides theming for Spotify
+brew "srt"                            # dep for ffmpeg
 brew "starship"                       # Customizable shell prompt
 brew "tealdeer"                       # TL;DR client for man pages
+brew "tesseract"                      # Open source text recognition engine
 brew "tmux"                           # Terminal multiplexer
 brew "tree"                           # Dumps visual file trees for folders
 brew "tree-sitter"                    # Parser generator and library
+brew "unbound"                        # Caching DNS resolver
 brew "v8"                             # Google's JS/wasm engine
 brew "viu"                            # Image viewer
 brew "watson"                         # Time registration
 brew "wget"                           # Network downloader
+brew "x264"                           # dep for ffmpeg
 brew "yarn"                           # JavaScript package manager
-brew "yt-dlp"                         # YouTube video downloader
 brew "yq"                             # Convert YAML to JSON
+brew "yt-dlp"                         # YouTube video downloader
+brew "zstd"                           # dep for elixir, erlang,...
 brew "gromgit/brewtils/taproom"       # Manage Homebrew packages
 brew "browsh-org/browsh/browsh"       # TUI webpage browser
 brew "cormacrelf/tap/dark-notify"     # Display mode change listener
