@@ -1,6 +1,15 @@
 # This sets up an environment to test the remote dotfiles installer as you
-# would on a fresh Arch installation.
-
+# would on a fresh Arch installation:
+#
+# 1. Build a docker container and run it:
+#
+#      docker build -f testing/Dockerfile.remote -t dotfiles-test .
+#      docker run -it --rm dotfiles-test
+#
+# 2. Init the remote installation as per README.md instructions:
+#
+#      curl -fsSL https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master/setup/remote/init.sh | bash
+#
 FROM archlinux:base
 
 # Install minimal dependencies needed for my dotfiles.
