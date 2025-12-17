@@ -1,7 +1,7 @@
 ask_questions() {
   read -rp "GitHub username: " GITHUB_USERNAME </dev/tty
   read -rp "GitHub email: " GITHUB_EMAIL </dev/tty
-  read -rsp "GitHub personal access token: " GITHUB_PERSONAL_ACCESS_TOKEN </dev/tty
+  read -rp "GitHub personal access token: " GITHUB_PERSONAL_ACCESS_TOKEN </dev/tty
   read -rsp "Claude Code OAuth token: " CLAUDE_CODE_OAUTH_TOKEN </dev/tty
   echo
   echo
