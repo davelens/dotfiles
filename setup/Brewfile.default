@@ -113,6 +113,7 @@ brew "tesseract"                      # Open source text recognition engine
 brew "tmux"                           # Terminal multiplexer
 brew "tree"                           # Dumps visual file trees for folders
 brew "tree-sitter"                    # Parser generator and library
+brew "tree-sitter-cli"                # Interact with tree-sitter through CLI
 brew "unbound"                        # Caching DNS resolver
 brew "v8"                             # Google's JS/wasm engine
 brew "viu"                            # Image viewer
