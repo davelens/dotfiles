@@ -2,7 +2,12 @@
 #
 # 1. Build a docker container and run it:
 #
-#   docker build -f testing/Dockerfile.nvim -t test-dotfiles-nvim .
+#   On Linux:
+#     docker build -f testing/Dockerfile.nvim -t test-dotfiles-nvim .
+#
+#   On macos:
+#     docker build --platform linux/amd64 -f testing/Dockerfile.nvim -t test-dotfiles-nvim .
+#
 #   docker run -it --rm test-dotfiles-nvim
 #
 # 2. Install my dotfiles with the remote installation:
