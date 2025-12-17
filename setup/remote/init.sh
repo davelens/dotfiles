@@ -113,7 +113,7 @@ preface() {
   echo
   underline "INSTALLING https://github.com/$REPO_URI"
   echo
-  echo "Steps:"
+  echo "This script will:"
   echo "1. Clone the dotfiles repository somewhere on your system. You choose where."
   echo "2. Symlink the necessary files and folders to their relevant paths."
   echo -n "3. Configure $(black git) and $(black gh) "
