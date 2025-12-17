@@ -2,15 +2,11 @@
 _UTILITY_CURRENT_OS="$("$XDG_BIN_HOME/os")"
 
 # Filter out OS-specific folders that don't match the current OS
-# Note: "wsl" folder maps to "windows" from the os detection script
 _utility_filter_by_os() {
   local folder os_folders="macos linux wsl freebsd"
   while IFS= read -r folder; do
     if [[ " $os_folders " == *" $folder "* ]]; then
-      case "$folder" in
-        wsl) [[ "$_UTILITY_CURRENT_OS" == "windows" ]] && echo "$folder" ;;
-        *) [[ "$folder" == "$_UTILITY_CURRENT_OS" ]] && echo "$folder" ;;
-      esac
+      [[ "$folder" == "$_UTILITY_CURRENT_OS" ]] && echo "$folder"
     else
       echo "$folder"
     fi

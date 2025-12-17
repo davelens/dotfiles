@@ -18,13 +18,9 @@ main() {
   SCRIPT_PATH="$BASE_DIR/$category/$command"
 
   # OS-specific categories are only available on their respective OS
-  # Note: "wsl" folder maps to "windows" from the os detection script
   case "$category" in
-    macos|linux|freebsd)
+    macos|linux|freebsd|wsl)
       [[ "$category" != "$current_os" ]] && fail "$category utilities only available on $category"
-      ;;
-    wsl)
-      [[ "$current_os" != "windows" ]] && fail "wsl utilities only available on WSL"
       ;;
   esac
 

@@ -33,7 +33,7 @@ source "$DOTFILES_REPO_HOME/bash/dots.sh"
 # OS specific configuration and/or overrides.
 ###############################################################################
 case $("$XDG_BIN_HOME/os") in
-windows) source "$DOTFILES_REPO_HOME/bash/env/os/wsl/init.sh" ;;
+wsl) source "$DOTFILES_REPO_HOME/bash/env/os/wsl/init.sh" ;;
 macos) source "$DOTFILES_REPO_HOME/bash/env/os/macos/init.sh" ;;
 linux) source "$DOTFILES_REPO_HOME/bash/env/os/linux/init.sh" ;;
 esac

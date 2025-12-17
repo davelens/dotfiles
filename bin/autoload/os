@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-if [ -f /proc/version ] && grep -qEi "(microsoft|WSL)" /proc/version ; then
-  echo 'windows'
+# Detect container environment
+if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
+  echo 'linux'
+elif [ -f /proc/version ] && grep -qEi "(microsoft|WSL)" /proc/version ; then
+  echo 'wsl'
 else
   case "$(uname -s)" in
     Darwin) echo 'macos' ;;
