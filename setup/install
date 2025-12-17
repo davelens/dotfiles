@@ -7,6 +7,7 @@ fail() {
 }
 
 source "$DOTFILES_REPO_HOME"/bash/env/xdg.sh
+source "$DOTFILES_REPO_HOME"/bash/helpers.sh
 
 # Get dotbot installed
 dotbot_path="$DOTFILES_REPO_HOME/dotbot"
