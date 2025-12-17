@@ -4,6 +4,7 @@ set -e
 [[ -z $1 ]] && fail '[rails/bootstrap] ERROR: No target directory given.'
 [[ ! -d $1 ]] && fail "[rails/bootstrap] ERROR: Directory $1 is missing."
 [[ ! -f $1/config.ru ]] && fail '[rails/bootstrap] ERROR: You can only run this from a folder containing a Rails project.'
+# shellcheck disable=SC2016
 [[ ! $(command -v asdf) ]] && fail '[rails/bootstrap] ERROR: No asdf executable found. Check your $PATH or install asdf with `brew install asdf`.'
 
 copy_config() {
@@ -13,20 +14,26 @@ copy_config() {
   echo "[rails/bootstrap] WARNING: No $project_root/$1.yml present, but found a dist file."
 
   while true; do
-    read -n1 -p "[rails/bootstrap] Create a copy from $src? (y/n) " yn
+    read -r -n1 -p "[rails/bootstrap] Create a copy from $src? (y/n) " yn
     printf "\n"
     case $yn in
-      [Yy]* ) cp $src $dest; break;;
-      [Nn]* ) fail "[rails/bootstrap] ERROR: No $dest present. Aborting."; break;;
-      * ) echo "[rails/bootstrap] Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.";;
+    [Yy]*)
+      cp "$src" "$dest"
+      break
+      ;;
+    [Nn]*)
+      fail "[rails/bootstrap] ERROR: No $dest present. Aborting."
+      break
+      ;;
+    *) echo "[rails/bootstrap] Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o." ;;
     esac
   done
 }
 
 check_and_copy() {
   [[ -f $project_root/$1.yml ]] && return
-  [[ -f $project_root/$1.yml.dist ]] && copy_config $1 .yml.dist
-  [[ -f $project_root/$1.dist.yml ]] && copy_config $1 .dist.yml
+  [[ -f $project_root/$1.yml.dist ]] && copy_config "$1" .yml.dist
+  [[ -f $project_root/$1.dist.yml ]] && copy_config "$1" .dist.yml
 
   # We need an(y) echo here to prevent this entire script from stopping after
   # one pass of check_and_copy. I *think* this has to do with function return
@@ -49,50 +56,48 @@ check_and_copy 'config/project'
 
 # asdf requires a .tool-versions to provide a PWD-localized ruby executable.
 if [[ ! -e $project_root/.tool-versions ]]; then
-  declare -A ssh_credentials=$(utility rails ssh-credentials $project_root/config/deploy.rb)
-  required_ruby=$(ssh "${ssh_credentials[user]}"@"${ssh_credentials[server]"} 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//')
-  echo "ruby $required_ruby" >> $project_root/.tool-versions
+  # shellcheck disable=SC2155
+  declare -A ssh_credentials=$(utility rails ssh-credentials "$project_root"/config/deploy.rb)
+  required_ruby=$(ssh "${ssh_credentials[user]}"@"${ssh_credentials[server]}" 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//')
+  echo "ruby $required_ruby" >>"$project_root"/.tool-versions
 fi
 
 # Make sure the MYSQL env vars are there for projects who can handle them,
 # and don't already have MYSQL_USER set.
-if [[ ! -f .env || -f .env && -z $(cat .env | grep MYSQL_USER) ]]; then
-  echo $'MYSQL_HOST=localhost\nMYSQL_USER=root\nMYSQL_PASSWORD=root' >> $project_root/.env
+if [[ ! -f .env ]] || [[ -f .env ]] && ! grep -q MYSQL_USER .env; then
+  echo $'MYSQL_HOST=localhost\nMYSQL_USER=root\nMYSQL_PASSWORD=root' >>"$project_root"/.env
 fi
 
-required_ruby=$(cat $project_root/.ruby-version)
+required_ruby=$(cat "$project_root"/.ruby-version)
 
 # Check if the required ruby version is installed.
 if [[ ! -d ~/.asdf/installs/ruby/$required_ruby ]]; then
-  echo "[rails/bootstrap] Installing Ruby $required_ruby" && asdf plugin add ruby && asdf install ruby $required_ruby
-
-  if [[ $? -gt 0 ]]; then
-    echo [rails/bootstrap] ERROR: Ruby installation failed, please review:
-    printf "\n\tcd $project_root && asdf plugin add ruby && asdf install ruby $required_ruby"
-    exit 1;
+  echo "[rails/bootstrap] Installing Ruby $required_ruby"
+  if ! asdf plugin add ruby || ! asdf install ruby "$required_ruby"; then
+    echo "[rails/bootstrap] ERROR: Ruby installation failed, please review:"
+    printf '\n\tcd %s && asdf plugin add ruby && asdf install ruby %s' "$project_root" "$required_ruby"
+    exit 1
   fi
 fi
 
-ruby_major=$(echo $required_ruby | sed -E 's/[0-9]{1,2}$/0/')
+ruby_major=$(echo "$required_ruby" | sed -E 's/[0-9]{1,2}$/0/')
 required_bundler=$(cat "$project_root/Gemfile.lock" | tail -1 | sed -e 's/^[[:space:]]*//')
 
 if [[ ! -d ~/.asdf/installs/ruby/$required_ruby/lib/ruby/gems/$ruby_major/gems/bundler-$required_bundler ]]; then
   if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
-    gem install bundler -v $required_bundler
-    if [[ $? -gt 0 ]]; then
-      echo [rails/bootstrap] ERROR: Bundler installation failed, please review:
-      printf "\n\tcd $project_root && gem install bundler -v $required_ruby"
-      exit 1;
+    if ! gem install bundler -v "$required_bundler"; then
+      echo "[rails/bootstrap] ERROR: Bundler installation failed, please review:"
+      printf '\n\tcd %s && gem install bundler -v %s' "$project_root" "$required_bundler"
+      exit 1
     fi
     # This usually fixes any issues with the mysql2 gem installation.
     bundle config --local build.Mysql2 "--with-ldflags=-L/usr/local/opt/openssl/lib --with-cppflags=-I/usr/local/opt/openssl/include"
   fi
 fi
 
-echo '[rails/bootstrap:bundler] Installing gems' && cd $project_root && bundle install --quiet && cd - >/dev/null
-
-if [[ $? -gt 0 ]]; then
-  echo [rails/bootstrap:bundler] ERROR: Gem installation failed, please review:
-  printf "\n\tcd $project_root && bundle install --quiet && cd - >/dev/null"
-  exit 1;
+echo '[rails/bootstrap:bundler] Installing gems'
+if ! cd "$project_root" || ! bundle install --quiet || ! cd - >/dev/null; then
+  echo "[rails/bootstrap:bundler] ERROR: Gem installation failed, please review:"
+  printf '\n\tcd %s && bundle install --quiet && cd - >/dev/null' "$project_root"
+  exit 1
 fi
