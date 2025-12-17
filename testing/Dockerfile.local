@@ -1,0 +1,43 @@
+# This sets up an environment to test the remote dotfiles installer using a 
+# local version of the dotfiles as the remote. This effectively makes it so
+# I can verify local changes without having to push them to source control:
+#
+# 1. Run a simple web server from your local dotfiles folder:
+#
+#      python3 -m http.server 8000
+#
+# 2. Build a docker container and run it with a network bridge to the host:
+#
+#      docker build -f testing/Dockerfile.local -t dotfiles-test .
+#      docker run -it --rm --network host dotfiles-test
+#
+# 3. Init the remote installation locally by calling the script directly:
+#
+#      ./setup/remote/init.sh
+#
+FROM archlinux:base
+
+# Install minimal dependencies needed for my dotfiles.
+RUN pacman -Syu --noconfirm git python sudo openssh curl
+
+# Create a non-root test user with passwordless sudo
+RUN useradd -m -s /bin/bash testuser && \
+    echo "testuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+USER testuser
+WORKDIR /home/testuser/dotfiles
+
+# Set required environment variable
+ENV DOTFILES_REPO_HOME=/home/testuser/dotfiles
+ENV DOTS_DEBUG=1
+
+# Copy dotfiles
+COPY --chown=testuser:testuser . .
+
+# Initialize git repo and submodules (needed because COPY doesn't preserve git state)
+RUN git config --global --add safe.directory /home/testuser/dotfiles && \
+    git init && git submodule update --init --recursive
+
+# Remove default bash files so dotbot can link ours
+RUN rm -f ~/.bash_profile ~/.bashrc
+
+CMD ["/bin/bash", "--login"]
