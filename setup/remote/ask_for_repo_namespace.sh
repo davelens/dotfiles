@@ -6,8 +6,11 @@ path_writeable() {
   if [ -e "$path" ]; then
     [ -w "$path" ] && return 0 || return 1
   else
-    local parent
-    parent="$(dirname "$path")"
+    # Walk up the tree until we find an existing directory
+    local parent="$path"
+    while [ ! -e "$parent" ] && [ "$parent" != "/" ]; do
+      parent="$(dirname "$parent")"
+    done
     [ -w "$parent" ] && return 0 || return 1
   fi
 }
