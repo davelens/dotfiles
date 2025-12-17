@@ -23,9 +23,10 @@ RUN pacman -Syu --noconfirm \
     tree-sitter tree-sitter-cli \
     fontconfig \
     nodejs npm \
-    gcc clang \
+    gcc clang make \
+    go \
     zig \
-    tree-sitter \
+    deno \
     lolcat \
     ripgrep fd \
     unzip wget
