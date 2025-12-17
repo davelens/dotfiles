@@ -22,7 +22,7 @@ FROM archlinux:base
 
 # Install base dependencies + Neovim toolchain
 RUN pacman -Syu --noconfirm \
-    git python sudo openssh curl \
+    git gh python sudo openssh curl \
     tmux \
     neovim \
     tree-sitter tree-sitter-cli \
