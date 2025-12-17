@@ -48,13 +48,16 @@
 # So as a final step, to prevent any kind of errors on startup, I just wait
 # until the systemd-private-* folders appear, and then I allow my $USER access.
 
-if ! compgen -G "/tmp/systemd-private-*" >/dev/null; then
-  echo "Waiting for WSL2 to finish its prep ..."
-fi
+# Skip in containers (no systemd)
+if [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ]; then
+  if ! compgen -G "/tmp/systemd-private-*" >/dev/null; then
+    echo "Waiting for WSL2 to finish its prep ..."
+  fi
 
-until compgen -G "/tmp/systemd-private-*" >/dev/null; do
-  sleep 1
-done
+  until compgen -G "/tmp/systemd-private-*" >/dev/null; do
+    sleep 1
+  done
+fi
 
 declare -i MY_UID
 MY_UID=$(id -u)
