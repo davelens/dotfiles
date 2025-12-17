@@ -3,8 +3,8 @@
 #
 # 1. Build a docker container and run it:
 #
-#      docker build -f testing/Dockerfile.remote -t dotfiles-test .
-#      docker run -it --rm dotfiles-test
+#      docker build -f testing/Dockerfile.remote -t test-dotfiles-remote .
+#      docker run -it --rm --network host test-dotfiles-remote
 #
 # 2. Init the remote installation as per README.md instructions:
 #
@@ -20,9 +20,6 @@ RUN useradd -m -s /bin/bash testuser && \
     echo "testuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 USER testuser
 WORKDIR /home/testuser
-
-# Copy dotfiles
-COPY --chown=testuser:testuser . .
 
 # Remove default bash files so dotbot can link ours
 RUN rm -f ~/.bash_profile ~/.bashrc

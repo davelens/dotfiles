@@ -8,8 +8,8 @@
 #
 # 2. Build a docker container and run it with a network bridge to the host:
 #
-#      docker build -f testing/Dockerfile.local -t dotfiles-test .
-#      docker run -it --rm --network host dotfiles-test
+#      docker build -f testing/Dockerfile.local -t test-dotfiles-local .
+#      docker run -it --rm --network host test-dotfiles-local
 #
 # 3. Init the remote installation locally by calling the script directly:
 #
