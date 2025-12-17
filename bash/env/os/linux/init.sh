@@ -15,6 +15,10 @@ if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
   export WLR_RENDERER=pixman
   export WLR_NO_HARDWARE_CURSORS=1
 else
-  setxkbmap -option altwin:ctrl_win # Switch win/command key with ctrl
-  setxkbmap -option ctrl:nocaps     # Switch capslock with ctrl
+  if command -v setxkbmap >/dev/null; then
+    setxkbmap -option altwin:ctrl_win # Switch win/command key with ctrl
+    setxkbmap -option ctrl:nocaps     # Switch capslock with ctrl
+  else
+    echo NOTE: setxkbmap is not available, so I could not remap ctrl to capslock.
+  fi
 fi
