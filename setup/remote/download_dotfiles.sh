@@ -21,7 +21,7 @@ download() {
   echo -e "Alright, I'll download the dotfiles into $(black "$(repo_home)").\n"
 
   if command -v git >/dev/null; then
-    git clone git@github.com:davelens/dotfiles.git "$DOTFILES_REPO_HOME"
+    git clone https://github.com/davelens/dotfiles.git "$DOTFILES_REPO_HOME"
   else
     # TODO: Replace with extracting a tarball when we're starting with releases.
     curl -L -o "$dotfiles_zip" https://github.com/davelens/dotfiles/archive/refs/heads/master.zip
@@ -48,7 +48,7 @@ if [ -d "$DOTFILES_REPO_HOME" ]; then
     [Yy]*)
       echo
       git -C "$DOTFILES_REPO_HOME" init
-      git -C "$DOTFILES_REPO_HOME" remote add origin git@github.com:"$REPO_URI".git
+      git -C "$DOTFILES_REPO_HOME" remote add origin https://github.com/"$REPO_URI".git
       git -C "$DOTFILES_REPO_HOME" fetch origin
       git -C "$DOTFILES_REPO_HOME" reset --hard origin/master
       git -C "$DOTFILES_REPO_HOME" branch --set-upstream-to=origin/master
