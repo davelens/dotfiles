@@ -29,7 +29,11 @@ cross() {
 }
 
 colorize() {
-  echo "$(tput setaf "$1")$2$(tput sgr0)"
+  if [ -n "$TERM" ] && [ "$TERM" != "dumb" ]; then
+    echo "$(tput setaf "$1")$2$(tput sgr0)"
+  else
+    echo "$2"
+  fi
 }
 
 ensure_brew_dependency() {
