@@ -71,7 +71,7 @@ load_remote_file() {
   local base_url="https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master"
 
   if [ "$DOTS_DEBUG" = "1" ]; then
-    base_url="http://localhost:8000"
+    base_url="${DOTS_DEBUG_URL:-http://localhost:8000}"
   fi
 
   curl -so "$local_file" "$base_url/$1"
