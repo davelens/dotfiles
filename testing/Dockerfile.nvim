@@ -1,0 +1,42 @@
+# This sets up an environment to test the dotfiles + Neovim config:
+#
+# 1. Build a docker container and run it:
+#
+#   docker build -f testing/Dockerfile.nvim -t test-dotfiles-nvim .
+#   docker run -it --rm test-dotfiles-nvim
+#
+# 2. Install my dotfiles with the remote installation:
+#
+#   curl -fsSL https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master/setup/remote/init.sh | bash
+#
+# 3. Install my Neovim config:
+#
+#   git clone https://github.com/davelens/dotvim.git ~/Repositories/davelens/dotvim && ~/Repositories/davelens/dotvim/setup/install
+#
+FROM archlinux:base
+
+# Install base dependencies + Neovim toolchain
+RUN pacman -Syu --noconfirm \
+    git python sudo openssh curl \
+    tmux \
+    neovim \
+    tree-sitter tree-sitter-cli \
+    fontconfig \
+    nodejs npm \
+    gcc clang \
+    zig \
+    tree-sitter \
+    lolcat \
+    ripgrep fd \
+    unzip wget
+
+# Create a non-root test user with passwordless sudo
+RUN useradd -m -s /bin/bash testuser && \
+    echo "testuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+USER testuser
+WORKDIR /home/testuser
+
+# Remove default bash files so dotbot can link ours
+RUN rm -f ~/.bash_profile ~/.bashrc
+
+CMD ["/bin/bash", "--login"]
