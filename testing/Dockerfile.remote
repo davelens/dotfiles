@@ -4,7 +4,7 @@
 # 1. Build a docker container and run it:
 #
 #      docker build -f testing/Dockerfile.remote -t test-dotfiles-remote .
-#      docker run -it --rm --network host test-dotfiles-remote
+#      docker run -it --rm test-dotfiles-remote
 #
 # 2. Init the remote installation as per README.md instructions:
 #
