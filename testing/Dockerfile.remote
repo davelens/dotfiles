@@ -13,7 +13,7 @@
 FROM archlinux:base
 
 # Install minimal dependencies needed for my dotfiles.
-RUN pacman -Syu --noconfirm git python sudo openssh curl
+RUN pacman -Syu --noconfirm git python sudo openssh
 
 # Create a non-root test user with passwordless sudo
 RUN useradd -m -s /bin/bash testuser && \
