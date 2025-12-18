@@ -13,7 +13,7 @@ arch_packages=(
   dolphin                             # File manager
   dunst                               # Notification daemon
   gdm                                 # Display manager
-  grim                                # Screenshot tool for Wayland
+  # grim                                # Screenshot tool for Wayland
   grub                                # Bootloader
   iwd                                 # iNet wireless daemon
   # libva-nvidia-driver               # NVIDIA VA-API driver
@@ -26,20 +26,21 @@ arch_packages=(
   neovim                              # Vim-fork text editor
   # nvidia-open-dkms                  # NVIDIA open kernel modules
   openssh                             # OpenSSH client and server
-  polkit-kde-agent                    # Polkit authentication agent
-  qt5-wayland                         # Qt5 Wayland support
-  qt6-wayland                         # Qt6 Wayland support
+  pipewire-jack                       # Audio implementation
+  # polkit-kde-agent                    # Polkit authentication agent
+  # qt5-wayland                         # Qt5 Wayland support
+  # qt6-wayland                         # Qt6 Wayland support
   rust                                # Rust programming language
   shfmt                               # Shell script formatter
-  slurp                               # Region selector for Wayland
+  # slurp                               # Region selector for Wayland
   smartmontools                       # S.M.A.R.T. disk monitoring
-  uwsm                                # Universal Wayland Session Manager
-  vim                                 # Vi Improved text editor
-  virtualbox-guest-utils              # VirtualBox guest utilities
+  # uwsm                                # Universal Wayland Session Manager
+  # vim                                 # Vi Improved text editor
+  # virtualbox-guest-utils              # VirtualBox guest utilities
   wezterm                             # Terminal emulator
   wireless_tools                      # Wireless network tools
-  wl-clipboard                        # Wayland clipboard utilities
-  wofi                                # Application launcher for Wayland
+  # wl-clipboard                        # Wayland clipboard utilities
+  # wofi                                # Application launcher for Wayland
   wpa_supplicant                      # WPA/WPA2 supplicant
   xdg-utils                           # XDG desktop integration utilities
   xorg-server                         # X.Org display server
