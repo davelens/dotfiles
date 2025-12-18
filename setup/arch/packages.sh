@@ -4,16 +4,27 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 read_packages() {
-  # Strips out any comments and blank lines, returns space-separated list
-  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}' | tr '\n' ' '
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}'
 }
 
-install_pacman_packages() {
-  local packages
-  read -ra packages <<< "$(read_packages "$SCRIPT_DIR/pacman.packages")"
+aur_package_exists() {
+  paru -Sia "$1" &>/dev/null
+}
 
-  sudo pacman -Syu
-  sudo pacman -S --noconfirm --needed "${packages[@]}"
+# Priority: -bin > regular > skip -git
+resolve_aur_package() {
+  local pkg="$1"
+
+  # Already has suffix, use as-is
+  [[ "$pkg" == *-bin || "$pkg" == *-git ]] && echo "$pkg" && return
+
+  if aur_package_exists "${pkg}-bin"; then
+    echo "${pkg}-bin"
+  elif aur_package_exists "$pkg"; then
+    echo "$pkg"
+  else
+    echo "Warning: Package '$pkg' not found in AUR, skipping" >&2
+  fi
 }
 
 install_paru() {
@@ -24,37 +35,24 @@ install_paru() {
   rm -rf /tmp/paru
 }
 
-resolve_aur_package() {
-  local pkg="$1"
+install_pacman_packages() {
+  local packages
+  mapfile -t packages < <(read_packages "$SCRIPT_DIR/pacman.packages")
 
-  # If package already has a suffix, use as-is
-  if [[ "$pkg" == *-bin || "$pkg" == *-git ]]; then
-    echo "$pkg"
-    return
-  fi
-
-  # Priority: -bin > regular > skip -git
-  if paru -Si "${pkg}-bin" &>/dev/null; then
-    echo "${pkg}-bin"
-  elif paru -Si "$pkg" &>/dev/null; then
-    echo "$pkg"
-  else
-    echo "Warning: Package '$pkg' not found in AUR, skipping" >&2
-  fi
+  sudo pacman -Syu --noconfirm
+  sudo pacman -S --noconfirm --needed "${packages[@]}"
 }
 
 install_aur_packages() {
-  local input_packages resolved_packages=()
-  read -ra input_packages <<< "$(read_packages "$SCRIPT_DIR/paru.packages")"
+  local packages resolved=()
+  mapfile -t packages < <(read_packages "$SCRIPT_DIR/paru.packages")
 
-  for pkg in "${input_packages[@]}"; do
-    resolved=$(resolve_aur_package "$pkg")
-    [[ -n "$resolved" ]] && resolved_packages+=("$resolved")
+  for pkg in "${packages[@]}"; do
+    result=$(resolve_aur_package "$pkg")
+    [[ -n "$result" ]] && resolved+=("$result")
   done
 
-  if [[ ${#resolved_packages[@]} -gt 0 ]]; then
-    paru -S --noconfirm --skipreview --needed "${resolved_packages[@]}"
-  fi
+  [[ ${#resolved[@]} -gt 0 ]] && paru -S --noconfirm --skipreview --needed --provides=no "${resolved[@]}"
 }
 
 install_pacman_packages

@@ -155,3 +155,7 @@ yarn                                # JavaScript package manager
 yq                                  # Convert YAML to JSON
 yt-dlp                              # YouTube video downloader
 zstd                                # dep for elixir, erlang,...
+
+# Packages moved from AUR (now in extra repo)
+ddgr                                # DuckDuckGo from the terminal
+television                          # Fuzzy finder TUI
