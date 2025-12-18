@@ -1,7 +1,6 @@
 # shellcheck disable=SC2142,SC2154
 # Default command overrides. Generally trying to avoid serious ones, but to
 # my knowledge these are not considered harmful.
-alias ls='ls -G'
 alias nano='vim' # 😬
 alias rsync='rsync --exclude-from="$XDG_CONFIG_HOME/rsyncignore"'
 alias vim="\$EDITOR" # My usecase here is that I use `dvim` as my Neovim profile.
