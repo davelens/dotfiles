@@ -126,7 +126,7 @@ cross_platform_packages=(
   ncftp                               # FTP browser
   nethack                             # One of the best games ever made
   nmap                                # Open source network exploration tool
-  nodejs                              # Headache in a box
+  # nodejs                              # Headache in a box
   openssl                             # dep for pretty much everything
   p11-kit                             # dep for ffmpeg
   pandoc                              # Markup conversion tool
