@@ -13,7 +13,7 @@ set history-preserve-point on
 # Completion
 # -----------------------------------------------------------------------------
 # Make Tab completion case-insensitive (cd ~/dow<Tab> => cd ~/Downloads/).
-set completion-ignore-case On
+set completion-ignore-case on
 
 # When completing symlinks to directories, immediately add a trailing "/".
 set mark-symlinked-directories on
