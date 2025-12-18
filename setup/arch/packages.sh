@@ -5,7 +5,7 @@
 #       i.e. which display manager are we starting out with on Arch?
 
 # Arch-specific system packages (not from Brewfile.default)
-sudo pacman -S --needed \
+pacman_packages=(
   base                                # Minimal base system
   base-devel                          # Development tools (make, gcc, etc.)
   gnome-keyring                       # Secret storage (dep for bitwarden-cli)
@@ -16,7 +16,7 @@ sudo pacman -S --needed \
   grim                                # Screenshot tool for Wayland
   grub                                # Bootloader
   iwd                                 # iNet wireless daemon
-  libva-nvidia-driver                 # NVIDIA VA-API driver
+  # libva-nvidia-driver                 # NVIDIA VA-API driver
   linux                               # Linux kernel
   linux-firmware                      # Firmware files for Linux
   linux-headers                       # Header files for Linux kernel
@@ -24,7 +24,7 @@ sudo pacman -S --needed \
   meson                               # Build system
   nano                                # Text editor
   neovim                              # Vim-fork text editor
-  nvidia-open-dkms                    # NVIDIA open kernel modules
+  # nvidia-open-dkms                    # NVIDIA open kernel modules
   openssh                             # OpenSSH client and server
   polkit-kde-agent                    # Polkit authentication agent
   qt5-wayland                         # Qt5 Wayland support
@@ -45,9 +45,10 @@ sudo pacman -S --needed \
   xorg-server                         # X.Org display server
   xorg-xinit                          # X.Org initialization
   zram-generator                      # Systemd zram generator
+)
 
 # Cross-platform packages (from Brewfile.default)
-sudo pacman -S --needed \
+cross_platform_packages=(
   ack                                 # Grep-like text finder
   act                                 # Run GitHub Actions locally
   asciinema                           # Records shareable terminal sessions
@@ -160,15 +161,10 @@ sudo pacman -S --needed \
   yq                                  # Convert YAML to JSON
   yt-dlp                              # YouTube video downloader
   zstd                                # dep for elixir, erlang,...
-
-# Install yay (AUR helper) from source
-git clone https://aur.archlinux.org/yay.git /tmp/yay && \
-  cd /tmp/yay && \
-  makepkg -si --noconfirm && \
-  rm -rf /tmp/yay
+)
 
 # AUR packages (requires yay)
-yay -S --needed \
+aur_packages=(
   asdf-vm                             # Runtime version manager
   browsh                              # TUI webpage browser
   clipboard                           # Clipboard manager
@@ -184,6 +180,20 @@ yay -S --needed \
   television                          # Fuzzy finder TUI
   ttysvr                              # Terminal screensaver, win95 style
   watson                              # Time registration
+)
 
-# TUI coding agent
+# Install pacman packages
+sudo pacman -S --needed "${pacman_packages[@]}" "${cross_platform_packages[@]}"
+
+# Install yay (AUR helper) from source
+if ! command -v yay &>/dev/null; then
+  git clone https://aur.archlinux.org/yay.git /tmp/yay
+  (cd /tmp/yay && makepkg -si --noconfirm)
+  rm -rf /tmp/yay
+fi
+
+# Install AUR packages
+yay -S --needed "${aur_packages[@]}"
+
+# Install opencode (TUI coding agent)
 npm install -g @anthropic-ai/opencode
