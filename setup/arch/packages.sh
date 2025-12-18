@@ -187,7 +187,7 @@ aur_packages=(
 
 # Install pacman packages
 sudo pacman -Syu
-sudo pacman -S --no-confirm --needed \
+sudo pacman -S --noconfirm --needed \
   "${arch_packages[@]}" "${cross_platform_packages[@]}"
 
 # Install yay (AUR helper) from source
