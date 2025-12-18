@@ -5,7 +5,7 @@
 #       i.e. which display manager are we starting out with on Arch?
 
 # Arch-specific system packages (not from Brewfile.default)
-pacman_packages=(
+arch_packages=(
   base                                # Minimal base system
   base-devel                          # Development tools (make, gcc, etc.)
   gnome-keyring                       # Secret storage (dep for bitwarden-cli)
@@ -16,7 +16,7 @@ pacman_packages=(
   grim                                # Screenshot tool for Wayland
   grub                                # Bootloader
   iwd                                 # iNet wireless daemon
-  # libva-nvidia-driver                 # NVIDIA VA-API driver
+  # libva-nvidia-driver               # NVIDIA VA-API driver
   linux                               # Linux kernel
   linux-firmware                      # Firmware files for Linux
   linux-headers                       # Header files for Linux kernel
@@ -24,7 +24,7 @@ pacman_packages=(
   meson                               # Build system
   nano                                # Text editor
   neovim                              # Vim-fork text editor
-  # nvidia-open-dkms                    # NVIDIA open kernel modules
+  # nvidia-open-dkms                  # NVIDIA open kernel modules
   openssh                             # OpenSSH client and server
   polkit-kde-agent                    # Polkit authentication agent
   qt5-wayland                         # Qt5 Wayland support
@@ -49,7 +49,6 @@ pacman_packages=(
 
 # Cross-platform packages (from Brewfile.default)
 cross_platform_packages=(
-  ack                                 # Grep-like text finder
   act                                 # Run GitHub Actions locally
   asciinema                           # Records shareable terminal sessions
   atuin                               # Shell history with syncing
@@ -71,6 +70,7 @@ cross_platform_packages=(
   dav1d                               # Open source AV1 decoder
   deno                                # Modern JS and TypeScript runtime
   dialog                              # Swiss army knife of CLI dialog boxes
+  discount                            # Markdown processor
   dos2unix                            # DOS to Unix and back file format converter
   duf                                 # Like df, but humanized
   dust                                # Like du, but humanized
@@ -81,7 +81,6 @@ cross_platform_packages=(
   ffmpeg                              # Media conversion tool
   figlet                              # Text to ASCII generator
   fish                                # Friendly interactive shell
-  fswatch                             # Directory change listener
   fzf                                 # Fuzzy finder
   gawk                                # awk, but the GNU version
   gcc                                 # GNU compiler collection
@@ -119,7 +118,6 @@ cross_platform_packages=(
   lolcat                              # Rainbow colours for ASCII text
   luarocks                            # Package manager for Lua
   m4                                  # dep for elixir, erlang,...
-  markdown                            # Formatting syntax for text files
   mariadb                             # MySQL-compatible database
   navi                                # Terminal cheatsheet
   ncdu                                # Disk usage monitor written in ncurses
@@ -132,11 +130,11 @@ cross_platform_packages=(
   pandoc                              # Markup conversion tool
   pango                               # dep for imagemagick, ffmpeg, chafa,...
   pastel                              # Terminal colour manipulation
-  pipx                                # Package manager for python
-  python-pgcli                        # A better PostgreSQL client
+  pgcli                               # A better PostgreSQL client
   pkgconf                             # Helps configure compiler/linker flags
   postgresql                          # Relational database
   pv                                  # Progress bar for the terminal
+  python-pipx                         # Package manager for python
   redis                               # In-memory key/value database
   ripgrep                             # Fuzzy search
   rsync                               # Local and remote file copying tool
@@ -153,7 +151,6 @@ cross_platform_packages=(
   tree-sitter                         # Parser generator and library
   tree-sitter-cli                     # Interact with tree-sitter through CLI
   unbound                             # Caching DNS resolver
-  v8                                  # Google's JS/wasm engine
   viu                                 # Image viewer
   wget                                # Network downloader
   x264                                # dep for ffmpeg
@@ -165,25 +162,29 @@ cross_platform_packages=(
 
 # AUR packages (requires yay)
 aur_packages=(
+  ack                                 # Grep-like text finder
   asdf-vm                             # Runtime version manager
   browsh                              # TUI webpage browser
   clipboard                           # Clipboard manager
   ddgr                                # DuckDuckGo from the terminal
   elixir-ls                           # Language server for Elixir
+  fswatch                             # Directory change listener
   imagemagick6                        # Image manipulation tools, v6
   jqp                                 # Interactive jq playground
   kanata-bin                          # Cross-platform keyboard remapper
   mycli                               # A better MySQL client
+  opencode-bin                        # TUI coding agent
   pipes.sh                            # Terminal screensaver, win95 style
   scc                                 # Counts lines of code; cloc alternative
   spicetify-cli                       # Provides theming for Spotify
   television                          # Fuzzy finder TUI
   ttysvr                              # Terminal screensaver, win95 style
+  v8-r                                # Google's JS/wasm engine
   watson                              # Time registration
 )
 
 # Install pacman packages
-sudo pacman -S --needed "${pacman_packages[@]}" "${cross_platform_packages[@]}"
+sudo pacman -S --needed "${arch_packages[@]}" "${cross_platform_packages[@]}"
 
 # Install yay (AUR helper) from source
 if ! command -v yay &>/dev/null; then
@@ -194,6 +195,3 @@ fi
 
 # Install AUR packages
 yay -S --needed "${aur_packages[@]}"
-
-# Install opencode (TUI coding agent)
-npm install -g @anthropic-ai/opencode
