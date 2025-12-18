@@ -1,0 +1,4 @@
+root = true
+
+[setup/arch/packages.sh]
+ignore = true
