@@ -24,6 +24,7 @@ arch_packages=(
   meson                               # Build system
   nano                                # Text editor
   neovim                              # Vim-fork text editor
+  noto-fonts                          # Font provider
   # nvidia-open-dkms                  # NVIDIA open kernel modules
   openssh                             # OpenSSH client and server
   pipewire-jack                       # Audio implementation
@@ -185,7 +186,9 @@ aur_packages=(
 )
 
 # Install pacman packages
-sudo pacman -S --needed "${arch_packages[@]}" "${cross_platform_packages[@]}"
+sudo pacman -Syu
+sudo pacman -S --no-confirm --needed \
+  "${arch_packages[@]}" "${cross_platform_packages[@]}"
 
 # Install yay (AUR helper) from source
 if ! command -v yay &>/dev/null; then
