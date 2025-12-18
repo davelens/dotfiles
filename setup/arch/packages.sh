@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e  # Exit on error
 
 # TODO
 # - [ ] Check if gnome-keyring is what we want, or kwallet (kde plasma).
@@ -126,7 +127,7 @@ cross_platform_packages=(
   ncftp                               # FTP browser
   nethack                             # One of the best games ever made
   nmap                                # Open source network exploration tool
-  # nodejs                              # Headache in a box
+  nodejs-lts-jod                        # Headache in a box (LTS version)
   openssl                             # dep for pretty much everything
   p11-kit                             # dep for ffmpeg
   pandoc                              # Markup conversion tool
