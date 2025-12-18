@@ -24,10 +24,37 @@ install_paru() {
   rm -rf /tmp/paru
 }
 
+resolve_aur_package() {
+  local pkg="$1"
+
+  # If package already has a suffix, use as-is
+  if [[ "$pkg" == *-bin || "$pkg" == *-git ]]; then
+    echo "$pkg"
+    return
+  fi
+
+  # Priority: -bin > regular > skip -git
+  if paru -Si "${pkg}-bin" &>/dev/null; then
+    echo "${pkg}-bin"
+  elif paru -Si "$pkg" &>/dev/null; then
+    echo "$pkg"
+  else
+    echo "Warning: Package '$pkg' not found in AUR, skipping" >&2
+  fi
+}
+
 install_aur_packages() {
-  local packages
-  read -ra packages <<< "$(read_packages "$SCRIPT_DIR/paru.packages")"
-  paru -S --needed "${packages[@]}"
+  local input_packages resolved_packages=()
+  read -ra input_packages <<< "$(read_packages "$SCRIPT_DIR/paru.packages")"
+
+  for pkg in "${input_packages[@]}"; do
+    resolved=$(resolve_aur_package "$pkg")
+    [[ -n "$resolved" ]] && resolved_packages+=("$resolved")
+  done
+
+  if [[ ${#resolved_packages[@]} -gt 0 ]]; then
+    paru -S --noconfirm --skipreview --needed "${resolved_packages[@]}"
+  fi
 }
 
 install_pacman_packages
