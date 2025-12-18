@@ -4,16 +4,16 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 read_packages() {
-  # Strips out any comments and blank lines.
-  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}'
+  # Strips out any comments and blank lines, returns space-separated list
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}' | tr '\n' ' '
 }
 
 install_pacman_packages() {
   local packages
-  packages=$(read_packages "$SCRIPT_DIR/pacman.packages")
+  read -ra packages <<< "$(read_packages "$SCRIPT_DIR/pacman.packages")"
 
   sudo pacman -Syu
-  sudo pacman -S --noconfirm --needed "$packages"
+  sudo pacman -S --noconfirm --needed "${packages[@]}"
 }
 
 install_paru() {
@@ -26,8 +26,8 @@ install_paru() {
 
 install_aur_packages() {
   local packages
-  packages=$(read_packages "$SCRIPT_DIR/paru.packages")
-  paru -S --needed "$packages"
+  read -ra packages <<< "$(read_packages "$SCRIPT_DIR/paru.packages")"
+  paru -S --needed "${packages[@]}"
 }
 
 install_pacman_packages
