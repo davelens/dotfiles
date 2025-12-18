@@ -34,6 +34,7 @@ brew "deno"                           # Modern JS and TypeScript runtime
 brew "dialog"                         # Swiss army knife of CLI dialog boxes
 brew "dos2unix"                       # DOS to Unix and back file format converter
 brew "duf"                            # Like df, but humanized
+brew "dust"                           # Like du, but humanized
 brew "elixir-ls"                      # Language server for Elixir
 brew "entr"                           # File change listener
 brew "fastfetch"                      # System information tool
@@ -41,6 +42,7 @@ brew "fd"                             # File search
 brew "fdupes"                         # Duplicate file finder
 brew "ffmpeg"                         # Media conversion tool
 brew "figlet"                         # Text to ASCII generator
+brew "fish"                           # Friendly interactive shell
 brew "fswatch"                        # Directory change listener
 brew "fzf"                            # Fuzzy finder
 brew "gawk"                           # awk, but the GNU version
@@ -49,11 +51,13 @@ brew "gdk-pixbuf"                     # dep for chafa
 brew "gh"                             # GitHub CLI tool
 brew "ghostscript"                    # dep for imagemagick
 brew "git"                            # The stupid content tracker
+brew "git-crypt"                      # Transparent git file encryption
 brew "git-delta"                      # Diff tool
 brew "git-lfs"                        # Git system to version large files
 brew "glib"                           # dep for imagemagick, ffmpeg, chafa,...
 brew "gmp"                            # dep for coreutils, gcc,...
 brew "gnu-sed"                        # sed, but the GNU version
+brew "gnu-tar"                        # tar, but the GNU version
 brew "gnupg"                          # GNU Privacy Guard
 brew "gnutls"                         # Sets up TLS connections
 brew "gpgme"                          # GnuPG library access
@@ -63,6 +67,8 @@ brew "imagemagick"                    # Image manipulation tools, v7+
 brew "imagemagick@6"                  # Image manipulation tools, v6
 brew "inetutils"                      # GNU network utilities
 brew "jq"                             # JSON processor
+brew "jqp"                            # Interactive jq playground
+brew "kanata"                         # Cross-platform keyboard remapper
 brew "less"                           # Like `more`, but with more features
 brew "libass"                         # dep for ffmpeg
 brew "libavif"                        # dep for chafa
@@ -96,6 +102,7 @@ brew "pipes-sh"                       # Terminal screensaver, win95 style
 brew "pipx"                           # Package manager for python
 brew "pgcli"                          # A better PostgreSQL client
 brew "pkgconf"                        # Helps configure compiler/linker flags
+brew "postgresql@18"                  # Relational database
 brew "pv"                             # Progress bar for the terminal
 brew "redis"                          # In-memory key/value database
 brew "ripgrep"                        # Fuzzy search
@@ -109,6 +116,7 @@ brew "spicetify-cli"                  # Provides theming for Spotify
 brew "srt"                            # dep for ffmpeg
 brew "starship"                       # Customizable shell prompt
 brew "tealdeer"                       # TL;DR client for man pages
+brew "television"                     # Fuzzy finder TUI
 brew "tesseract"                      # Open source text recognition engine
 brew "tmux"                           # Terminal multiplexer
 brew "tree"                           # Dumps visual file trees for folders

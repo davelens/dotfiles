@@ -31,3 +31,4 @@ cask "thunderbird"                    # Mozilla's e-mail client
 cask "vlc"                            # The MVP open source media player
 cask "wezterm"                        # Terminal emulator and multiplexer
 cask "whatsapp"                       # Because my family keeps using it
+cask "qutebrowser"                    # Keyboard-driven web browser
