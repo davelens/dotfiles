@@ -35,7 +35,8 @@ if [ -d "$BREW_PATH" ]; then
   # Ensure brew-installed bash versions as our active shell.
   [ -f "$BREW_PATH"/bin/bash ] && export SHELL="$BREW_PATH/bin/bash"
 
-  # This makes sure asdf can configure Erlang with Homebrew's openssl pkg.
+  # mise uses kerl under the hood for Erlang; this makes sure that it uses
+  # Homebrew's openssl version when compiling from source.
   if [ -d "$BREW_PATH/opt/openssl@3" ]; then
     KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl@3)"
     export KERL_CONFIGURE_OPTIONS

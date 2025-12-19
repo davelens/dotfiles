@@ -39,9 +39,6 @@ export DOTFILES_SALT_PATH="$DOTFILES_CACHE_HOME/salt.enc"
 # categorised files in ./bash/env, but since I've set them to adhere to XDG,
 # they can live here.
 export ACKRC="$XDG_CONFIG_HOME/ack/ackrc"
-export ASDF_CONFIG_FILE="$XDG_CONFIG_HOME/asdf/asdfrc"
-export ASDF_DIR="$XDG_DATA_HOME/asdf"
-export ASDF_DATA_DIR="$XDG_DATA_HOME/asdf"
 export BASHRC="$XDG_CONFIG_HOME/bash/bashrc"
 export BASH_PROFILE="$XDG_CONFIG_HOME/bash/bash_profile"
 export BUNDLE_USER_CACHE="$XDG_CACHE_HOME/bundle"
@@ -56,6 +53,8 @@ export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
 export EDITRC="$XDG_CONFIG_HOME/editline/editrc"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 export IRBRC="$XDG_CONFIG_HOME/irb/irbrc"
+export MISE_CACHE_DIR="$XDG_CACHE_HOME/mise"
+export MISE_DATA_DIR="$XDG_DATA_HOME/mise"
 export MIX_XDG="true" # So both mix and hex use XDG
 export MYCLIRC="$XDG_CONFIG_HOME/mycli/myclirc"
 export MYCLI_HISTFILE="$XDG_DATA_HOME/mycli/mycli-history"

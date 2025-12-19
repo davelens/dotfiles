@@ -4,8 +4,15 @@ set -e
 [[ -z $1 ]] && fail '[rails/bootstrap] ERROR: No target directory given.'
 [[ ! -d $1 ]] && fail "[rails/bootstrap] ERROR: Directory $1 is missing."
 [[ ! -f $1/config.ru ]] && fail '[rails/bootstrap] ERROR: You can only run this from a folder containing a Rails project.'
+
 # shellcheck disable=SC2016
-[[ ! $(command -v asdf) ]] && fail '[rails/bootstrap] ERROR: No asdf executable found. Check your $PATH or install asdf with `brew install asdf`.'
+if ! command -v mise >/dev/null; then
+  echo "[rails/bootstrap] ERROR: No mise executable found."
+
+  if [[ $(os) == "macos" ]]; then
+    fail 'Check your $PATH or install with `brew install mise`.'
+  fi
+fi
 
 copy_config() {
   src=$project_root/$1$2
@@ -54,7 +61,7 @@ check_and_copy 'config/secrets'
 check_and_copy 'config/udongo'
 check_and_copy 'config/project'
 
-# asdf requires a .tool-versions to provide a PWD-localized ruby executable.
+# both asdf and mise can read .tool-versions to provide a local ruby binary.
 if [[ ! -e $project_root/.tool-versions ]]; then
   # shellcheck disable=SC2155
   declare -A ssh_credentials=$(utility rails ssh-credentials "$project_root"/config/deploy.rb)
@@ -62,36 +69,35 @@ if [[ ! -e $project_root/.tool-versions ]]; then
   echo "ruby $required_ruby" >>"$project_root"/.tool-versions
 fi
 
-# Make sure the MYSQL env vars are there for projects who can handle them,
+# Make sure the MYSQL env vars are there for projects that can handle them,
 # and don't already have MYSQL_USER set.
 if [[ ! -f .env ]] || [[ -f .env ]] && ! grep -q MYSQL_USER .env; then
   echo $'MYSQL_HOST=localhost\nMYSQL_USER=root\nMYSQL_PASSWORD=root' >>"$project_root"/.env
 fi
 
-required_ruby=$(cat "$project_root"/.ruby-version)
-
 # Check if the required ruby version is installed.
-if [[ ! -d ~/.asdf/installs/ruby/$required_ruby ]]; then
+required_ruby=$(grep -E '^ruby ' "$project_root"/.tool-versions | awk '{print $2}')
+
+if ! mise ls ruby | grep -q "^ruby\s*$required_ruby"; then
   echo "[rails/bootstrap] Installing Ruby $required_ruby"
-  if ! asdf plugin add ruby || ! asdf install ruby "$required_ruby"; then
+
+  if ! mise install ruby "$required_ruby"; then
     echo "[rails/bootstrap] ERROR: Ruby installation failed, please review:"
-    printf '\n\tcd %s && asdf plugin add ruby && asdf install ruby %s' "$project_root" "$required_ruby"
-    exit 1
+    fail '\n\tcd %s && mise install ruby %s' "$project_root" "$required_ruby"
   fi
 fi
 
-ruby_major=$(echo "$required_ruby" | sed -E 's/[0-9]{1,2}$/0/')
 required_bundler=$(cat "$project_root/Gemfile.lock" | tail -1 | sed -e 's/^[[:space:]]*//')
 
-if [[ ! -d ~/.asdf/installs/ruby/$required_ruby/lib/ruby/gems/$ruby_major/gems/bundler-$required_bundler ]]; then
+# Note that `mise exec` will proceed installing a Ruby version it does not yet
+# see installed. Not an issue in this case, since that path will fail with an
+# error in the code block above.
+if ! mise exec ruby@"$required_ruby" -- gem list -i bundler -v "$required_bundler"; then
   if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
     if ! gem install bundler -v "$required_bundler"; then
       echo "[rails/bootstrap] ERROR: Bundler installation failed, please review:"
-      printf '\n\tcd %s && gem install bundler -v %s' "$project_root" "$required_bundler"
-      exit 1
+      fail '\n\tcd %s && gem install bundler -v %s' "$project_root" "$required_bundler"
     fi
-    # This usually fixes any issues with the mysql2 gem installation.
-    bundle config --local build.Mysql2 "--with-ldflags=-L/usr/local/opt/openssl/lib --with-cppflags=-I/usr/local/opt/openssl/include"
   fi
 fi
 

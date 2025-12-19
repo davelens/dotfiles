@@ -21,9 +21,6 @@ if [ -n "$BREW_PATH" ]; then
 
   # If HOMEBREW_REPOSITORY isn't set, brew's bash completion won't work properly
   # (see the GH issue [here](https://github.com/orgs/Homebrew/discussions/4227))
-  #
-  # I leave out the PATH override though. Homebrew wants its shims to be at the
-  # top of the list, but we want ASDF to take precedence.
   if [ -z "$HOMEBREW_REPOSITORY" ]; then
     eval "$("$BREW_PATH/bin/brew" shellenv | grep -v ^PATH)"
   fi

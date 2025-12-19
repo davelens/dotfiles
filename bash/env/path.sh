@@ -28,10 +28,6 @@
 
 paths_to_add=()
 
-if [ -d "$ASDF_DATA_DIR" ]; then
-  paths_to_add+=("$ASDF_DATA_DIR"/shims)
-fi
-
 if [ -d "$CARGO_HOME" ]; then
   paths_to_add+=("$CARGO_HOME"/bin)
 fi
@@ -73,3 +69,9 @@ fi
 # Now implode everything into the new PATH variable.
 printf -v PATH "%s:" "${paths_to_add[@]}"
 export PATH="${PATH%:}"
+
+# Mise hooks itself into $PATH, so we need to define it after export our
+# version.
+if [ -d "$MISE_DATA_DIR" ]; then
+  eval "$(mise activate bash)"
+fi

@@ -10,7 +10,6 @@ tap "gromgit/brewtils"                # taproom
 brew "ack"                            # Grep-like text finder
 brew "act"                            # Run GitHub Actions locally
 brew "asciinema"                      # Records shareable terminal sessions
-brew "asdf"                           # Runtime version manager
 brew "atuin"                          # Shell history with syncing
 brew "autoconf"                       # dep for automake
 brew "automake"                       # Generates Makefiles
@@ -85,13 +84,14 @@ brew "lolcat"                         # Rainbow colours for ASCII text
 brew "luarocks"                       # Package manager for Lua
 brew "m4"                             # dep for elixir, erlang,...
 brew "markdown"                       # Formatting syntax for text files
+brew "mise"                           # Runtime version manager
 brew "mycli"                          # A better MySQL client
 brew "mysql@8.4"                      # Some proprietary database crap
 brew "navi"                           # Terminal cheatsheet
 brew "ncdu"                           # Disk usage monitor written in ncurses
 brew "ncftp"                          # FTP browser
 brew "nethack"                        # One of the best games ever made
-brew "nmap"                           # Open source network exploration tool 
+brew "nmap"                           # Open source network exploration tool
 brew "node"                           # Headache in a box
 brew "openssl@3"                      # dep for pretty much everything
 brew "p11-kit"                        # dep for ffmpeg

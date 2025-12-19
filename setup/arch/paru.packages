@@ -1,13 +1,13 @@
 # AUR packages (installed via paru)
 
 ack                                 # Grep-like text finder
-asdf-vm                             # Runtime version manager
 browsh                              # TUI webpage browser
 clipboard                           # Clipboard manager
 elixir-ls                           # Language server for Elixir
 fswatch                             # Directory change listener
 jqp                                 # Interactive jq playground
 kanata-bin                          # Cross-platform keyboard remapper
+#mise                                # Runtime version manager TODO: Verify!
 mycli                               # A better MySQL client
 opencode-bin                        # TUI coding agent
 pipes.sh                            # Terminal screensaver, win95 style

@@ -2,21 +2,6 @@
 # Env settings and exports related to Ruby - This gets its own section! <3
 ###############################################################################
 
-# DEPRECATED: I'm using asdf now, so this can probably go.
-# Pick up on rbenv, if it's there.
-command -v rbenv &>/dev/null && eval "$(rbenv init -)"
-
-# Temporarily putting this here to make sure asdf-installed Ruby compiles
-# with clang++ support, so gems can actually compile properly.
-# https://github.com/sass/sassc-ruby/issues/225#issuecomment-2665440688
-#
-# NOTE: It appears that this, in turn, breaks RMagick installations. -.-
-# Commenting this out, but keeping it around until asdf and/or Ruby sort
-# themselves out.
-#
-#export CC="clang"
-#export CXX="clang++"
-
 # Configure the garbage collector for local development.
 # Basically these following settings reduce interruptions due to GC.
 # The aim is to improve request/response time in local development.
@@ -58,7 +43,7 @@ export SPRING_TMP_PATH="/tmp"
 
 # Compilation configuration options for fresh Ruby installations.
 if command -v brew >/dev/null; then
-  # Configure compilation options for Ruby installs via asdf/ruby-build.
+  # Configure compilation options for Ruby installs via mise/ruby-build.
   # Only add libraries that are actually installed via Homebrew.
   RUBY_CONFIGURE_OPTS=""
 
