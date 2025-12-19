@@ -15,7 +15,7 @@ if ! command -v mise >/dev/null; then
 fi
 
 copy_config() {
-  src=$project_root/$1$2
+  src=$project_root/${1}${2}
   dest=$project_root/$1.yml
 
   echo "[rails/bootstrap] WARNING: No $project_root/$1.yml present, but found a dist file."
@@ -29,7 +29,7 @@ copy_config() {
       break
       ;;
     [Nn]*)
-      fail "[rails/bootstrap] ERROR: No $dest present. Aborting."
+      echo "[rails/bootstrap] ERROR: No $dest copied."
       break
       ;;
     *) echo "[rails/bootstrap] Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o." ;;
@@ -41,10 +41,10 @@ check_and_copy() {
   [[ -f $project_root/$1.yml ]] && return 0
   [[ -f $project_root/$1.yml.dist ]] && copy_config "$1" .yml.dist
   [[ -f $project_root/$1.dist.yml ]] && copy_config "$1" .dist.yml
-  return 1
+  return 0
 }
 
-project_root=$1 # So we can access it in functions.
+project_root="$1" # So we can access it in functions.
 check_and_copy 'config/database'
 check_and_copy 'config/secrets'
 check_and_copy 'config/udongo'
@@ -60,7 +60,7 @@ fi
 
 # Make sure the MYSQL env vars are there for projects that can handle them,
 # and don't already have MYSQL_USER set.
-if [[ ! -f .env ]] || [[ -f .env ]] && ! grep -q MYSQL_USER .env; then
+if [[ ! -f "$project_root"/.env ]] || ! grep -q MYSQL_USER "$project_root"/.env; then
   echo $'MYSQL_HOST=localhost\nMYSQL_USER=root\nMYSQL_PASSWORD=root' >>"$project_root"/.env
 fi
 
@@ -81,7 +81,7 @@ required_bundler=$(cat "$project_root/Gemfile.lock" | tail -1 | sed -e 's/^[[:sp
 # Note that `mise exec` will proceed installing a Ruby version it does not yet
 # see installed. Not an issue in this case, since that path will fail with an
 # error in the code block above.
-if ! mise exec ruby@"$required_ruby" -- gem list -i bundler -v "$required_bundler"; then
+if ! mise exec ruby@"$required_ruby" -- gem list -i bundler -v "$required_bundler" >/dev/null; then
   if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
     if ! gem install bundler -v "$required_bundler"; then
       echo "[rails/bootstrap] ERROR: Bundler installation failed, please review:"
@@ -90,8 +90,10 @@ if ! mise exec ruby@"$required_ruby" -- gem list -i bundler -v "$required_bundle
   fi
 fi
 
-echo '[rails/bootstrap:bundler] Installing gems'
+echo '[rails/bootstrap] Installing gems'
 if ! cd "$project_root" || ! bundle install --quiet || ! cd - >/dev/null; then
-  echo "[rails/bootstrap:bundler] ERROR: Gem installation failed, please review:"
+  echo "[rails/bootstrap] ERROR: "bundle install" failed, please review:"
   fail '\n\tcd %s && bundle install --quiet && cd - >/dev/null' "$project_root"
 fi
+
+echo '[rails/bootstrap] All done!'
