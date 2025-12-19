@@ -182,7 +182,10 @@ main() {
   [ -n "$adapter" ] && ensure_db_running "$adapter"
 
   # Bootstrap if freshly cloned
-  [ $bootstrap -eq 1 ] && bootstrap "$destination"
+  if [ $bootstrap -eq 1 ]; then
+    $print_status -i pending "Running $FRAMEWORK_NAME bootstrap..."
+    bootstrap "$destination"
+  fi
 
   # Check if framework wants minimal windows
   if type -t use_minimal_windows &>/dev/null && use_minimal_windows; then
