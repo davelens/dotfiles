@@ -1,12 +1,12 @@
 # This script is loaded once through BASH_ENV.
 #
 # Only declare functions once.
-if declare -F "fn_exists" >/dev/null; then
+if declare -F "command_exists" >/dev/null; then
   return 0
 fi
 
-fn_exists() {
-  declare -F "$1" >/dev/null
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
 }
 
 block_unless_sourced() {
