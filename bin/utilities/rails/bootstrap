@@ -38,10 +38,10 @@ copy_config() {
 }
 
 check_and_copy() {
-  [[ -f $project_root/$1.yml ]] && return
+  [[ -f $project_root/$1.yml ]] && return 0
   [[ -f $project_root/$1.yml.dist ]] && copy_config "$1" .yml.dist
   [[ -f $project_root/$1.dist.yml ]] && copy_config "$1" .dist.yml
-  return 0
+  return 1
 }
 
 project_root=$1 # So we can access it in functions.
