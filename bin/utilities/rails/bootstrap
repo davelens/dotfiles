@@ -41,18 +41,7 @@ check_and_copy() {
   [[ -f $project_root/$1.yml ]] && return
   [[ -f $project_root/$1.yml.dist ]] && copy_config "$1" .yml.dist
   [[ -f $project_root/$1.dist.yml ]] && copy_config "$1" .dist.yml
-
-  # We need an(y) echo here to prevent this entire script from stopping after
-  # one pass of check_and_copy. I *think* this has to do with function return
-  # statuses in bash. I was able to determine the root of the problem, but not
-  # entirely identify it. Let me know if you know!
-  #
-  # More info here:
-  # https://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO-10.html
-  # https://stackoverflow.com/questions/16325548/nested-function-calls-in-bash
-  # https://bash.cyberciti.biz/guide/The_exit_status_of_a_command
-  # https://www.cyberciti.biz/faq/bash-get-exit-code-of-command/
-  printf ""
+  return 0
 }
 
 project_root=$1 # So we can access it in functions.
@@ -104,6 +93,5 @@ fi
 echo '[rails/bootstrap:bundler] Installing gems'
 if ! cd "$project_root" || ! bundle install --quiet || ! cd - >/dev/null; then
   echo "[rails/bootstrap:bundler] ERROR: Gem installation failed, please review:"
-  printf '\n\tcd %s && bundle install --quiet && cd - >/dev/null' "$project_root"
-  exit 1
+  fail '\n\tcd %s && bundle install --quiet && cd - >/dev/null' "$project_root"
 fi
