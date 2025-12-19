@@ -50,12 +50,85 @@ check_and_copy 'config/secrets'
 check_and_copy 'config/udongo'
 check_and_copy 'config/project'
 
+# Fetch SSH credentials once for reuse (ssh-credentials expects to run from project root)
+# shellcheck disable=SC2155
+declare -A ssh_credentials=$(cd "$project_root" && utility rails ssh-credentials 2>/dev/null) || true
+ssh_target="${ssh_credentials[user]}@${ssh_credentials[server]}"
+
+# Fetch Rails credential keys from production server
+fetch_credential_keys() {
+  local deploy_to application creds_dir
+  creds_dir="$project_root/config/credentials"
+
+  # Check if there are any encrypted credentials files that need keys
+  if [[ ! -d "$creds_dir" ]] && [[ ! -f "$project_root/config/credentials.yml.enc" ]]; then
+    return 0
+  fi
+
+  if [[ -z "${ssh_credentials[user]}" || -z "${ssh_credentials[server]}" ]]; then
+    echo "[rails/bootstrap] WARNING: Could not determine SSH credentials, skipping key fetch."
+    return 0
+  fi
+
+  # Check deploy.rb first, then production.rb
+  deploy_to=$(grep -E "set :deploy_to" "$project_root/config/deploy.rb" 2>/dev/null | sed -E "s/.*['\"]([^'\"]+)['\"]/\1/" | head -1) || true
+  if [[ -z "$deploy_to" ]]; then
+    deploy_to=$(grep -E "set :deploy_to" "$project_root/config/deploy/production.rb" 2>/dev/null | sed -E "s/.*['\"]([^'\"]+)['\"]/\1/" | head -1) || true
+  fi
+
+  # Handle Ruby interpolation: #{fetch(:application)}
+  if [[ "$deploy_to" == *'#{fetch(:application)}'* ]]; then
+    application=$(grep -E "set :application" "$project_root/config/deploy/production.rb" 2>/dev/null | sed -E "s/.*['\"]([^'\"]+)['\"]/\1/" | head -1) || true
+    if [[ -n "$application" ]]; then
+      deploy_to="${deploy_to//#\{fetch\(:application\)\}/$application}"
+    fi
+  fi
+
+  if [[ -z "$deploy_to" ]]; then
+    echo "[rails/bootstrap] WARNING: Could not determine deploy path, skipping key fetch."
+    return 0
+  fi
+
+  local remote_shared="$deploy_to/shared/config"
+
+  echo "[rails/bootstrap] Fetching credential keys from $ssh_target..."
+
+  # Fetch master.key if we have credentials.yml.enc but no master.key
+  if [[ -f "$project_root/config/credentials.yml.enc" ]] && [[ ! -f "$project_root/config/master.key" ]]; then
+    if ssh "$ssh_target" "test -f $remote_shared/master.key" 2>/dev/null; then
+      scp -q "$ssh_target:$remote_shared/master.key" "$project_root/config/master.key"
+      echo "[rails/bootstrap] Fetched config/master.key"
+    fi
+  fi
+
+  # Fetch production.key from server and copy for all environments (they share the same key)
+  mkdir -p "$creds_dir"
+  local remote_prod_key="$remote_shared/credentials/production.key"
+
+  if ssh "$ssh_target" "test -f $remote_prod_key" 2>/dev/null; then
+    scp -q "$ssh_target:$remote_prod_key" "$creds_dir/production.key"
+    echo "[rails/bootstrap] Fetched config/credentials/production.key"
+
+    # Copy for other environments that need the same key
+    for env in development test; do
+      if [[ ! -f "$creds_dir/$env.key" ]]; then
+        cp "$creds_dir/production.key" "$creds_dir/$env.key"
+        echo "[rails/bootstrap] Created config/credentials/$env.key"
+      fi
+    done
+  fi
+}
+
+fetch_credential_keys
+
 # both asdf and mise can read .tool-versions to provide a local ruby binary.
 if [[ ! -e $project_root/.tool-versions ]]; then
-  # shellcheck disable=SC2155
-  declare -A ssh_credentials=$(utility rails ssh-credentials "$project_root"/config/deploy.rb)
-  required_ruby=$(ssh "${ssh_credentials[user]}"@"${ssh_credentials[server]}" 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//')
-  echo "ruby $required_ruby" >>"$project_root"/.tool-versions
+  if [[ -n "${ssh_credentials[user]}" && -n "${ssh_credentials[server]}" ]]; then
+    required_ruby=$(ssh "$ssh_target" 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//')
+    echo "ruby $required_ruby" >>"$project_root"/.tool-versions
+  else
+    echo "[rails/bootstrap] WARNING: Could not determine SSH credentials, skipping Ruby version detection."
+  fi
 fi
 
 # Make sure the MYSQL env vars are there for projects that can handle them,
