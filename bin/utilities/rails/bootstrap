@@ -1,27 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-[[ -z $1 ]] && fail '[rails/bootstrap] ERROR: No target directory given.'
-[[ ! -d $1 ]] && fail "[rails/bootstrap] ERROR: Directory $1 is missing."
-[[ ! -f $1/config.ru ]] && fail '[rails/bootstrap] ERROR: You can only run this from a folder containing a Rails project.'
+me="rails/$(basename "$0")"
 
-# shellcheck disable=SC2016
-if ! command -v mise >/dev/null; then
-  echo "[rails/bootstrap] ERROR: No mise executable found."
-
-  if [[ $(os) == "macos" ]]; then
-    fail 'Check your $PATH or install with `brew install mise`.'
-  fi
-fi
+###############################################################################
+# Helpers
+###############################################################################
 
 copy_config() {
-  src=$project_root/${1}${2}
-  dest=$project_root/$1.yml
+  local src="$project_root/${1}${2}"
+  local dest="$project_root/$1.yml"
 
-  echo "[rails/bootstrap] WARNING: No $project_root/$1.yml present, but found a dist file."
+  echo "[$me] WARNING: No $project_root/$1.yml present, but found a dist file."
 
   while true; do
-    read -r -n1 -p "[rails/bootstrap] Create a copy from $src? (y/n) " yn
+    read -r -n1 -p "[$me] Create a copy from $src? (y/n) " yn
     printf "\n"
     case $yn in
     [Yy]*)
@@ -29,10 +22,10 @@ copy_config() {
       break
       ;;
     [Nn]*)
-      echo "[rails/bootstrap] ERROR: No $dest copied."
+      echo "[$me] ERROR: No $dest copied."
       break
       ;;
-    *) echo "[rails/bootstrap] Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o." ;;
+    *) echo "[$me] Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o." ;;
     esac
   done
 }
@@ -44,31 +37,9 @@ check_and_copy() {
   return 0
 }
 
-project_root="$1" # So we can access it in functions.
-check_and_copy 'config/database'
-check_and_copy 'config/secrets'
-check_and_copy 'config/udongo'
-check_and_copy 'config/project'
-
-# Fetch SSH credentials once for reuse (ssh-credentials expects to run from project root)
-# shellcheck disable=SC2155
-declare -A ssh_credentials=$(cd "$project_root" && utility rails ssh-credentials 2>/dev/null) || true
-ssh_target="${ssh_credentials[user]}@${ssh_credentials[server]}"
-
-# Fetch Rails credential keys from production server
-fetch_credential_keys() {
-  local deploy_to application creds_dir
-  creds_dir="$project_root/config/credentials"
-
-  # Check if there are any encrypted credentials files that need keys
-  if [[ ! -d "$creds_dir" ]] && [[ ! -f "$project_root/config/credentials.yml.enc" ]]; then
-    return 0
-  fi
-
-  if [[ -z "${ssh_credentials[user]}" || -z "${ssh_credentials[server]}" ]]; then
-    echo "[rails/bootstrap] WARNING: Could not determine SSH credentials, skipping key fetch."
-    return 0
-  fi
+# Extract deploy_to path from Capistrano config, resolving Ruby interpolation
+get_deploy_path() {
+  local deploy_to application
 
   # Check deploy.rb first, then production.rb
   deploy_to=$(grep -E "set :deploy_to" "$project_root/config/deploy.rb" 2>/dev/null | sed -E "s/.*['\"]([^'\"]+)['\"]/\1/" | head -1) || true
@@ -84,20 +55,67 @@ fetch_credential_keys() {
     fi
   fi
 
+  echo "$deploy_to"
+}
+
+###############################################################################
+# Setup steps
+###############################################################################
+
+check_dependencies() {
+  # shellcheck disable=SC2016
+  if ! command -v mise >/dev/null; then
+    echo "[$me] ERROR: No mise executable found."
+    if [[ $(os) == "macos" ]]; then
+      fail 'Check your $PATH or install with `brew install mise`.'
+    fi
+    fail "mise is required for Ruby version management."
+  fi
+}
+
+copy_dist_configs() {
+  check_and_copy 'config/database'
+  check_and_copy 'config/secrets'
+  check_and_copy 'config/udongo'
+  check_and_copy 'config/project'
+}
+
+fetch_ssh_credentials() {
+  # shellcheck disable=SC2155
+  declare -gA ssh_credentials=$(cd "$project_root" && utility rails ssh-credentials 2>/dev/null) || true
+  ssh_target="${ssh_credentials[user]}@${ssh_credentials[server]}"
+}
+
+fetch_credential_keys() {
+  local creds_dir="$project_root/config/credentials"
+
+  # Check if there are any encrypted credentials files that need keys
+  if [[ ! -d "$creds_dir" ]] && [[ ! -f "$project_root/config/credentials.yml.enc" ]]; then
+    return 0
+  fi
+
+  if [[ -z "${ssh_credentials[user]}" || -z "${ssh_credentials[server]}" ]]; then
+    echo "[$me] WARNING: Could not determine SSH credentials, skipping key fetch."
+    return 0
+  fi
+
+  local deploy_to
+  deploy_to=$(get_deploy_path)
+
   if [[ -z "$deploy_to" ]]; then
-    echo "[rails/bootstrap] WARNING: Could not determine deploy path, skipping key fetch."
+    echo "[$me] WARNING: Could not determine deploy path, skipping key fetch."
     return 0
   fi
 
   local remote_shared="$deploy_to/shared/config"
 
-  echo "[rails/bootstrap] Fetching credential keys from $ssh_target..."
+  echo "[$me] Fetching credential keys from $ssh_target..."
 
   # Fetch master.key if we have credentials.yml.enc but no master.key
   if [[ -f "$project_root/config/credentials.yml.enc" ]] && [[ ! -f "$project_root/config/master.key" ]]; then
     if ssh "$ssh_target" "test -f $remote_shared/master.key" 2>/dev/null; then
       scp -q "$ssh_target:$remote_shared/master.key" "$project_root/config/master.key"
-      echo "[rails/bootstrap] Fetched config/master.key"
+      echo "[$me] Fetched config/master.key"
     fi
   fi
 
@@ -107,66 +125,98 @@ fetch_credential_keys() {
 
   if ssh "$ssh_target" "test -f $remote_prod_key" 2>/dev/null; then
     scp -q "$ssh_target:$remote_prod_key" "$creds_dir/production.key"
-    echo "[rails/bootstrap] Fetched config/credentials/production.key"
+    echo "[$me] Fetched config/credentials/production.key"
 
     # Copy for other environments that need the same key
     for env in development test; do
       if [[ ! -f "$creds_dir/$env.key" ]]; then
         cp "$creds_dir/production.key" "$creds_dir/$env.key"
-        echo "[rails/bootstrap] Created config/credentials/$env.key"
+        echo "[$me] Created config/credentials/$env.key"
       fi
     done
   fi
 }
 
-fetch_credential_keys
+fetch_ruby_version() {
+  [[ -e "$project_root/.tool-versions" ]] && return 0
 
-# both asdf and mise can read .tool-versions to provide a local ruby binary.
-if [[ ! -e $project_root/.tool-versions ]]; then
   if [[ -n "${ssh_credentials[user]}" && -n "${ssh_credentials[server]}" ]]; then
+    local required_ruby
     required_ruby=$(ssh "$ssh_target" 'ruby -v' | awk '{print $2}' | sed -e 's/p.*//')
-    echo "ruby $required_ruby" >>"$project_root"/.tool-versions
+    echo "ruby $required_ruby" >>"$project_root/.tool-versions"
   else
-    echo "[rails/bootstrap] WARNING: Could not determine SSH credentials, skipping Ruby version detection."
+    echo "[$me] WARNING: Could not determine SSH credentials, skipping Ruby version detection."
   fi
-fi
+}
 
-# Make sure the MYSQL env vars are there for projects that can handle them,
-# and don't already have MYSQL_USER set.
-if [[ ! -f "$project_root"/.env ]] || ! grep -q MYSQL_USER "$project_root"/.env; then
-  echo $'MYSQL_HOST=localhost\nMYSQL_USER=root\nMYSQL_PASSWORD=root' >>"$project_root"/.env
-fi
-
-# Check if the required ruby version is installed.
-required_ruby=$(grep -E '^ruby ' "$project_root"/.tool-versions | awk '{print $2}')
-
-if ! mise ls ruby | grep -q "^ruby\s*$required_ruby"; then
-  echo "[rails/bootstrap] Installing Ruby $required_ruby"
-
-  if ! mise install ruby "$required_ruby"; then
-    echo "[rails/bootstrap] ERROR: Ruby installation failed, please review:"
-    fail '\n\tcd %s && mise install ruby %s' "$project_root" "$required_ruby"
+setup_mysql_env() {
+  if [[ ! -f "$project_root/.env" ]] || ! grep -q MYSQL_USER "$project_root/.env"; then
+    echo $'MYSQL_HOST=localhost\nMYSQL_USER=root\nMYSQL_PASSWORD=root' >>"$project_root/.env"
   fi
-fi
+}
 
-required_bundler=$(cat "$project_root/Gemfile.lock" | tail -1 | sed -e 's/^[[:space:]]*//')
+install_ruby() {
+  local required_ruby
+  required_ruby=$(grep -E '^ruby ' "$project_root/.tool-versions" | awk '{print $2}')
 
-# Note that `mise exec` will proceed installing a Ruby version it does not yet
-# see installed. Not an issue in this case, since that path will fail with an
-# error in the code block above.
-if ! mise exec ruby@"$required_ruby" -- gem list -i bundler -v "$required_bundler" >/dev/null; then
-  if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
-    if ! gem install bundler -v "$required_bundler"; then
-      echo "[rails/bootstrap] ERROR: Bundler installation failed, please review:"
-      fail '\n\tcd %s && gem install bundler -v %s' "$project_root" "$required_bundler"
+  if ! mise ls ruby | grep -q "^ruby\s*$required_ruby"; then
+    echo "[$me] Installing Ruby $required_ruby"
+
+    if ! mise install ruby "$required_ruby"; then
+      echo "[$me] ERROR: Ruby installation failed, please review:"
+      fail '\n\tcd %s && mise install ruby %s' "$project_root" "$required_ruby"
     fi
   fi
-fi
+}
 
-echo '[rails/bootstrap] Installing gems'
-if ! cd "$project_root" || ! bundle install --quiet || ! cd - >/dev/null; then
-  echo "[rails/bootstrap] ERROR: "bundle install" failed, please review:"
-  fail '\n\tcd %s && bundle install --quiet && cd - >/dev/null' "$project_root"
-fi
+install_bundler() {
+  local required_ruby required_bundler
+  required_ruby=$(grep -E '^ruby ' "$project_root/.tool-versions" | awk '{print $2}')
+  required_bundler=$(tail -1 "$project_root/Gemfile.lock" | sed -e 's/^[[:space:]]*//')
 
-echo '[rails/bootstrap] All done!'
+  # Note that `mise exec` will proceed installing a Ruby version it does not yet
+  # see installed. Not an issue in this case, since that path will fail with an
+  # error in install_ruby above.
+  if ! mise exec ruby@"$required_ruby" -- gem list -i bundler -v "$required_bundler" >/dev/null; then
+    if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
+      if ! gem install bundler -v "$required_bundler"; then
+        echo "[$me] ERROR: Bundler installation failed, please review:"
+        fail '\n\tcd %s && gem install bundler -v %s' "$project_root" "$required_bundler"
+      fi
+    fi
+  fi
+}
+
+install_gems() {
+  echo "[$me] Installing gems"
+  if ! cd "$project_root" || ! bundle install --quiet || ! cd - >/dev/null; then
+    echo "[$me] ERROR: bundle install failed, please review:"
+    fail '\n\tcd %s && bundle install --quiet && cd - >/dev/null' "$project_root"
+  fi
+}
+
+###############################################################################
+# Main
+###############################################################################
+
+main() {
+  project_root="$1"
+
+  [[ -z "$project_root" ]] && fail "[$me] ERROR: No target directory given."
+  [[ ! -d "$project_root" ]] && fail "[$me] ERROR: Directory $project_root is missing."
+  [[ ! -f "$project_root/config.ru" ]] && fail "[$me] ERROR: You can only run this from a folder containing a Rails project."
+
+  check_dependencies
+  copy_dist_configs
+  fetch_ssh_credentials
+  fetch_credential_keys
+  fetch_ruby_version
+  setup_mysql_env
+  install_ruby
+  install_bundler
+  install_gems
+
+  echo "[$me] All done!"
+}
+
+main "$@"
