@@ -1,0 +1,12 @@
+# Completion for: u mysql analyze-tables <database>
+# COMP_WORDS: [0]=u, [1]=mysql, [2]=analyze-tables, [3]=database
+
+local cur="${COMP_WORDS[COMP_CWORD]}"
+
+# Third argument: MySQL database names
+if [[ $COMP_CWORD -eq 3 ]]; then
+  local databases
+  databases=$(mysql -N -B -e "SHOW DATABASES" 2>/dev/null | grep -v -E '^(information_schema|performance_schema|mysql|sys)$')
+  mapfile -t COMPREPLY < <(compgen -W "$databases" -- "$cur")
+  return 0
+fi
