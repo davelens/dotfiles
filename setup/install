@@ -17,23 +17,8 @@ git -C "$dotbot_path" submodule update --init --recursive
 # Activate dotbot with the install configuration
 "$dotbot_path/bin/dotbot" -d "$DOTFILES_REPO_HOME" -c "$DOTFILES_REPO_HOME/setup/install.conf.yaml" "$@"
 
-# TODO: I'll be phasing out the env wizard. I've learned a lot, but I'm not
-# going to be using it.
 if [ ! -f "$DOTFILES_CONFIG_HOME/env" ]; then
-  # "$DOTFILES_REPO_HOME/setup/env_wizard" || touch "$DOTFILES_CONFIG_HOME/env"
   touch "$DOTFILES_CONFIG_HOME/env"
-fi
-
-# Create an executable that allows us to update our dotfiles, among other
-# things.
-dots_path="$XDG_BIN_HOME/dots"
-
-if [ ! -f "$dots_path" ]; then
-  ln -s "$DOTFILES_REPO_HOME/setup/dots" "$dots_path"
-  chmod +x "$dots_path"
-  $dots_path
-  echo
-  green "==> \`dots\` command installed!"
 fi
 
 echo
