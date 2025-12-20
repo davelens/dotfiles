@@ -42,7 +42,7 @@ validate_path() {
     else
       if [ -n "$(ls -A "$path")" ]; then
         if [ -f "$path/.git/config" ]; then
-          repo="$(git -C "$path" repo)"
+          repo="$(git -C "$path" origin)"
 
           if [ "$repo" == "$REPO_URI" ]; then
             echo -e "✓ $(fgreen "That folder already contains my dotfiles, so I'll update them instead.")\n"
