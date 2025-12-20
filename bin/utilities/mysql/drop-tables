@@ -11,4 +11,4 @@ fi
 user="$1"
 database="$2"
 
-mysqldump -u $user -p $database --add-drop-table --no-data | grep ^DROP | mysql -u $user -p $database
+mysqldump -u "$user" -p "$database" --add-drop-table --no-data | grep ^DROP | mysql -u "$user" -p "$database"
