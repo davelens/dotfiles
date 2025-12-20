@@ -1,4 +1,4 @@
-setup/brew/init --skip-bundles >/dev/null
+setup/brew/init.sh --skip-bundles >/dev/null
 
 if macos_needs_newer_bash; then
   brew install bash

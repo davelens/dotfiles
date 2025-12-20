@@ -3,4 +3,4 @@ set -e
 
 # The installer primarily uses this command to bootstrap Homebrew, but I
 # decided I wanted to "alias" it here in case I want to re-run bundles.
-setup/brew/init "$@"
+setup/brew/init.sh "$@"
