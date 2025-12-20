@@ -1,0 +1,18 @@
+# Completion for: u docker mysql <database>
+# COMP_WORDS: [0]=u, [1]=docker, [2]=mysql, [3]=database
+
+local cur="${COMP_WORDS[COMP_CWORD]}"
+
+# Third argument: MySQL database names from Docker container
+if [[ $COMP_CWORD -eq 3 ]]; then
+  # Only attempt completion if Docker is running
+  docker info &>/dev/null || return 0
+
+  local databases
+  databases=$(mysql -h localhost -P 3306 --protocol=tcp -N -B -e "SHOW DATABASES" 2>/dev/null | grep -v -E '^(information_schema|performance_schema|mysql|sys)$')
+  mapfile -t COMPREPLY < <(compgen -W "$databases" -- "$cur")
+  return 0
+fi
+
+# Fall back to file completion for additional arguments (e.g., after redirection)
+compopt -o default
