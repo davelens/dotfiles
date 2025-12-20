@@ -1,0 +1,69 @@
+# Completion for: u rails db-import [options]
+# COMP_WORDS: [0]=u, [1]=rails, [2]=db-import, [3...]=options
+
+local cur="${COMP_WORDS[COMP_CWORD]}"
+local prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+# Find --app value if provided, otherwise use current directory
+_get_app_path() {
+  local i path
+  for ((i=3; i<${#COMP_WORDS[@]}; i++)); do
+    if [[ "${COMP_WORDS[i]}" == "--app" && -n "${COMP_WORDS[i+1]}" ]]; then
+      path="${COMP_WORDS[i+1]}"
+      # Expand ~ to home directory
+      echo "${path/#\~/$HOME}"
+      return
+    fi
+  done
+  echo "."
+}
+
+case "$prev" in
+  -l | --local-database)
+    local databases
+    databases=$(mysql -N -B -e "SHOW DATABASES" 2>/dev/null | grep -v -E '^(information_schema|performance_schema|mysql|sys)$')
+    mapfile -t COMPREPLY < <(compgen -W "$databases" -- "$cur")
+    return 0
+    ;;
+  -r | --remote-database)
+    local app_path databases
+    app_path="$(_get_app_path)"
+
+    # Check if we're in a Rails project
+    [[ ! -f "$app_path/config/deploy.rb" ]] && return 0
+
+    # Get SSH credentials
+    local ssh_creds user server
+    ssh_creds=$("$DOTFILES_REPO_HOME/bin/utilities/rails/ssh-credentials" --app "$app_path" 2>/dev/null) || return 0
+    eval "declare -A creds=$ssh_creds"
+    user="${creds[user]}"
+    server="${creds[server]}"
+
+    [[ -z "$user" || -z "$server" ]] && return 0
+
+    # Query remote databases via SSH
+    databases=$(ssh -o ConnectTimeout=2 -o BatchMode=yes "$user@$server" \
+      "mysql -N -B -e 'SHOW DATABASES'" 2>/dev/null | grep -v -E '^(information_schema|performance_schema|mysql|sys)$')
+    mapfile -t COMPREPLY < <(compgen -W "$databases" -- "$cur")
+    return 0
+    ;;
+  --app)
+    compopt -o nospace
+    mapfile -t COMPREPLY < <(compgen -d -- "$cur")
+    if [[ ${#COMPREPLY[@]} -eq 1 ]]; then
+      COMPREPLY[0]="${COMPREPLY[0]}/"
+    fi
+    return 0
+    ;;
+  -i | --ignore-data)
+    # No completion for ignore-data, user must type table names
+    return 0
+    ;;
+esac
+
+# Complete --option names
+if [[ "$cur" == --* ]]; then
+  local options="--app --local-database --remote-database --ignore-data --docker --test --staging --production"
+  mapfile -t COMPREPLY < <(compgen -W "$options" -- "$cur")
+  return 0
+fi

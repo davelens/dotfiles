@@ -1,32 +1,125 @@
 #!/usr/bin/env bash
 set -e
 
-me=rails/$(basename "$0")
+# Rails database import script - imports a remote database to my local dev db.
+# Note that this is considered customized for where I work, and probably does
+# not reflect your own situation.
+#
+# This script is otherwise self-contained and has no external dependencies
+# beyond standard Unix tools (bash 4+, ssh, scp, mysql, mysqldump, ruby, tar,
+# sed, grep).
+#
+# Usage:
+#   db-import [options]
+#
+# Options:
+#   --app <path>              Path to Rails app (default: current directory)
+#   -l, --local-database      Local database name (default: from database.yml)
+#   -r, --remote-database     Remote database name (default: from database.yml)
+#   -i, --ignore-data <list>  Comma-separated tables to skip data (schema only)
+#   -t, --test                Use test environment
+#   -s, --staging             Use staging environment
+#   -p, --production          Use production environment (default)
+#   --docker                  Run mysql commands through docker-compose
+#
+# Requirements:
+#   - Rails project with config/deploy.rb (Capistrano) for SSH credentials
+#   - config/database.yml with environment configurations
+#   - SSH access to the remote server
+#   - MySQL client installed locally
+
+me=$(basename "$0")
 app="$(realpath ".")"
 env=production
 ignore_tables=
 docker_prefix=
-mysql='mysql' # TODO: fix a .my.cnf for Docker
+mysql='mysql'
 mysqldump='mysqldump'
 
-spinner() {
+###############################################################################
+# Helpers
+###############################################################################
+
+fail() {
+  printf "%s\n" "$1" >&2
+  exit "${2-1}"
+}
+
+log() {
   echo "[$me] $1"
 }
 
-for i in "$@"; do
-  case $i in
-  --app=*)
-    app="${i#*=}"
+# Extract SSH credentials from Capistrano config files.
+# Checks config/deploy.rb and config/deploy/production.rb for user/server.
+#
+# Usage: get_ssh_credentials <app_path>
+# Returns: Bash associative array syntax: (["user"]="..." ["server"]="...")
+get_ssh_credentials() {
+  local app_path="$1"
+  local ssh_user ssh_server file
+
+  # Try config/deploy.rb first
+  file="$app_path/config/deploy.rb"
+  if [[ -f "$file" ]]; then
+    ssh_user=$(grep -Eo "set :user, ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/set :user, ['\"]([^'\"]+)['\"]/\1/") || true
+    ssh_server=$(grep -Eo "set :server, ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/set :server, ['\"]([^'\"]+)['\"]/\1/") || true
+  fi
+
+  # Fall back to config/deploy/production.rb
+  if [[ -z "$ssh_user" || -z "$ssh_server" ]]; then
+    file="$app_path/config/deploy/production.rb"
+    if [[ -f "$file" ]]; then
+      ssh_user=$(grep -Eo "user:? ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/user:? ['\"]([^'\"]+)['\"]/\1/") || true
+      ssh_server=$(grep -Eo "server:? ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/server:? ['\"]([^'\"]+)['\"]/\1/") || true
+    fi
+  fi
+
+  [[ -z "$ssh_user" || -z "$ssh_server" ]] && fail "[$me] ERROR: No SSH user/server found in Capistrano config."
+
+  printf '(["user"]="%s" ["server"]="%s")\n' "$ssh_user" "$ssh_server"
+}
+
+# Extract database credentials from Rails database.yml.
+# Parses ERB and YAML using Ruby.
+#
+# Usage: get_db_credential <app_path> <environment> <key>
+# Example: get_db_credential /path/to/app development database
+get_db_credential() {
+  local app_path="$1"
+  local env="$2"
+  local key="$3"
+  local file="$app_path/config/database.yml"
+
+  [[ ! -f "$file" ]] && return 1
+
+  ruby -r yaml -r erb -e "
+    config = YAML.load(ERB.new(File.read('$file')).result, aliases: true)
+    value = config.dig('$env', '$key')
+    puts value if value
+  " 2>/dev/null
+}
+
+###############################################################################
+# Argument parsing
+###############################################################################
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+  --app)
+    shift
+    app="$1"
     ;;
-  -i=* | --ignore-data=*)
-    ignore_tables="${i#*=}"
+  -i | --ignore-data)
+    shift
+    ignore_tables="$1"
     ;;
   --docker)
     docker_prefix="docker-compose run --rm rails"
     mysqldump="mysqldump -h db"
     ;;
-  -l | --local-database=*)
-    local_db="${i#*=}"
+  -l | --local-database)
+    shift
+    local_db="$1"
     ;;
   -t | --test)
     env="test"
@@ -37,85 +130,109 @@ for i in "$@"; do
   -p | --production)
     env="production"
     ;;
-  -r=* | --remote-database=*)
-    remote_db="${i#*=}"
+  -r | --remote-database)
+    shift
+    remote_db="$1"
     ;;
   *)
-    # unknown options
-    echo "[$me] ERROR: Unknown option '$i'"
-    echo "Usage: db-import [-sptrli] [--test] [--staging] [--production] [--docker]"
-    printf "\t[--app=path]\n"
-    printf "\t[-l=name] [--local-database=name]\n"
-    printf "\t[-r=name] [--remote-database=name]\n"
-    printf "\t[-i=tables] [--ignore-data=tables]\n"
-    exit
+    echo "[$me] ERROR: Unknown option '$1'"
+    echo "Usage: $me [-sptrli] [--test] [--staging] [--production] [--docker]"
+    printf "\t[--app path]\n"
+    printf "\t[-l name] [--local-database name]\n"
+    printf "\t[-r name] [--remote-database name]\n"
+    printf "\t[-i tables] [--ignore-data tables]\n"
+    exit 1
     ;;
   esac
+  shift
 done
 
-[[ ! -f $app/config.ru ]] && fail "[$me] ERROR: You can only run this from a folder containing a Rails project."
-[[ ! -f $app/config/database.yml ]] && utility rails bootstrap "$app"
+###############################################################################
+# Validation
+###############################################################################
 
-[[ ! -d $app/db/dump ]] && mkdir -p "$app/db/dump"
+app="$(realpath "$app")"
 
-[[ -z "$remote_db" ]] && remote_db=$(utility rails db-credentials -p --key=database --app="$app")
-[[ -z "$local_db" ]] && local_db=$(utility rails db-credentials --key=database --app="$app")
-[[ -z "$local_db" ]] && fail "[$me] ERROR: No local configuration found in $app/config/database.yml. Aborting."
+[[ ! -f "$app/config.ru" ]] && fail "[$me] ERROR: Not a Rails project (no config.ru found in $app)."
+[[ ! -f "$app/config/database.yml" ]] && fail "[$me] ERROR: No config/database.yml found. Create one first."
+[[ ! -f "$app/config/deploy.rb" ]] && fail "[$me] ERROR: No config/deploy.rb found. Capistrano config required for SSH credentials."
+
+###############################################################################
+# Configuration
+###############################################################################
+
+[[ ! -d "$app/db/dump" ]] && mkdir -p "$app/db/dump"
+
+# Get database names from database.yml if not provided
+[[ -z "$remote_db" ]] && remote_db=$(get_db_credential "$app" "production" "database")
+[[ -z "$local_db" ]] && local_db=$(get_db_credential "$app" "development" "database")
+test_database=$(get_db_credential "$app" "test" "database")
+
+[[ -z "$local_db" ]] && fail "[$me] ERROR: No local database found in config/database.yml."
 
 if [[ -z "$remote_db" ]]; then
-  printf "[%s] WARNING: No configuration for %s found in config/database.yml!\n" "$me" "$env"
-  # TODO: Make the default smarter (first 8 chars of project name + "_prod"?).
-  read -r -p "[$me] Please enter the name of the remote database: (default: website_prod) " remote_db
+  printf "[%s] WARNING: No production database found in config/database.yml.\n" "$me"
+  read -r -p "[$me] Enter remote database name (default: website_prod): " remote_db
   [[ -z "$remote_db" ]] && remote_db="website_prod"
 fi
 
-readarray -d , -t ignore_tables <<<"$ignore_tables" # Bash 4.x+
-
+# Build ignore tables string for mysqldump
+readarray -d , -t ignore_tables <<<"$ignore_tables"
 ignored_tables_string=""
 for table in "${ignore_tables[@]}"; do
-  :
-  ignored_tables_string+=" --ignore-table=$remote_db.$table"
+  table="${table%$'\n'}" # Remove trailing newline
+  [[ -n "$table" ]] && ignored_tables_string+=" --ignore-table=$remote_db.$table"
 done
 
-declare -A ssh_credentials=$(utility rails ssh-credentials "$app/config/deploy.rb")
-user=${ssh_credentials[user]}
-server=${ssh_credentials[server]}
+# Get SSH credentials
+declare -A ssh_credentials
+eval "ssh_credentials=$(get_ssh_credentials "$app")"
+user="${ssh_credentials[user]}"
+server="${ssh_credentials[server]}"
 
-spinner "[$user@$server] Dumping $remote_db ..."
-(
-  ssh "$user@$server" \
-    "mysqldump $remote_db --no-tablespaces --single-transaction --no-data --routines > dump.sql && \
-   mysqldump $remote_db --no-tablespaces --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']/} >> dump.sql && tar -cvzf dump.sql.tar dump.sql"
-) >/dev/null
+###############################################################################
+# Import process
+###############################################################################
 
-spinner "[$user@$server] Downloading dump.sql.tar"
+log "[$user@$server] Dumping $remote_db ..."
+# shellcheck disable=SC2029
+ssh "$user@$server" \
+  "mysqldump $remote_db --no-tablespaces --single-transaction --no-data --routines > dump.sql && \
+   mysqldump $remote_db --no-tablespaces --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']/} >> dump.sql && \
+   tar -czf dump.sql.tar dump.sql" >/dev/null
+
+log "[$user@$server] Downloading dump.sql.tar"
 scp "$user@$server:dump.sql.tar" "$app/db/dump/"
 
-spinner "Unpacking dump.sql.tar"
-tar -C "$app/db/dump/" -xvf "$app/db/dump/dump.sql.tar" >/dev/null 2>&1
+log "Unpacking dump.sql.tar"
+tar -C "$app/db/dump/" -xzf "$app/db/dump/dump.sql.tar" >/dev/null 2>&1
 
-test_database=$(utility rails db-credentials -t --key=database --app="$app")
+log "Recreating local databases"
+$docker_prefix $mysql -e "DROP DATABASE IF EXISTS $local_db"
+$docker_prefix $mysql -e "CREATE DATABASE $local_db"
+if [[ -n "$test_database" ]]; then
+  $docker_prefix $mysql -e "DROP DATABASE IF EXISTS $test_database"
+  $docker_prefix $mysql -e "CREATE DATABASE $test_database"
+fi
 
-$docker_prefix $mysql -e "drop database if exists $local_db"
-$docker_prefix $mysql -e "drop database if exists $test_database"
-$docker_prefix $mysql -e "create database $local_db"
-$docker_prefix $mysql -e "create database $test_database"
-
+# Fix MySQL 8 integer display width deprecation
 sed -E 's/ (tiny|small|medium|big)?int\([0-9]+\)/ \1int/g' "$app/db/dump/dump.sql" >"$app/db/dump/dump.clean.sql"
 
-spinner "Importing dump.sql into $local_db"
+log "Importing dump.sql into $local_db"
 $docker_prefix $mysql "$local_db" -e "source $app/db/dump/dump.clean.sql"
 
-spinner "Importing dump.test.sql into $test_database"
-# "db" here will dynamically fill in the service worker's IP address.
-# It resolves to something like 172.18.0.2
-$docker_prefix $mysqldump --no-data $local_db >$app/db/dump/dump.test.sql
-$docker_prefix $mysqldump $local_db schema_migrations >$app/db/dump/migrations.test.sql
-$docker_prefix $mysql $test_database -e "source $app/db/dump/dump.test.sql"
-$docker_prefix $mysql $test_database -e "source $app/db/dump/migrations.test.sql"
+if [[ -n "$test_database" ]]; then
+  log "Importing schema into $test_database"
+  $docker_prefix "$mysqldump" --no-data "$local_db" >"$app/db/dump/dump.test.sql"
+  $docker_prefix "$mysqldump" "$local_db" schema_migrations >"$app/db/dump/migrations.test.sql"
+  $docker_prefix $mysql "$test_database" -e "source $app/db/dump/dump.test.sql"
+  $docker_prefix $mysql "$test_database" -e "source $app/db/dump/migrations.test.sql"
+fi
 
-spinner "[$user@$server] Cleaning up"
-ssh $user@$server 'rm -f dump.sql dump.clean.sql dump.sql.tar'
+log "[$user@$server] Cleaning up"
+ssh "$user@$server" 'rm -f dump.sql dump.clean.sql dump.sql.tar'
 
-spinner "Cleaning up"
-rm -f $app/db/dump/*
+log "Cleaning up"
+rm -f "$app"/db/dump/*
+
+log "Done!"

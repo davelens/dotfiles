@@ -27,7 +27,7 @@ echo
 
 for table in $tables; do
   echo -n "  $table... "
-  mysql -e "ANALYZE TABLE \`$database\`.\`$table\`;" > /dev/null 2>&1
+  mysql -e "ANALYZE TABLE \`$database\`.\`$table\`;" >/dev/null 2>&1
   echo "done"
 done
 
