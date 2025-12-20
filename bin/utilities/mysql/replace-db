@@ -8,9 +8,9 @@ database="$1"
 sql_file="$2"
 
 echo "Dropping and re-creating database '$database'"
-mysql $database -e "drop database $database; create database $database;"
+mysql "$database" -e "drop database $database; create database $database;"
 
 echo "Importing $sql_file ..."
-mysql $database < $sql_file
+mysql "$database" <"$sql_file"
 
 echo "Done."
