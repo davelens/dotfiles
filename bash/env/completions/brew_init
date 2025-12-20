@@ -1,0 +1,10 @@
+# Completion for: u brew init [options]
+# COMP_WORDS: [0]=u, [1]=brew, [2]=init, [3]=option
+
+local cur="${COMP_WORDS[COMP_CWORD]}"
+local options="-h --help --skip-bundles"
+
+if [[ $COMP_CWORD -eq 3 ]]; then
+  mapfile -t COMPREPLY < <(compgen -W "$options" -- "$cur")
+  return 0
+fi
