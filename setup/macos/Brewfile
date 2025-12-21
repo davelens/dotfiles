@@ -2,11 +2,11 @@ tap "felixkratz/formulae"             # borders
 tap "nikitabobko/tap"                 # Aerospace
 
 brew "cliclick"                       # Mouse/keyboard emulation for macos
+brew "felixkratz/formulae/borders"    # Customizable window borders for macos
+brew "felixkratz/formulae/sketchybar" # Customizable menu bar for macos
 brew "pinentry-mac"                   # Alternative pinentry that works on mac
 brew "reattach-to-user-namespace"     # Pasteboard fix for tmux in macos
 brew "trash", link: true              # Recoverable `rm` for macos
-brew "felixkratz/formulae/borders"    # Customizable window borders for macos
-brew "felixkratz/formulae/sketchybar" # Customizable menu bar for macos
 
 cask "aerospace"                      # i3-like tiling window manager for macos
 cask "alfred"                         # App launcher for macos
@@ -21,6 +21,7 @@ cask "libreoffice"                    # Office suite for poor people
 cask "little-snitch"                  # Proprietary network monitor
 cask "ngrok"                          # Runs local ports to public URLs
 cask "private-internet-access"        # VPN
+cask "qutebrowser"                    # Keyboard-driven web browser
 cask "rar"                            # RAR unpacker
 cask "rectangle"                      # Spare window manager, more basic
 cask "skim"                           # PDF reader for macos
@@ -28,7 +29,7 @@ cask "spotify"                        # Music streaming service
 cask "steam"                          # Gaming platform service
 cask "tailscale-app"                  # Free VPN service for my home server
 cask "thunderbird"                    # Mozilla's e-mail client
+cask "tonisives/tap/ovim"             # System-wide vim mode for any input
 cask "vlc"                            # The MVP open source media player
 cask "wezterm"                        # Terminal emulator and multiplexer
 cask "whatsapp"                       # Because my family keeps using it
-cask "qutebrowser"                    # Keyboard-driven web browser
