@@ -34,7 +34,6 @@ brew "dialog"                         # Swiss army knife of CLI dialog boxes
 brew "dos2unix"                       # DOS to Unix and back file format converter
 brew "duf"                            # Like df, but humanized
 brew "dust"                           # Like du, but humanized
-brew "elixir-ls"                      # Language server for Elixir
 brew "entr"                           # File change listener
 brew "fastfetch"                      # System information tool
 brew "fd"                             # File search
