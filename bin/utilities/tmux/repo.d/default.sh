@@ -17,7 +17,7 @@ db_adapter() {
   echo ""
 }
 
-db_creds_command() {
+db_connection_url() {
   echo ""
 }
 

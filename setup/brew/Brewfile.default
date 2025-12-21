@@ -67,6 +67,7 @@ brew "inetutils"                      # GNU network utilities
 brew "jq"                             # JSON processor
 brew "jqp"                            # Interactive jq playground
 brew "kanata"                         # Cross-platform keyboard remapper
+brew "lazysql"                        # TUI database client
 brew "less"                           # Like `more`, but with more features
 brew "libass"                         # dep for ffmpeg
 brew "libavif"                        # dep for chafa

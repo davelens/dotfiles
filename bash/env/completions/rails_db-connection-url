@@ -1,0 +1,23 @@
+# Completion for: u rails db-connection-url [options]
+# COMP_WORDS: [0]=u, [1]=rails, [2]=db-connection-url, [3...]=options
+
+local cur="${COMP_WORDS[COMP_CWORD]}"
+local prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+case "$prev" in
+  --app)
+    compopt -o nospace
+    mapfile -t COMPREPLY < <(compgen -d -- "$cur")
+    if [[ ${#COMPREPLY[@]} -eq 1 ]]; then
+      COMPREPLY[0]="${COMPREPLY[0]}/"
+    fi
+    return 0
+    ;;
+esac
+
+# Complete --option names
+if [[ "$cur" == -* ]]; then
+  local options="--app -t --test -s --staging -p --production -h --help"
+  mapfile -t COMPREPLY < <(compgen -W "$options" -- "$cur")
+  return 0
+fi

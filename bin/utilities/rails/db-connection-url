@@ -1,0 +1,116 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Generate a database connection URL for use with lazysql.
+#
+# Usage:
+#   utility rails db-connection-url                  # URL for development
+#   utility rails db-connection-url -p               # URL for production
+#   utility rails db-connection-url --app=/path/to/app
+#
+# Output format:
+#   mysql://user:pass@host:port/database
+#   postgresql://user:pass@host:port/database
+
+require 'yaml'
+require 'erb'
+require 'optparse'
+
+ME = "rails/#{File.basename(__FILE__)}"
+
+options = {
+  env: 'development',
+  app: '.'
+}
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: utility rails #{File.basename(__FILE__)} [options]"
+
+  opts.on('--app=PATH', 'Path to Rails application (default: current directory)') do |v|
+    options[:app] = v
+  end
+
+  opts.on('-t', '--test', 'Use test environment') do
+    options[:env] = 'test'
+  end
+
+  opts.on('-s', '--staging', 'Use staging environment') do
+    options[:env] = 'staging'
+  end
+
+  opts.on('-p', '--production', 'Use production environment') do
+    options[:env] = 'production'
+  end
+
+  opts.on('-h', '--help', 'Show this help message') do
+    puts opts
+    exit
+  end
+end
+
+begin
+  parser.parse!
+rescue OptionParser::InvalidOption => e
+  warn "[#{ME}] ERROR: #{e.message}"
+  warn parser.banner
+  exit 1
+end
+
+app_path = File.expand_path(options[:app])
+
+unless File.exist?(File.join(app_path, 'config.ru'))
+  warn "[#{ME}] ERROR: You can only run this from a folder containing a Rails project."
+  exit 1
+end
+
+file_path = File.join(app_path, 'config/database.yml')
+
+unless File.exist?(file_path)
+  warn "[#{ME}] ERROR: No #{file_path.sub(Dir.home, '~')} file found."
+  exit 1
+end
+
+begin
+  config = YAML.load(ERB.new(File.read(file_path)).result, aliases: true)
+rescue StandardError => e
+  warn "[#{ME}] ERROR: Failed to parse database.yml: #{e.message}"
+  exit 1
+end
+
+env_config = config[options[:env]]
+
+if env_config.nil?
+  warn "[#{ME}] ERROR: No config values for environment '#{options[:env]}' found."
+  exit 1
+end
+
+adapter = env_config['adapter']
+username = env_config['username'] || 'root'
+password = env_config['password'] || ''
+host = env_config['host'] || 'localhost'
+port = env_config['port']
+database = env_config['database']
+
+if database.nil?
+  warn "[#{ME}] ERROR: No database name found in #{options[:env]} configuration."
+  exit 1
+end
+
+# Map Rails adapter names to URL schemes (lib/pq expects "postgres://" not "postgresql://")
+scheme = case adapter
+         when 'mysql2', 'mysql' then 'mysql'
+         when 'postgresql', 'postgres' then 'postgres'
+         else adapter
+         end
+
+# Build connection URL
+url = "#{scheme}://#{username}"
+url += ":#{password}" unless password.empty?
+url += "@#{host}"
+url += ":#{port}" if port
+url += "/#{database}"
+
+# Disable SSL for local development (postgres only)
+url += '?sslmode=disable' if scheme == 'postgres'
+
+puts url

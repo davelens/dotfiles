@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+
+# Generate a database connection URL for use with lazysql.
+#
+# Usage:
+#   utility phoenix db-connection-url                  # URL for dev
+#   utility phoenix db-connection-url -p               # URL for prod
+#   utility phoenix db-connection-url --app=/path/to/app
+#
+# Output format:
+#   mysql://user:pass@host:port/database
+#   postgresql://user:pass@host:port/database
+
+set -euo pipefail
+
+ME="phoenix/$(basename "$0")"
+APP_PATH="."
+PHOENIX_ENV="dev"
+
+usage() {
+  cat <<EOF
+Usage: utility phoenix $(basename "$0") [options]
+
+Options:
+  --app=PATH    Path to Phoenix application (default: current directory)
+  -t, --test    Use test environment
+  -s, --staging Use staging environment
+  -p, --prod    Use prod environment
+  -h, --help    Show this help message
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  --app=*)
+    APP_PATH="${1#*=}"
+    shift
+    ;;
+  -t | --test)
+    PHOENIX_ENV="test"
+    shift
+    ;;
+  -s | --staging)
+    PHOENIX_ENV="staging"
+    shift
+    ;;
+  -p | --prod)
+    PHOENIX_ENV="prod"
+    shift
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  *)
+    echo "[$ME] ERROR: Unknown option '$1'" >&2
+    usage
+    exit 1
+    ;;
+  esac
+done
+
+APP_PATH=$(cd "$APP_PATH" && pwd)
+
+[[ -f "$APP_PATH/mix.exs" ]] || {
+  echo "[$ME] ERROR: No mix.exs found. Run from a Phoenix project." >&2
+  exit 1
+}
+
+# Detect database adapter from mix.exs
+detect_adapter() {
+  if grep -q "postgrex" "$APP_PATH/mix.exs" 2>/dev/null; then
+    echo "postgresql"
+  elif grep -q "myxql\|mariaex" "$APP_PATH/mix.exs" 2>/dev/null; then
+    echo "mysql"
+  else
+    echo ""
+  fi
+}
+
+# Get credential value using db-credentials utility
+get_cred() {
+  utility phoenix db-credentials --app="$APP_PATH" --key="$1" 2>/dev/null || echo ""
+}
+
+adapter=$(detect_adapter)
+if [[ -z "$adapter" ]]; then
+  echo "[$ME] ERROR: Could not detect database adapter." >&2
+  exit 1
+fi
+
+username=$(get_cred username)
+password=$(get_cred password)
+hostname=$(get_cred hostname)
+port=$(get_cred port)
+database=$(get_cred database)
+
+# Defaults
+username="${username:-postgres}"
+hostname="${hostname:-localhost}"
+if [[ -z "$port" ]]; then
+  case "$adapter" in
+    postgresql) port="5432" ;;
+    mysql) port="3306" ;;
+  esac
+fi
+
+if [[ -z "$database" ]]; then
+  echo "[$ME] ERROR: No database name found in $PHOENIX_ENV configuration." >&2
+  exit 1
+fi
+
+# Map adapter to URL scheme (lib/pq expects "postgres://" not "postgresql://")
+scheme="$adapter"
+[[ "$adapter" == "postgresql" ]] && scheme="postgres"
+
+# Build connection URL
+url="$scheme://$username"
+[[ -n "$password" ]] && url+=":$password"
+url+="@$hostname"
+[[ -n "$port" ]] && url+=":$port"
+url+="/$database"
+
+# Disable SSL for local development (postgres only)
+[[ "$adapter" == "postgresql" ]] && url+="?sslmode=disable"
+
+echo "$url"

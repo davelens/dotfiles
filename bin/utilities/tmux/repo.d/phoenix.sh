@@ -26,8 +26,8 @@ db_adapter() {
   fi
 }
 
-db_creds_command() {
-  echo "utility phoenix db-credentials --key=database"
+db_connection_url() {
+  echo "utility phoenix db-connection-url"
 }
 
 repl_command() {

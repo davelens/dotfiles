@@ -4,13 +4,13 @@
 # Base interface for framework-specific tmux session setup.
 #
 # Each framework module must implement:
-#   FRAMEWORK_PRIORITY  - Integer for detection order (lower = higher priority)
-#   detect()            - Returns 0 if project matches this framework
-#   db_adapter()        - Returns the database adapter name (or empty)
-#   bootstrap()         - Sets up a freshly cloned project
-#   repl_command()      - Command to start the REPL (or empty)
-#   server_command()    - Command to start the server (or empty)
-#   db_creds_command()  - Command to get database name (or empty)
+#   FRAMEWORK_PRIORITY   - Integer for detection order (lower = higher priority)
+#   detect()             - Returns 0 if project matches this framework
+#   db_adapter()         - Returns the database adapter name (or empty)
+#   db_connection_url()  - Command to get database connection URL for lazysql (or empty)
+#   bootstrap()          - Sets up a freshly cloned project
+#   repl_command()       - Command to start the REPL (or empty)
+#   server_command()     - Command to start the server (or empty)
 
 ###############################################################################
 # Shared window setup
@@ -34,30 +34,23 @@ setup_cli_window() {
   tmux send-keys -t "$session:cli" "clear" C-m
 }
 
-# Creates database client window based on adapter
+# Creates database client window using lazysql
 setup_db_window() {
   local session="$1"
   local path="$2"
-  local adapter="$3"
-  local db_creds_cmd="$4"
+  local db_url_cmd="$3"
 
   tmux new-window -n db -c "$path" -t "$session"
 
   # Give window time to initialize
   sleep 0.3
 
-  local database="\$($db_creds_cmd)"
-  case "$adapter" in
-  mysql | mysql2)
-    tmux send-keys -t "$session:db" "clear && mycli $database -h localhost" C-m
-    ;;
-  postgresql | postgres)
-    tmux send-keys -t "$session:db" "clear && pgcli $database" C-m
-    ;;
-  *)
+  if [[ -n "$db_url_cmd" ]]; then
+    # Unset PGSERVICEFILE as lib/pq (used by lazysql) doesn't support it
+    tmux send-keys -t "$session:db" "clear && unset PGSERVICEFILE && lazysql \$($db_url_cmd)" C-m
+  else
     tmux send-keys -t "$session:db" "clear" C-m
-    ;;
-  esac
+  fi
 }
 
 # Creates REPL window with provided command
@@ -104,15 +97,14 @@ setup_standard_windows() {
   local session="$1"
   local path="$2"
   local start_server="$3"
-  local adapter db_creds_cmd repl_cmd server_cmd
+  local db_url_cmd repl_cmd server_cmd
 
-  adapter=$(db_adapter "$path")
-  db_creds_cmd=$(db_creds_command)
+  db_url_cmd=$(db_connection_url)
   repl_cmd=$(repl_command)
   server_cmd=$(server_command)
 
   setup_editor_window "$session" "$path"
-  setup_db_window "$session" "$path" "$adapter" "$db_creds_cmd"
+  setup_db_window "$session" "$path" "$db_url_cmd"
   setup_repl_window "$session" "$path" "$repl_cmd"
   setup_server_window "$session" "$path" "$server_cmd" "$start_server"
 }

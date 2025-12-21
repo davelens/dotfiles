@@ -18,8 +18,8 @@ db_adapter() {
   utility rails db-credentials --app="$path" --key=adapter 2>/dev/null || echo ""
 }
 
-db_creds_command() {
-  echo "utility rails db-credentials --key=database"
+db_connection_url() {
+  echo "utility rails db-connection-url"
 }
 
 repl_command() {
