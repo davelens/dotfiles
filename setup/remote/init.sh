@@ -170,6 +170,7 @@ main() {
   REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
   REMOTE_FILES+=("setup/remote/install_dotfiles.sh")
   REMOTE_FILES+=("setup/remote/configure_env.sh")
+  REMOTE_FILES+=("setup/remote/install_packages.sh")
 
   for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
 
