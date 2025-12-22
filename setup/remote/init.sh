@@ -11,18 +11,22 @@ fail() {
   exit "${2-1}"
 }
 
+arch() {
+  [ -f /etc/arch-release ]
+}
+
+debian() {
+  [ -f /etc/debian_version ]
+}
+
 macos() {
-  [ "$(uname)" == "Darwin" ] && return 0
-  return 1
+  [ "$(uname)" == "Darwin" ]
 }
 
 macos_needs_newer_bash() {
   macos &&
     [ -n "$BASH_VERSION" ] &&
-    [ "${BASH_VERSINFO[0]}" -lt 4 ] &&
-    return 0
-
-  return 1
+    [ "${BASH_VERSINFO[0]}" -lt 4 ]
 }
 
 get_cursor_pos() {
