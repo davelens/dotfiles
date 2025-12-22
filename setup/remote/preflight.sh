@@ -5,7 +5,7 @@ if macos; then
     brew install bash
   fi
 elif arch; then
-  sudo pacman -Syu --no-confirm
+  sudo pacman -Syu --noconfirm
 elif debian; then
   sudo apt-get update
 fi
