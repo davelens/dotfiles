@@ -27,7 +27,6 @@ source "$DOTFILES_REPO_HOME/bash/env/misc.sh"       # The kitchen sink
 ###############################################################################
 source "$DOTFILES_REPO_HOME/bash/colors.sh"
 source "$DOTFILES_REPO_HOME/bash/aliases.sh"
-source "$DOTFILES_REPO_HOME/bash/dots.sh"
 
 ###############################################################################
 # OS specific configuration and/or overrides.

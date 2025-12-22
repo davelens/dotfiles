@@ -29,11 +29,6 @@ MYTMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t "$DOTFILES_STATE_HOME/tmp/$name
 call_openssl() {
   local string="openssl aes-256-cbc -e -pbkdf2"
 
-  if [ -z "$passkey" ]; then
-    # TODO: Run command to generate and set the salt.
-    passkey="$DOTFILES_SALT"
-  fi
-
   [ -n "$passkey" ] && string+=" -k $passkey"
   string+=" -in $input"
 

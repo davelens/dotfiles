@@ -28,12 +28,6 @@ export DOTFILES_DATA_HOME="$XDG_DATA_HOME/$DOTFILES_FOLDER"
 [ ! -d "$DOTFILES_CACHE_HOME" ] && mkdir -p "$DOTFILES_CACHE_HOME"
 [ ! -d "$DOTFILES_DATA_HOME" ] && mkdir -p "$DOTFILES_DATA_HOME"
 
-# TODO: These should go elsewhere, I think.
-# TODO: Find out if this can be $DOTFILES_STATE_HOME/tmp/ssh-agent.socket
-# on macos. Then I can just make it the same between macos/WSL2.
-# export DOTFILES_SSH_AUTH_SOCK="$SSH_AUTH_SOCKET"
-export DOTFILES_SALT_PATH="$DOTFILES_CACHE_HOME/salt.enc"
-
 # Program-specific overrides to let them follow the XDG spec.
 # Some of these (HISTFILE, INPUTRC,...) could live in their respective
 # categorised files in ./bash/env, but since I've set them to adhere to XDG,
