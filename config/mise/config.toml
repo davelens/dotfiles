@@ -1,0 +1,11 @@
+[tools]
+lua = "5.1"
+lua-language-server = "3.15.0"
+neovim = "0.11.5"
+nodejs = "23.11.0"
+ruby = "3.4.6"
+rust = "1.89.0"
+shfmt = "3.12.0"
+stylua = "2.1.0"
+elixir = "1.18.2"
+erlang = "27.3.3"
