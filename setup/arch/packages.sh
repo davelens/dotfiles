@@ -55,6 +55,17 @@ install_aur_packages() {
   [[ ${#resolved[@]} -gt 0 ]] && paru -S --noconfirm --skipreview --needed --provides=no "${resolved[@]}"
 }
 
+configure_gnupg() {
+  gpg --list-keys >/dev/null 2>&1 # Creates the keyring on first run.
+  mkdir -p "$HOME/.local/share/gnupg"
+  chmod 700 "$HOME/.local/share/gnupg"
+}
+
+configure_packages() {
+  configure_gnupg
+}
+
 install_pacman_packages
 install_paru
 install_aur_packages
+configure_packages
