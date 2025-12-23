@@ -13,6 +13,7 @@ dunst                               # Notification daemon
 grub                                # Bootloader
 iwd                                 # iNet wireless daemon
 # libva-nvidia-driver                 # NVIDIA VA-API driver
+libyaml                             # Needed for psych -> compiling Ruby
 linux                               # Linux kernel
 linux-firmware                      # Firmware files for Linux
 linux-headers                       # Header files for Linux kernel
