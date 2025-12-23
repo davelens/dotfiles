@@ -92,6 +92,7 @@ main() {
 
   write_dots_env_file
   write_gitconfig_env_file
+  setup/mise/init.sh
 }
 
 echo
