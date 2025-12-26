@@ -41,7 +41,7 @@
   la = !git l --all
   loc = "!utility git loc"
 
-  # Extensive Merge script. 
+  # Extensive Merge script.
   # Checkout -> no fast-forward merge -> push -> remove local/remote branches.
   m = "!utility git merge-branch"
 
