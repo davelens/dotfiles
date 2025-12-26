@@ -8,8 +8,9 @@ INCLUDE_LINE="Include ${DOTFILES_REPO_HOME/$HOME/\~}/config/ssh/*"
 
 # Ensure ~/.ssh directory exists with proper permissions
 if [ ! -d "$HOME"/.ssh ]; then
-  mkdir -p "$HOME"/.ssh
+  mkdir -p "$HOME"/.ssh/sockets
   chmod 700 "$HOME"/.ssh
+  chmod 700 "$HOME"/.ssh/sockets
 fi
 
 if [ ! -f "$SSH_CONFIG" ]; then
