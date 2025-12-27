@@ -5,6 +5,8 @@
 # Variables FRAMEWORK_NAME and FRAMEWORK_PRIORITY are used by the parent script.
 # shellcheck disable=SC2034
 
+# TODO: Bootstrap database if it doesn't exist yet.
+
 FRAMEWORK_NAME="Rails"
 FRAMEWORK_PRIORITY=10
 
