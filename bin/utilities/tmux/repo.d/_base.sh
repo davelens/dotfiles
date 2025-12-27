@@ -128,11 +128,16 @@ ensure_db_running() {
 
   case "$adapter" in
   mysql | mysql2)
-    if [[ -z $(pgrep -x mysqld) ]]; then
+    if [[ -z $(pgrep -x mysqld) ]] && [[ -z $(pgrep -x mariadbd) ]]; then
       local answer
-      answer=$($prompt_user -yn "[$me] Start local MySQL server?")
+      answer=$($prompt_user -yn "[$me] Start local MySQL/MariaDB server?")
       echo
-      [[ "$answer" =~ [Yy] ]] && mysql.server start >/dev/null 2>&1
+      if [[ "$answer" =~ [Yy] ]]; then
+        case "$OSTYPE" in
+        darwin*) mysql.server start >/dev/null 2>&1 ;;
+        linux*) systemctl start mariadb >/dev/null 2>&1 ;;
+        esac
+      fi
     fi
     ;;
   postgresql | postgres)
