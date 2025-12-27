@@ -1,5 +1,6 @@
 [tools]
 elixir = "1.18.2"
+elixir-ls = "0.30.0"
 erlang = "27.3.3"
 lua = "5.1"
 lua-language-server = "3.15.0"
