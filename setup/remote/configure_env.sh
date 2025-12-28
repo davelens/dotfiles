@@ -92,7 +92,6 @@ main() {
 
   write_dots_env_file
   write_gitconfig_env_file
-  "$DOTFILES_REPO_HOME"/setup/mise/init.sh
 }
 
 echo
