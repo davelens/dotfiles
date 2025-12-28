@@ -116,16 +116,10 @@ if platforms.windows then
     'wsl.exe', '-d', 'Arch', '-u', 'davelens',
     '--', 'bash', '-c', 'cd ~ && exec bash',
   }
-
-  config.font = wezterm.font_with_fallback({
-    { family = 'NotoMono NF', weight = 'Regular' },
-    { family = 'Hack Nerd Font' },
-  })
 end
 
-if platforms.linux then
+if platforms.linux or platforms.windows then
   config.font = wezterm.font_with_fallback({
-    { family = 'NotoMono NF', weight = 'Regular' },
     { family = 'Hack Nerd Font' },
   })
 end
