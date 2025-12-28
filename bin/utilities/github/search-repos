@@ -1,31 +1,19 @@
 #!/usr/bin/env bash
 set -e
-eval "$(source_env)"
 
 # Gracefully handle Ctrl-C to get out of this thing.
-handle_interrupt() {
-  echo "Aborted."
-  exit 1
-}
-trap handle_interrupt SIGINT
+trap 'echo "Aborted."; exit 1' SIGINT
 
 # This command is used to provide suggestions among both my personal as well as
 # my work's public and private repositories.
 
-[[ ! $(command -v jq) ]] && brew install jq
+if ! command -v gh &>/dev/null; then
+  echo "Error: gh CLI is not installed."
+  exit 1
+fi
 
-# Access to private repositories will require a Github access token with the
-# "repo" scope.
-if [[ -z $GITHUB_PERSONAL_ACCESS_TOKEN ]]; then
-  echo "ERROR: No Github personal access token set."
-  echo
-  echo "  1. Create one here: https://github.com/settings/tokens"
-  echo ""
-  echo "  2. Make sure the token has access to the 'repo' scope."
-  echo "     (This means full read-only access to private repositories)"
-  echo
-  echo "  3. Store it in GITHUB_PERSONAL_ACCESS_TOKEN and make sure it's available."
-  echo
+if ! gh auth status &>/dev/null; then
+  echo "Error: gh CLI is not authenticated. Run 'gh auth login' first."
   exit 1
 fi
 
@@ -35,21 +23,20 @@ usage() {
   echo
   echo "Options:"
   echo "  -h|--help            Show this help message and exit."
-  echo "  -v|--verbose         Enable verbose output for curl calls."
+  echo "  -v|--verbose         Enable verbose output."
   echo "  <qualifier>          The Github-specific search qualifier to filter the results."
   echo "                       (e.g. 'Phoenix Framework', 'author:johndoe', 'user:johndoe+user:maryjane', ...)"
   echo
-  echo
   echo "You can read up on Github search qualifiers for repositories here:"
   echo
-  echo "  https://github.com/github/docs/blob/main/content/search-github/searching-on-github/searching-for-repositories.md"
+  echo "  https://docs.github.com/en/search-github/searching-on-github/searching-for-repositories"
   echo
 }
 
 # Fail early if no arguments are given.
 [[ $# -eq 0 ]] && usage && exit 1
 
-verbal=false
+verbose=false
 query=""
 page=1
 results=()
@@ -59,8 +46,8 @@ while [[ $# -gt 0 ]]; do
   -h | --help)
     usage && exit 0
     ;;
-  -v | --verbal)
-    verbal=true
+  -v | --verbose)
+    verbose=true
     shift
     ;;
   *)
@@ -71,31 +58,38 @@ while [[ $# -gt 0 ]]; do
 done
 
 # No query, no results.
-[ -z "$query" ] && usage && exit 1
+[[ -z "$query" ]] && usage && exit 1
 
 # Recursively search for repositories.
 search() {
-  local url="https://api.github.com/search/repositories?q=${query// /+}&per_page=100&page=$page"
+  local endpoint="search/repositories?q=${query// /+}&per_page=100&page=$page"
 
-  # Print out the requests if verbal mode is enabled.
-  $verbal && echo "GET $url"
+  $verbose && echo "GET $endpoint" >&2
 
-  local repositories=("$(curl -s --header "Authorization: token $GITHUB_PERSONAL_ACCESS_TOKEN" --url "$url" | jq -r 'try .items[] .full_name')")
+  local repositories
+  repositories=$(gh api "$endpoint" --jq '.items[].full_name' 2>/dev/null)
 
-  results=("${results[@]}" "${repositories[@]}")
+  if [[ -n "$repositories" ]]; then
+    results+=("$repositories")
 
-  if [[ ${#repositories[@]} -eq 100 ]]; then
-    ((page++))
-    search
+    # Check if we got a full page (might have more results).
+    local count
+    count=$(echo "$repositories" | wc -l)
+    if [[ $count -eq 100 ]]; then
+      ((page++))
+      search
+    fi
   fi
 }
 
-# Perform the initial search
-# Notify the user in verbose mode when we start polling Github.
-$verbal && echo "Collecting data from Github ... "
+echo "Loading repositories..." >&2
 search
+echo -ne "\033[1A\033[2K" >&2 # Clear the "Loading" line.
 
-# Output results to fzf for selection, and Bob's your uncle.
-for repo in "${results[@]}"; do
-  echo "$repo"
-done | fzf
+# Output results to fzf for selection.
+if [[ ${#results[@]} -eq 0 ]]; then
+  echo "No repositories found." >&2
+  exit 1
+fi
+
+printf "%s\n" "${results[@]}" | fzf
