@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+
+orphans=$(paru -Qdtq 2>/dev/null || true)
+
+if [[ -z "$orphans" ]]; then
+  echo "Nothing to prune."
+  exit 0
+fi
+
+paru -Rns $orphans
