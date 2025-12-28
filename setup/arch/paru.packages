@@ -1,17 +1,18 @@
 # AUR packages (installed via paru)
 
-ack                                 # Grep-like text finder
-browsh                              # TUI webpage browser
-clipboard                           # Clipboard manager
-elixir-ls                           # Language server for Elixir
-fswatch                             # Directory change listener
-jqp                                 # Interactive jq playground
+# ack                                 # Grep-like text finder
+albert-bin                          # Application launcher
+bitwarden-bin                       # Password manager (GUI)
+# browsh-bin                          # TUI webpage browser
+clipboard-bin                       # Clipboard manager
+firefox-bin                         # Web browser
+# fswatch                             # Directory change listener
+jqp-bin                             # Interactive jq playground
 kanata-bin                          # Cross-platform keyboard remapper
-#mise                                # Runtime version manager TODO: Verify!
-mycli                               # A better MySQL client
+lazysql-bin                         # TUI for SQL databases
+# mycli                               # A better MySQL client
 opencode-bin                        # TUI coding agent
 pipes.sh                            # Terminal screensaver, win95 style
-scc                                 # Counts lines of code; cloc alternative
+scc-bin                             # Counts lines of code; cloc alternative
 spicetify-cli                       # Provides theming for Spotify
-v8-r                                # Google's JS/wasm engine
 watson                              # Time registration

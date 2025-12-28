@@ -101,7 +101,7 @@ brew "pipes-sh"                       # Terminal screensaver, win95 style
 brew "pipx"                           # Package manager for python
 brew "pgcli"                          # A better PostgreSQL client
 brew "pkgconf"                        # Helps configure compiler/linker flags
-brew "postgresql@18"                  # Relational database
+# brew "postgresql@18"                  # Relational database
 brew "pv"                             # Progress bar for the terminal
 brew "redis"                          # In-memory key/value database
 brew "ripgrep"                        # Fuzzy search
@@ -110,7 +110,7 @@ brew "scc"                            # Counts lines of code; cloc alternative
 brew "sd"                             # Find/replace tool
 brew "sdl2"                           # dep for ffmpeg
 brew "shared-mime-info"               # dep for imagemagick
-brew "shellcheck"                     # Shell script analysis tool
+# brew "shellcheck"                     # Shell script analysis tool
 brew "spicetify-cli"                  # Provides theming for Spotify
 brew "srt"                            # dep for ffmpeg
 brew "starship"                       # Customizable shell prompt
@@ -127,7 +127,7 @@ brew "viu"                            # Image viewer
 brew "watson"                         # Time registration
 brew "wget"                           # Network downloader
 brew "x264"                           # dep for ffmpeg
-brew "yarn"                           # JavaScript package manager
+# brew "yarn"                           # JavaScript package manager
 brew "yq"                             # Convert YAML to JSON
 brew "yt-dlp"                         # YouTube video downloader
 brew "zstd"                           # dep for elixir, erlang,...
