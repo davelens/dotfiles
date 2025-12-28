@@ -144,7 +144,7 @@ main() {
   done
 
   # Block nested tmux sessions
-  [ -n "$TMUX" ] && fail "[$me] Cannot create nested tmux sessions. Detach first (prefix + d)."
+  # [ -n "$TMUX" ] && fail "[$me] Cannot create nested tmux sessions. Detach first (prefix + d)."
 
   # Fuzzy find if no target specified
   if [ -z "$target" ]; then
