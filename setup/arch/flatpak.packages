@@ -2,3 +2,4 @@
 
 com.discordapp.Discord              # Chat application
 org.videolan.VLC                    # Media player
+com.valvesoftware.Steam             # Gaming platform

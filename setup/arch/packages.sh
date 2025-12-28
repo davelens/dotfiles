@@ -51,9 +51,8 @@ install_flatpak_packages() {
   local packages
   mapfile -t packages < <(read_packages "$SCRIPT_DIR/flatpak.packages")
 
-  flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
   for pkg in "${packages[@]}"; do
-    flatpak install -y --noninteractive flathub "$pkg"
+    flatpak --user install -y --noninteractive flathub "$pkg"
   done
 }
 
