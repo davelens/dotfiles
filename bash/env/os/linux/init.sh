@@ -1,6 +1,8 @@
 # This file will only load on Linux
 
 alias gls='ls' # We already use GNU ls in bash/aliases.sh
+alias pbcopy="xclip -selection clipboard"
+alias pbpaste="xclip -selection clipboard -o"
 
 if [ -n "$BREW_PATH" ]; then
   # The mimemagic gem requires this file, which is installed via a homebrew pkg
