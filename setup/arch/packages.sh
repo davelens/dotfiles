@@ -27,14 +27,6 @@ resolve_aur_package() {
   fi
 }
 
-install_paru() {
-  command -v paru &>/dev/null && return
-  sudo pacman -S --needed --noconfirm base-devel git
-  git clone https://aur.archlinux.org/paru.git /tmp/paru
-  (cd /tmp/paru && makepkg -si --noconfirm)
-  rm -rf /tmp/paru
-}
-
 install_pacman_packages() {
   local packages
   mapfile -t packages < <(read_packages "$SCRIPT_DIR/pacman.packages")
@@ -66,6 +58,5 @@ configure_packages() {
 }
 
 install_pacman_packages
-install_paru
 install_aur_packages
 configure_packages

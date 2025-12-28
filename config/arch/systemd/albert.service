@@ -1,0 +1,12 @@
+[Unit]
+Description=Albert Launcher
+Documentation=https://github.com/albertlauncher/albert
+After=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/albert
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
