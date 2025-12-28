@@ -9,10 +9,18 @@ install_paru() {
   rm -rf /tmp/paru
 }
 
+install_flatpak() {
+  command -v flatpak &>/dev/null && return
+  sudo pacman -S --needed --noconfirm flatpak
+  flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+}
+
 ###############################################################################
 
 main() {
+  sudo pacman -Syu
   install_paru
+  install_flatpak
 }
 
 main "$@"
