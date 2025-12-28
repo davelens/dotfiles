@@ -2,14 +2,14 @@
 # Default command overrides. Generally trying to avoid serious ones, but to
 # my knowledge these are not considered harmful.
 alias nano='vim' # 😬
-alias rsync='rsync --exclude-from="$XDG_CONFIG_HOME/rsyncignore"'
+command -v rsync &>/dev/null && alias rsync='rsync --exclude-from="$XDG_CONFIG_HOME/rsyncignore"'
 alias vim="\$EDITOR" # My usecase here is that I use `dvim` as my Neovim profile.
 alias vi='vim'
 
 # XDG related overrides - Commands that need some help adhering to XDG.
-alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME"/yarn/config'
-alias wget='wget --hsts-file="$XDG_CACHE_HOME"/wget-hsts'
-alias mycli='mycli --myclirc "$MYCLIRC"'
+command -v yarn &>/dev/null && alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME"/yarn/config'
+command -v wget &>/dev/null && alias wget='wget --hsts-file="$XDG_CACHE_HOME"/wget-hsts'
+command -v mycli &>/dev/null && alias mycli='mycli --myclirc "$MYCLIRC"'
 
 # Spelling corrections
 # NOTE: `timesused <alias>` to find out how many times you made a mistake.
