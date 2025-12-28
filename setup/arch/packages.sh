@@ -47,6 +47,16 @@ install_aur_packages() {
   [[ ${#resolved[@]} -gt 0 ]] && paru -S --noconfirm --skipreview --needed --provides=no "${resolved[@]}"
 }
 
+install_flatpak_packages() {
+  local packages
+  mapfile -t packages < <(read_packages "$SCRIPT_DIR/flatpak.packages")
+
+  flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  for pkg in "${packages[@]}"; do
+    flatpak install -y --noninteractive flathub "$pkg"
+  done
+}
+
 configure_gnupg() {
   gpg --list-keys >/dev/null 2>&1 # Creates the keyring on first run.
   mkdir -p "$HOME/.local/share/gnupg"
@@ -59,4 +69,5 @@ configure_packages() {
 
 install_pacman_packages
 install_aur_packages
+install_flatpak_packages
 configure_packages

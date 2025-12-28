@@ -1,0 +1,4 @@
+# Flatpak packages (sandboxed applications)
+
+com.discordapp.Discord              # Chat application
+org.videolan.VLC                    # Media player
