@@ -25,7 +25,8 @@
     "base-devel",
     "git",
     "neovim",
-    "openssh"
+    "openssh",
+    "python"
   ],
   "parallel downloads": 5,
   "profile_config": {
