@@ -24,6 +24,7 @@
     "amd-ucode",
     "base-devel",
     "git",
+    "libyaml",
     "neovim",
     "openssh",
     "python",

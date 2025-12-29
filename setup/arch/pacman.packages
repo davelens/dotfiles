@@ -147,6 +147,7 @@ inetutils                           # GNU network utilities
 jq                                  # JSON processor
 less                                # Like `more`, but with more features
 libzip                              # Library to manipulate ZIP archives
+libyaml                             # YAML parser (required for Ruby's psych)
 luarocks                            # Package manager for Lua
 mariadb                             # MySQL-compatible database
 navi                                # Terminal cheatsheet
