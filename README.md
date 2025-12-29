@@ -14,11 +14,11 @@ As for context: I've been (mostly) a backend developer for web apps in my career
 **DISCLAIMER**: The install script pending a general rewrite in a couple of months, when I have access to a dedicated Linux machine.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master/setup/remote/init.sh | bash
+curl -fsSL https://raw.githubusercontent.com/davelens/dotfiles/master/setup/remote/init.sh | bash
 ```
 
 ### A note on my user-specific configuration and Bitwarden
-I keep a couple of sensitive data points in [Bitwarden](https://bitwarden.com/), my password and secrets manager of choice. The remote install script will look for a `bitwarden-cli` install, and attempt to unlock your vault by asking your master password in order to retrieve said data. 
+I keep a couple of sensitive data points in [Bitwarden](https://bitwarden.com/), my password and secrets manager of choice. The remote install script will look for a `bitwarden-cli` install, and attempt to unlock your vault by asking your master password in order to retrieve said data.
 
 Without Bitwarden, it will fall back to a prompt asking for the data points one by one.
 
