@@ -17,6 +17,7 @@ echo 'KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinpu
   sudo tee /etc/udev/rules.d/99-input.rules >/dev/null
 sudo udevadm control --reload-rules && sudo udevadm trigger
 
+mkdir -p $XDG_CONFIG_HOME/systemd/user
 ln -sf $DOTFILES_REPO_HOME/config/arch/systemd/kanata.service \
   $XDG_CONFIG_HOME/systemd/user/
 
