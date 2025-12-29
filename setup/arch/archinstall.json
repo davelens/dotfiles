@@ -21,17 +21,24 @@
   },
   "ntp": true,
   "packages": [
+    "amd-ucode",
     "base-devel",
     "git",
+    "gnome",
+    "gnome-tweaks",
+    "intel-ucode",
     "neovim",
-    "amd-ucode",
-    "intel-ucode"
+    "openssh",
+    "smartmontools",
+    "wget",
+    "wireless_tools",
+    "wpa_supplicant",
+    "xdg-utils"
   ],
   "parallel downloads": 5,
   "profile_config": {
     "gfx_driver": "All open-source",
     "profile": {
-      "details": ["Gnome"],
       "main": "Desktop"
     }
   },
