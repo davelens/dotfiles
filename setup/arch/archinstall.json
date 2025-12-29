@@ -26,7 +26,8 @@
     "git",
     "neovim",
     "openssh",
-    "python"
+    "python",
+    "unzip"
   ],
   "parallel downloads": 5,
   "profile_config": {

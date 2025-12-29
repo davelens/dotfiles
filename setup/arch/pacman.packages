@@ -175,6 +175,7 @@ tree                                # Dumps visual file trees for folders
 tree-sitter                         # Parser generator and library
 tree-sitter-cli                     # Interact with tree-sitter through CLI
 unbound                             # Caching DNS resolver
+unzip                               # Extract ZIP archives
 viu                                 # Image viewer
 wget                                # Network downloader
 yq                                  # Convert YAML to JSON
