@@ -5,6 +5,7 @@ base                                # Minimal base system
 base-devel                          # Development tools (make, gcc, etc.)
 bluez                               # Bluetooth protocol stack
 bluez-utils                         # Bluetooth utilities
+dnsmasq                             # Lightweight DNS & DHCP server
 efibootmgr                          # EFI boot manager
 grub                                # Bootloader
 htop                                # Process viewer
