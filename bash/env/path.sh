@@ -40,12 +40,16 @@ fi
 if [ -n "$BREW_PATH" ]; then
   paths_to_add+=("$BREW_PATH"/{,s}bin) # Default bin files (mount, unbound,...)
 
-  if [ -d "$BREW_PATH/opt/$_DOTS_MYSQL_VERSION/bin" ]; then
-    paths_to_add+=("$BREW_PATH/opt/$_DOTS_MYSQL_VERSION/bin")
+  if [[ -n $_DOTS_MYSQL_VERSION ]]; then
+    if [ -d "$BREW_PATH/opt/$_DOTS_MYSQL_VERSION/bin" ]; then
+      paths_to_add+=("$BREW_PATH/opt/$_DOTS_MYSQL_VERSION/bin")
+    fi
   fi
 
-  if [ -d "$BREW_PATH/opt/$_DOTS_POSTGRESQL_VERSION/bin" ]; then
-    paths_to_add+=("$BREW_PATH/opt/$_DOTS_POSTGRESQL_VERSION/bin")
+  if [[ -n $_DOTS_POSTGRESQL_VERSION ]]; then
+    if [ -d "$BREW_PATH/opt/$_DOTS_POSTGRESQL_VERSION/bin" ]; then
+      paths_to_add+=("$BREW_PATH/opt/$_DOTS_POSTGRESQL_VERSION/bin")
+    fi
   fi
 fi
 

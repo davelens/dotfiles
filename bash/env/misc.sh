@@ -29,35 +29,3 @@ export NODE_OPTIONS="--no-deprecation"
 
 # Go lang work dir
 export GOPATH="$HOME/.go"
-
-# Some Homebrew specific settings.
-if [ -d "$BREW_PATH" ]; then
-  # Ensure brew-installed bash versions as our active shell.
-  [ -f "$BREW_PATH"/bin/bash ] && export SHELL="$BREW_PATH/bin/bash"
-
-  # mise uses kerl under the hood for Erlang; this makes sure that it uses
-  # Homebrew's openssl version when compiling from source.
-  if [ -d "$BREW_PATH/opt/openssl@3" ]; then
-    KERL_CONFIGURE_OPTIONS="--with-ssl=$(brew --prefix openssl@3)"
-    export KERL_CONFIGURE_OPTIONS
-  fi
-
-  # Specific compiler & pkgconf helpers
-  _add_to_var() {
-    local var="$1" val="$2" sep="${3:- }"
-    [[ "${!var}" != *"$val"* ]] && export "$var"="${!var:+${!var}$sep}$val"
-  }
-
-  _add_brew_pkg_to_compile_flags() {
-    local pkg="$BREW_PATH/opt/$1"
-    [ -d "$pkg" ] || return 0
-    _add_to_var LDFLAGS "-L$pkg/lib"
-    _add_to_var CPPFLAGS "-I$pkg/include"
-    _add_to_var PKG_CONFIG_PATH "$pkg/lib/pkgconfig" ":"
-  }
-
-  _add_brew_pkg_to_compile_flags "$_DOTS_MYSQL_VERSION"
-  _add_brew_pkg_to_compile_flags "$_DOTS_POSTGRESQL_VERSION"
-
-  unset -f _add_to_var _add_brew_pkg_to_compile_flags
-fi
