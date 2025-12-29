@@ -42,7 +42,7 @@ export SPRING_LOG="$PWD/log/spring.log"
 export SPRING_TMP_PATH="/tmp"
 
 # Compilation configuration options for fresh Ruby installations.
-if command -v brew >/dev/null; then
+if [ -n "$BREW_PATH" ]; then
   # Configure compilation options for Ruby installs via mise/ruby-build.
   # Only add libraries that are actually installed via Homebrew.
   RUBY_CONFIGURE_OPTS=""
