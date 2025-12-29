@@ -11,8 +11,6 @@ As for context: I've been (mostly) a backend developer for web apps in my career
 * Included my Vim setup until 2020, when I moved it to [a separate repository](https://github.com/davelens/dotvim)
 
 ## Installation
-**DISCLAIMER**: The install script pending a general rewrite in a couple of months, when I have access to a dedicated Linux machine.
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/davelens/dotfiles/master/setup/remote/init.sh | bash
 ```
