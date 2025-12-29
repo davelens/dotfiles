@@ -17,6 +17,7 @@ usage() {
   echo "  logs          Opens the logfile in $EDITOR (read-only if applicable)."
   echo "  install       Attempts a (re)install through dotbot."
   echo "  update        Updates dotfiles to the most recent version."
+  echo "                Use --dotbot to also update dotbot to latest master."
   echo
   echo "Options:"
   echo "  -h|--help    Show this help message and exit."
@@ -47,7 +48,32 @@ install() {
   "$DOTFILES_REPO_HOME/setup/install"
 }
 
+update_dotbot() {
+  $print_status -nc "Updating dotbot to latest master ..."
+  
+  local dotbot_path="$DOTFILES_REPO_HOME/dotbot"
+  
+  if git -C "$dotbot_path" fetch origin >/dev/null 2>&1 && \
+     git -C "$dotbot_path" checkout origin/master >/dev/null 2>&1; then
+    $print_status -i ok "Dotbot updated"
+    echo "    Remember to commit the submodule change if you want to keep it."
+  else
+    $print_status -i error "Failed to update dotbot"
+    return 1
+  fi
+}
+
 update() {
+  local update_dotbot_flag=0
+  
+  # Parse flags
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --dotbot) update_dotbot_flag=1; shift ;;
+      *) shift ;;
+    esac
+  done
+
   error_occurred=0
 
   # Check for uncommitted changes and exit gracefully if so.
@@ -56,6 +82,11 @@ update() {
     echo
     git -C "$DOTFILES_REPO_HOME" st
     exit 1
+  fi
+
+  # Update dotbot if requested
+  if [ $update_dotbot_flag -eq 1 ]; then
+    update_dotbot || error_occurred=1
   fi
 
   # Pull the latest changes
@@ -102,7 +133,8 @@ main() {
     install
     ;;
   update)
-    update
+    shift
+    update "$@"
     ;;
   *)
     echo "Unknown command: $1"
