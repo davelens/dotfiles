@@ -4,6 +4,11 @@ set -e
 # Enable lingering so user services start at boot (before login)
 sudo loginctl enable-linger $USER
 
+# Create uinput group if it doesn't exist
+if ! getent group uinput >/dev/null; then
+  sudo groupadd uinput
+fi
+
 # Ensure user is in input and uinput groups for device access
 sudo usermod -aG input,uinput $USER
 
