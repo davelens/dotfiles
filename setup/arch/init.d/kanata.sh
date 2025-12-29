@@ -2,7 +2,7 @@
 set -e
 
 # Enable lingering so user services start at boot (before login)
-sudo loginctl enable-linger $USER
+sudo loginctl enable-linger "$USER"
 
 # Create uinput group if it doesn't exist
 if ! getent group uinput >/dev/null; then
@@ -10,16 +10,16 @@ if ! getent group uinput >/dev/null; then
 fi
 
 # Ensure user is in input and uinput groups for device access
-sudo usermod -aG input,uinput $USER
+sudo usermod -aG input,uinput "$USER"
 
 # Create udev rule for uinput device permissions
 echo 'KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinput"' |
   sudo tee /etc/udev/rules.d/99-input.rules >/dev/null
 sudo udevadm control --reload-rules && sudo udevadm trigger
 
-mkdir -p $XDG_CONFIG_HOME/systemd/user
-ln -sf $DOTFILES_REPO_HOME/config/arch/systemd/kanata.service \
-  $XDG_CONFIG_HOME/systemd/user/
+mkdir -p "$XDG_CONFIG_HOME/systemd/user"
+ln -sf "$DOTFILES_REPO_HOME/config/arch/systemd/kanata.service" \
+  "$XDG_CONFIG_HOME/systemd/user/"
 
 paru -S --needed --noconfirm kanata-bin
 systemctl --user daemon-reload

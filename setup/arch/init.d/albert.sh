@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-ln -sf $DOTFILES_REPO_HOME/config/arch/systemd/albert.service \
-  $XDG_CONFIG_HOME/systemd/user/
+ln -sf "$DOTFILES_REPO_HOME/config/arch/systemd/albert.service" \
+  "$XDG_CONFIG_HOME/systemd/user/"
 
 # --mflags --skipinteg: Skip integrity check (upstream checksum sometimes outdated)
 paru -S --needed --noconfirm --mflags --skipinteg albert-bin
