@@ -37,18 +37,11 @@
   },
   "swap": true,
   "timezone": "Europe/Brussels",
-  "users": [
-    {
-      "username": "davelens",
-      "!password": "",
-      "sudo": true
-    }
-  ],
   "custom_commands": [
     "printf '%s\\n' 'davelens ALL=(ALL) NOPASSWD: ALL' 'Defaults timestamp_timeout=120' > /etc/sudoers.d/00_davelens && chmod 0440 /etc/sudoers.d/00_davelens",
     "echo ''",
     "echo '┌────────────────────────────────────────────────────────────────┐'",
-    "echo '│ IMPORTANT: Set your password after first login:               │'",
+    "echo '│ IMPORTANT: Set your password after first login:                │'",
     "echo '│                                                                │'",
     "echo '│   passwd                                                       │'",
     "echo '│                                                                │'",
