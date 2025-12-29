@@ -63,7 +63,8 @@ configure_gnupg() {
 }
 
 configure_packages() {
-  configure_gnupg
+  # TODO:
+  .
 }
 
 install_pacman_packages
