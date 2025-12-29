@@ -6,8 +6,8 @@ As for context: I've been (mostly) a backend developer for web apps in my career
 
 ## History
 * [Est. 2011](https://github.com/davelens/dotfiles/commits/master/?since=2011-05-27&until=2011-05-31)
-* Started on macos, now used on both macos and WSL2 (currently Arch) instances
-* My professional dev work shifted over the years from PHP, to Ruby, to Elixir
+* Initially made for macos, these days also used on Arch Linux
+* My professional dev work shifted over the years from PHP, to Ruby and Elixir
 * Included my Vim setup until 2020, when I moved it to [a separate repository](https://github.com/davelens/dotvim)
 
 ## Installation
