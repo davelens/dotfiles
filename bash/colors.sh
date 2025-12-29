@@ -17,13 +17,13 @@ if [[ ! "$LS_COLORS" =~ "di=0;34:" ]]; then
 fi
 
 # This seems to be more consistent than \033[0m
-CNONE="$(tput sgr0)"     # Unsets color to term's fg color.
-CBOLD="$(tput bold)"     # Bold
-CEM="$(tput sitm)"       # Start italic mode
-CNEM="$(tput ritm)"      # Reset italic mode
-CUN="$(tput smul)"       # Start underline mode
-CNUN="$(tput rmul)"      # Reset underline mode
-CSTR="$(printf '\e[9m')" # Start strikethrough mode
+CNONE="$(tput sgr0)"                    # Unsets color to term's fg color.
+CBOLD="$(tput bold)"                    # Bold
+CEM="$(tput sitm 2>/dev/null || true)"  # Start italic mode
+CNEM="$(tput ritm 2>/dev/null || true)" # Reset italic mode
+CUN="$(tput smul)"                      # Start underline mode
+CNUN="$(tput rmul)"                     # Reset underline mode
+CSTR="$(printf '\e[9m')"                # Start strikethrough mode
 export CNONE CBOLD CEM CNEM CUN CNUN CSTR
 
 # Foreground colors
