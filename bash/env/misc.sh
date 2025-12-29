@@ -26,6 +26,3 @@ export CLIPBOARD_SILENT="1"
 
 # This is to prevent punycode deprecation logging to stderr, in particular.
 export NODE_OPTIONS="--no-deprecation"
-
-# Go lang work dir
-export GOPATH="$HOME/.go"
