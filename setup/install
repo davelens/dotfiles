@@ -13,6 +13,7 @@ source "$DOTFILES_REPO_HOME"/bash/helpers.sh
 dotbot_path="$DOTFILES_REPO_HOME/dotbot"
 git -C "$dotbot_path" submodule sync --quiet --recursive
 git -C "$dotbot_path" submodule update --init --recursive
+git -C "$dotbot_path" submodule update --remote dotbot
 
 # Activate dotbot with the install configuration
 "$dotbot_path/bin/dotbot" -d "$DOTFILES_REPO_HOME" -c "$DOTFILES_REPO_HOME/setup/install.conf.yaml" "$@"
