@@ -2,7 +2,7 @@
   "users": [
     {
       "username": "davelens",
-      "!password": "",
+      "enc_password": "internet",
       "sudo": true
     }
   ]
