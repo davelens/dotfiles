@@ -5,6 +5,9 @@
 
 - clean: ['~']
 
+- create:
+    - $XDG_STATE_HOME/bash # HISTFILE is set to live in this target folder.
+
 # Requires 4 space indentation or it will fail
 #
 # NOTE: "XDG dir support instead of $HOME" is currently a patch waiting to be
