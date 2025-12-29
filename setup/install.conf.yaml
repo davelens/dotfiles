@@ -16,8 +16,12 @@
 #   https://savannah.gnu.org/support/?108134
 #
 - link:
-    ~/.bash_profile: config/bash_profile
-    ~/.bashrc: config/bashrc
+    ~/.bash_profile:
+      path: config/bash_profile
+      backup: true
+    ~/.bashrc:
+      path: config/bashrc
+      backup: true
     $ACKRC: config/ackrc
     $INPUTRC: config/inputrc
     $EDITRC: config/editrc
