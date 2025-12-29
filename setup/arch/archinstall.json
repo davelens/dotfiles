@@ -24,20 +24,12 @@
     "amd-ucode",
     "base-devel",
     "git",
-    "gnome",
-    "gnome-tweaks",
-    "intel-ucode",
     "neovim",
     "openssh",
-    "smartmontools",
-    "wget",
-    "wireless_tools",
-    "wpa_supplicant",
-    "xdg-utils"
   ],
   "parallel downloads": 5,
   "profile_config": {
-    "gfx_driver": "All open-source",
+    "gfx_driver": "AMD / ATI (open-source)",
     "profile": {
       "main": "Desktop"
     }
@@ -46,18 +38,5 @@
   "timezone": "Europe/Brussels",
   "custom_commands": [
     "printf '%s\\n' 'davelens ALL=(ALL) NOPASSWD: ALL' 'Defaults timestamp_timeout=120' > /etc/sudoers.d/00_davelens && chmod 0440 /etc/sudoers.d/00_davelens",
-    "echo ''",
-    "echo '┌────────────────────────────────────────────────────────────────┐'",
-    "echo '│ IMPORTANT: Set your password after first login:                │'",
-    "echo '│                                                                │'",
-    "echo '│   passwd                                                       │'",
-    "echo '│                                                                │'",
-    "echo '│ Then install dotfiles:                                         │'",
-    "echo '│                                                                │'",
-    "echo '│   curl -fsSL https://raw.githubusercontent.com/davelens/       │'",
-    "echo '│     dotfiles/master/setup/remote/init.sh | bash                │'",
-    "echo '│                                                                │'",
-    "echo '└────────────────────────────────────────────────────────────────┘'",
-    "echo ''"
   ]
 }
