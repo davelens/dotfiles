@@ -51,6 +51,7 @@
     $XDG_CONFIG_HOME/starship.toml: config/starship.toml
     $XDG_CONFIG_HOME/tmux: config/tmux
     $XDG_CONFIG_HOME/wezterm/wezterm.lua: config/wezterm.lua
+    $XDG_CONFIG_HOME/X11: config/X11
     $XDG_BIN_HOME/utility: bin/utility
     $XDG_BIN_HOME/:
       glob: true
