@@ -43,6 +43,7 @@
     $XDG_CONFIG_HOME/karabiner: config/macos/karabiner
     $XDG_CONFIG_HOME/mise: config/mise
     $XDG_CONFIG_HOME/opencode/opencode.json: config/opencode.json
+    $XDG_CONFIG_HOME/oxwm: config/oxwm
     $XDG_CONFIG_HOME/rspec/options: config/rspec
     $XDG_CONFIG_HOME/rsyncignore: config/rsyncignore
     $XDG_CONFIG_HOME/rubocop/config.yml: config/rubocop.yml
