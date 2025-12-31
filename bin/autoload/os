@@ -1,15 +1,62 @@
 #!/usr/bin/env bash
 set -e
 
-# Detect container environment
-if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
-  echo 'linux'
-elif [ -f /proc/version ] && grep -qEi "(microsoft|WSL)" /proc/version ; then
-  echo 'wsl'
-else
+detect_linux_distro() {
+  if [ -f /etc/os-release ]; then
+    # shellcheck disable=SC1091
+    . /etc/os-release
+    case "$ID" in
+      arch) echo 'arch' ;;
+      nixos) echo 'nixos' ;;
+      debian|ubuntu|linuxmint|pop) echo 'debian' ;;
+      fedora|rhel|centos|rocky|alma) echo 'fedora' ;;
+      *) echo 'linux' ;;
+    esac
+  else
+    echo 'linux'
+  fi
+}
+
+detect_platform() {
   case "$(uname -s)" in
     Darwin) echo 'macos' ;;
     Linux) echo 'linux' ;;
     FreeBSD) echo 'freebsd' ;;
+    MINGW*|MSYS*|CYGWIN*) echo 'windows' ;;
+    *) echo 'unknown' ;;
   esac
-fi
+}
+
+detect_distro() {
+  # Detect container environment
+  if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
+    echo 'linux'
+  elif [ -f /proc/version ] && grep -qEi "(microsoft|WSL)" /proc/version ; then
+    echo 'wsl'
+  else
+    case "$(uname -s)" in
+      Darwin) echo 'macos' ;;
+      Linux) detect_linux_distro ;;
+      FreeBSD) echo 'freebsd' ;;
+      MINGW*|MSYS*|CYGWIN*) echo 'windows' ;;
+    esac
+  fi
+}
+
+case "$1" in
+  -p|--platform)
+    detect_platform
+    ;;
+  -h|--help)
+    echo "Usage: $(basename "$0") [OPTIONS]"
+    echo
+    echo "Options:"
+    echo "  -p, --platform  Return platform (linux, macos, freebsd, windows)"
+    echo "  -h, --help      Show this help message"
+    echo
+    echo "Without options, returns distro (arch, debian, nixos, macos, etc.)"
+    ;;
+  *)
+    detect_distro
+    ;;
+esac

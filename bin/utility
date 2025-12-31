@@ -8,20 +8,28 @@ main() {
   # Ensure we have at least two arguments
   [[ $# -lt 2 ]] && fail "Usage: $(basename "$0") <category> <command> [<args>...]"
 
-  local category command current_os
+  local category command current_distro current_platform
   category="$1"
   command="$2"
-  current_os="$("$XDG_BIN_HOME/os")"
+  current_distro="$("$XDG_BIN_HOME/os")"
+  current_platform="$("$XDG_BIN_HOME/os" --platform)"
 
   # Define the base directory for scripts
   BASE_DIR="$DOTFILES_REPO_HOME/bin/utilities"
   SCRIPT_PATH="$BASE_DIR/$category/$command"
 
-  # OS-specific categories are only available on their respective OS
+  # Platform-specific categories (macos, linux, freebsd, windows)
   case "$category" in
-    macos|linux|freebsd|wsl)
-      [[ "$category" != "$current_os" ]] && fail "$category utilities only available on $category"
-      ;;
+  macos | linux | freebsd | windows)
+    [[ "$category" != "$current_platform" ]] && fail "$category utilities only available on $category"
+    ;;
+  esac
+
+  # Distro-specific categories (arch, debian, nixos, fedora, wsl)
+  case "$category" in
+  arch | debian | nixos | fedora | wsl)
+    [[ "$category" != "$current_distro" ]] && fail "$category utilities only available on $category"
+    ;;
   esac
 
   # Shift off category and command, leaving any remaining arguments
