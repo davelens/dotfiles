@@ -28,8 +28,9 @@ resolve_aur_package() {
 }
 
 install_pacman_packages() {
+  local file="$1"
   local packages
-  mapfile -t packages < <(read_packages "$SCRIPT_DIR/pacman.packages")
+  mapfile -t packages < <(read_packages "$file")
 
   sudo pacman -Syu --noconfirm
   sudo pacman -S --noconfirm --needed "${packages[@]}"
@@ -67,7 +68,7 @@ configure_packages() {
   .
 }
 
-install_pacman_packages
+install_pacman_packages "$SCRIPT_DIR/pacman.packages"
 install_aur_packages
 install_flatpak_packages
 configure_packages
