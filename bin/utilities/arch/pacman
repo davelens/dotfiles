@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -e
+
+read_packages() {
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}'
+}
+
+install_from_file() {
+  local file="$1"
+
+  if [[ ! -f "$file" ]]; then
+    echo "Error: File not found: $file" >&2
+    exit 1
+  fi
+
+  local packages
+  mapfile -t packages < <(read_packages "$file")
+
+  if [[ ${#packages[@]} -eq 0 ]]; then
+    echo "No packages found in $file"
+    exit 0
+  fi
+
+  sudo pacman -Syu --noconfirm
+  sudo pacman -S --noconfirm --needed "${packages[@]}"
+}
+
+usage() {
+  echo "Usage: $(basename "$0") [OPTIONS]"
+  echo
+  echo "Options:"
+  echo "  --install-from-file <file>  Install packages listed in the given file"
+  echo "  --bundle                    Install packages from dotfiles pacman.packages"
+  echo "  -h, --help                  Show this help message"
+  exit 0
+}
+
+case "$1" in
+  --install-from-file)
+    [[ -z "$2" ]] && echo "Error: No file specified" >&2 && exit 1
+    install_from_file "$2"
+    ;;
+  --bundle)
+    install_from_file "$DOTFILES_REPO_HOME/setup/arch/pacman.packages"
+    ;;
+  -h|--help)
+    usage
+    ;;
+  *)
+    usage
+    ;;
+esac

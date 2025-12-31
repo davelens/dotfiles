@@ -1,0 +1,23 @@
+# Completion for `utility arch pacman`
+
+_arch_pacman_completions() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  local prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  case "$prev" in
+    pacman)
+      COMPREPLY=($(compgen -W "--install-from-file --bundle --help -h" -- "$cur"))
+      ;;
+    --install-from-file)
+      # Complete file paths without adding space after directories
+      compopt -o nospace
+      COMPREPLY=($(compgen -f -- "$cur"))
+      ;;
+    *)
+      COMPREPLY=()
+      ;;
+  esac
+}
+
+_arch_pacman_completions
+unset -f _arch_pacman_completions

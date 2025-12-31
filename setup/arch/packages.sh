@@ -63,12 +63,6 @@ configure_gnupg() {
   chmod 700 "$HOME/.local/share/gnupg"
 }
 
-configure_packages() {
-  # TODO:
-  .
-}
-
-install_pacman_packages "$SCRIPT_DIR/pacman.packages"
+utility arch pacman --install-from-file "$SCRIPT_DIR/pacman.packages"
 install_aur_packages
 install_flatpak_packages
-configure_packages
