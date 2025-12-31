@@ -1,0 +1,18 @@
+# Completion for `utility arch paru`
+
+_arch_paru_completions() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  local prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  case "$prev" in
+    paru)
+      COMPREPLY=($(compgen -W "--prune --help -h" -- "$cur"))
+      ;;
+    *)
+      COMPREPLY=()
+      ;;
+  esac
+}
+
+_arch_paru_completions
+unset -f _arch_paru_completions

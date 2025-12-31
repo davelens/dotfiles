@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -e
+
+prune() {
+  orphans=$(paru -Qdtq 2>/dev/null || true)
+
+  if [[ -z "$orphans" ]]; then
+    echo "Nothing to prune."
+    exit 0
+  fi
+
+  paru -Rns "$orphans"
+}
+
+usage() {
+  echo "Usage: $(basename "$0") [OPTIONS]"
+  echo
+  echo "Options:"
+  echo "  --prune     Remove orphaned packages"
+  echo "  -h, --help  Show this help message"
+  exit 0
+}
+
+case "$1" in
+--prune)
+  prune
+  ;;
+-h | --help)
+  usage
+  ;;
+*)
+  usage
+  ;;
+esac
