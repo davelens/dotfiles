@@ -1,48 +1,41 @@
+;; Home row mods with caps->ctrl/esc
 (defcfg
   process-unmapped-keys yes
 )
 
-;; Remap capslock to left Ctrl.
 (defsrc
-  caps
+  caps s d f n ;
+  1 2 3 4 5 6 7 8 9
 )
 
-(deflayer base lctl)
-(defalias caps lctl)
-
-#|
-;; home row-mods
-
-;; un-mapped keys behave as normally
-(defcfg
-  process-unmapped-keys yes
-)
-
-;; define the keys to remap
-(defsrc
- caps a s d f n ;
-)
-
-;; define values for tap time and hold time
 (defvar
   tap-time 150
   hold-time 200
 )
 
-;; alias definitions
 (defalias
-  escctrl (tap-hold $tap-time $hold-time esc lctl)
-  a (tap-hold $tap-time $hold-time a lctrl)
+  escctrl lctl
   s (tap-hold $tap-time $hold-time s lalt)
   d (tap-hold $tap-time $hold-time d lmet)
   f (tap-hold $tap-time $hold-time f lsft)
-  ;; j (tap-hold $tap-time $hold-time j rsft)
   n (tap-hold $tap-time $hold-time n rmet)
-  ;; l (tap-hold $tap-time $hold-time l ralt)
-  ; (tap-hold $tap-time $hold-time ; rctrl)
+  ; (tap-hold $tap-time $hold-time ; rctl)
+
+  ;; Number keys: tap for number, hold for Alt+number.
+  ;; Firefox: tab 1-9 activation
+  ;; tmux: window 1-9 activation
+  1 (tap-hold $tap-time $hold-time 1 A-1)
+  2 (tap-hold $tap-time $hold-time 2 A-2)
+  3 (tap-hold $tap-time $hold-time 3 A-3)
+  4 (tap-hold $tap-time $hold-time 4 A-4)
+  5 (tap-hold $tap-time $hold-time 5 A-5)
+  6 (tap-hold $tap-time $hold-time 6 A-6)
+  7 (tap-hold $tap-time $hold-time 7 A-7)
+  8 (tap-hold $tap-time $hold-time 8 A-8)
+  9 (tap-hold $tap-time $hold-time 9 A-9)
 )
 
 (deflayer base
-  @escctrl @a @s @d @f @n @;
+  @escctrl @s @d @f @n @;
+  @1 @2 @3 @4 @5 @6 @7 @8 @9
 )
-|#
