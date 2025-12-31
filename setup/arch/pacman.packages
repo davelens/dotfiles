@@ -66,6 +66,7 @@ gnome-software                      # Software center
 gnome-system-monitor                # System monitor
 # gnome-text-editor                   # Text editor
 # gnome-tour                          # Welcome tour
+gnome-themes-extra                  # Includes dark mode themes for GTK apps
 gnome-tweaks                        # Advanced settings
 gnome-user-docs                     # User documentation
 gnome-user-share                    # File sharing
