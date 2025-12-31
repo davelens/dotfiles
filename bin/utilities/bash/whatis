@@ -26,8 +26,19 @@ main() {
     set -- "$1"
   fi
   for cmd; do
-    type="$(type "$cmd")"
+    type="$(type "$cmd" 2>&1)"
     ret=$?
+    if [ $ret -ne 0 ]; then
+      # Try interactive shell to check for aliases/functions
+      type="$(bash -ic "type $cmd" 2>&1 | grep -v "^bash:")"
+      ret=$?
+      if [ $ret -ne 0 ]; then
+        echo "$cmd: not found"
+        [ $i -lt $# ] && echo
+        ((i++))
+        continue
+      fi
+    fi
     if [ $ret -eq 0 ]; then
       # Try to get the physical path. This works for hashes and
       # "normal" binaries.
@@ -46,7 +57,7 @@ main() {
           # Use "read" to process escapes. E.g. 'test\ it'
           # will # be read as 'test it'. This allows for
           # spaces inside command names.
-          read -d ' ' alias_ <<<"$alias_"
+          read -r -d ' ' alias_ <<<"$alias_"
           # Recurse and indent the output.
           # TODO: prevent infinite recursion
           wtfis "$alias_" 2>&2 | sed 's/^/  /'
@@ -98,7 +109,7 @@ main() {
 
         # Then, combine the output of "type" and "file".
         local fileinfo="$(file "$full_path")"
-        echo "${type%$path}${fileinfo}"
+        echo "${type%"$path"}${fileinfo}"
 
         # Finally, show it using "ls" and highlight the path.
         # If the path is a symlink, keep going until we find the
@@ -110,8 +121,8 @@ main() {
           paths+=("$(
             # Do some relative path resolving for systems
             # without readlink --canonicalize.
-            cd "$(dirname "$path")"
-            cd "$(dirname "$target_path")"
+            cd "$(dirname "$path")" || return
+            cd "$(dirname "$target_path")" || return
             echo "$PWD/$(basename "$target_path")"
           )")
         done
@@ -122,7 +133,7 @@ main() {
 
     # Separate the output for all but the last command with blank lines.
     [ $i -lt $# ] && echo
-    let i++
+    ((i++))
   done
   return $ret
 }
