@@ -27,15 +27,6 @@ resolve_aur_package() {
   fi
 }
 
-install_pacman_packages() {
-  local file="$1"
-  local packages
-  mapfile -t packages < <(read_packages "$file")
-
-  sudo pacman -Syu --noconfirm
-  sudo pacman -S --noconfirm --needed "${packages[@]}"
-}
-
 install_aur_packages() {
   local packages resolved=()
   mapfile -t packages < <(read_packages "$SCRIPT_DIR/paru.packages")
@@ -55,12 +46,6 @@ install_flatpak_packages() {
   for pkg in "${packages[@]}"; do
     flatpak --user install -y --noninteractive flathub "$pkg"
   done
-}
-
-configure_gnupg() {
-  gpg --list-keys >/dev/null 2>&1 # Creates the keyring on first run.
-  mkdir -p "$HOME/.local/share/gnupg"
-  chmod 700 "$HOME/.local/share/gnupg"
 }
 
 utility arch pacman --install-from-file "$SCRIPT_DIR/pacman.packages"
