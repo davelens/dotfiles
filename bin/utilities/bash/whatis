@@ -12,6 +12,9 @@
 #
 # I did land on whatis since `u bash wh<TAB>` is easier than `u bash wt<Tab>`.
 
+# NOTE: Expanded this to properly work with aliases, since the initial version
+# didn't pick up on them in Arch Linux.
+
 main() {
   local cmd type i=1 ret=0
   if [ $# -eq 0 ]; then
