@@ -6,6 +6,7 @@ local config = wezterm.config_builder()
 local platforms = {
   macos = wezterm.target_triple:find('apple'),
   windows = wezterm.target_triple:find('windows'),
+  linux = wezterm.target_triple:find('linux'),
 }
 local function is_process_running(name)
   local handle = io.popen("pgrep '" .. name .. "'")
@@ -22,14 +23,12 @@ end
 config.max_fps = 120 -- Fixes the (s)low default of 60, this feels snappier.
 config.enable_tab_bar = false
 config.color_scheme = 'Catppuccin Mocha'
-config.font_size = 14.0
+config.window_padding = { left = 10, right = 10, top = 0, bottom = 0 }
 
-config.window_padding = {
-  left = 10,
-  right = 10,
-  top = 0,
-  bottom = 0,
-}
+config.font_size = 14.0
+config.font = wezterm.font_with_fallback({
+  { family = 'Hack Nerd Font' },
+})
 
 -- stylua: ignore
 config.keys = {
@@ -105,12 +104,6 @@ end
 
 -- Load platform specific configurations
 if platforms.windows then
-  -- The default for me is "wslhost.exe", not very descriptive.
-  wezterm.on('format-window-title', function()
-    return 'Wezterm'
-  end)
-
-  config.line_height = 1.08
   -- stylua: ignore
   config.default_prog = {
     'wsl.exe', '-d', 'Arch', '-u', 'davelens',
@@ -119,9 +112,13 @@ if platforms.windows then
 end
 
 if platforms.linux or platforms.windows then
-  config.font = wezterm.font_with_fallback({
-    { family = 'Hack Nerd Font' },
-  })
+  -- The default for me is "wslhost.exe", not very descriptive.
+  wezterm.on('format-window-title', function()
+    return 'Wezterm'
+  end)
+
+  config.line_height = 1.08
+  config.window_padding = { left = 10, right = 10, top = 0, bottom = 0 }
 end
 
 return config
