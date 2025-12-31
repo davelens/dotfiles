@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -e
-
-# The installer primarily uses this command to bootstrap Homebrew, but I
-# decided I wanted to "alias" it here in case I want to re-run bundles.
-"$DOTFILES_REPO_HOME/setup/arch/init.d/mariadb.sh" "$@"

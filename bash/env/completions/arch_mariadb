@@ -1,0 +1,18 @@
+# Completion for `utility arch mariadb`
+
+_arch_mariadb_completions() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  local prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  case "$prev" in
+    mariadb)
+      COMPREPLY=($(compgen -W "--install --uninstall --help -h" -- "$cur"))
+      ;;
+    *)
+      COMPREPLY=()
+      ;;
+  esac
+}
+
+_arch_mariadb_completions
+unset -f _arch_mariadb_completions

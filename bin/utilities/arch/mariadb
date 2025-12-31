@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -e
+
+install_mariadb() {
+  "$DOTFILES_REPO_HOME/setup/arch/init.d/mariadb.sh" "$@"
+}
+
+uninstall_mariadb() {
+  echo "WARNING: This will completely remove MariaDB, including all databases."
+  answer=$($prompt_user -yn "Are you sure you want to continue?")
+  echo
+  [[ ! "$answer" =~ [Yy] ]] && exit 0
+
+  # Stop any running MariaDB/MySQL processes
+  if pgrep -x mariadbd >/dev/null || pgrep -x mysqld >/dev/null; then
+    echo "Stopping running MariaDB/MySQL processes..."
+    sudo systemctl stop mariadb 2>/dev/null || true
+    sudo pkill -x mariadbd 2>/dev/null || true
+    sudo pkill -x mysqld 2>/dev/null || true
+    sleep 1
+  fi
+
+  # Remove existing installation (covers both LTS and regular packages)
+  mapfile -t mariadb_pkgs < <(pacman -Qq 2>/dev/null | grep -E '^mariadb')
+  if [[ ${#mariadb_pkgs[@]} -gt 0 ]]; then
+    echo "Removing existing MariaDB packages: ${mariadb_pkgs[*]}"
+    sudo pacman -Rns --noconfirm "${mariadb_pkgs[@]}"
+  fi
+
+  # Clean up data directory
+  if [[ -d /var/lib/mysql ]]; then
+    echo "Removing data directory..."
+    sudo rm -rf /var/lib/mysql
+  fi
+
+  echo "MariaDB installation removed."
+}
+
+usage() {
+  echo "Usage: $(basename "$0") [OPTIONS]"
+  echo
+  echo "Options:"
+  echo "  --install    Install and configure MariaDB"
+  echo "  --uninstall  Remove MariaDB and all databases"
+  echo "  -h, --help   Show this help message"
+  exit 0
+}
+
+case "$1" in
+  --install)
+    shift
+    install_mariadb "$@"
+    ;;
+  --uninstall)
+    uninstall_mariadb
+    ;;
+  -h|--help)
+    usage
+    ;;
+  *)
+    usage
+    ;;
+esac
