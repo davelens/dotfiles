@@ -33,6 +33,7 @@ password = $MYSQL_ROOT_PASSWORD
 host = localhost
 port = 3306
 socket = /run/mysqld/mysqld.sock
+skip-ssl
 
 [mysql]
 auto-rehash
