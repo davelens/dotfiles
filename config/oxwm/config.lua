@@ -190,6 +190,8 @@ oxwm.bar.set_scheme_urgent(colors.red, colors.bg, colors.red)
 -- Basic window management
 
 oxwm.key.bind({ modkey }, 'Return', oxwm.spawn_terminal())
+-- Launch Albert
+oxwm.key.bind({ modkey }, 'Space', oxwm.spawn({ 'albert', 'toggle' }))
 -- Launch Dmenu
 oxwm.key.bind({ modkey }, 'D', oxwm.spawn({ 'sh', '-c', 'dmenu_run -l 10' }))
 -- Copy screenshot to clipboard
@@ -299,10 +301,10 @@ oxwm.key.bind({ modkey, 'Control', 'Shift' }, '9', oxwm.tag.toggletag(8))
 -- Keychords allow you to bind multiple-key sequences (like Emacs or Vim)
 -- Format: {{modifiers}, key1}, {{modifiers}, key2}, ...
 -- Example: Press Mod4+Space, then release and press T to spawn a terminal
-oxwm.key.chord({
-  { { modkey }, 'Space' },
-  { {}, 'T' },
-}, oxwm.spawn_terminal())
+-- oxwm.key.chord({
+--   { { modkey }, 'Space' },
+--   { {}, 'T' },
+-- }, oxwm.spawn_terminal())
 
 -------------------------------------------------------------------------------
 -- Autostart
@@ -310,6 +312,7 @@ oxwm.key.chord({
 -- Commands to run once when OXWM starts
 -- Uncomment and modify these examples, or add your own
 
+oxwm.autostart('albert')
 -- oxwm.autostart("picom")
 -- oxwm.autostart("feh --bg-scale ~/wallpaper.jpg")
 -- oxwm.autostart("dunst")
