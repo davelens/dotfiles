@@ -1,2 +1,10 @@
+# Set resolution for VMs (detect via systemd-detect-virt or dmidecode)
+if command -v systemd-detect-virt &>/dev/null && [ "$(systemd-detect-virt)" != "none" ]; then
+  OUTPUT=$(xrandr | grep ' connected' | head -1 | cut -d' ' -f1)
+  if [ -n "$OUTPUT" ] && xrandr | grep -q '1920x1080'; then
+    xrandr --output "$OUTPUT" --mode 1920x1080
+  fi
+fi
+
 wezterm &
 exec oxwm
