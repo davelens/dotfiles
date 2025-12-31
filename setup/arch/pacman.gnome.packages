@@ -1,0 +1,62 @@
+# GNOME desktop environment
+baobab                              # Disk usage analyzer
+decibels                            # Audio player
+# epiphany                            # GNOME web browser
+gdm                                 # Display manager
+gnome-backgrounds                   # GNOME backgrounds
+gnome-calculator                    # Calculator
+gnome-calendar                      # Calendar
+gnome-characters                    # Character map
+gnome-clocks                        # Clocks
+gnome-color-manager                 # Color management
+gnome-connections                   # Remote desktop client
+gnome-console                       # Terminal emulator
+gnome-contacts                      # Contacts manager
+gnome-control-center                # Settings
+gnome-disk-utility                  # Disk utility
+gnome-font-viewer                   # Font viewer
+gnome-keyring                       # Secret storage
+gnome-logs                          # Log viewer
+# gnome-maps                          # Maps
+gnome-menus                         # Menu system
+# gnome-music                         # Music player
+# gnome-remote-desktop                # Remote desktop server
+gnome-session                       # Session manager
+gnome-settings-daemon               # Settings daemon
+gnome-shell                         # Desktop shell
+gnome-software                      # Software center
+gnome-system-monitor                # System monitor
+# gnome-text-editor                   # Text editor
+# gnome-tour                          # Welcome tour
+gnome-themes-extra                  # Includes dark mode themes for GTK apps
+gnome-tweaks                        # Advanced settings
+gnome-user-docs                     # User documentation
+gnome-user-share                    # File sharing
+# gnome-weather                       # Weather
+grilo-plugins                       # Media discovery plugins
+gst-plugin-pipewire                 # GStreamer PipeWire plugin
+gvfs                                # Virtual filesystem
+gvfs-afc                            # Apple device support
+gvfs-dnssd                          # DNS-SD support
+# gvfs-goa                            # GNOME Online Accounts support
+# gvfs-google                         # Google Drive support
+gvfs-gphoto2                        # Camera support
+gvfs-mtp                            # MTP device support
+gvfs-nfs                            # NFS support
+gvfs-onedrive                       # OneDrive support
+gvfs-smb                            # SMB/CIFS support
+gvfs-wsdd                           # Windows discovery support
+# loupe                               # Image viewer
+# malcontent                          # Parental controls
+# nautilus                            # File manager
+# orca                                # Screen reader
+papers                              # Document viewer
+rygel                               # Media server
+# showtime                            # Video player
+# simple-scan                         # Scanner utility
+# snapshot                            # Camera app
+# sushi                               # File previewer
+# tecla                               # Keyboard viewer
+# xdg-desktop-portal-gnome            # Desktop portal
+# xdg-user-dirs-gtk                   # User directories
+yelp                                # Help viewer

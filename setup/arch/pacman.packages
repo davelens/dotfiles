@@ -36,149 +36,86 @@ xorg-server                         # X.Org display server
 xorg-xinit                          # X.Org initialization
 zram-generator                      # Systemd zram generator
 
-# GNOME desktop environment
-baobab                              # Disk usage analyzer
-decibels                            # Audio player
-# epiphany                            # GNOME web browser
-gdm                                 # Display manager
-gnome-backgrounds                   # GNOME backgrounds
-gnome-calculator                    # Calculator
-gnome-calendar                      # Calendar
-gnome-characters                    # Character map
-gnome-clocks                        # Clocks
-gnome-color-manager                 # Color management
-gnome-connections                   # Remote desktop client
-gnome-console                       # Terminal emulator
-gnome-contacts                      # Contacts manager
-gnome-control-center                # Settings
-gnome-disk-utility                  # Disk utility
-gnome-font-viewer                   # Font viewer
-gnome-keyring                       # Secret storage
-gnome-logs                          # Log viewer
-gnome-maps                          # Maps
-gnome-menus                         # Menu system
-# gnome-music                         # Music player
-# gnome-remote-desktop                # Remote desktop server
-gnome-session                       # Session manager
-gnome-settings-daemon               # Settings daemon
-gnome-shell                         # Desktop shell
-gnome-software                      # Software center
-gnome-system-monitor                # System monitor
-# gnome-text-editor                   # Text editor
-# gnome-tour                          # Welcome tour
-gnome-themes-extra                  # Includes dark mode themes for GTK apps
-gnome-tweaks                        # Advanced settings
-gnome-user-docs                     # User documentation
-gnome-user-share                    # File sharing
-# gnome-weather                       # Weather
-grilo-plugins                       # Media discovery plugins
-gst-plugin-pipewire                 # GStreamer PipeWire plugin
-gvfs                                # Virtual filesystem
-gvfs-afc                            # Apple device support
-gvfs-dnssd                          # DNS-SD support
-gvfs-goa                            # GNOME Online Accounts support
-gvfs-google                         # Google Drive support
-gvfs-gphoto2                        # Camera support
-gvfs-mtp                            # MTP device support
-gvfs-nfs                            # NFS support
-gvfs-onedrive                       # OneDrive support
-gvfs-smb                            # SMB/CIFS support
-gvfs-wsdd                           # Windows discovery support
-loupe                               # Image viewer
-malcontent                          # Parental controls
-nautilus                            # File manager
-orca                                # Screen reader
-papers                              # Document viewer
-rygel                               # Media server
-showtime                            # Video player
-simple-scan                         # Scanner utility
-snapshot                            # Camera app
-sushi                               # File previewer
-tecla                               # Keyboard viewer
-xdg-desktop-portal-gnome            # Desktop portal
-xdg-user-dirs-gtk                   # User directories
-yelp                                # Help viewer
-
 # Cross-platform packages (from Brewfile.default)
-act                                 # Run GitHub Actions locally
-asciinema                           # Records shareable terminal sessions
-atuin                               # Shell history with syncing
 automake                            # Generates Makefiles
 bash                                # Bourne Again SHell
 bash-completion                     # Generates completion for bash commands
 bash-language-server                # LSP server for Bash
-bat                                 # Cat clone with git integration + colors
 bitwarden-cli                       # Access Bitwarden vaults in shell
-btop                                # Resource monitor
-chafa                               # Image to ANSI/unicode art generator
-cmake                               # Cross-platform meta build tool
-cmatrix                             # Follow the white rabbit ...
-cmus                                # Music player
 coreutils                           # GNU Core Utils, helps do work in Unix
-ctags                               # Generates tag files for source code
 dav1d                               # Open source AV1 decoder
 ddgr                                # DuckDuckGo from the terminal
-deno                                # Modern JS and TypeScript runtime
-dialog                              # Swiss army knife of CLI dialog boxes
-discount                            # Markdown processor
-dos2unix                            # DOS to Unix and back file format converter
-duf                                 # Like df, but humanized
-dust                                # Like du, but humanized
-entr                                # File change listener
-fastfetch                           # System information tool
-fd                                  # File search
-fdupes                              # Duplicate file finder
 ffmpeg                              # Media conversion tool
 figlet                              # Text to ASCII generator
-fish                                # Friendly interactive shell
 fzf                                 # Fuzzy finder
 gawk                                # awk, but the GNU version
 gcc                                 # GNU compiler collection
 git                                 # The stupid content tracker
 git-crypt                           # Transparent git file encryption
 git-delta                           # Diff tool
-git-lfs                             # Git system to version large files
 github-cli                          # GitHub CLI tool
 gnupg                               # GNU Privacy Guard
 gnutls                              # Sets up TLS connections
 gpgme                               # GnuPG library access
-gum                                 # Fancy input processing for the terminal
 imagemagick                         # Image manipulation tools, v7+
 inetutils                           # GNU network utilities
 jq                                  # JSON processor
 less                                # Like `more`, but with more features
-libzip                              # Library to manipulate ZIP archives
 libyaml                             # YAML parser (required for Ruby's psych)
-luarocks                            # Package manager for Lua
-mariadb                             # MySQL-compatible database
-navi                                # Terminal cheatsheet
-ncdu                                # Disk usage monitor written in ncurses
-ncftp                               # FTP browser
-nethack                             # One of the best games ever made
-nmap                                # Open source network exploration tool
-pandoc                              # Markup conversion tool
 pastel                              # Terminal colour manipulation
-# pgcli                               # A better PostgreSQL client
 pkgconf                             # Helps configure compiler/linker flags
-pv                                  # Progress bar for the terminal
-python-pipx                         # Package manager for python
-redis                               # In-memory key/value database
 ripgrep                             # Fuzzy search
-rsync                               # Local and remote file copying tool
-sd                                  # Find/replace tool
 sed                                 # GNU sed (default on Arch)
 starship                            # Customizable shell prompt
 tar                                 # GNU tar (default on Arch)
-tealdeer                            # TL;DR client for man pages
-television                          # Fuzzy finder TUI
-tesseract                           # Open source text recognition engine
 tmux                                # Terminal multiplexer
-tree                                # Dumps visual file trees for folders
 tree-sitter                         # Parser generator and library
 tree-sitter-cli                     # Interact with tree-sitter through CLI
-unbound                             # Caching DNS resolver
 unzip                               # Extract ZIP archives
-viu                                 # Image viewer
 wget                                # Network downloader
-yq                                  # Convert YAML to JSON
-yt-dlp                              # YouTube video downloader
+
+# To be reviewed (not currently installed)
+# act                                 # Run GitHub Actions locally
+# asciinema                           # Records shareable terminal sessions
+# atuin                               # Shell history with syncing
+# bat                                 # Cat clone with git integration + colors
+# btop                                # Resource monitor
+# chafa                               # Image to ANSI/unicode art generator
+# cmake                               # Cross-platform meta build tool
+# cmatrix                             # Follow the white rabbit ...
+# cmus                                # Music player
+# ctags                               # Generates tag files for source code
+# deno                                # Modern JS and TypeScript runtime
+# dialog                              # Swiss army knife of CLI dialog boxes
+# discount                            # Markdown processor
+# dos2unix                            # DOS to Unix and back file format converter
+# duf                                 # Like df, but humanized
+# dust                                # Like du, but humanized
+# entr                                # File change listener
+# fastfetch                           # System information tool
+# fd                                  # File search
+# fdupes                              # Duplicate file finder
+# fish                                # Friendly interactive shell
+# git-lfs                             # Git system to version large files
+# gum                                 # Fancy input processing for the terminal
+# libzip                              # Library to manipulate ZIP archives
+# luarocks                            # Package manager for Lua
+# navi                                # Terminal cheatsheet
+# ncdu                                # Disk usage monitor written in ncurses
+# ncftp                               # FTP browser
+# nethack                             # One of the best games ever made
+# nmap                                # Open source network exploration tool
+# pandoc                              # Markup conversion tool
+# pv                                  # Progress bar for the terminal
+# python-pipx                         # Package manager for python
+# redis                               # In-memory key/value database
+# rsync                               # Local and remote file copying tool
+# sd                                  # Find/replace tool
+# tealdeer                            # TL;DR client for man pages
+# television                          # Fuzzy finder TUI
+# tesseract                           # Open source text recognition engine
+# tree                                # Dumps visual file trees for folders
+# unbound                             # Caching DNS resolver
+# viu                                 # Image viewer
+# yq                                  # Convert YAML to JSON
+# yt-dlp                              # YouTube video downloader
