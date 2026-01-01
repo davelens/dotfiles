@@ -42,11 +42,11 @@ local colors = {
 }
 
 -- Workspace tags - can be numbers, names, or icons (requires a Nerd Font)
-local tags = { '1', '2', '3', '4', '5', '6', '7', '8', '9' }
+local tags = { '', '', '󰙯', '', '󰧮' }
 -- local tags = { "", "󰊯", "", "", "󰙯", "󱇤", "", "󱘶", "󰧮" } -- Example of nerd font icon tags
 
 -- Font for the status bar (use "fc-list" to see available fonts)
-local bar_font = 'monospace:style=Bold:size=10'
+local bar_font = 'Hack Nerd Font Propo:style=Regular:size=12'
 
 -- Define your blocks
 -- Similar to widgets in qtile, or dwmblocks
@@ -55,33 +55,28 @@ local blocks = {
     format = 'Ram: {used}/{total} GB',
     interval = 5,
     color = colors.light_blue,
-    underline = true,
   }),
   oxwm.bar.block.static({
     text = ' │  ',
     interval = 999999999,
     color = colors.lavender,
-    underline = false,
   }),
   oxwm.bar.block.shell({
     format = '{}',
     command = 'uname -r',
     interval = 999999999,
     color = colors.red,
-    underline = true,
   }),
   oxwm.bar.block.static({
     text = ' │  ',
     interval = 999999999,
     color = colors.lavender,
-    underline = false,
   }),
   oxwm.bar.block.datetime({
     format = '{}',
     date_format = '%a, %b %d - %-I:%M %P',
     interval = 1,
     color = colors.cyan,
-    underline = true,
   }),
   -- Uncomment to add battery status (useful for laptops)
   oxwm.bar.block.battery({
@@ -91,7 +86,6 @@ local blocks = {
     full = '✓ Bat: {}%',
     interval = 30,
     color = colors.green,
-    underline = true,
   }),
 }
 
@@ -143,10 +137,11 @@ oxwm.gaps.set_outer(5, 5)
 -- - Configure window behavior based on title or class
 
 -- Examples (uncomment to use):
-oxwm.rule.add({ instance = 'gimp', floating = true })
--- oxwm.rule.add({ class = "Alacritty", tag = 9, focus = true })
--- oxwm.rule.add({ class = "firefox", title = "Library", floating = true })
--- oxwm.rule.add({ class = "firefox", tag = 2 })
+-- oxwm.rule.add({ instance = 'gimp', floating = true })
+oxwm.rule.add({ class = 'wezterm', tag = 1 })
+oxwm.rule.add({ class = 'firefox', tag = 2 })
+oxwm.rule.add({ class = 'discord', tag = 3 })
+oxwm.rule.add({ class = 'firefox', title = 'YouTube', tag = 4 })
 -- oxwm.rule.add({ instance = "mpv", floating = true })
 
 -- To find window properties, use xprop and click on the window
@@ -190,6 +185,7 @@ oxwm.bar.set_scheme_urgent(colors.red, colors.bg, colors.red)
 -- Basic window management
 
 oxwm.key.bind({ modkey }, 'Return', oxwm.spawn_terminal())
+oxwm.key.bind({ modkey }, 'F', oxwm.spawn({ 'firefox' }))
 -- Launch Albert
 oxwm.key.bind({ modkey }, 'Space', oxwm.spawn({ 'albert', 'toggle' }))
 -- Launch Dmenu
@@ -210,8 +206,8 @@ oxwm.key.bind({ modkey, 'Shift' }, 'F', oxwm.client.toggle_fullscreen())
 oxwm.key.bind({ modkey, 'Shift' }, 'Space', oxwm.client.toggle_floating())
 
 -- Layout management
-oxwm.key.bind({ modkey }, 'F', oxwm.layout.set('normie'))
-oxwm.key.bind({ modkey }, 'C', oxwm.layout.set('tiling'))
+-- oxwm.key.bind({ modkey }, 'F', oxwm.layout.set('normie'))
+-- oxwm.key.bind({ modkey }, 'C', oxwm.layout.set('tiling'))
 -- Cycle through layouts
 oxwm.key.bind({ modkey }, 'N', oxwm.layout.cycle())
 
