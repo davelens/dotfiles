@@ -113,12 +113,12 @@ oxwm.set_layout_symbol('tabbed', '[=]')
 -- Width in pixels
 oxwm.border.set_width(2)
 -- Color of focused window border
-oxwm.border.set_focused_color(colors.blue)
+oxwm.border.set_focused_color(colors.lavender)
 -- Color of unfocused window borders
 oxwm.border.set_unfocused_color(colors.grey)
 
 -- Smart Enabled = No border if 1 window
-oxwm.gaps.set_smart(enabled)
+-- oxwm.gaps.set_smart(enabled)
 -- Inner gaps (horizontal, vertical) in pixels
 oxwm.gaps.set_inner(5, 5)
 -- Outer gaps (horizontal, vertical) in pixels
@@ -160,11 +160,11 @@ oxwm.bar.set_blocks(blocks)
 -- Parameters: foreground, background, border
 
 -- Unoccupied tags
-oxwm.bar.set_scheme_normal(colors.fg, colors.bg, '#444444')
+oxwm.bar.set_scheme_normal(colors.fg, colors.bg, colors.grey)
 -- Occupied tags
-oxwm.bar.set_scheme_occupied(colors.cyan, colors.bg, colors.cyan)
+oxwm.bar.set_scheme_occupied(colors.lavender, colors.bg, colors.bg)
 -- Currently selected tag
-oxwm.bar.set_scheme_selected(colors.cyan, colors.bg, colors.purple)
+oxwm.bar.set_scheme_selected(colors.green, colors.bg, colors.bg)
 -- Urgent tags (windows requesting attention)
 oxwm.bar.set_scheme_urgent(colors.red, colors.bg, colors.red)
 
