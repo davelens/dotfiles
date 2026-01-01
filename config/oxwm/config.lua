@@ -29,16 +29,16 @@ local terminal = 'wezterm'
 -- local colors = require("colors.lua") and make colors.lua a file
 -- in the ~/.config/oxwm directory
 local colors = {
-  fg = '#bbbbbb',
-  red = '#f7768e',
-  bg = '#1a1b26',
-  cyan = '#0db9d7',
-  green = '#9ece6a',
-  lavender = '#a9b1d6',
-  light_blue = '#7aa2f7',
-  grey = '#bbbbbb',
-  blue = '#6dade3',
-  purple = '#ad8ee6',
+  fg = '#cdd6f4',
+  red = '#f38ba8',
+  bg = '#1e1e2e',
+  cyan = '#94e2d5',
+  green = '#a6e3a1',
+  lavender = '#b4befe',
+  light_blue = '#89b4fa',
+  grey = '#6c7086',
+  blue = '#89b4fa',
+  purple = '#cba6f7',
 }
 
 -- Workspace tags - can be numbers, names, or icons (requires a Nerd Font)
