@@ -50,14 +50,15 @@ install_from_file() {
 }
 
 prune() {
-  orphans=$(paru -Qdtq 2>/dev/null || true)
+  local orphans
+  mapfile -t orphans < <(paru -Qdtq 2>/dev/null)
 
-  if [[ -z "$orphans" ]]; then
+  if [[ ${#orphans[@]} -eq 0 ]]; then
     echo "Nothing to prune."
     exit 0
   fi
 
-  paru -Rns "$orphans"
+  paru -Rns "${orphans[@]}"
 }
 
 usage() {
