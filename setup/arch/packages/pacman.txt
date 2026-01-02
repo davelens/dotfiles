@@ -11,6 +11,7 @@ htop                                # Process viewer
 libpulse                            # PulseAudio client library
 linux                               # Linux kernel
 linux-firmware                      # Firmware files for Linux
+neofetch                            # System information tool
 neovim                              # Vim-fork text editor
 networkmanager                      # Network connection manager
 network-manager-applet              # NetworkManager applet
