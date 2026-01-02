@@ -1,5 +1,53 @@
 #!/usr/bin/env bash
 set -e
+source "$(dirname "${BASH_SOURCE[0]}")"/helpers.sh
+
+UPDATE=false
+
+aur_package_exists() {
+  paru -Sia "$1" &>/dev/null
+}
+
+# Priority: -bin > regular > skip -git
+resolve_aur_package() {
+  local pkg="$1"
+
+  # Already has suffix, use as-is
+  [[ "$pkg" == *-bin || "$pkg" == *-git ]] && echo "$pkg" && return
+
+  if aur_package_exists "${pkg}-bin"; then
+    echo "${pkg}-bin"
+  elif aur_package_exists "$pkg"; then
+    echo "$pkg"
+  else
+    echo "Warning: Package '$pkg' not found in AUR, skipping" >&2
+  fi
+}
+
+install_from_file() {
+  local file="$1"
+
+  if [[ ! -f "$file" ]]; then
+    echo "Error: File not found: $file" >&2
+    exit 1
+  fi
+
+  local packages resolved=()
+  mapfile -t packages < <(read_packages "$file")
+
+  if [[ ${#packages[@]} -eq 0 ]]; then
+    echo "No packages found in $file"
+    exit 0
+  fi
+
+  for pkg in "${packages[@]}"; do
+    result=$(resolve_aur_package "$pkg")
+    [[ -n "$result" ]] && resolved+=("$result")
+  done
+
+  [[ "$UPDATE" == true ]] && paru -Syu --noconfirm
+  [[ ${#resolved[@]} -gt 0 ]] && paru -S --noconfirm --skipreview --needed --provides=no "${resolved[@]}"
+}
 
 prune() {
   orphans=$(paru -Qdtq 2>/dev/null || true)
@@ -16,19 +64,34 @@ usage() {
   echo "Usage: $(basename "$0") [OPTIONS]"
   echo
   echo "Options:"
-  echo "  --prune     Remove orphaned packages"
-  echo "  -h, --help  Show this help message"
+  echo "  --install-from-file <file>  Install packages listed in the given file"
+  echo "  --prune                     Remove orphaned packages"
+  echo "  --update                    Run -Syu before installing packages"
   exit 0
 }
 
-case "$1" in
---prune)
-  prune
-  ;;
--h | --help)
-  usage
-  ;;
-*)
-  usage
-  ;;
-esac
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  --update)
+    UPDATE=true
+    shift
+    ;;
+  --install-from-file)
+    [[ -z "$2" ]] && echo "Error: No file specified" >&2 && exit 1
+    install_from_file "$2"
+    exit 0
+    ;;
+  --prune)
+    prune
+    exit 0
+    ;;
+  -h | --help)
+    usage
+    ;;
+  *)
+    usage
+    ;;
+  esac
+done
+
+usage

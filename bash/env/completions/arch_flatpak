@@ -1,11 +1,11 @@
-# Completion for `utility arch pacman`
+# Completion for `utility arch flatpak`
 
-_arch_pacman_completions() {
+_arch_flatpak_completions() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   local prev="${COMP_WORDS[COMP_CWORD-1]}"
 
   case "$prev" in
-    pacman)
+    flatpak)
       COMPREPLY=($(compgen -W "--install-from-file --update" -- "$cur"))
       ;;
     --install-from-file)
@@ -19,5 +19,5 @@ _arch_pacman_completions() {
   esac
 }
 
-_arch_pacman_completions
-unset -f _arch_pacman_completions
+_arch_flatpak_completions
+unset -f _arch_flatpak_completions

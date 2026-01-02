@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -e
+
+usage() {
+  echo "Usage: $(basename "$0") [OPTIONS]"
+  echo
+  echo "Install all packages from dotfiles package lists."
+  echo
+  echo "Options:"
+  echo "  --update    Run paru -Syu before installing packages"
+  echo "  -h, --help  Show this help message"
+  exit 0
+}
+
+UPDATE=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  --update)
+    UPDATE=true
+    shift
+    ;;
+  -h | --help)
+    usage
+    ;;
+  *)
+    usage
+    ;;
+  esac
+done
+
+if [[ "$UPDATE" == true ]]; then
+  paru -Syu --noconfirm
+  flatpak update -y
+fi
+
+PACKAGES_DIR="$DOTFILES_REPO_HOME/setup/arch/packages"
+utility arch pacman --install-from-file "$PACKAGES_DIR/pacman.txt"
+utility arch paru --install-from-file "$PACKAGES_DIR/aur.txt"
+utility arch flatpak --install-from-file "$PACKAGES_DIR/flatpak.txt"

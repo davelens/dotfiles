@@ -6,7 +6,12 @@ _arch_paru_completions() {
 
   case "$prev" in
     paru)
-      COMPREPLY=($(compgen -W "--prune --help -h" -- "$cur"))
+      COMPREPLY=($(compgen -W "--install-from-file --prune --update" -- "$cur"))
+      ;;
+    --install-from-file)
+      # Complete file paths without adding space after directories
+      compopt -o nospace
+      COMPREPLY=($(compgen -f -- "$cur"))
       ;;
     *)
       COMPREPLY=()

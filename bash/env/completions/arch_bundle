@@ -1,0 +1,10 @@
+# Completion for `utility arch bundle`
+
+_arch_bundle_completions() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+
+  COMPREPLY=($(compgen -W "--update" -- "$cur"))
+}
+
+_arch_bundle_completions
+unset -f _arch_bundle_completions

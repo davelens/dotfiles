@@ -20,8 +20,8 @@ install_from_file() {
     exit 0
   fi
 
-  [[ "$UPDATE" == true ]] && sudo pacman -Syu --noconfirm
-  sudo pacman -S --noconfirm --needed "${packages[@]}"
+  [[ "$UPDATE" == true ]] && flatpak update -y
+  flatpak --user install -y --noninteractive flathub "${packages[@]}"
 }
 
 usage() {
@@ -29,7 +29,8 @@ usage() {
   echo
   echo "Options:"
   echo "  --install-from-file <file>  Install packages listed in the given file"
-  echo "  --update                    Run -Syu before installing packages"
+  echo "  --update                    Run flatpak update before installing packages"
+  echo "  -h, --help                  Show this help message"
   exit 0
 }
 
