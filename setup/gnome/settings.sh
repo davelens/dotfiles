@@ -22,6 +22,6 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings \
 # Albert launcher: Super+Space
 dconf write "${CUSTOM_KEYBINDINGS_PATH}/custom0/name" "'Open Albert'"
 dconf write "${CUSTOM_KEYBINDINGS_PATH}/custom0/command" "'albert toggle'"
-dconf write "${CUSTOM_KEYBINDINGS_PATH}/custom0/binding" "'<Super>space'"
+dconf write "${CUSTOM_KEYBINDINGS_PATH}/custom0/binding" "'<Alt>space'"
 
 echo "GNOME settings configured."
