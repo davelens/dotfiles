@@ -5,7 +5,7 @@ set -e
 # I might remove gnome-boxes once I'm familiar enough with QEMU on the CLI.
 
 echo "==> Installing QEMU/KVM and VM management tools..."
-sudo pacman -S --needed --noconfirm qemu-full virt-manager gnome-boxes libvirt dnsmasq
+sudo pacman -S --needed --noconfirm qemu-full virt-manager gnome-boxes libvirt
 
 echo "==> Enabling libvirtd service..."
 sudo systemctl enable --now libvirtd
