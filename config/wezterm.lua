@@ -119,6 +119,25 @@ if platforms.linux or platforms.windows then
 
   config.line_height = 1.08
   config.window_padding = { left = 10, right = 10, top = 0, bottom = 0 }
+
+  -- Ctrl+c copies when text is selected, otherwise sends SIGINT
+  config.keys = {
+    {
+      key = 'c',
+      mods = 'CTRL',
+      action = wezterm.action_callback(function(window, pane)
+        local has_selection = window:get_selection_text_for_pane(pane) ~= ''
+        if has_selection then
+          window:perform_action(wezterm.action.CopyTo('Clipboard'), pane)
+        else
+          window:perform_action(
+            wezterm.action.SendKey({ key = 'c', mods = 'CTRL' }),
+            pane
+          )
+        end
+      end),
+    },
+  }
 end
 
 return config
