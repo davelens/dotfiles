@@ -11,7 +11,6 @@ htop                                # Process viewer
 libpulse                            # PulseAudio client library
 linux                               # Linux kernel
 linux-firmware                      # Firmware files for Linux
-neofetch                            # System information tool
 neovim                              # Vim-fork text editor
 networkmanager                      # Network connection manager
 network-manager-applet              # NetworkManager applet
@@ -59,7 +58,7 @@ gpgme                               # GnuPG library access
 imagemagick                         # Image manipulation tools, v7+
 inetutils                           # GNU network utilities
 jq                                  # JSON processor
-less                                # Like `more`, but with more features
+less                                # Reads text files, one screen at a time
 libyaml                             # YAML parser (required for Ruby's psych)
 pastel                              # Terminal colour manipulation
 pkgconf                             # Helps configure compiler/linker flags
