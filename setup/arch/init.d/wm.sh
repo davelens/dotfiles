@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 sudo pacman -S --needed --noconfirm \
-  sway sway-contrib swaybg swayidle \
+  sway sway-contrib swaybg swayidle swaylock \
   waybar \
   mako \
   libpulse \
