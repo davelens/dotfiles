@@ -6,4 +6,5 @@ sudo pacman -S --needed --noconfirm \
   mako \
   libpulse \
   grim \
-  rofi-wayland
+  rofi-wayland \
+  wev

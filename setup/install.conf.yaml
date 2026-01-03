@@ -42,6 +42,7 @@
     $XDG_CONFIG_HOME/kanata/kanata.kbd: config/kanata.kbd
     $XDG_CONFIG_HOME/karabiner: config/macos/karabiner
     $XDG_CONFIG_HOME/mise: config/mise
+    $XDG_CONFIG_HOME/mpv: config/mpv
     $XDG_CONFIG_HOME/opencode/opencode.json: config/opencode.json
     $XDG_CONFIG_HOME/oxwm: config/oxwm
     $XDG_CONFIG_HOME/rspec/options: config/rspec
@@ -50,7 +51,8 @@
     $XDG_CONFIG_HOME/shellcheckrc: config/shellcheckrc
     $XDG_CONFIG_HOME/sketchybar: config/macos/sketchybar
     $XDG_CONFIG_HOME/starship.toml: config/starship.toml
-    $XDG_CONFIG_HOME/sway/config: config/sway/config
+    $XDG_CONFIG_HOME/sway: config/sway
+    $XDG_CONFIG_HOME/swaylock: config/swaylock
     $XDG_CONFIG_HOME/tmux: config/tmux
     $XDG_CONFIG_HOME/wezterm/wezterm.lua: config/wezterm.lua
     $XDG_CONFIG_HOME/X11: config/X11
