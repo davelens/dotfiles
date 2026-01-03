@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# This installs QEMU alongside gnome-boxes for a basic GUI.
-# I might remove gnome-boxes once I'm familiar enough with QEMU on the CLI.
-
 echo "==> Installing QEMU/KVM and VM management tools..."
 sudo pacman -S --needed --noconfirm qemu-full virt-manager libvirt dmidecode
 
