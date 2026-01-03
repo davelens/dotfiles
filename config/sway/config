@@ -240,7 +240,7 @@ bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
 
 # Screenshots
 bindsym $mod+p exec grim ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S).png
-bindsym $mod+s exec maim -s | xclip -selection clipboard -t image/jpg
+bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
 
 # Status Bar
 # Read `man 5 sway-bar` for more info.
