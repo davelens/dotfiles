@@ -1,5 +1,4 @@
 # Arch-specific system packages
-# Currently still using Gnome on Wayland until I get my bearings on Arch.
 amd-ucode                           # AMD CPU microcode
 base                                # Minimal base system
 base-devel                          # Development tools (make, gcc, etc.)
@@ -13,9 +12,9 @@ libpulse                            # PulseAudio client library
 linux                               # Linux kernel
 linux-firmware                      # Firmware files for Linux
 man-db                              # Manuals for CLI tools via `man`
-neovim                              # Vim-fork text editor
-networkmanager                      # Network connection manager
+neovim                              # My home away from home
 network-manager-applet              # NetworkManager applet
+networkmanager                      # Network connection manager
 pipewire                            # Audio/video server
 pipewire-alsa                       # ALSA support for PipeWire
 pipewire-jack                       # JACK support for PipeWire
