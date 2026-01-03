@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-DOTFILES_DIR="${DOTFILES_REPO_HOME:-$HOME/Repositories/davelens/dotfiles}"
-
 sudo pacman -S --needed --noconfirm power-profiles-daemon
 
 sudo systemctl enable --now power-profiles-daemon
 
 # Install udev rule for automatic profile switching
-sudo cp "$DOTFILES_DIR/config/arch/udev/99-power-profiles.rules" /etc/udev/rules.d/
+sudo cp "$DOTFILES_REPO_HOME/config/arch/udev/99-power-profiles.rules" /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 
 echo "Power profiles daemon installed and enabled."

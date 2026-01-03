@@ -8,3 +8,6 @@ sudo pacman -S --needed --noconfirm \
   grim \
   rofi-wayland \
   wev
+
+# Fingerprint auth with swaylock.
+sudo cp "$DOTFILES_REPO_HOME/config/swaylock/pam-d.config" /etc/pam.d/swaylock
