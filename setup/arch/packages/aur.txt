@@ -1,6 +1,6 @@
 # AUR packages (installed via paru)
 
-albert-bin                          # Application launcher
+albert                              # Application launcher
 bitwarden-bin                       # Password manager (GUI)
 clipboard-bin                       # Clipboard manager
 firefox-bin                         # Web browser
