@@ -1,34 +1,66 @@
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
 # Read `man 5 sway` for a complete reference.
 
-### Variables
-#
-# Logo key. Use Mod1 for Alt.
+# This is the main mod key with which to control Sway.
+# Mod1 = Alt
+# Mod4 = Super
 set $mod Mod1
-# Home row direction keys, like vim
-set $left h
-set $down j
-set $up k
-set $right l
-# Your preferred terminal emulator
-set $term wezterm
-set $browser firefox
-# Your preferred application launcher
-set $menu 'rofi -show'
+
+# Vim-friendly home row direction keys.
+set $left       h
+set $down       j
+set $up         k
+set $right      l
+
+# Applications
+set $term       wezterm
+set $browser    firefox
+set $launcher   'albert toggle'
+
+# Catppuccin Macchiato color scheme
+set $rosewater  #f4dbd6
+set $flamingo   #f0c6c6
+set $pink       #f5bde6
+set $mauve      #c6a0f6
+set $red        #ed8796
+set $maroon     #ee99a0
+set $peach      #f5a97f
+set $yellow     #eed49f
+set $green      #a6da95
+set $teal       #8bd5ca
+set $sky        #91d7e3
+set $sapphire   #7dc4e4
+set $blue       #8aadf4
+set $lavender   #b7bdf8
+set $text       #cad3f5
+set $subtext1   #b8c0e0
+set $subtext0   #a5adcb
+set $overlay2   #939ab7
+set $overlay1   #8087a2
+set $overlay0   #6e738d
+set $surface2   #5b6078
+set $surface1   #494d64
+set $surface0   #363a4f
+set $base       #24273a
+set $mantle     #1e2030
+set $crust      #181926
+set $grey       #6e738d
 
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+output * bg ~/Pictures/wallpapers/dune-catppuccin.jpg fill
 output WL-1 resolution 1920x1080 position 1920,0
 gaps inner 8
 
-set $border_normal #4C566A
 default_border pixel 3
-client.unfocused #FFFFFF #FF0000 #333333
+
+# Window colors         border     background  text       indicator   child_border
+client.focused          $lavender  $base       $text      $lavender   $lavender
+client.focused_inactive $surface1  $base       $subtext1  $surface1   $surface1
+client.unfocused        $grey      $base       $overlay0  $grey       $grey
+client.urgent           $red       $base       $text      $red        $red
+client.placeholder      $base      $base       $text      $base       $base
+client.background       $base
 
 smart_borders on
 
@@ -82,7 +114,7 @@ smart_borders on
     bindsym $mod+Shift+q kill
 
     # Start your launcher
-    bindsym $mod+d exec $menu
+    bindsym $mod+Space exec $launcher
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -234,9 +266,12 @@ bar {
     status_command while date +'%Y-%m-%d %X'; do sleep 1; done
 
     colors {
-        statusline #ffffff
-        background #323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
+        statusline $text
+        background $base
+        focused_workspace $lavender $base $lavender
+        active_workspace $surface1 $base $subtext1
+        inactive_workspace $base $base $overlay0
+        urgent_workspace $red $base $red
     }
 }
 
