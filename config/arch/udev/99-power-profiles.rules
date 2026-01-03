@@ -1,0 +1,8 @@
+# Automatically switch power profiles based on AC/battery state
+# Install to /etc/udev/rules.d/99-power-profiles.rules
+
+# On AC power: switch to performance
+ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="1", RUN+="/usr/bin/powerprofilesctl set performance"
+
+# On battery: switch to power-saver
+ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="0", RUN+="/usr/bin/powerprofilesctl set power-saver"
