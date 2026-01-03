@@ -6,11 +6,6 @@ sudo pacman -S --needed --noconfirm fprintd
 echo "Starting fingerprint enrollment..."
 fprintd-enroll
 
-# Enable fingerprint authentication in GDM.
-# NOTE: I'd have to test this in isolation if this is sufficient, or if I
-# do actually need to update the pam.d files manually.
-sudo gdm-config fingerprint --enable
-
 # PAM configuration for fingerprint auth. Afaik you only need to cover
 # login, su, and sudo files.
 PAM_CONFIG="auth required pam_env.so

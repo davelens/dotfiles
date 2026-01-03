@@ -3,6 +3,11 @@ set -e
 
 echo "==> Configuring GNOME settings..."
 
+# Enable fingerprint authentication in GDM.
+# NOTE: I'd have to test this in isolation if this is sufficient, or if I
+# do actually need to update the pam.d files manually.
+sudo gdm-config fingerprint --enable
+
 # Dark mode for GTK apps
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
