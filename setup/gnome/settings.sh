@@ -7,6 +7,10 @@ echo "==> Configuring GNOME settings..."
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
+# Traditional (non-natural) scrolling for mouse and touchpad
+gsettings set org.gnome.desktop.peripherals.mouse natural-scroll false
+gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll false
+
 # Disable default keybindings that conflict with custom workflows
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source "[]"
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "[]"
