@@ -83,6 +83,10 @@ exec swayidle -w \
   resume 'swaymsg "output * power on"' \
   before-sleep 'swaylock -f -c 000000'
 
+# Clipboard manager (supports text and images)
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist store
+
 # Input configuration
 input type:touchpad {
   dwt enabled
@@ -103,6 +107,7 @@ input type:touchpad {
 bindsym $mod+Return exec $term
 bindsym $mod+d exec $launcher
 bindsym $mod+u exec $browser
+bindsym $mod+c exec cliphist list | rofi -dmenu -p "Clipboard" | cliphist decode | wl-copy
 
 ### Actions ###################################################################
 
