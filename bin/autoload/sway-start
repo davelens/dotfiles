@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Wrapper script to start Sway with appropriate GPU settings.
+# On battery: use integrated GPU (Radeon 880M) for compositing.
+# On AC: use discrete GPU (RX 7700S) for compositing.
+#
+# Games can still use the discrete GPU via DRI_PRIME=1.
+
+BATTERY_STATUS=$(cat /sys/class/power_supply/BAT1/status 2>/dev/null)
+
+if [[ "$BATTERY_STATUS" == "Discharging" ]]; then
+  export WLR_DRM_DEVICES=/dev/dri/card2
+fi
+
+exec sway "$@"
