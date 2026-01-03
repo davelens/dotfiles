@@ -52,18 +52,18 @@ set $grey       #6e738d
 output WL-1 resolution 1920x1080 position 1920,0
 output * bg ~/Pictures/wallpapers/dune-catppuccin.jpg fill
 
-# test
-smart_borders on
+# Borders & gaps
+smart_borders off
 default_border pixel 3
 gaps inner 8
 
-# Window colors         border     background  text       indicator   child_border
-client.focused          $lavender  $base       $text      $lavender   $lavender
-client.focused_inactive $surface1  $base       $subtext1  $surface1   $surface1
-client.unfocused        $grey      $base       $overlay0  $grey       $grey
-client.urgent           $red       $base       $text      $red        $red
-client.placeholder      $base      $base       $text      $base       $base
-client.background       $base
+# Window colors           border     bg     text       indicator   child_border
+client.focused            $lavender  $base  $text      $lavender   $lavender
+client.focused_inactive   $surface1  $base  $subtext1  $surface1   $surface1
+client.unfocused          $grey      $base  $overlay0  $grey       $grey
+client.urgent             $red       $base  $text      $red        $red
+client.placeholder        $base      $base  $text      $base       $base
+client.background         $base
 
 # Idle configuration
 # 1. Lock screen after 300 seconds of inactivity.
@@ -76,27 +76,24 @@ exec swayidle -w \
   resume 'swaymsg "output * power on"' \
   before-sleep 'swaylock -f -c 000000'
 
-###############################################################################
-# Everything below is TODO
-###############################################################################
+# Input configuration
+input type:touchpad {
+  dwt enabled
+  tap enabled
+  natural_scroll disabled
+  middle_emulation enabled
+}
 
-### Input configuration
-#
-# Example configuration:
-#
-#   input type:touchpad {
-#       dwt enabled
-#       tap enabled
-#       natural_scroll enabled
-#       middle_emulation enabled
-#   }
+# To configure keyboard layouts e.a.
+# Read `man 5 sway-input` for more info.
 #
 #   input type:keyboard {
 #       xkb_layout "eu"
 #   }
-#
-# You can also configure each device individually.
-# Read `man 5 sway-input` for more information about this section.
+
+###############################################################################
+# Everything below is TODO
+###############################################################################
 
 ### Key bindings
 #
@@ -110,7 +107,7 @@ exec swayidle -w \
     bindsym $mod+Shift+q kill
 
     # Start your launcher
-    bindsym $mod+Space exec $launcher
+    bindsym $mod+d exec $launcher
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -175,9 +172,11 @@ exec swayidle -w \
     bindsym $mod+Shift+0 move container to workspace number 10
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
+
 #
 # Layout stuff:
 #
+
     # You can "split" the current object of your focus with
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
@@ -200,6 +199,7 @@ exec swayidle -w \
 
     # Move focus to the parent container
     bindsym $mod+a focus parent
+
 #
 # Scratchpad:
 #
