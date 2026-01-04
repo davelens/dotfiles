@@ -52,7 +52,7 @@ set $grey       #6e738d
 # Workspace assignments (auto-move to workspace on open)
 # Get a list of app IDs with `swaymsg -t get_tree`.
 assign [app_id="^org.wezfurlong.wezterm$"] workspace number 1
-assign [app_id="^Firefox$"] workspace number 2
+assign [app_id="Firefox"] workspace number 2
 assign [class="discord"] workspace number 3
 assign [app_id="^Spotify$"] workspace number 4
 
@@ -62,6 +62,7 @@ for_window [window_role="dialog"] floating enable
 for_window [app_id="pavucontrol"] floating enable
 for_window [app_id="blueman-manager"] floating enable
 for_window [app_id="floating-term"] floating enable
+for_window [app_id="Firefox" title="^Extension"] floating enable
 
 # Press 'q' to close floating-term windows
 # NOTE: Conflicts with WezTerm/nvim so in comment for now.
