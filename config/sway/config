@@ -269,5 +269,8 @@ mode swtchr bindsym Escape mode default
 #     }
 # }
 
+# Start sway-session.target for systemd user services that depend on Sway
+exec systemctl --user start sway-session.target
+
 # I'm on Arch, so this includes additional systemd configuration. Don't remove.
 include /etc/sway/config.d/*
