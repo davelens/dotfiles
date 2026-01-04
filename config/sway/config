@@ -105,7 +105,7 @@ input type:touchpad {
 ### Launchers #################################################################
 
 bindsym $mod+Return exec $term
-bindsym $mod+d exec $launcher
+bindsym $mod+Space exec $launcher
 bindsym $mod+u exec $browser
 bindsym $mod+c exec cliphist list | rofi -dmenu -p "Clipboard" | cliphist decode | wl-copy
 
