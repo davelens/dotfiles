@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Launch a command in a floating WezTerm window.
+# `floating-term` is defined in our Sway config to always open as floating.
+# Usage: float <command> [args...]
+
+if [ $# -eq 0 ]; then
+  wezterm start --class floating-term
+else
+  wezterm start --class floating-term -- "$@"
+fi
