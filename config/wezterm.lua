@@ -24,6 +24,7 @@ config.max_fps = 120 -- Fixes the (s)low default of 60, this feels snappier.
 config.enable_tab_bar = false
 config.color_scheme = 'Catppuccin Mocha'
 config.window_padding = { left = 10, right = 10, top = 0, bottom = 0 }
+config.window_close_confirmation = 'NeverPrompt'
 
 config.font_size = 14.0
 config.font = wezterm.font_with_fallback({
