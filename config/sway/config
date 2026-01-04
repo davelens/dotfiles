@@ -194,12 +194,8 @@ bindsym $mod+a focus parent
 # 7-10 are disabled because I might use those as app launchers.
 
 # Switch to workspace
-bindsym $mod+1 workspace number 1
-bindsym $mod+2 workspace number 2
-bindsym $mod+3 workspace number 3
-bindsym $mod+4 workspace number 4
-bindsym $mod+5 workspace number 5
-bindsym $mod+6 workspace number 6
+bindsym $mod+bracketleft workspace prev
+bindsym $mod+bracketright workspace next
 
 # Move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number 1
