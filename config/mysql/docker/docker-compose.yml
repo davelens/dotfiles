@@ -1,0 +1,24 @@
+# MySQL 8.4 for local Rails development
+#
+#   `docker compose exec mysql mysql -uroot -proot`
+#
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: mysql84
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql84-data:/var/lib/mysql
+      - ./my.cnf:/etc/mysql/conf.d/local-dev.cnf:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql84-data:
