@@ -1,0 +1,31 @@
+[mysqld]
+# =====================================================
+# Performance optimizations for LOCAL DEVELOPMENT ONLY
+# DO NOT use these settings in production!
+# =====================================================
+
+# InnoDB Buffer Pool - 4GB for 64GB RAM system
+innodb_buffer_pool_size = 4G
+innodb_buffer_pool_instances = 4
+
+# Reduce disk I/O - trade durability for speed
+innodb_flush_log_at_trx_commit = 0
+sync_binlog = 0
+
+# Disable binary logging
+skip-log-bin
+
+# Disable performance schema
+performance_schema = OFF
+
+# Connection and thread settings
+thread_cache_size = 8
+table_open_cache = 400
+
+# Temp tables in memory
+tmp_table_size = 64M
+max_heap_table_size = 64M
+
+# Reduce logging overhead
+general_log = 0
+slow_query_log = 0
