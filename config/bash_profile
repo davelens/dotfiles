@@ -31,10 +31,10 @@ source "$DOTFILES_REPO_HOME/bash/aliases.sh"
 ###############################################################################
 # OS specific configuration and/or overrides.
 ###############################################################################
-case $("$XDG_BIN_HOME/os" --platform) in
+case $("$XDG_BIN_HOME/os") in
 wsl) source "$DOTFILES_REPO_HOME/bash/env/os/wsl/init.sh" ;;
 macos) source "$DOTFILES_REPO_HOME/bash/env/os/macos/init.sh" ;;
-linux) source "$DOTFILES_REPO_HOME/bash/env/os/linux/init.sh" ;;
+arch) source "$DOTFILES_REPO_HOME/bash/env/os/linux/init.sh" ;;
 esac
 
 ###############################################################################
