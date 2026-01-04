@@ -242,6 +242,12 @@ bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
 bindsym $mod+p exec grim ~/Pictures/Screenshots/$(date +%Y%m%d_%H%M%S).png
 bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
 
+## Alt+Tab window switching (swtchr)
+# Uses a Sway mode to prevent key consumption while swtchr is open.
+# Releasing Alt switches to the selected window.
+bindsym $mod+Tab mode swtchr; exec swtchr
+mode swtchr bindsym Escape mode default
+
 # Status Bar
 # Read `man 5 sway-bar` for more info.
 # I use waybar, so no need for the default status bar. I'll leave an example
