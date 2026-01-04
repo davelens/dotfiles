@@ -15,7 +15,7 @@
 		// "justify":
 		"min-length": 2,
 		"max-length": 2,
-		"on-click": "float ~/.config/waybar/scripts/system-update.sh",
+		"on-click": "~/.local/bin/float ~/.config/waybar/scripts/system-update.sh",
 		// "on-click-middle":
 		"on-click-right": "pkill -RTMIN+1 waybar"
 		// "on-update":
