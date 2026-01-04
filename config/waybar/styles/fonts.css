@@ -1,0 +1,27 @@
+* {
+	font-family: "CommitMono Nerd Font", "Hack Nerd Font";
+	font-weight: bold;
+	font-size: 16px;
+}
+
+#custom-user,
+#window label,
+#mpris,
+tooltip label {
+	font-weight: normal;
+}
+
+#custom-distro {
+	font-size: 20px;
+}
+
+#custom-power_menu {
+	font-size: 18px;
+}
+
+#custom-left_div,
+#custom-left_inv,
+#custom-right_div,
+#custom-right_inv {
+	font-size: 22px;
+}

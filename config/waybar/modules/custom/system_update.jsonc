@@ -1,0 +1,33 @@
+{
+	"custom/system_update": {
+		"exec": "~/.config/waybar/scripts/system-update.sh module",
+		// "exec-if":
+		// "exec-on-event":
+		// "hide-empty-text":
+		"return-type": "json",
+		"interval": 3600,
+		// "restart-interval":
+		"signal": 1,
+		"format": "{}",
+		// "format-icons":
+		// "rotate":
+		// "align":
+		// "justify":
+		"min-length": 2,
+		"max-length": 2,
+		"on-click": "float ~/.config/waybar/scripts/system-update.sh",
+		// "on-click-middle":
+		"on-click-right": "pkill -RTMIN+1 waybar"
+		// "on-update":
+		// "on-scroll-up":
+		// "on-scroll-down":
+		// "smooth-scrolling-threshold":
+		// "tooltip":
+		// "tooltip-format":
+		// "escape":
+		// "menu":
+		// "menu-file":
+		// "menu-actions":
+		// "expand":
+	}
+}

@@ -1,0 +1,30 @@
+{
+	"idle_inhibitor": {
+		"format": "{icon}",
+		"format-icons": {
+			"activated": "󰈈",
+			"deactivated": "󰈉"
+		},
+		// "rotate":
+		"min-length": 3,
+		"max-length": 3,
+		// "align":
+		// "justify":
+		// "on-click":
+		// "on-click-middle":
+		// "on-click-right":
+		// "on-update":
+		// "on-scroll-up":
+		// "on-scroll-down":
+		// "smooth-scrolling-threshold":
+		// "tooltip":
+		"tooltip-format-activated": "<b>Idle Inhibitor</b>: Activated",
+		"tooltip-format-deactivated": "<b>Idle Inhibitor</b>: Deactivated",
+		"start-activated": false
+		// "timeout":
+		// "menu":
+		// "menu-file":
+		// "menu-actions":
+		// "expand":
+	}
+}

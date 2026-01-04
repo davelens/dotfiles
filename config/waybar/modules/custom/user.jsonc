@@ -1,0 +1,83 @@
+{
+	"group/user": {
+		"orientation": "horizontal",
+		"modules": [
+			"custom/trigger",
+			"custom/user"
+		],
+		"drawer": {
+			// "transition-duration":
+			// "transition-left-to-right":
+			// "children-class":
+			// "click-to-reveal":
+		}
+	},
+
+	"custom/trigger": {
+		// "exec":
+		// "exec-if":
+		// "exec-on-event":
+		// "hide-empty-text":
+		// "return-type":
+		// "interval":
+		// "restart-interval":
+		// "signal":
+		"format": "󰍜",
+		// "format-icons":
+		// "rotate":
+		"min-length": 4,
+		"max-length": 4,
+		// "align":
+		// "justify":
+		// "on-click":
+		// "on-click-middle":
+		// "on-click-right":
+		// "on-update":
+		// "on-scroll-up":
+		// "on-scroll-down":
+		// "smooth-scrolling-threshold":
+		"tooltip": false
+		// "tooltip-format":
+		// "escape":
+		// "menu":
+		// "menu-file":
+		// "menu-actions":
+		// "expand":
+	},
+
+	/*--------------
+	    username
+	--------------*/
+
+	"custom/user": {
+		"exec": "id -un",
+		// "exec-if":
+		// "exec-on-event":
+		// "hide-empty-text":
+		// "return-type":
+		// "interval":
+		// "restart-interval":
+		// "signal":
+		"format": "{}",
+		// "format-icons":
+		// "rotate":
+		// "min-length":
+		// "max-length":
+		// "align":
+		// "justify":
+		// "on-click":
+		// "on-click-middle":
+		// "on-click-right":
+		// "on-update":
+		// "on-scroll-up":
+		// "on-scroll-down":
+		// "smooth-scrolling-threshold":
+		"tooltip": false
+		// "tooltip-format":
+		// "escape":
+		// "menu":
+		// "menu-file":
+		// "menu-actions":
+		// "expand":
+	}
+}

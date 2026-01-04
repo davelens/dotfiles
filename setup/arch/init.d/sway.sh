@@ -2,7 +2,6 @@
 
 sudo pacman -S --needed --noconfirm \
   sway sway-contrib swaybg swayidle swaylock \
-  waybar \
   mako \
   libpulse \
   grim \

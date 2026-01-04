@@ -1,0 +1,19 @@
+{
+	"sway/window": {
+		"format": "{}",
+		"rewrite": {
+			"": "Desktop",
+			"wezterm": "Terminal",
+			"bash": "Terminal",
+			"~": "Terminal"
+		},
+		// "all-outputs":
+		// "icon":
+		// "icon-size":
+		// "min-length":
+		// "max-length":
+		// "tooltip":
+		"swap-icon-label": false
+		// "expand":
+	}
+}
