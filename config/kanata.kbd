@@ -4,7 +4,7 @@
 )
 
 (defsrc
-  caps s d f n ;
+  caps a s d f n l ;
   1 2 3 4 5 6 7 8 9
 )
 
@@ -15,10 +15,12 @@
 
 (defalias
   escctrl lctl
+  a (tap-hold $tap-time $hold-time a lctl)
   s (tap-hold $tap-time $hold-time s lalt)
   d (tap-hold $tap-time $hold-time d lmet)
   f (tap-hold $tap-time $hold-time f lsft)
   n (tap-hold $tap-time $hold-time n rmet)
+  l (tap-hold $tap-time $hold-time l ralt)
   ; (tap-hold $tap-time $hold-time ; rctl)
 
   ;; Number keys: tap for number, hold for Alt+number.
@@ -36,6 +38,6 @@
 )
 
 (deflayer base
-  @escctrl @s @d @f @n @;
+  @escctrl @a @s @d @f @n @l @;
   @1 @2 @3 @4 @5 @6 @7 @8 @9
 )
