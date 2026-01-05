@@ -1,3 +1,7 @@
+[env]
+LUAROCKS_VERSION = "3.11.1"
+ASDF_LUA_LUAROCKS_VERSION = "3.11.1"
+
 [tools]
 elixir = "1.18.2"
 elixir-ls = "0.30.0"
