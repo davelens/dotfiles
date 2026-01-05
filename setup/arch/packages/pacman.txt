@@ -24,6 +24,7 @@ sof-firmware                        # Sound Open Firmware
 vulkan-nouveau                      # Nouveau Vulkan driver
 vulkan-radeon                       # AMD Vulkan driver
 wezterm                             # Terminal emulator
+wireguard-tools                     # WireGuard protocol tools (for PIA)
 wireless_tools                      # Wireless network tools
 wireplumber                         # PipeWire session manager
 xclip                               # X11 clipboard tool

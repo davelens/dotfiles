@@ -9,6 +9,7 @@ lazysql-bin                         # TUI for SQL databases
 neofetch-git                        # System information tool
 opencode-bin                        # TUI coding agent
 pipes.sh                            # Terminal screensaver, win95 style
+piavpn-bin                          # Private Internet Access client
 scc-bin                             # Counts lines of code; cloc alternative
 spicetify-cli                       # Provides theming for Spotify
 watson                              # Time registration
