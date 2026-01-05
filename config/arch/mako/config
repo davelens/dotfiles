@@ -1,0 +1,36 @@
+anchor=top-right
+default-timeout=50000
+outer-margin=20
+padding=10,15
+border-size=2
+width=400
+max-icon-size=32
+font=sans-serif 14px
+
+text-color=#d8dee9
+border-color=#a6da95
+background-color=#24273a
+
+[app-name=Spotify]
+invisible=1
+
+[mode=do-not-disturb]
+invisible=true
+
+[mode=do-not-disturb app-name=notify-send]
+invisible=false
+
+[urgency=low]
+border-color=#8aadf4
+
+[urgency=normal]
+border-color=#c6a0f6
+
+[urgency=high]
+border-color=#eed49f
+default-timeout=0
+
+[urgency=critical]
+border-color=#ed8796
+default-timeout=0
+layer=overlay
