@@ -9,4 +9,4 @@ sudo pacman -S --needed --noconfirm \
   wev
 
 # Fingerprint auth with swaylock.
-sudo cp "$DOTFILES_REPO_HOME/config/swaylock/pam-d.config" /etc/pam.d/swaylock
+sudo cp "$DOTFILES_REPO_HOME/config/arch/swaylock/pam-d.config" /etc/pam.d/swaylock
