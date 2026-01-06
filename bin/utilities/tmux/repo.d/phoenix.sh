@@ -48,6 +48,12 @@ bootstrap() {
   mix deps.get >/dev/null 2>&1
   mix deps.compile >/dev/null 2>&1
 
+  # Install npm dependencies if assets/package.json exists
+  if [[ -f "assets/package.json" ]]; then
+    $print_status -i pending "Installing npm dependencies..."
+    npm install --prefix assets >/dev/null 2>&1
+  fi
+
   # Set up database if ecto is present
   if grep -q "{:ecto" mix.exs 2>/dev/null; then
     mix ecto.setup 2>/dev/null || mix ecto.create 2>/dev/null || true
