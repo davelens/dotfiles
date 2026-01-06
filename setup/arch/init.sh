@@ -7,6 +7,7 @@ set -e
 "$DOTFILES_REPO_HOME/setup/cargo/init.sh"
 # "$DOTFILES_REPO_HOME/setup/gnome/init.sh"
 "$DOTFILES_REPO_HOME/setup/arch/init.d/sway.sh"
+"$DOTFILES_REPO_HOME/setup/arch/init.d/waybar.sh"
 "$DOTFILES_REPO_HOME/setup/arch/init.d/power-profiles.sh"
 "$DOTFILES_REPO_HOME/setup/arch/init.d/fingerprint-auth.sh"
 "$DOTFILES_REPO_HOME/setup/arch/init.d/alt-tab.sh"
