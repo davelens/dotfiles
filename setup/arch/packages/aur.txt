@@ -1,19 +1,13 @@
 # AUR packages (installed via paru)
+# I'm wary of the AUR's risks, so I make limited use of it.
+# That said, I've verified these packages as safe at this time of writing.
 
-bitwarden-bin                       # Password manager (GUI)
 clipboard-bin                       # Clipboard manager
-firefox-bin                         # Web browser
 jqp-bin                             # Interactive jq playground
 kanata-bin                          # Cross-platform keyboard remapper
 lazysql-bin                         # TUI for SQL databases
 neofetch-git                        # System information tool
 opencode-bin                        # TUI coding agent
-pipes.sh                            # Terminal screensaver, win95 style
 piavpn-bin                          # Private Internet Access client
-scc-bin                             # Counts lines of code; cloc alternative
-spicetify-cli                       # Provides theming for Spotify
+pipes.sh                            # Terminal screensaver, win95 style
 watson                              # Time registration
-# ack                                 # Grep-like text finder
-# browsh-bin                          # TUI webpage browser
-# fswatch                             # Directory change listener
-# mycli                               # A better MySQL client
