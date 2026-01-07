@@ -33,6 +33,7 @@ alias u='utility'
 
 # Jumpstart aliases for specific projects.
 alias dotfiles='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotfiles\"" --'
+alias dotsys='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotsys\"" --'
 alias dotvim='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotvim\"" --'
 alias notes='utility misc notes'
 
