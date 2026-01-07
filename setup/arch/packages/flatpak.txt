@@ -1,7 +1,0 @@
-# Flatpak packages (sandboxed applications)
-
-com.bitwarden.desktop               # Password manager (GUI)
-com.discordapp.Discord              # Chat application
-com.valvesoftware.Steam             # Gaming platform
-org.mozilla.firefox                 # Web browser
-org.videolan.VLC                    # Media player
