@@ -122,6 +122,10 @@ input type:touchpad {
   middle_emulation enabled
 }
 
+input "*MX_Vertical*" {
+  pointer_accel -0.4
+}
+
 # To configure keyboard layouts e.a.
 # Read `man 5 sway-input` for more info.
 #
