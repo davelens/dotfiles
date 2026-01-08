@@ -25,7 +25,7 @@
   ; (tap-hold $tap-time $hold-time ; rctl)
 
   ;; Number keys: tap for number, hold for Alt+number.
-  ;; Firefox: tab 1-9 activation
+  ;; Librewolf: tab 1-9 activation
   ;; tmux: window 1-9 activation
   1 (tap-hold $tap-time $hold-time 1 A-1)
   2 (tap-hold $tap-time $hold-time 2 A-2)

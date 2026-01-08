@@ -140,8 +140,10 @@ oxwm.gaps.set_outer(5, 5)
 -- oxwm.rule.add({ instance = 'gimp', floating = true })
 oxwm.rule.add({ class = 'wezterm', tag = 1 })
 oxwm.rule.add({ class = 'firefox', tag = 2 })
+oxwm.rule.add({ class = 'librewolf', tag = 2 })
 oxwm.rule.add({ class = 'discord', tag = 3 })
 oxwm.rule.add({ class = 'firefox', title = 'YouTube', tag = 4 })
+oxwm.rule.add({ class = 'librewolf', title = 'YouTube', tag = 4 })
 -- oxwm.rule.add({ instance = "mpv", floating = true })
 
 -- To find window properties, use xprop and click on the window
@@ -185,7 +187,7 @@ oxwm.bar.set_scheme_urgent(colors.red, colors.bg, colors.red)
 -- Basic window management
 
 oxwm.key.bind({ modkey }, 'Return', oxwm.spawn_terminal())
-oxwm.key.bind({ modkey }, 'F', oxwm.spawn({ 'firefox' }))
+oxwm.key.bind({ modkey }, 'F', oxwm.spawn({ 'librewolf' }))
 -- Launch Albert
 oxwm.key.bind({ modkey }, 'Space', oxwm.spawn({ 'albert', 'toggle' }))
 -- Launch Dmenu
