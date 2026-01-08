@@ -122,8 +122,8 @@ input type:touchpad {
   middle_emulation enabled
 }
 
-input "*MX_Vertical*" {
-  pointer_accel -0.4
+input type:pointer {
+  pointer_accel -0.5
 }
 
 # To configure keyboard layouts e.a.
