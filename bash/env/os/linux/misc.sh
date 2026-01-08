@@ -22,3 +22,11 @@ elif [ "$XDG_SESSION_TYPE" == "x11" ]; then
     echo NOTE: setxkbmap is not available, so I could not remap ctrl to capslock.
   fi
 fi
+
+# Bootstrap SSH and keep the connection alive across sessions.
+if command -v keychain >/dev/null; then
+  eval "$(keychain --eval --ssh-allow-forwarded id_rsa --absolute --dir "${XDG_RUNTIME_DIR}/keychain" --quiet)"
+else
+  echo "${CUN}NOTE${CNUN}: Installing \`keychain\` will bootstrap + keep alive your SSH agent across sessions."
+  echo "      Right now you still need to manually \`eval \$(ssh-agent); ssh-add\` in each term session."
+fi

@@ -2,6 +2,10 @@
 # A fix for the wonky Arch-on-WSL2 ssh-agent behaviour I've had.
 ###############################################################################
 
+# NOTE: So I *think* this entire thing can be refactored by running a single
+# `eval $(keychain --eval)` line, but I'll have to verify when I'm behind that
+# particular machine again.
+
 # Bootstrap an ssh-agent and add your default key to it.
 if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ] || ! pgrep -u "$USER" ssh-agent >/dev/null; then
   export DOTFILES_SSH_AUTH_SOCK="$DOTFILES_STATE_HOME/tmp/ssh-agent.socket"
