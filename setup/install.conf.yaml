@@ -54,6 +54,7 @@
     $XDG_CONFIG_HOME/shellcheckrc: config/shellcheckrc
     $XDG_CONFIG_HOME/sketchybar: config/macos/sketchybar
     $XDG_CONFIG_HOME/starship.toml: config/starship.toml
+    $XDG_CONFIG_HOME/kanshi: config/arch/kanshi
     $XDG_CONFIG_HOME/sway: config/arch/sway
     $XDG_CONFIG_HOME/swaylock: config/arch/swaylock
     $XDG_CONFIG_HOME/swtchr: config/arch/swtchr

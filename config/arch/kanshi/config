@@ -1,0 +1,15 @@
+profile laptop {
+    output eDP-2 enable mode 1920x1200 position 0,0 scale 1
+}
+
+profile docked-dp2 {
+    output eDP-2 enable mode 2560x1600 position 0,0 scale 1
+    output DP-2 enable mode 2560x1440@100Hz position 2560,0 scale 0.9
+    exec pkill wl-mirror; wl-mirror eDP-2 & sleep 0.5 && swaymsg '[app_id="at.yrlf.wl_mirror"]' move to output DP-2, fullscreen enable
+}
+
+profile docked-dp4 {
+    output eDP-2 enable mode 2560x1600 position 0,0 scale 1
+    output DP-4 enable mode 2560x1440@100Hz position 2560,0 scale 0.9
+    exec pkill wl-mirror; wl-mirror eDP-2 & sleep 0.5 && swaymsg '[app_id="at.yrlf.wl_mirror"]' move to output DP-4, fullscreen enable
+}
