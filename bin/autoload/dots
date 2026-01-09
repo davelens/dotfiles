@@ -14,10 +14,13 @@ usage() {
   echo "Usage: $(basename "$0") [-h|--help] <command>"
   echo
   echo "Commands:"
-  echo "  logs          Opens the logfile in $EDITOR (read-only if applicable)."
-  echo "  install       Attempts a (re)install through dotbot."
-  echo "  update        Updates dotfiles to the most recent version."
-  echo "                Use --dotbot to also update dotbot to latest master."
+  echo "  logs         Opens the logfile in $EDITOR (read-only if applicable)."
+  echo "  install      Attempts a (re)install through dotbot."
+  echo "  update       Updates dotfiles to the most recent version."
+  echo "               Use --dotbot to also update dotbot to latest master."
+  echo "  setup        Sets up additional dotfile repositories."
+  echo "               Use --dotsys <arch|macos|wsl> to setup davelens/dotsys."
+  echo "               Use --dotvim to setup davelens/dotvim."
   echo
   echo "Options:"
   echo "  -h|--help    Show this help message and exit."
@@ -50,11 +53,11 @@ install() {
 
 update_dotbot() {
   $print_status -nc "Updating dotbot to latest master ..."
-  
+
   local dotbot_path="$DOTFILES_REPO_HOME/dotbot"
-  
-  if git -C "$dotbot_path" fetch origin >/dev/null 2>&1 && \
-     git -C "$dotbot_path" checkout origin/master >/dev/null 2>&1; then
+
+  if git -C "$dotbot_path" fetch origin >/dev/null 2>&1 &&
+    git -C "$dotbot_path" checkout origin/master >/dev/null 2>&1; then
     $print_status -i ok "Dotbot updated"
     echo "    Remember to commit the submodule change if you want to keep it."
   else
@@ -63,14 +66,124 @@ update_dotbot() {
   fi
 }
 
-update() {
-  local update_dotbot_flag=0
-  
+setup() {
+  local dotsys=""
+  local dotvim=0
+
   # Parse flags
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --dotbot) update_dotbot_flag=1; shift ;;
-      *) shift ;;
+    --dotsys)
+      shift
+      if [[ $# -eq 0 ]]; then
+        $print_status -i error "--dotsys requires a value (arch, macos, or wsl)"
+        exit 1
+      fi
+
+      case "$1" in
+      arch | macos | wsl)
+        dotsys="$1"
+        ;;
+      *)
+        $print_status -i error "Invalid dotsys value: $1 (must be arch, macos, or wsl)"
+        exit 1
+        ;;
+      esac
+      shift
+      ;;
+    --dotvim)
+      dotvim=1
+      shift
+      ;;
+    *)
+      $print_status -i error "Unknown option: $1"
+      exit 1
+      ;;
+    esac
+  done
+
+  if [[ -z "$dotsys_flag" && $dotvim -eq 0 ]]; then
+    $print_status -i error "At least one of --dotsys or --dotvim is required"
+    exit 1
+  fi
+
+  local error_occurred=0
+
+  # Setup dotsys configs if requested
+  if [[ -n "$dotsys_flag" ]]; then
+    local dotsys_path="$REPO_NAMESPACE/davelens/dotsys"
+
+    $print_status -nc "Cloning dotsys repository ..."
+
+    if [[ -d "$dotsys_path" ]]; then
+      $print_status -i ok "dotsys already exists at $dotsys_path"
+    else
+      mkdir -p "$(dirname "$dotsys_path")"
+      if git clone https://github.com/davelens/dotsys.git "$dotsys_path" &>>"$log_file"; then
+        $print_status -i ok "dotsys cloned successfully"
+      else
+        $print_status -i error "Failed to clone dotsys"
+        error_occurred=1
+      fi
+    fi
+
+    if [[ $error_occurred -eq 0 ]]; then
+      $print_status -nc "Running $dotsys_flag init script ..."
+      if "$dotsys_path/$dotsys_flag/init.sh" &>>"$log_file"; then
+        $print_status -i ok "$dotsys_flag setup complete"
+      else
+        $print_status -i error "$dotsys_flag setup failed"
+        error_occurred=1
+      fi
+    fi
+  fi
+
+  # Setup dotvim configs if requested
+  if [[ $dotvim_flag -eq 1 ]]; then
+    local dotvim_path="$REPO_NAMESPACE/davelens/dotvim"
+
+    $print_status -nc "Cloning dotvim repository ..."
+
+    if [[ -d "$dotvim_path" ]]; then
+      $print_status -i ok "dotvim already exists at $dotvim_path"
+    else
+      mkdir -p "$(dirname "$dotvim_path")"
+      if git clone https://github.com/davelens/dotvim.git "$dotvim_path" &>>"$log_file"; then
+        $print_status -i ok "dotvim cloned successfully"
+      else
+        $print_status -i error "Failed to clone dotvim"
+        error_occurred=1
+      fi
+    fi
+
+    if [[ $error_occurred -eq 0 ]]; then
+      $print_status -nc "Running dotvim install script ..."
+      if "$dotvim_path/setup/install" &>>"$log_file"; then
+        $print_status -i ok "dotvim setup complete"
+      else
+        $print_status -i error "dotvim setup failed"
+        error_occurred=1
+      fi
+    fi
+  fi
+
+  if [[ $error_occurred -ne 0 ]]; then
+    echo "    Logs available at $log_file"
+    exit 1
+  fi
+}
+
+update() {
+  local update_dotbot_flag=0
+
+  # Parse flags
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    --dotbot)
+      update_dotbot_flag=1
+      shift
+      ;;
+    *) shift ;;
     esac
   done
 
@@ -135,6 +248,10 @@ main() {
   update)
     shift
     update "$@"
+    ;;
+  setup)
+    shift
+    setup "$@"
     ;;
   *)
     echo "Unknown command: $1"
