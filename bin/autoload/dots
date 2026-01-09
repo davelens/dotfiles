@@ -102,7 +102,7 @@ setup() {
     esac
   done
 
-  if [[ -z "$dotsys_flag" && $dotvim -eq 0 ]]; then
+  if [[ -z "$dotsys" && $dotvim -eq 0 ]]; then
     $print_status -i error "At least one of --dotsys or --dotvim is required"
     exit 1
   fi
@@ -110,7 +110,7 @@ setup() {
   local error_occurred=0
 
   # Setup dotsys configs if requested
-  if [[ -n "$dotsys_flag" ]]; then
+  if [[ -n "$dotsys" ]]; then
     local dotsys_path="$REPO_NAMESPACE/davelens/dotsys"
 
     $print_status -nc "Cloning dotsys repository ..."
@@ -128,18 +128,18 @@ setup() {
     fi
 
     if [[ $error_occurred -eq 0 ]]; then
-      $print_status -nc "Running $dotsys_flag init script ..."
-      if "$dotsys_path/$dotsys_flag/init.sh" &>>"$log_file"; then
-        $print_status -i ok "$dotsys_flag setup complete"
+      $print_status -nc "Running $dotsys init script ..."
+      if "$dotsys_path/$dotsys/init.sh" &>>"$log_file"; then
+        $print_status -i ok "$dotsys setup complete"
       else
-        $print_status -i error "$dotsys_flag setup failed"
+        $print_status -i error "$dotsys setup failed"
         error_occurred=1
       fi
     fi
   fi
 
   # Setup dotvim configs if requested
-  if [[ $dotvim_flag -eq 1 ]]; then
+  if [[ $dotvim -eq 1 ]]; then
     local dotvim_path="$REPO_NAMESPACE/davelens/dotvim"
 
     $print_status -nc "Cloning dotvim repository ..."
