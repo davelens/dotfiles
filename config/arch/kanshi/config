@@ -4,10 +4,10 @@ profile laptop {
 
 profile docked-dp2 {
     output eDP-2 disable
-    output DP-2 enable mode 2560x1440@100Hz position 0,0 scale 0.9
+    output DP-2 enable mode 2560x1440@100Hz position 0,0 scale 1
 }
 
 profile docked-dp4 {
     output eDP-2 disable
-    output DP-4 enable mode 2560x1440@100Hz position 0,0 scale 0.9
+    output DP-4 enable mode 2560x1440@100Hz position 0,0 scale 1
 }
