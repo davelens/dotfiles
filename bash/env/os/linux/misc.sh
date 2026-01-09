@@ -21,7 +21,7 @@ elif [ "$XDG_SESSION_TYPE" == "x11" ]; then
     setxkbmap -option altwin:ctrl_win # Switch win/command key with ctrl
     setxkbmap -option ctrl:nocaps     # Switch capslock with ctrl
   else
-    echo NOTE: setxkbmap is not available, so I could not remap ctrl to capslock.
+    echo "${CUN}NOTE${CNUN}: setxkbmap is not available, so I could not remap ctrl to capslock."
   fi
 fi
 
