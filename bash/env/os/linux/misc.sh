@@ -11,6 +11,8 @@ fi
 
 # No setxkbmap on Wayland.
 if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+  # Accelerated rendering is not available on a VM (or WSL2), so explicitly
+  # allow software rendering.
   export WLR_RENDERER_ALLOW_SOFTWARE=1
   export WLR_RENDERER=pixman
   export WLR_NO_HARDWARE_CURSORS=1
