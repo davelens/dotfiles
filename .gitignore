@@ -3,6 +3,8 @@
 .notes
 .docs
 dotbot
+bin/utilities/arch
+bin/utilities/wsl
 bash/env/autocompletions/iterm2_shell_integration.bash
 bash/private
 vim/.netrwhist
