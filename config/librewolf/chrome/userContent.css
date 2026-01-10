@@ -1,0 +1,43 @@
+/* userContent.css - Web Content Styling
+ *
+ * This file customizes how web pages are displayed.
+ * For browser UI styling, use userChrome.css instead.
+ *
+ * To use: symlink or copy this file to your profile's chrome/ directory:
+ *   Arch (native): ~/.librewolf/<profile>/chrome/userContent.css
+ *   Arch (Flatpak): ~/.var/app/io.gitlab.librewolf-community/.librewolf/<profile>/chrome/userContent.css
+ *   macOS: ~/Library/Application Support/librewolf/<profile>/chrome/userContent.css
+ *
+ * Make sure toolkit.legacyUserProfileCustomizations.stylesheets is set to true in user.js
+ */
+
+/* =============================================================================
+ * EXAMPLE CUSTOMIZATIONS (uncomment to use)
+ * ============================================================================= */
+
+/* Dark scrollbars on all pages */
+/*
+* {
+  scrollbar-color: #555 #222 !important;
+}
+*/
+
+/* Custom about:blank background */
+/*
+@-moz-document url("about:blank") {
+  body {
+    background-color: #1a1a1a !important;
+  }
+}
+*/
+
+/* Hide cookie consent banners (aggressive - may break some sites) */
+/*
+#onetrust-consent-sdk,
+.cc-banner,
+.cookie-consent,
+[class*="cookie-banner"],
+[id*="cookie-banner"] {
+  display: none !important;
+}
+*/

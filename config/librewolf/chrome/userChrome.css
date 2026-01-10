@@ -1,0 +1,51 @@
+/* userChrome.css - Librewolf UI Customization
+ *
+ * This file customizes the browser chrome (UI), not web content.
+ * For web content styling, use userContent.css instead.
+ *
+ * To use: symlink or copy this file to your profile's chrome/ directory:
+ *   Arch (native): ~/.librewolf/<profile>/chrome/userChrome.css
+ *   Arch (Flatpak): ~/.var/app/io.gitlab.librewolf-community/.librewolf/<profile>/chrome/userChrome.css
+ *   macOS: ~/Library/Application Support/librewolf/<profile>/chrome/userChrome.css
+ *
+ * Make sure toolkit.legacyUserProfileCustomizations.stylesheets is set to true in user.js
+ */
+
+/* =============================================================================
+ * EXAMPLE CUSTOMIZATIONS (uncomment to use)
+ * ============================================================================= */
+
+/* Hide the tab bar (useful if using Tree Style Tab or similar) */
+/*
+#TabsToolbar {
+  visibility: collapse !important;
+}
+*/
+
+/* Hide the title bar */
+/*
+#titlebar {
+  display: none !important;
+}
+*/
+
+/* Compact URL bar */
+/*
+#urlbar-container {
+  max-width: 70% !important;
+}
+*/
+
+/* Hide "Recommended by Pocket" in URL bar suggestions */
+/*
+#urlbar-results .urlbarView-row[type="tip"] {
+  display: none !important;
+}
+*/
+
+/* Reduce tab height for more compact look */
+/*
+.tabbrowser-tab {
+  min-height: 30px !important;
+}
+*/

@@ -1,0 +1,44 @@
+# Librewolf Extensions
+# Reference list for manual installation on new machines
+# Install from: https://addons.mozilla.org/firefox/addon/<slug>/
+
+## Core / Essential
+uBlock Origin                    https://addons.mozilla.org/firefox/addon/ublock-origin/
+Bitwarden Password Manager       https://addons.mozilla.org/firefox/addon/bitwarden-password-manager/
+Dark Reader                      https://addons.mozilla.org/firefox/addon/darkreader/
+
+## Privacy & Security
+Terms of Service; Didn't Read    https://addons.mozilla.org/firefox/addon/terms-of-service-didnt-read/
+SponsorBlock for YouTube         https://addons.mozilla.org/firefox/addon/sponsorblock/
+
+## Development
+Web Developer                    https://addons.mozilla.org/firefox/addon/web-developer/
+Tampermonkey                     https://addons.mozilla.org/firefox/addon/tampermonkey/
+
+## YouTube
+Unhook - Remove Recommended      https://addons.mozilla.org/firefox/addon/unhook/
+Disable YouTube Seek by Number   https://addons.mozilla.org/firefox/addon/disable-youtube-seek-by-number/
+
+## Reddit
+Reddit Enhancement Suite         https://addons.mozilla.org/firefox/addon/reddit-enhancement-suite/
+
+## Twitch
+Alternate Player for Twitch.tv   https://addons.mozilla.org/firefox/addon/alternate-player-for-twitch/
+
+## Gaming / Tabletop
+Beyond 20 (D&D)                  https://addons.mozilla.org/firefox/addon/beyond-20/
+Steam URL Opener                 https://addons.mozilla.org/firefox/addon/steam-url-opener/
+Season Pass Pass                 https://addons.mozilla.org/firefox/addon/season-pass-pass/
+
+## Social
+Sky Follower Bridge (Bluesky)    https://addons.mozilla.org/firefox/addon/sky-follower-bridge/
+
+## Utilities
+Simple mass downloader           https://addons.mozilla.org/firefox/addon/simple-mass-downloader/
+Popup window                     https://addons.mozilla.org/firefox/addon/popup-window/
+Disable Ctrl-Q and Cmd-Q         https://addons.mozilla.org/firefox/addon/disable-ctrl-q-and-cmd-q/
+Grammarly                        https://addons.mozilla.org/firefox/addon/grammarly-1/
+
+## System Integration
+Plasma Integration               https://addons.mozilla.org/firefox/addon/plasma-integration/
+eID Belgium                      https://addons.mozilla.org/firefox/addon/eid-belgium/
