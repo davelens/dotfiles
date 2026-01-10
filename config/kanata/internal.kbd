@@ -1,0 +1,24 @@
+;; Internal Framework keyboard configuration
+;; Swaps grv/nubs to mimic macOS Magic Keyboard layout
+
+(defcfg
+  process-unmapped-keys yes
+  linux-dev (
+    /dev/input/by-id/usb-Framework_Laptop_16_Keyboard_Module_-_ISO_FRAKDKEN0100000000-event-kbd
+    /dev/input/by-id/usb-Framework_Laptop_16_Keyboard_Module_-_ISO_FRAKDKEN0100000000-if02-event-kbd
+  )
+)
+
+(include common.kbd)
+
+(defsrc
+  caps a s d f j k l ;
+  1 2 3 4 5 6 7 8 9
+  grv nubs
+)
+
+(deflayer base
+  @escctrl @a @s @d @f @j @k @l @;
+  @1 @2 @3 @4 @5 @6 @7 @8 @9
+  nubs grv
+)

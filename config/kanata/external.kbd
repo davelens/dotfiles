@@ -1,0 +1,21 @@
+;; External keyboard configuration (e.g., Magic Keyboard)
+;; No grv/nubs swap - keys remain in their standard positions
+
+(defcfg
+  process-unmapped-keys yes
+  linux-dev-names-exclude (
+    "Framework Laptop 16 Keyboard Module - ISO"
+  )
+)
+
+(include common.kbd)
+
+(defsrc
+  caps a s d f j k l ;
+  1 2 3 4 5 6 7 8 9
+)
+
+(deflayer base
+  @escctrl @a @s @d @f @j @k @l @;
+  @1 @2 @3 @4 @5 @6 @7 @8 @9
+)

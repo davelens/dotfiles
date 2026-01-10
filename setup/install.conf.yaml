@@ -44,7 +44,7 @@
     $XDG_CONFIG_HOME/git/config: config/gitconfig
     $XDG_CONFIG_HOME/git/ignore: config/gitignore_global
     $XDG_CONFIG_HOME/irb: config/irb
-    $XDG_CONFIG_HOME/kanata/kanata.kbd: config/kanata.kbd
+    $XDG_CONFIG_HOME/kanata: config/kanata
     $XDG_CONFIG_HOME/karabiner: config/macos/karabiner
     $XDG_CONFIG_HOME/mako: config/arch/mako
     $XDG_CONFIG_HOME/mise: config/mise
