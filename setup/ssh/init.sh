@@ -7,7 +7,7 @@ SSH_CONFIG="$HOME"/.ssh/config
 INCLUDE_LINE="Include ${DOTFILES_REPO_HOME/$HOME/\~}/config/ssh/*"
 
 # Ensure ~/.ssh directory exists with proper permissions
-if [ ! -d "$HOME"/.ssh ]; then
+if [ ! -d "$HOME"/.ssh/sockets ]; then
   mkdir -p "$HOME"/.ssh/sockets
   chmod 700 "$HOME"/.ssh
   chmod 700 "$HOME"/.ssh/sockets
