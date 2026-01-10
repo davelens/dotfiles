@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-readonly basedir files
 basedir="$(dirname "${BASH_SOURCE[0]}")"
 files=$(sed -n '/- link:/,/^-/p' "$basedir/install.conf.yaml" | sed -n '/^    /p')
 

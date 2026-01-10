@@ -1,10 +1,8 @@
 .DS_Store
-.env
 .notes
 .docs
+*.env
 dotbot
-bin/utilities/arch
-bin/utilities/wsl
 bash/env/autocompletions/iterm2_shell_integration.bash
 bash/private
 vim/.netrwhist
@@ -18,4 +16,6 @@ config/tmux/plugins
 config/macos/karabiner/automatic_backups
 # These are symlinks to bin folders of some private repos.
 bin/utilities/ac
+bin/utilities/arch
 bin/utilities/opencode
+bin/utilities/wsl

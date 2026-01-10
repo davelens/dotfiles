@@ -1,0 +1,34 @@
+[
+    {
+        "fallback": false,
+        "iconPath": ":duckduckgo",
+        "id": "694ddc77",
+        "name": "DuckDuckGo",
+        "trigger": "dd",
+        "url": "https://duckduckgo.com/?q=%s"
+    },
+    {
+        "fallback": false,
+        "iconPath": ":github",
+        "id": "728a57d5",
+        "name": "GitHub",
+        "trigger": "gh",
+        "url": "https://github.com/search?utf8=✓&q=%s"
+    },
+    {
+        "fallback": false,
+        "iconPath": ":google_translate",
+        "id": "dfd7937a",
+        "name": "Google Translate",
+        "trigger": "tr",
+        "url": "https://translate.google.com/?text=%s"
+    },
+    {
+        "fallback": false,
+        "iconPath": ":youtube",
+        "id": "6fb84c61",
+        "name": "YouTube",
+        "trigger": "yt",
+        "url": "https://www.youtube.com/results?search_query=%s"
+    }
+]
