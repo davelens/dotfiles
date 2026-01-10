@@ -6,6 +6,10 @@
 - clean: ['~']
 
 - create:
+    # Not *exactly* sure if the fonts/fontconfig folders are necessary, but
+    # I'm banking on software picking up folders already present in XDG.
+    - $XDG_CONFIG_HOME/fontconfig
+    - $XDG_DATA_HOME/fonts
     - $XDG_STATE_HOME/bash # HISTFILE is set to live in this target folder.
     - $GNUPGHOME
 
