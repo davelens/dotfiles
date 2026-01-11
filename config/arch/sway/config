@@ -53,7 +53,7 @@ set $grey       #6e738d
 # Get a list of app IDs with `swaymsg -t get_tree`.
 assign [app_id="^org.wezfurlong.wezterm$"] workspace number 1
 assign [app_id="Firefox"] workspace number 2
-assign [app_id="Librewolf"] workspace number 2
+assign [app_id="librewolf"] workspace number 2
 assign [class="discord"] workspace number 3
 assign [app_id="^Spotify$"] workspace number 4
 
@@ -64,7 +64,7 @@ for_window [app_id="pavucontrol"] floating enable
 for_window [app_id="blueman-manager"] floating enable
 for_window [app_id="floating-term"] floating enable
 for_window [app_id="Firefox" title="^Extension"] floating enable
-for_window [app_id="Librewolf" title="^Extension"] floating enable
+for_window [app_id="librewolf" title="^Extension"] floating enable
 
 
 # Press 'q' to close floating-term windows
