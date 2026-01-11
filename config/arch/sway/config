@@ -63,9 +63,8 @@ for_window [window_role="dialog"] floating enable
 for_window [app_id="pavucontrol"] floating enable
 for_window [app_id="blueman-manager"] floating enable
 for_window [app_id="floating-term"] floating enable
-for_window [app_id="Firefox" title="^Extension"] floating enable
-for_window [app_id="librewolf" title="^Extension"] floating enable
-
+for_window [app_id="Firefox" title=".*Extension.*"] floating enable
+for_window [app_id="librewolf" title=".*Extension.*"] floating enable
 
 # Press 'q' to close floating-term windows
 # NOTE: Conflicts with WezTerm/nvim so in comment for now.
