@@ -11,11 +11,12 @@
 ------------*/
 
 #custom-left_div.6 {
-	color: @volume;
+	color: @backlight;
 }
 #pulseaudio,
 #wireplumber {
-	background-color: @volume;
+	/* background-color: @volume; */
+	background-color: @backlight;
 }
 
 /*----------------

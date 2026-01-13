@@ -47,17 +47,19 @@
 	------------*/
 
 	"modules-left": [
-		"group/user",
+		"custom/power_menu",
+		"idle_inhibitor",
+		// "group/user",
 		"custom/left_div#1",
 		"sway/workspaces",
 		"custom/right_div#1",
 		"sway/window"
 	],
 	"modules-center": [
-		"custom/left_div#2",
-		"temperature",
-		"custom/left_div#3",
-		"memory",
+		// "custom/left_div#2",
+		// "temperature",
+		// "custom/left_div#3",
+		// "memory",
 		"custom/left_div#4",
 		"cpu",
 		"custom/left_inv#1",
@@ -65,26 +67,31 @@
 		"custom/distro",
 		"custom/right_div#2",
 		"custom/right_inv#1",
-		"idle_inhibitor",
-		"clock#time",
-		"custom/right_div#3",
-		"clock#date",
-		"custom/right_div#4",
-		"network",
-		"bluetooth",
-		"custom/system_update",
-		"custom/right_div#5"
+		"memory",
+		// "clock#time",
+		"custom/right_div#3"
+		// "clock#date"
+		// "custom/right_div#4",
+		// "network",
+		// "bluetooth",
+		// "custom/system_update",
+		// "custom/right_div#5"
 	],
 	"modules-right": [
 		"mpris",
+		// "custom/left_div#4",
 		"custom/left_div#6",
 		"group/pulseaudio",
-		"custom/left_div#7",
+		// "custom/left_div#7",
 		"backlight",
+		"network",
+		"bluetooth",
 		"custom/left_div#8",
 		"battery",
 		"custom/left_inv#2",
-		"custom/power_menu"
+		"custom/system_update",
+		"clock#date",
+		"clock#time"
 	],
 
 	/*-------------
