@@ -1,0 +1,16 @@
+#custom-left_div_hl { color: @highlight; }
+#custom-left_inv_hl { color: @highlight; }
+#custom-right_div_hl { color: @highlight; }
+#custom-right_inv_hl { color: @highlight; }
+
+#custom-left_div_bl { color: @backlight; }
+#custom-left_inv_bl { color: @backlight; }
+#custom-right_div_bl { color: @backlight; }
+#custom-right_inv_bl { color: @backlight; }
+
+#custom-left_div_accent { color: @accent; }
+#custom-left_inv_accent { color: @accent; }
+#custom-right_div_accent { color: @accent; }
+#custom-right_inv_accent { color: @accent; }
+
+#custom-left_inv_inverse { color: @backlight; background-color: @highlight; }

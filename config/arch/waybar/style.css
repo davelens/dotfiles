@@ -6,6 +6,7 @@
 @import "current-theme.css";
 @import "styles/fonts.css";
 @import "styles/global.css";
+@import "styles/dividers.css";
 @import "styles/modules-center.css";
 @import "styles/modules-left.css";
 @import "styles/modules-right.css";

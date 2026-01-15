@@ -19,9 +19,18 @@ tooltip label {
 	font-size: 18px;
 }
 
-#custom-left_div,
-#custom-left_inv,
-#custom-right_div,
-#custom-right_inv {
+#custom-left_div_hl,
+#custom-left_inv_hl,
+#custom-right_div_hl,
+#custom-right_inv_hl,
+#custom-left_div_bl,
+#custom-left_inv_bl,
+#custom-right_div_bl,
+#custom-right_inv_bl,
+#custom-left_div_accent,
+#custom-left_inv_accent,
+#custom-right_div_accent,
+#custom-right_inv_accent,
+#custom-left_inv_inverse {
 	font-size: 22px;
 }

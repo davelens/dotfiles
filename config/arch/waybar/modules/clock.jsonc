@@ -15,7 +15,7 @@
 		// "on-scroll-down":
 		// "smooth-scrolling-threshold":
 		// "tooltip":
-		"tooltip-format": "<b>Standard Time</b>: <span text_transform='lowercase'>{:%I:%M %p}</span>"
+		"tooltip-format": "<span text_transform='lowercase'>{:%d %B %Y}</span>"
 		// "menu":
 		// "menu-file":
 		// "menu-actions":
