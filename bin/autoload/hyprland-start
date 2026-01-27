@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Wrapper script to start Hyprland with appropriate GPU settings.
+# Games can still use the discrete GPU via DRI_PRIME=1.
+# Steam should autodetect hybrid setups.
+
+# Always use iGPU for compositing to prevent dGPU suspend/resume cycling
+# which causes system hangs due to SMU firmware/driver version mismatch.
+# Games can still use dGPU via DRI_PRIME=1 (Steam does this automatically).
+export AQ_DRM_DEVICES=/dev/dri/card2
+exec start-hyprland "$@"
