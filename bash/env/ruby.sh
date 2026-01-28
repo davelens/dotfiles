@@ -21,6 +21,9 @@ export RUBY_GC_PROFILER=0 # No unnecessary profiling overhead.
 export RUBY_YJIT_ENABLE=1
 export RUBY_YJIT_STATS=0
 export RUBY_YJIT_MIN_CODE_SIZE=16384
+# ZJIT is still new and not faster than YJIT *yet*.
+# Keeping it here so I don't forget to experiment later.
+# export RUBY_ZJIT_ENABLE=1
 
 # Lower value triggers major GC (old objects) more often, reducing memory usage
 # but increasing CPU load. Raise for better performance (less frequent GC),
