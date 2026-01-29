@@ -8,7 +8,7 @@
 #        Result: bundle exec cap production deploy BRANCH=feature-specs
 #
 # Active branch: feature-specs
-#       Command: deploy -s
+#       Command: deploy --staging
 #        Result: bundle exec cap staging deploy BRANCH=feature-specs
 #
 # Active branch: develop
@@ -20,11 +20,11 @@
 #        Result: bundle exec cap production deploy
 #
 # Active branch: develop
-#       Command: deploy -b develop
+#       Command: deploy --branch develop
 #        Result: bundle exec cap production deploy BRANCH=develop
 #
 # Active branch: master
-#       Command: deploy -b master
+#       Command: deploy --branch master
 #        Result: bundle exec cap production deploy BRANCH=master
 
 # Stops further execution after any error.
@@ -46,29 +46,33 @@ docker_prefix=
 # Make sure ssh-agent adds our default SSH key.
 [[ -z $(ssh-add -l) ]] && ssh-add
 
-for i in "$@"; do
-  case $i in
-  -s | --staging)
+while [[ $# -gt 0 ]]; do
+  case $1 in
+  --staging)
     env=staging
+    shift
     ;;
-  -L | --lock-users)
+  --lock-users)
     lock_users=1
+    shift
     ;;
-  -p | --production)
+  --production)
     env=production
+    shift
     ;;
-  -b=* | --branch=*)
-    branch_name="${i#*=}"
+  --branch)
+    branch_name="$2"
+    shift 2
     ;;
   --docker)
     # TODO: Make sure an ssh-agent is running with our default key active.
     docker_prefix="docker-compose run --rm -v $SSH_AUTH_SOCK:/tmp/ssh-agent.sock -e SSH_AUTH_SOCK=/tmp/ssh-agent.sock rails"
+    shift
     ;;
   *)
     # unknown options
-    echo "[rails/deploy] ERROR: Unknown option '$i'"
-    echo "Usage: deploy [-spbL] [--docker] [--staging] [--production] [--lock-users]"
-    printf "\t[-b=branch] [--branch=branch]\n"
+    echo "[rails/deploy] ERROR: Unknown option '$1'"
+    echo "Usage: deploy [--staging] [--production] [--lock-users] [--docker] [--branch branch]"
     exit
     ;;
   esac

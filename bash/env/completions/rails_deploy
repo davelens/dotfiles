@@ -1,0 +1,21 @@
+# Completion for `utility rails deploy`
+# This file is sourced by utility_completion.bash when completing the deploy command.
+
+_rails_deploy_completions() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  local prev="${COMP_WORDS[COMP_CWORD-1]}"
+  local opts="--staging --production --lock-users --docker --branch"
+
+  # Complete branch names after --branch
+  if [[ "$prev" == "--branch" ]]; then
+    local branches
+    branches=$(git branch --format='%(refname:short)' 2>/dev/null)
+    mapfile -t COMPREPLY < <(compgen -W "$branches" -- "$cur")
+    return 0
+  fi
+
+  mapfile -t COMPREPLY < <(compgen -W "$opts" -- "$cur")
+}
+
+_rails_deploy_completions
+unset -f _rails_deploy_completions
