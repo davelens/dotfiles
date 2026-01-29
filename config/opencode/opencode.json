@@ -6,5 +6,8 @@
     "messages_page_up": "<leader>p",
     "messages_page_down": "<leader>n"
   },
-  "theme": "catppuccin"
+  "theme": "catppuccin",
+  "plugin": [
+    "opencode-anthropic-auth@latest"
+  ]
 }
