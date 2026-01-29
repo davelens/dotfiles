@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+unless File.exist?('config.ru')
+  puts 'ERROR: You can only run this from a folder containing a Rails project.'
+  return
+end
+
+initializer_path = 'config/initializers/mariadb_boolean_fix.rb'
+initializer_content = <<~RUBY
+  # Fix for MariaDB not recognizing tinyint(1) as boolean.
+  # This file should NOT be committed - it's for local development on MariaDB only.
+  #
+  # MariaDB 11+ reports tinyint columns as tinyint(4) instead of tinyint(1),
+  # causing Rails to treat boolean columns as integers.
+
+  Rails.application.config.after_initialize do
+    ActiveRecord::Base.connection.send(:type_map).register_type(/\\Atinyint\\(\\d+\\)/i) do
+      ActiveRecord::Type::Boolean.new
+    end
+
+    # Clear schema cache and reset all models
+    ActiveRecord::Base.connection.schema_cache.clear!
+    ActiveRecord::Base.descendants.each(&:reset_column_information)
+  end
+RUBY
+
+File.write(initializer_path, initializer_content)
+puts "[rails/fix-mariadb-booleans] Created #{initializer_path}"
