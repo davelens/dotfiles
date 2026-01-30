@@ -215,8 +215,8 @@ if [[ -n "$test_database" ]]; then
   $docker_prefix $mysql -e "CREATE DATABASE $test_database"
 fi
 
-# Fix MySQL 8 integer display width deprecation
-sed -E 's/ (tiny|small|medium|big)?int\([0-9]+\)/ \1int/g' "$app/db/dump/dump.sql" >"$app/db/dump/dump.clean.sql"
+# Fix MySQL 8 integer display width deprecation, but preserve tinyint(1) for Rails booleans
+sed -E 's/ tinyint\(1\)/ TINYINT_BOOL_PLACEHOLDER/g; s/ (tiny|small|medium|big)?int\([0-9]+\)/ \1int/g; s/ TINYINT_BOOL_PLACEHOLDER/ tinyint(1)/g' "$app/db/dump/dump.sql" >"$app/db/dump/dump.clean.sql"
 
 log "Importing dump.sql into $local_db"
 $docker_prefix $mysql "$local_db" -e "source $app/db/dump/dump.clean.sql"
