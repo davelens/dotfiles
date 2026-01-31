@@ -15,7 +15,7 @@
 		// "max-length":
 		// "align":
 		// "justify":
-		"on-click": "~/.local/bin/float ~/.config/waybar/scripts/power-menu.sh",
+		"on-click": "~/.local/bin/rofi-start --powermenu",
 		// "on-click-middle":
 		// "on-click-right":
 		// "on-update":

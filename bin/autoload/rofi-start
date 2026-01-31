@@ -3,11 +3,14 @@
 # Stops further execution after any error.
 set -e
 
-# Available styles are 1 to 15.
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+
 launcher="type-1"
+# Available styles are 1 to 15.
 theme="style-5"
 mode="drun"
 dmenu=0
+powermenu=0
 
 main() {
   # Toggle behavior: if rofi is already running, kill it and exit
@@ -18,6 +21,10 @@ main() {
 
   while [[ $# -gt 0 ]]; do
     case $1 in
+    --powermenu)
+      powermenu=1
+      shift
+      ;;
     --dmenu)
       dmenu=1
       shift
@@ -43,14 +50,18 @@ main() {
     esac
   done
 
-  if [ $dmenu -eq 1 ]; then
-    cmd="rofi -dmenu show"
+  if [ $powermenu -eq 1 ]; then
+    "$XDG_CONFIG_HOME/rofi/powermenu/type-1/powermenu.sh"
   else
-    cmd="rofi -show $mode"
-  fi
+    if [ $dmenu -eq 1 ]; then
+      cmd="rofi -dmenu show"
+    else
+      cmd="rofi -show $mode"
+    fi
 
-  # shellcheck disable=SC2086
-  $cmd -theme ~/.config/rofi/launchers/$launcher/${theme}.rasi
+    # shellcheck disable=SC2086
+    $cmd -theme $XDG_CONFIG_HOME/rofi/launchers/$launcher/${theme}.rasi
+  fi
 }
 
 main "$@"
