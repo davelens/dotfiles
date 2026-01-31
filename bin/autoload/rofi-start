@@ -10,6 +10,12 @@ mode="drun"
 dmenu=0
 
 main() {
+  # Toggle behavior: if rofi is already running, kill it and exit
+  if pgrep -x rofi > /dev/null; then
+    pkill -x rofi
+    exit 0
+  fi
+
   while [[ $# -gt 0 ]]; do
     case $1 in
     --dmenu)
