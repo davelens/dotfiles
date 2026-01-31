@@ -60,7 +60,7 @@ main() {
     fi
 
     # shellcheck disable=SC2086
-    $cmd -theme $XDG_CONFIG_HOME/rofi/launchers/$launcher/${theme}.rasi
+    $cmd -theme $XDG_CONFIG_HOME/rofi/launchers/${launcher}/${theme}.rasi
   fi
 }
 

@@ -1,0 +1,14 @@
+/**
+ * Clipboard variant of style-5 (no icons)
+ **/
+
+@import "style-5.rasi"
+
+configuration {
+    show-icons: false;
+}
+
+element-icon {
+    enabled: false;
+    size: 0px;
+}
