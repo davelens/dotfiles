@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Stops further execution after any error.
+set -e
+
+# Available styles are 1 to 15.
+launcher="type-1"
+theme="style-5"
+mode="drun"
+dmenu=0
+
+main() {
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    --dmenu)
+      dmenu=1
+      shift
+      ;;
+    --launcher)
+      launcher="${2:-$launcher}"
+      shift 2
+      ;;
+    --theme)
+      theme="${2:-$theme}"
+      shift 2
+      ;;
+    --mode)
+      mode="${2:-$mode}"
+      shift 2
+      ;;
+    *)
+      # unknown options
+      echo "ERROR: Unknown option '$1'"
+      echo "Usage: rofi-start [--type] [--theme] [--mode] [--title]"
+      exit
+      ;;
+    esac
+  done
+
+  if [ $dmenu -eq 1 ]; then
+    cmd="rofi -dmenu show"
+  else
+    cmd="rofi -show $mode"
+  fi
+
+  # shellcheck disable=SC2086
+  $cmd -theme ~/.config/rofi/launchers/$launcher/${theme}.rasi
+}
+
+main "$@"

@@ -16,7 +16,7 @@ set $right      l
 # Applications
 set $term       wezterm
 set $browser    librewolf
-set $launcher   'albert toggle'
+set $launcher   '~/.local/bin/rofi-start'
 
 # Catppuccin Macchiato color scheme
 set $rosewater  #f4dbd6
@@ -137,7 +137,7 @@ input type:pointer {
 bindsym $mod+Return exec $term
 bindsym $mod+Space exec $launcher
 bindsym $mod+u exec $browser
-bindsym $mod+c exec cliphist list | rofi -dmenu -p "Clipboard" | cliphist decode | wl-copy
+bindsym $mod+c exec cliphist list | ~/.local/bin/rofi-start --dmenu | cliphist decode | wl-copy
 
 ### Actions ###################################################################
 
