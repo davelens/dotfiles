@@ -15,7 +15,7 @@ set $right      l
 
 # Applications
 set $term       wezterm
-set $browser    librewolf
+set $browser    firefox
 set $launcher   '~/.local/bin/rofi-start'
 
 # Catppuccin Macchiato color scheme
