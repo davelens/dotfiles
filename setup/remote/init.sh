@@ -145,7 +145,7 @@ preface() {
 
   read -n 1 -r -p "Do you want to continue? [y/n]: " yn </dev/tty
   case $yn in
-  [Yy]*) return ;;
+  [Yy]*) echo && return ;;
   [Nn]*) interrupt_handler ;;
   *) preface ;;
   esac
