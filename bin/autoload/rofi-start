@@ -11,6 +11,7 @@ theme="style-5"
 mode="drun"
 dmenu=0
 powermenu=0
+extra_args=()  # Any additional arguments to pass through to rofi
 
 main() {
   # Toggle behavior: if rofi is already running, kill it and exit
@@ -42,10 +43,9 @@ main() {
       shift 2
       ;;
     *)
-      # unknown options
-      echo "ERROR: Unknown option '$1'"
-      echo "Usage: rofi-start [--type] [--theme] [--mode] [--title]"
-      exit
+      # Pass through any unknown options to rofi
+      extra_args+=("$1")
+      shift
       ;;
     esac
   done
@@ -60,7 +60,7 @@ main() {
     fi
 
     # shellcheck disable=SC2086
-    $cmd -theme $XDG_CONFIG_HOME/rofi/launchers/${launcher}/${theme}.rasi
+    $cmd -theme $XDG_CONFIG_HOME/rofi/launchers/${launcher}/${theme}.rasi "${extra_args[@]}"
   fi
 }
 
