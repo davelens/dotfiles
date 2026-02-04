@@ -158,6 +158,7 @@ preface() {
 
 main() {
   preface
+  echo # Coming from a prompt, so we need an inline break.
 
   INSTALLER_TMP_HOME="$HOME/.local/state/dots/tmp/remote_install"
   mkdir -p "$INSTALLER_TMP_HOME"
