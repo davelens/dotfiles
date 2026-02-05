@@ -5,6 +5,7 @@ border-radius=12
 border-size=2
 default-timeout=5000
 font=nunito 16px
+icon-path=/usr/share/icons/HighContrast
 max-icon-size=32
 outer-margin=10
 padding=20,25

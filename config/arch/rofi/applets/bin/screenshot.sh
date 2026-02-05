@@ -76,9 +76,10 @@ fi
 
 # notify and view screenshot
 notify_view() {
-  notify_cmd_shot='dunstify -u low --replace=699'
+  notify_cmd_shot='notify-send'
   ${notify_cmd_shot} "Copied to clipboard."
   sushi ${dir}/"$file"
+
   if [[ -e "$dir/$file" ]]; then
     ${notify_cmd_shot} "Screenshot Saved."
   else
@@ -94,7 +95,7 @@ copy_shot() {
 # countdown
 countdown() {
   for sec in $(seq $1 -1 1); do
-    notify-send -t 1000 "Taking shot in : $sec"
+    notify-send -t 1000 -i image-x-generic "Taking shot in : $sec"
     sleep 1
   done
 }
