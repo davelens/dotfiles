@@ -54,7 +54,7 @@ set $grey       #6e738d
 assign [app_id="^org.wezfurlong.wezterm$"] workspace number 1
 assign [app_id="Firefox"] workspace number 2
 assign [app_id="librewolf"] workspace number 2
-assign [class="discord"] workspace number 3
+assign [app_id="com.discordapp.Discord"] workspace number 3
 assign [app_id="^Spotify$"] workspace number 4
 
 # Floating windows
