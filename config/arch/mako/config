@@ -1,18 +1,18 @@
 anchor=top-right
-default-timeout=50000
-outer-margin=20
-padding=10,15
+background-color=#181825
+border-color=#45475a
+border-radius=12
 border-size=2
-width=400
+default-timeout=5000
+font=nunito 16px
 max-icon-size=32
-font=sans-serif 14px
-
-text-color=#d8dee9
-border-color=#a6da95
-background-color=#24273a
+outer-margin=10
+padding=20,25
+text-color=#cdd6f4
+width=400
 
 [app-name=Spotify]
-invisible=1
+invisible=true
 
 [mode=do-not-disturb]
 invisible=true
@@ -20,17 +20,9 @@ invisible=true
 [mode=do-not-disturb app-name=notify-send]
 invisible=false
 
-[urgency=low]
-border-color=#8aadf4
-
-[urgency=normal]
-border-color=#c6a0f6
-
 [urgency=high]
-border-color=#eed49f
 default-timeout=0
 
 [urgency=critical]
-border-color=#ed8796
 default-timeout=0
 layer=overlay
