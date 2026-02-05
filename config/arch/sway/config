@@ -60,6 +60,9 @@ assign [app_id="^Spotify$"] workspace number 4
 # Floating windows
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="dialog"] floating enable
+for_window [app_id="org.gnome.Nautilus"] floating enable
+for_window [app_id="org.gnome.NautilusPreviewer"] floating enable
+for_window [class="com.github.phase1geo.annotator"] floating enable
 for_window [app_id="pavucontrol"] floating enable
 for_window [app_id="blueman-manager"] floating enable
 for_window [app_id="floating-term"] floating enable
