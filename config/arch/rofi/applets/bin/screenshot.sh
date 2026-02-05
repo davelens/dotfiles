@@ -76,14 +76,15 @@ fi
 
 # notify and view screenshot
 notify_view() {
-  notify_cmd_shot='notify-send'
-  ${notify_cmd_shot} "Copied to clipboard."
+  notify_cmd_shot="notify-send"
+
+  ${notify_cmd_shot} '-i edit-copy "Screenshot" "Copied to clipboard"'
   sushi ${dir}/"$file"
 
   if [[ -e "$dir/$file" ]]; then
-    ${notify_cmd_shot} "Screenshot Saved."
+    ${notify_cmd_shot} '-i document-save "Screenshot saved"'
   else
-    ${notify_cmd_shot} "Screenshot Deleted."
+    ${notify_cmd_shot} '-i user-trash "Screenshot deleted"'
   fi
 }
 
@@ -95,7 +96,7 @@ copy_shot() {
 # countdown
 countdown() {
   for sec in $(seq $1 -1 1); do
-    notify-send -t 1000 -i image-x-generic "Taking shot in : $sec"
+    notify-send -t 1000 -i image-x-generic "Screenshot" "Taking in ${sec}s"
     sleep 1
   done
 }
@@ -146,19 +147,19 @@ run_cmd() {
 # Actions
 chosen="$(run_rofi)"
 case ${chosen} in
-$option_1)
+"$option_1")
   run_cmd --opt1
   ;;
-$option_2)
+"$option_2")
   run_cmd --opt2
   ;;
-$option_3)
+"$option_3")
   run_cmd --opt3
   ;;
-$option_4)
+"$option_4")
   run_cmd --opt4
   ;;
-$option_5)
+"$option_5")
   run_cmd --opt5
   ;;
 esac
