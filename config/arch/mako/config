@@ -10,7 +10,7 @@ max-icon-size=32
 outer-margin=10
 padding=20,25
 text-color=#cdd6f4
-width=400
+width=410
 
 [app-name=Spotify]
 invisible=true

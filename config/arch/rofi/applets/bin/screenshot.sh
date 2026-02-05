@@ -1,165 +1,123 @@
 #!/usr/bin/env bash
 
-## Author  : Aditya Shakya (adi1090x)
-## Github  : @adi1090x
-#
-## Applets : Screenshot
+# shellcheck disable=SC1091
+source "$HOME/.config/rofi/applets/shared/theme.bash"
 
-# Import Current Theme
-source "$HOME"/.config/rofi/applets/shared/theme.bash
-theme="$type/$style"
-
-# Theme Elements
-prompt='Screenshot'
-mesg="DIR: $(xdg-user-dir PICTURES)/Screenshots"
-
-if [[ "$theme" == *'type-1'* ]]; then
-  list_col='1'
-  list_row='5'
-  win_width='500px'
-elif [[ "$theme" == *'type-3'* ]]; then
-  list_col='1'
-  list_row='5'
-  win_width='120px'
-elif [[ "$theme" == *'type-5'* ]]; then
-  list_col='1'
-  list_row='5'
-  win_width='520px'
-elif [[ ("$theme" == *'type-2'*) || ("$theme" == *'type-4'*) ]]; then
-  list_col='5'
-  list_row='1'
-  win_width='670px'
-fi
-
-# Options
-layout=$(cat ${theme} | grep 'USE_ICON' | cut -d'=' -f2)
-if [[ "$layout" == 'NO' ]]; then
-  option_1=" Capture Desktop"
-  option_2=" Capture Area"
-  option_3=" Capture Window"
-  option_4=" Capture in 5s"
-  option_5=" Capture in 10s"
-else
-  option_1=""
-  option_2=""
-  option_3=""
-  option_4=""
-  option_5=""
-fi
-
-# Rofi CMD
 rofi_cmd() {
   rofi -theme-str "window {width: $win_width;}" \
     -theme-str "listview {columns: $list_col; lines: $list_row;}" \
     -theme-str 'textbox-prompt-colon {str: "";}' \
     -dmenu \
-    -p "$prompt" \
-    -mesg "$mesg" \
+    -p "Screenshot" \
+    -msg "$msg" \
     -markup-rows \
-    -theme ${theme}
+    -theme "$theme"
 }
 
-# Pass variables to rofi dmenu
-run_rofi() {
+pipe_options_to_rofi() {
   echo -e "$option_1\n$option_2\n$option_3\n$option_4\n$option_5" | rofi_cmd
 }
 
-# Screenshot
-time=$(date +%Y-%m-%d-%H-%M-%S)
-geometry=$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | "\(.current_mode.width)x\(.current_mode.height)"')
-dir="$(xdg-user-dir PICTURES)/Screenshots"
-file="Screenshot_${time}_${geometry}.png"
-
-if [[ ! -d "$dir" ]]; then
-  mkdir -p "$dir"
-fi
-
-# notify and view screenshot
-notify_view() {
+send_notification_and_open_preview() {
   notify_cmd_shot="notify-send"
 
-  ${notify_cmd_shot} '-i edit-copy "Screenshot" "Copied to clipboard"'
-  sushi ${dir}/"$file"
+  $notify_cmd_shot -i edit-copy "Screenshot" "Copied to clipboard"
 
   if [[ -e "$dir/$file" ]]; then
-    ${notify_cmd_shot} '-i document-save "Screenshot saved"'
+    $notify_cmd_shot -i document-save "Screenshot saved" "$file"
   else
-    ${notify_cmd_shot} '-i user-trash "Screenshot deleted"'
+    $notify_cmd_shot -i user-trash "Screenshot deleted"
   fi
+
+  sushi "$dir"/"$file"
 }
 
-# Copy screenshot to clipboard
-copy_shot() {
+screenshot_to_clipboard() {
   tee "$file" | wl-copy -t image/png
 }
 
-# countdown
 countdown() {
-  for sec in $(seq $1 -1 1); do
+  for sec in $(seq "$1" -1 1); do
     notify-send -t 1000 -i image-x-generic "Screenshot" "Taking in ${sec}s"
     sleep 1
   done
 }
 
-# take shots
-shotnow() {
-  cd ${dir} && sleep 0.5 && grim - | copy_shot
-  notify_view
+take_screenshot_full() {
+  cd "$dir" && sleep 0.5 && grim - | screenshot_to_clipboard
+  send_notification_and_open_preview
 }
 
-shot5() {
-  countdown '5'
-  sleep 1 && cd ${dir} && grim - | copy_shot
-  notify_view
+take_screenshot_delay() {
+  countdown "${1:-5}"
+  sleep 1 && cd "$dir" && grim - | screenshot_to_clipboard
+  send_notification_and_open_preview
 }
 
-shot10() {
-  countdown '10'
-  sleep 1 && cd ${dir} && grim - | copy_shot
-  notify_view
+take_screenshot_window() {
+  cd "$dir" && grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" - | screenshot_to_clipboard
+  send_notification_and_open_preview
 }
 
-shotwin() {
-  cd ${dir} && grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" - | copy_shot
-  notify_view
+take_screenshot_area() {
+  local geometry
+  # Capture output of slurp first so we can cancel if it fails.
+  geometry=$(slurp) || return
+  cd "$dir" && grim -g "$geometry" - | screenshot_to_clipboard
+  send_notification_and_open_preview
 }
 
-shotarea() {
-  cd ${dir} && grim -g "$(slurp)" - | copy_shot
-  notify_view
-}
+main() {
+  # type/style are defined in the shared theme.bash file.
+  # shellcheck disable=SC2154
+  theme="$type/$style"
+  msg="DIR: $(xdg-user-dir PICTURES)/Screenshots"
+  layout=$(cat "$theme" | grep 'USE_ICON' | cut -d'=' -f2)
+  geometry=$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | "\(.current_mode.width)x\(.current_mode.height)"')
+  dir="$(xdg-user-dir Pictures)/screenshots"
+  file="$(date +%Y-%m-%d-%H-%M-%S)_${geometry}.png"
 
-# Execute Command
-run_cmd() {
-  if [[ "$1" == '--opt1' ]]; then
-    shotnow
-  elif [[ "$1" == '--opt2' ]]; then
-    shotarea
-  elif [[ "$1" == '--opt3' ]]; then
-    shotwin
-  elif [[ "$1" == '--opt4' ]]; then
-    shot5
-  elif [[ "$1" == '--opt5' ]]; then
-    shot10
+  if [[ "$theme" == *'type-1'* ]]; then
+    list_col='1'
+    list_row='5'
+    win_width='400px'
+  elif [[ "$theme" == *'type-3'* ]]; then
+    list_col='1'
+    list_row='5'
+    win_width='120px'
+  elif [[ "$theme" == *'type-5'* ]]; then
+    list_col='1'
+    list_row='5'
+    win_width='520px'
+  elif [[ ("$theme" == *'type-2'*) || ("$theme" == *'type-4'*) ]]; then
+    list_col='5'
+    list_row='1'
+    win_width='670px'
   fi
+
+  if [ "$layout" == 'NO' ]; then
+    option_1=" Capture Desktop"
+    option_2=" Capture Area"
+    option_3=" Capture Window"
+    option_4=" Capture in 5s"
+    option_5=" Capture in 10s"
+  else
+    option_1=""
+    option_2=""
+    option_3=""
+    option_4=""
+    option_5=""
+  fi
+
+  [ ! -d "$dir" ] && mkdir -p "$dir"
+
+  case $(pipe_options_to_rofi) in
+  "$option_1") take_screenshot_full ;;
+  "$option_2") take_screenshot_area ;;
+  "$option_3") take_screenshot_window ;;
+  "$option_4") take_screenshot_delay 5 ;;
+  "$option_5") take_screenshot_delay 10 ;;
+  esac
 }
 
-# Actions
-chosen="$(run_rofi)"
-case ${chosen} in
-"$option_1")
-  run_cmd --opt1
-  ;;
-"$option_2")
-  run_cmd --opt2
-  ;;
-"$option_3")
-  run_cmd --opt3
-  ;;
-"$option_4")
-  run_cmd --opt4
-  ;;
-"$option_5")
-  run_cmd --opt5
-  ;;
-esac
+main "$@"
