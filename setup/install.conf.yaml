@@ -12,6 +12,7 @@
     - $XDG_CONFIG_HOME/fontconfig
     - $XDG_DATA_HOME/fonts
     - $XDG_DATA_HOME/irb
+    - $XDG_DATA_HOME/mycli
     - $XDG_STATE_HOME/bash # HISTFILE is set to live in this target folder.
     - $GNUPGHOME
 
