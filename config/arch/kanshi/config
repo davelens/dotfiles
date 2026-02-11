@@ -11,3 +11,8 @@ profile docked-dp4 {
     output eDP-2 disable
     output DP-4 enable mode 2560x1440@100Hz position 0,0 scale 1
 }
+
+profile docked-dp7 {
+    output eDP-2 disable
+    output DP-7 enable mode 2560x1440@60Hz position 0,0 scale 1
+}
