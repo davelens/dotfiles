@@ -5,12 +5,12 @@ border-radius=12
 border-size=2
 default-timeout=5000
 font=nunito 16px
-icon-path=/usr/share/icons/HighContrast
 max-icon-size=32
+max-visible=5
 outer-margin=10
 padding=20,25
 text-color=#cdd6f4
-width=410
+width=500
 
 [app-name=Spotify]
 invisible=true
