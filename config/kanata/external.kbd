@@ -13,11 +13,9 @@
 (defsrc
   caps a s d f j k l ;
   1 2 3 4 5 6 7 8 9
-  lmet lalt rmet ralt
 )
 
 (deflayer base
   @escctrl @a @s @d @f @j @k @l @;
   @1 @2 @3 @4 @5 @6 @7 @8 @9
-  lalt lmet ralt rmet
 )
