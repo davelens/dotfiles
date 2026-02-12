@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
+
+# To prevent errors triggered when the local Ruby version differs from 3.4.8
 unset BUNDLE_GEMFILE
+
+# Force Ruby 3.4.8 to avoid dependency hell during development.
 MISE_RUBY_VERSION=3.4.8 exec mise exec ruby -- ac-tui "$@"
