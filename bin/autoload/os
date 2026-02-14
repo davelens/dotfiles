@@ -2,7 +2,7 @@
 set -e
 
 detect_linux_distro() {
-  if [ -f /etc/os-release ]; then
+  if [[ -f /etc/os-release ]]; then
     # shellcheck disable=SC1091
     . /etc/os-release
     case "$ID" in
@@ -18,27 +18,27 @@ detect_linux_distro() {
 }
 
 detect_platform() {
-  case "$(uname -s)" in
-    Darwin) echo 'macos' ;;
-    Linux) echo 'linux' ;;
-    FreeBSD) echo 'freebsd' ;;
-    MINGW*|MSYS*|CYGWIN*) echo 'windows' ;;
+  case "$OSTYPE" in
+    darwin*) echo 'macos' ;;
+    linux-gnu*) echo 'linux' ;;
+    freebsd*) echo 'freebsd' ;;
+    msys*|cygwin*|mingw*) echo 'windows' ;;
     *) echo 'unknown' ;;
   esac
 }
 
 detect_distro() {
   # Detect container environment
-  if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
+  if [[ -f /.dockerenv ]] || [[ -f /run/.containerenv ]]; then
     echo 'linux'
-  elif [ -f /proc/version ] && grep -qEi "(microsoft|WSL)" /proc/version ; then
+  elif [[ -f /proc/version ]] && grep -qEi "(microsoft|WSL)" /proc/version; then
     echo 'wsl'
   else
-    case "$(uname -s)" in
-      Darwin) echo 'macos' ;;
-      Linux) detect_linux_distro ;;
-      FreeBSD) echo 'freebsd' ;;
-      MINGW*|MSYS*|CYGWIN*) echo 'windows' ;;
+    case "$OSTYPE" in
+      darwin*) echo 'macos' ;;
+      linux-gnu*) detect_linux_distro ;;
+      freebsd*) echo 'freebsd' ;;
+      msys*|cygwin*|mingw*) echo 'windows' ;;
     esac
   fi
 }
