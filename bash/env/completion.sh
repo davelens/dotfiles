@@ -2,6 +2,8 @@
 # Env settings and configuration related to bash's completion.
 ###############################################################################
 
+# shellcheck disable=SC1090,SC1091
+
 # Load system bash-completion (Arch, Debian, etc,...).
 if [[ -r /usr/share/bash-completion/bash_completion ]]; then
   source /usr/share/bash-completion/bash_completion
@@ -26,7 +28,7 @@ complete -cf sudo
 
 # Source all downloaded completion files.
 for file in "$DOTFILES_REPO_HOME"/bash/env/completions/*.bash; do
-  [ -r "$file" ] && source "$file"
+  [[ -r $file ]] && source "$file"
 done
 unset file
 
