@@ -2,25 +2,12 @@
 # Env settings and exports related to Ruby - This gets its own section! <3
 ###############################################################################
 
-# Configure the garbage collector for local development.
-# Basically these following settings reduce interruptions due to GC.
-# The aim is to improve request/response time in local development.
-export RUBY_GC_HEAP_INIT_SLOTS=80000          # Larger initial heap (default is lowish)
-export RUBY_GC_HEAP_FREE_SLOTS=20000          # Keep more free slots to reduce GC runs
-export RUBY_GC_HEAP_GROWTH_FACTOR=1.25        # Less heap expansion (default = 1.8!)
-export RUBY_GC_HEAP_GROWTH_MAX_SLOTS=40000    # Limit max heap growth per step
-export RUBY_GC_MALLOC_LIMIT=128000000         # Delay GC runs for memory allocations
-export RUBY_GC_MALLOC_LIMIT_MAX=256000000     # Wait longer to trigger GC
-export RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR=1.2 # Bigger, gradual malloc limits
-# No automatic garbage collection when requiring.
-# Prevent garbage collection from interfering during gem loading.
-# Don't compact the heap (useful for long-running processes).
-export RUBY_GC_AUTO_COMPACT=0
-export RUBY_GC_PROFILER=0 # No unnecessary profiling overhead.
+# Ruby 3.3+ has significantly improved GC defaults with Variable Width
+# allocation. We trust those defaults instead of manually tuning heap/malloc
+# limits, like I used to.
+
 # 3.1+ provides YJIT to give us a speed boost.
 export RUBY_YJIT_ENABLE=1
-export RUBY_YJIT_STATS=0
-export RUBY_YJIT_MIN_CODE_SIZE=16384
 # ZJIT is still new and not faster than YJIT *yet*.
 # Keeping it here so I don't forget to experiment later.
 # export RUBY_ZJIT_ENABLE=1
