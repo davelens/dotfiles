@@ -29,6 +29,7 @@ source "$DOTFILES_REPO_HOME/bash/env/history.sh"    # Bash history config
 source "$DOTFILES_REPO_HOME/bash/env/locale.sh"     # Language config
 source "$DOTFILES_REPO_HOME/bash/env/completion.sh" # Bash cmd completion
 source "$DOTFILES_REPO_HOME/bash/env/ruby.sh"       # Ruby-specific env config
+source "$DOTFILES_REPO_HOME/bash/env/ssh.sh"        # SSH agent via keychain
 source "$DOTFILES_REPO_HOME/bash/env/misc.sh"       # The kitchen sink
 
 ###############################################################################
