@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2154
+# shellcheck disable=SC2154,SC1091
 set -e
 
 # TODO: Change the `dots` command to git init DOTFILES_REPO_HOME, if necessary.
