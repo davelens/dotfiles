@@ -23,9 +23,10 @@ source "$DOTFILES_REPO_HOME/bash/aliases.sh"  # Shorthands, overrides,...
 ###############################################################################
 # Configuration of how our shell behaves ($PATH, commands, completion,...).
 ###############################################################################
+source "$DOTFILES_REPO_HOME/bash/env/options.sh"    # Shell options (shopt/set)
 source "$DOTFILES_REPO_HOME/bash/env/path.sh"       # $PATH
 source "$DOTFILES_REPO_HOME/bash/env/history.sh"    # Bash history config
-source "$DOTFILES_REPO_HOME/bash/env/locale.sh"     # Language/Keyboard config
+source "$DOTFILES_REPO_HOME/bash/env/locale.sh"     # Language config
 source "$DOTFILES_REPO_HOME/bash/env/completion.sh" # Bash cmd completion
 source "$DOTFILES_REPO_HOME/bash/env/ruby.sh"       # Ruby-specific env config
 source "$DOTFILES_REPO_HOME/bash/env/misc.sh"       # The kitchen sink
