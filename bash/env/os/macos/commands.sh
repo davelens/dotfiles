@@ -19,7 +19,7 @@ quicklook() {
 }
 
 # I prefer GNU coreutils over the BSD ones on macos, so I'm trying this out
-# to keep my scripts consistent between macos/linux.
+# to keep my scripts consistent between macos/arch.
 cp() { gcp "$@"; }
 ls() { gls "$@"; }
 sed() { gsed "$@"; }
