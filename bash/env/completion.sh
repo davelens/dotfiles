@@ -10,17 +10,9 @@ if [[ -r /usr/share/bash-completion/bash_completion ]]; then
 fi
 
 # Load Homebrew-installed completions (macos or Linuxbrew).
-if command -v brew >/dev/null; then
-  if [[ -r "$BREW_PATH"/etc/profile.d/bash_completion.sh ]]; then
-    source "$BREW_PATH"/etc/profile.d/bash_completion.sh
-  fi
-
-  if [[ -d "$BREW_PATH"/etc/bash_completion.d/ ]]; then
-    for completion in "$BREW_PATH"/etc/bash_completion.d/*; do
-      [[ -r "$completion" ]] && source "$completion"
-    done
-    unset completion
-  fi
+# Note: bash_completion.sh handles completion.d lazily, so we don't loop manually.
+if [[ -n "$BREW_PATH" ]] && [[ -r "$BREW_PATH"/etc/profile.d/bash_completion.sh ]]; then
+  source "$BREW_PATH"/etc/profile.d/bash_completion.sh
 fi
 
 # Enable completion for commands run via `sudo`.
