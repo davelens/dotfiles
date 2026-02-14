@@ -10,7 +10,7 @@ export EDITOR="dvim"
 unset MAILCHECK
 
 # This makes it so `gh` will use a bash shell running my default editor.
-export GH_EDITOR="bash -c '$EDITOR'"
+export GH_EDITOR="$EDITOR"
 
 # Make ls & grep pretty.
 export CLICOLOR=1
