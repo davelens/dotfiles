@@ -16,15 +16,17 @@ shopt -s histappend
 export HISTSIZE=
 export HISTFILESIZE=
 
-# When executing the same command twice or more in a row, only store it once.
-export HISTCONTROL=ignoredups
+# Combines two settings:
+# - ignoredups: Ignores consecutive, duplicate commands (i.e. store only once).
+# - ignorespace: Ignores command starting with a space.
+export HISTCONTROL=ignoreboth
 
 # Keep track of the time the commands were executed.
 # The xterm colour escapes require special care when piping; e.g. "| less -R".
 export HISTTIMEFORMAT="$BFGB%Y/%m/%d %H:%M:%S$CNONE "
 
 # let the history ignore the following commands
-export HISTIGNORE="ls:lsa:ll:la:pwd:clear:h:j"
+export HISTIGNORE="ls:lsa:ll:la:pwd:clear"
 
 # Disable macos keeping separate history per session in ~/.bash_sessions.
 export SHELL_SESSION_HISTORY=0
