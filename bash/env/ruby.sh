@@ -32,27 +32,8 @@ export SPRING_LOG="$PWD/log/spring.log"
 export SPRING_TMP_PATH="/tmp"
 
 # Compilation configuration options for fresh Ruby installations.
-if [ -n "$BREW_PATH" ]; then
-  # Configure compilation options for Ruby installs via mise/ruby-build.
-  # Only add libraries that are actually installed via Homebrew.
-  RUBY_CONFIGURE_OPTS=""
-
-  # OpenSSL - SSL/TLS support
-  if brew --prefix openssl &>/dev/null; then
-    RUBY_CONFIGURE_OPTS+="--with-openssl-dir=$(brew --prefix openssl) "
-  fi
-
-  # Readline - IRB/console line editing support
-  if brew --prefix readline &>/dev/null; then
-    RUBY_CONFIGURE_OPTS+="--with-readline-dir=$(brew --prefix readline) "
-  fi
-
-  # libyaml - YAML parsing (Psych gem)
-  if brew --prefix libyaml &>/dev/null; then
-    RUBY_CONFIGURE_OPTS+="--with-libyaml-dir=$(brew --prefix libyaml) "
-  fi
-
-  # Remove trailing space
-  RUBY_CONFIGURE_OPTS="${RUBY_CONFIGURE_OPTS% }"
-  export RUBY_CONFIGURE_OPTS
+# Only evaluated when RUBY_CONFIGURE_OPTS is actually needed (e.g., mise install).
+# This avoids slow `brew --prefix` calls on every shell startup.
+if [[ -n "$BREW_PATH" ]]; then
+  export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$BREW_PATH/opt/openssl --with-readline-dir=$BREW_PATH/opt/readline --with-libyaml-dir=$BREW_PATH/opt/libyaml"
 fi
