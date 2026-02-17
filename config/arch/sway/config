@@ -56,6 +56,7 @@ assign [app_id="Firefox"] workspace number 2
 assign [app_id="librewolf"] workspace number 2
 assign [app_id="com.discordapp.Discord"] workspace number 3
 assign [app_id="^Spotify$"] workspace number 4
+assign [class="steam"] workspace number 5
 
 # Floating windows
 for_window [window_role="pop-up"] floating enable
