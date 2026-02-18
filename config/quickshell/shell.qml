@@ -389,7 +389,7 @@ Scope {
                         anchors.centerIn: parent
                         text: root.getVolumeIcon(volumeButton.volume, volumeButton.muted)
                         color: volumeButton.muted ? Colors.overlay0 : Colors.text
-                        font.pixelSize: 18
+                        font.pixelSize: 24
                         font.family: "Symbols Nerd Font"
                     }
 
