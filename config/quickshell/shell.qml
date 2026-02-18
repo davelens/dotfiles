@@ -16,6 +16,7 @@ Scope {
     // Volume popup state
     property bool volumePopupVisible: false
     property bool deviceListExpanded: false
+    property bool inputDeviceListExpanded: false
 
     // Get list of audio output devices (sinks that are hardware, not streams)
     property var audioSinks: {
@@ -30,6 +31,21 @@ Scope {
             }
         }
         return sinks;
+    }
+
+    // Get list of audio input devices (sources that are hardware, not streams)
+    property var audioSources: {
+        var sources = [];
+        if (Pipewire.ready && Pipewire.nodes && Pipewire.nodes.values) {
+            var nodes = Pipewire.nodes.values;
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                if (node.audio && !node.isSink && !node.isStream) {
+                    sources.push(node);
+                }
+            }
+        }
+        return sources;
     }
 
     // Idle inhibitor process (keeps running to inhibit idle)
@@ -88,6 +104,7 @@ Scope {
                 onClicked: {
                     root.volumePopupVisible = false
                     root.deviceListExpanded = false
+                    root.inputDeviceListExpanded = false
                 }
             }
         }
@@ -121,6 +138,7 @@ Scope {
                 Keys.onEscapePressed: {
                     root.volumePopupVisible = false
                     root.deviceListExpanded = false
+                    root.inputDeviceListExpanded = false
                 }
             }
 
@@ -131,6 +149,7 @@ Scope {
                 onClicked: {
                     root.volumePopupVisible = false
                     root.deviceListExpanded = false
+                    root.inputDeviceListExpanded = false
                 }
             }
 
@@ -357,7 +376,12 @@ Scope {
                 anchor.gravity: Edges.Bottom | Edges.Left
 
                 implicitWidth: 320
-                implicitHeight: root.deviceListExpanded ? 80 + (root.audioSinks.length * 36) + 8 : 80
+                implicitHeight: {
+                    var h = 48 + 28 + 16 + 28;  // slider + output header + divider + input header
+                    if (root.deviceListExpanded) h += root.audioSinks.length * 36;
+                    if (root.inputDeviceListExpanded) h += root.audioSources.length * 36;
+                    return h + 16;  // margins
+                }
                 color: "#1e1e2e"
 
                 Column {
@@ -459,7 +483,7 @@ Scope {
                         }
                     }
 
-                    // Current device display
+                    // Output device header
                     Rectangle {
                         width: parent.width
                         height: 28
@@ -482,13 +506,20 @@ Scope {
 
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
+                                text: "Output"
+                                color: "#6c7086"
+                                font.pixelSize: 11
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
                                 text: Pipewire.defaultAudioSink
                                     ? (Pipewire.defaultAudioSink.description || Pipewire.defaultAudioSink.name || "Unknown")
                                     : "No device"
                                 color: "#cdd6f4"
                                 font.pixelSize: 13
                                 elide: Text.ElideRight
-                                width: parent.width - 50
+                                width: parent.width - 90
                             }
 
                             Text {
@@ -509,7 +540,7 @@ Scope {
                         }
                     }
 
-                    // Device list (shown when expanded)
+                    // Output device list (shown when expanded)
                     Column {
                         id: deviceColumn
                         width: parent.width
@@ -560,6 +591,127 @@ Scope {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
                                         Pipewire.preferredDefaultAudioSink = modelData
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Horizontal divider
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: "#45475a"
+                    }
+
+                    // Input device header
+                    Rectangle {
+                        width: parent.width
+                        height: 28
+                        radius: 4
+                        color: inputDeviceExpandArea.containsMouse ? "#313244" : "transparent"
+
+                        Row {
+                            anchors.fill: parent
+                            anchors.leftMargin: 4
+                            anchors.rightMargin: 4
+                            spacing: 6
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "󰍬"
+                                color: "#89b4fa"
+                                font.pixelSize: 14
+                                font.family: "Symbols Nerd Font"
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Input"
+                                color: "#6c7086"
+                                font.pixelSize: 11
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: Pipewire.defaultAudioSource
+                                    ? (Pipewire.defaultAudioSource.description || Pipewire.defaultAudioSource.name || "Unknown")
+                                    : "No device"
+                                color: "#cdd6f4"
+                                font.pixelSize: 13
+                                elide: Text.ElideRight
+                                width: parent.width - 90
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: root.inputDeviceListExpanded ? "󰅃" : "󰅀"
+                                color: "#6c7086"
+                                font.pixelSize: 14
+                                font.family: "Symbols Nerd Font"
+                            }
+                        }
+
+                        MouseArea {
+                            id: inputDeviceExpandArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.inputDeviceListExpanded = !root.inputDeviceListExpanded
+                        }
+                    }
+
+                    // Input device list (shown when expanded)
+                    Column {
+                        id: inputDeviceColumn
+                        width: parent.width
+                        spacing: 2
+                        visible: root.inputDeviceListExpanded
+
+                        Repeater {
+                            id: inputDeviceRepeater
+                            model: root.audioSources
+
+                            Rectangle {
+                                required property var modelData
+                                property bool isDefault: Pipewire.defaultAudioSource && Pipewire.defaultAudioSource.id === modelData.id
+
+                                width: inputDeviceColumn.width
+                                height: 32
+                                radius: 4
+                                color: isDefault ? "#45475a" : (inputDeviceMouseArea.containsMouse ? "#313244" : "transparent")
+
+                                Row {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 8
+                                    anchors.rightMargin: 8
+                                    spacing: 8
+
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: isDefault ? "󰄬" : "󰍬"
+                                        color: isDefault ? "#a6e3a1" : "#6c7086"
+                                        font.pixelSize: 14
+                                        font.family: "Symbols Nerd Font"
+                                    }
+
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: modelData.description || modelData.name || "Unknown"
+                                        color: isDefault ? "#cdd6f4" : "#a6adc8"
+                                        font.pixelSize: 13
+                                        elide: Text.ElideRight
+                                        width: parent.width - 40
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: inputDeviceMouseArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        Pipewire.preferredDefaultAudioSource = modelData
                                     }
                                 }
                             }
