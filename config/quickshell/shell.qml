@@ -281,7 +281,7 @@ Scope {
                 anchor.gravity: Edges.Bottom | Edges.Left
 
                 implicitWidth: 280
-                implicitHeight: popupContent.height + 16
+                implicitHeight: root.deviceListExpanded ? 72 + (root.audioSinks.length * 30) + 8 : 72
                 color: "#1e1e2e"
 
                 Column {
