@@ -45,7 +45,7 @@ PopupWindow {
                 Text {
                     text: (modelData.type === "ddc" ? "󰍹  " : "󰌢  ") + modelData.name
                     color: Colors.overlay0
-                    font.pixelSize: 11
+                    font.pixelSize: 14
                     font.family: "Symbols Nerd Font"
                 }
 

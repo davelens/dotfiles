@@ -69,7 +69,7 @@ Column {
                 anchors.verticalCenter: parent.verticalCenter
                 text: dropdown.headerLabel
                 color: Colors.overlay0
-                font.pixelSize: 11
+                font.pixelSize: 14
             }
 
             Text {

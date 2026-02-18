@@ -325,7 +325,7 @@ Scope {
             // -----------------------------------------------------------------
             Row {
                 anchors.right: parent.right
-                anchors.rightMargin: 12
+                anchors.rightMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 16
 
