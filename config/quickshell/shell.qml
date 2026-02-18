@@ -329,95 +329,101 @@ Scope {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 16
 
-                // Display
-                Rectangle {
-                    id: displayButton
-                    width: 28
-                    height: 24
-                    radius: 4
-                    color: displayArea.containsMouse ? Colors.surface1 : Colors.surface0
+                // Display, Brightness, Volume group
+                Row {
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 10
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: "󰍹"
-                        color: Colors.text
-                        font.pixelSize: 18
-                        font.family: "Symbols Nerd Font"
+                    // Display
+                    Rectangle {
+                        id: displayButton
+                        width: 28
+                        height: 24
+                        radius: 4
+                        color: displayArea.containsMouse ? Colors.surface1 : Colors.surface0
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "󰍹"
+                            color: Colors.text
+                            font.pixelSize: 18
+                            font.family: "Symbols Nerd Font"
+                        }
+
+                        MouseArea {
+                            id: displayArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.togglePopup("display", panel.modelData)
+                        }
                     }
 
-                    MouseArea {
-                        id: displayArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.togglePopup("display", panel.modelData)
-                    }
-                }
+                    // Brightness
+                    Rectangle {
+                        id: brightnessButton
+                        width: 28
+                        height: 24
+                        radius: 4
+                        color: brightnessArea.containsMouse ? Colors.surface1 : Colors.surface0
 
-                // Brightness
-                Rectangle {
-                    id: brightnessButton
-                    width: 28
-                    height: 24
-                    radius: 4
-                    color: brightnessArea.containsMouse ? Colors.surface1 : Colors.surface0
+                        Text {
+                            anchors.centerIn: parent
+                            text: BrightnessManager.getIcon(BrightnessManager.averageLevel)
+                            color: Colors.text
+                            font.pixelSize: 18
+                            font.family: "Symbols Nerd Font"
+                        }
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: BrightnessManager.getIcon(BrightnessManager.averageLevel)
-                        color: Colors.text
-                        font.pixelSize: 18
-                        font.family: "Symbols Nerd Font"
-                    }
-
-                    MouseArea {
-                        id: brightnessArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.togglePopup("brightness", panel.modelData)
-                        onWheel: event => {
-                            var delta = event.angleDelta.y > 0 ? 0.05 : -0.05
-                            // Apply to all displays
-                            for (var i = 0; i < BrightnessManager.displays.length; i++) {
-                                var d = BrightnessManager.displays[i]
-                                var newLevel = Math.max(0.01, Math.min(1, d.brightness + delta))
-                                BrightnessManager.setBrightness(d.id, newLevel)
+                        MouseArea {
+                            id: brightnessArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.togglePopup("brightness", panel.modelData)
+                            onWheel: event => {
+                                var delta = event.angleDelta.y > 0 ? 0.05 : -0.05
+                                // Apply to all displays
+                                for (var i = 0; i < BrightnessManager.displays.length; i++) {
+                                    var d = BrightnessManager.displays[i]
+                                    var newLevel = Math.max(0.01, Math.min(1, d.brightness + delta))
+                                    BrightnessManager.setBrightness(d.id, newLevel)
+                                }
                             }
                         }
                     }
-                }
 
-                // Volume
-                Rectangle {
-                    id: volumeButton
-                    width: 28
-                    height: 24
-                    radius: 4
-                    color: volumeArea.containsMouse ? Colors.surface1 : Colors.surface0
+                    // Volume
+                    Rectangle {
+                        id: volumeButton
+                        width: 28
+                        height: 24
+                        radius: 4
+                        color: volumeArea.containsMouse ? Colors.surface1 : Colors.surface0
 
-                    property var sink: Pipewire.defaultAudioSink
-                    property real volume: sink && sink.audio ? sink.audio.volume : 0
-                    property bool muted: sink && sink.audio ? sink.audio.muted : false
+                        property var sink: Pipewire.defaultAudioSink
+                        property real volume: sink && sink.audio ? sink.audio.volume : 0
+                        property bool muted: sink && sink.audio ? sink.audio.muted : false
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: root.getVolumeIcon(volumeButton.volume, volumeButton.muted)
-                        color: volumeButton.muted ? Colors.overlay0 : Colors.text
-                        font.pixelSize: 24
-                        font.family: "Symbols Nerd Font"
-                    }
+                        Text {
+                            anchors.centerIn: parent
+                            text: root.getVolumeIcon(volumeButton.volume, volumeButton.muted)
+                            color: volumeButton.muted ? Colors.overlay0 : Colors.text
+                            font.pixelSize: 24
+                            font.family: "Symbols Nerd Font"
+                        }
 
-                    MouseArea {
-                        id: volumeArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.togglePopup("volume", panel.modelData)
-                        onWheel: event => {
-                            if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
-                                var delta = event.angleDelta.y > 0 ? 0.05 : -0.05
-                                Pipewire.defaultAudioSink.audio.volume = Math.max(0, Math.min(1, Pipewire.defaultAudioSink.audio.volume + delta))
+                        MouseArea {
+                            id: volumeArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.togglePopup("volume", panel.modelData)
+                            onWheel: event => {
+                                if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
+                                    var delta = event.angleDelta.y > 0 ? 0.05 : -0.05
+                                    Pipewire.defaultAudioSink.audio.volume = Math.max(0, Math.min(1, Pipewire.defaultAudioSink.audio.volume + delta))
+                                }
                             }
                         }
                     }
