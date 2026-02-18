@@ -1,63 +1,80 @@
 #!/usr/bin/env bash
 #
-# Scan, select, pair, and connect to Bluetooth devices
+# Original script taken from Jesse Mirabel, then changed to have a direct
+# d-bus integration, and an expanded bluetooth device list.
 #
 # Requirements:
-# 	bluetoothctl (bluez-utils)
-# 	fzf
-# 	notify-send (libnotify)
-#
-# Author:  Jesse Mirabel <sejjymvm@gmail.com>
-# Date:    August 19, 2025
-# License: MIT
+#   bluetoothctl (bluez-utils)
+#   fzf
+#   notify-send (libnotify)
 
 RED="\e[31m"
 RESET="\e[39m"
 
 TIMEOUT=10
 
+# Wrapper for bluetoothctl that works reliably after sleep
+# Uses interactive mode with piped commands instead of one-shot mode
+btctl() {
+  echo "$1" | bluetoothctl 2>/dev/null | grep -v '^\[' | grep -v '^Agent' | grep -v '^Waiting'
+}
+
+# Get property from D-Bus (more reliable than bluetoothctl after sleep)
+get_adapter_property() {
+  busctl get-property org.bluez /org/bluez/hci0 org.bluez.Adapter1 "$1" 2>/dev/null | awk '{print $2}'
+}
+
+get_device_property() {
+  local mac="$1" prop="$2"
+  local path="/org/bluez/hci0/dev_${mac//:/_}"
+  busctl get-property org.bluez "$path" org.bluez.Device1 "$prop" 2>/dev/null | sed 's/^[bs] "\?\([^"]*\)"\?$/\1/' | xargs -0 printf '%b'
+}
+
 ensure-on() {
-  local state
-  state=$(bluetoothctl show | awk '/PowerState/ {print $2}')
+  local powered
+  powered=$(get_adapter_property "Powered")
 
-  case $state in
-  "off") bluetoothctl power on >/dev/null ;;
-  "off-blocked")
-    rfkill unblock bluetooth
+  if [[ "$powered" == "false" ]]; then
+    # Check if soft-blocked
+    if rfkill list bluetooth | grep -q "Soft blocked: yes"; then
+      rfkill unblock bluetooth
+      sleep 1
+    fi
 
-    local i new_state
+    btctl "power on" >/dev/null
+
+    local i
     for ((i = 1; i <= TIMEOUT; i++)); do
-      printf "\rUnblocking Bluetooth... (%d/%d)" $i $TIMEOUT
-
-      new_state=$(bluetoothctl show | awk '/PowerState/ {print $2}')
-      if [[ $new_state == "on" ]]; then
+      printf "\rPowering on Bluetooth... (%d/%d)" $i $TIMEOUT
+      powered=$(get_adapter_property "Powered")
+      if [[ "$powered" == "true" ]]; then
         break
       fi
-
       sleep 1
     done
 
-    if [[ $new_state != "on" ]]; then
-      notify-send "Bluetooth" "Failed to unblock" -i "package-purge"
+    if [[ "$powered" != "true" ]]; then
+      notify-send "Bluetooth" "Failed to power on" -i "package-purge"
       return 1
     fi
-    ;;
-  *) return 0 ;;
-  esac
 
-  notify-send "Bluetooth On" -i "network-bluetooth-activated" \
-    -h string:x-canonical-private-synchronous:bluetooth
+    notify-send "Bluetooth On" -i "network-bluetooth-activated" \
+      -h string:x-canonical-private-synchronous:bluetooth
+  fi
 }
 
 get-device-list() {
-  bluetoothctl -t $TIMEOUT scan on >/dev/null &
+  # Start scanning - keep bluetoothctl running to maintain scan
+  coproc BTSCAN { bluetoothctl; }
+  echo "scan on" >&"${BTSCAN[1]}"
 
   local i num
   for ((i = 1; i <= TIMEOUT; i++)); do
     printf "\rScanning for devices... (%d/%d)\n" $i $TIMEOUT
     printf "%bPress [q] to stop%b\n" "$RED" "$RESET"
 
-    num=$(bluetoothctl devices | grep -c "Device")
+    # Count devices via D-Bus
+    num=$(busctl tree org.bluez 2>/dev/null | grep -c '/org/bluez/hci0/dev_')
     printf "\nDevices: %s" "$num"
     printf "\e[0;0H"
 
@@ -67,10 +84,48 @@ get-device-list() {
     fi
   done
 
+  # Stop scanning
+  echo "scan off" >&"${BTSCAN[1]}"
+  echo "exit" >&"${BTSCAN[1]}"
+  wait "$BTSCAN_PID" 2>/dev/null
+
   printf "\n%bScanning stopped.%b\n\n" "$RED" "$RESET"
 
-  list=$(bluetoothctl devices | sed "s/^Device //")
-  if [[ -z $list ]]; then
+  # Get device list via D-Bus
+  local list_connected="" list_other=""
+  local devices
+  devices=$(busctl tree org.bluez 2>/dev/null | grep -oP '/org/bluez/hci0/dev_[A-F0-9_]+' | sort -u)
+
+  for dev in $devices; do
+    local mac name connected paired rssi
+    mac=$(echo "$dev" | grep -oP 'dev_\K[A-F0-9_]+' | tr '_' ':')
+    name=$(busctl get-property org.bluez "$dev" org.bluez.Device1 Alias 2>/dev/null | sed 's/^s "\(.*\)"$/\1/' | xargs -0 printf '%b')
+    [[ -z "$name" ]] && name="Unknown"
+
+    connected=$(busctl get-property org.bluez "$dev" org.bluez.Device1 Connected 2>/dev/null | awk '{print $2}')
+    paired=$(busctl get-property org.bluez "$dev" org.bluez.Device1 Paired 2>/dev/null | awk '{print $2}')
+    rssi=$(busctl get-property org.bluez "$dev" org.bluez.Device1 RSSI 2>/dev/null | awk '{print $2}')
+    [[ -z "$rssi" ]] && rssi="-999"
+
+    if [[ "$connected" == "true" ]]; then
+      list_connected+="$mac [connected] $name"$'\n'
+    elif [[ "$paired" == "true" ]]; then
+      # Use rssi for sorting (pad with leading zeros for proper sort)
+      printf -v rssi_padded "%04d" $((rssi + 1000))
+      list_other+="${rssi_padded}|$mac [paired]    $name"$'\n'
+    else
+      printf -v rssi_padded "%04d" $((rssi + 1000))
+      list_other+="${rssi_padded}|$mac            $name"$'\n'
+    fi
+  done
+
+  # Sort by RSSI (descending - strongest first) and remove sort key
+  list_other=$(echo -n "$list_other" | sort -t'|' -k1 -rn | cut -d'|' -f2-)
+
+  list="${list_connected}${list_other}"
+  list="${list%$'\n'}"
+
+  if [[ -z "$list" ]]; then
     notify-send "Bluetooth" "No devices found" -i "package-broken"
     return 1
   fi
@@ -78,7 +133,7 @@ get-device-list() {
 
 select-device() {
   local header
-  header=$(printf "%-17s %s" "Address" "Name")
+  header=$(printf "%-17s %-11s %s" "Address" "Status" "Name")
 
   local options=(
     "--border=sharp"
@@ -98,9 +153,9 @@ select-device() {
   fi
 
   local connected
-  connected=$(bluetoothctl info "$address" | awk '/Connected/ {print $2}')
+  connected=$(get_device_property "$address" "Connected")
 
-  if [[ $connected == "yes" ]]; then
+  if [[ $connected == "true" ]]; then
     notify-send "Bluetooth" "Already connected to this device" \
       -i "package-install"
     return 1
@@ -108,13 +163,29 @@ select-device() {
 }
 
 pair-and-connect() {
-  local paired
-  paired=$(bluetoothctl info "$address" | awk '/Paired/ {print $2}')
+  local paired connected
+  paired=$(get_device_property "$address" "Paired")
 
-  if [[ $paired == "no" ]]; then
-    printf "Pairing..."
+  if [[ $paired == "false" ]]; then
+    printf "Connecting (will pair if needed)..."
 
-    if ! timeout $TIMEOUT bluetoothctl pair "$address" >/dev/null; then
+    # Try connect first - many devices (like Apple keyboards) pair implicitly
+    timeout $TIMEOUT bash -c "echo 'connect $address' | bluetoothctl" >/dev/null 2>&1
+    sleep 1
+
+    connected=$(get_device_property "$address" "Connected")
+    if [[ $connected == "true" ]]; then
+      notify-send "Bluetooth" "Successfully connected" -i "package-install"
+      return 0
+    fi
+
+    # If connect failed, try explicit pair then connect
+    printf "\nDirect connect failed, trying explicit pair..."
+    timeout $TIMEOUT bash -c "echo 'pair $address' | bluetoothctl" >/dev/null 2>&1
+    sleep 1
+
+    paired=$(get_device_property "$address" "Paired")
+    if [[ $paired == "false" ]]; then
       notify-send "Bluetooth" "Failed to pair" -i "package-purge"
       return 1
     fi
@@ -122,7 +193,11 @@ pair-and-connect() {
 
   printf "\nConnecting..."
 
-  if ! timeout $TIMEOUT bluetoothctl connect "$address" >/dev/null; then
+  timeout $TIMEOUT bash -c "echo 'connect $address' | bluetoothctl" >/dev/null 2>&1
+  sleep 1
+
+  connected=$(get_device_property "$address" "Connected")
+  if [[ $connected != "true" ]]; then
     notify-send "Bluetooth" "Failed to connect" -i "package-purge"
     return 1
   fi
