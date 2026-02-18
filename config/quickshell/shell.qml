@@ -274,11 +274,26 @@ Scope {
                         model: ["1", "2", "3", "4", "5"]
 
                         Rectangle {
+                            id: workspaceRect
                             required property string modelData
-                            property var workspace: I3.findWorkspaceByName(modelData)
+
+                            // Re-evaluate when I3.workspaces changes
+                            property var workspace: {
+                                var _ = I3.workspaces.values.length
+                                return I3.findWorkspaceByName(modelData)
+                            }
                             property bool isFocused: workspace ? workspace.focused : false
-                            property bool isVisible: workspace ? workspace.visible : false
-                            property bool hasWindows: workspace !== null
+                            // Check if workspace has windows via lastIpcObject.representation
+                            // Empty workspace has representation like "H[]" or "V[]"
+                            // Workspace with windows has e.g. "H[org.wezfurlong.wezterm]"
+                            property bool hasWindows: {
+                                if (!workspace) return false
+                                var ipc = workspace.lastIpcObject
+                                if (!ipc || !ipc.representation) return false
+                                // Check if there's content between the brackets
+                                var match = ipc.representation.match(/\[(.+)\]/)
+                                return match !== null && match[1].length > 0
+                            }
 
                             width: 28
                             height: 24
@@ -287,10 +302,10 @@ Scope {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: root.workspaceIcons[modelData] || modelData
-                                color: isFocused ? Colors.blue : (hasWindows ? Colors.text : Colors.overlay0)
+                                text: root.workspaceIcons[workspaceRect.modelData] || workspaceRect.modelData
+                                color: workspaceRect.isFocused ? Colors.blue : (workspaceRect.hasWindows ? Colors.text : Colors.overlay0)
                                 font.pixelSize: 18
-                                font.family: root.workspaceIcons[modelData] ? "Symbols Nerd Font" : undefined
+                                font.family: root.workspaceIcons[workspaceRect.modelData] ? "Symbols Nerd Font" : undefined
                             }
 
                             MouseArea {
@@ -298,7 +313,7 @@ Scope {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: I3.dispatch("workspace " + modelData)
+                                onClicked: I3.dispatch("workspace " + workspaceRect.modelData)
                             }
                         }
                     }
