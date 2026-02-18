@@ -241,15 +241,6 @@ Scope {
                 }
             }
 
-            // Center section - Clock
-            Text {
-                anchors.centerIn: parent
-                text: Time.time
-                color: "#cdd6f4"
-                font.pixelSize: 14
-                font.bold: true
-            }
-
             // Right section
             Row {
                 id: rightSection
@@ -259,14 +250,16 @@ Scope {
                 spacing: 16
 
                 // Volume
-                Item {
+                Rectangle {
                     id: volumeItem
-                    width: volumeIcon.width
-                    height: parent.height
+                    width: 28
+                    height: 24
+                    radius: 4
+                    color: volumeArea.containsMouse ? "#45475a" : "#313244"
 
                     Text {
                         id: volumeIcon
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.centerIn: parent
                         property var sink: Pipewire.defaultAudioSink
                         property real vol: sink && sink.audio ? sink.audio.volume : 0
                         property bool muted: sink && sink.audio ? sink.audio.muted : false
@@ -283,7 +276,9 @@ Scope {
                     }
 
                     MouseArea {
+                        id: volumeArea
                         anchors.fill: parent
+                        hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: root.volumePopupVisible = !root.volumePopupVisible
                         onWheel: (event) => {
@@ -297,6 +292,7 @@ Scope {
 
                 // Battery
                 Row {
+                    anchors.verticalCenter: parent.verticalCenter
                     spacing: 4
                     visible: UPower.displayDevice && UPower.displayDevice.ready
                     
@@ -338,10 +334,17 @@ Scope {
                         anchors.verticalCenter: parent.verticalCenter
                         text: UPower.displayDevice ? Math.round(UPower.displayDevice.percentage * 100) + "%" : ""
                         color: "#cdd6f4"
-                        font.pixelSize: 12
+                        font.pixelSize: 14
                     }
                 }
 
+                // Clock
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: Time.time
+                    color: "#cdd6f4"
+                    font.pixelSize: 14
+                }
             }
 
             // Volume Popup
