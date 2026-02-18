@@ -466,7 +466,7 @@ Scope {
                     anchor.item: batteryItem
                     anchor.edges: Edges.Bottom | Edges.Right
                     anchor.gravity: Edges.Bottom | Edges.Left
-                    anchor.margins.bottom: -2
+                    anchor.margins.bottom: -10
 
                     implicitWidth: batteryTooltipText.implicitWidth + 24
                     implicitHeight: batteryTooltipText.implicitHeight + 16
