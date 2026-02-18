@@ -1,26 +1,52 @@
 import QtQuick
 
-// Reusable expandable device list component
+// Reusable expandable dropdown component
+// Can display any list of items with customizable display
 Column {
-    id: deviceList
+    id: dropdown
     spacing: 2
 
     // Required properties
-    required property var devices  // Array of device objects
-    required property var currentDevice  // Currently selected device
-    required property string headerIcon
-    required property string headerLabel
+    required property var items           // Array of items to display
+    required property string headerIcon   // Icon shown in header
+    required property string headerLabel  // Label shown in header
+
+    // Optional properties
+    property var currentItem: null        // Currently selected item (for highlighting)
+    property string textRole: ""          // Property name to use for display text (if items are objects)
+    property string valueRole: ""         // Property name to use for comparison (if items are objects)
+    property string itemIcon: ""          // Icon to show for each item (empty = use headerIcon)
+    property string selectedIcon: "\uf00c" // Icon to show for selected item
 
     // State
     property bool expanded: false
 
     // Signals
-    signal deviceSelected(var device)
-    signal toggleExpanded()
+    signal itemSelected(var item)
+    signal toggled(bool expanded)
+
+    // Helper function to get display text from an item
+    function getItemText(item) {
+        if (!item) return "None"
+        if (typeof item === "string") return item
+        if (textRole && item[textRole]) return item[textRole]
+        // Fallback: try common property names
+        return item.description || item.name || item.text || item.label || String(item)
+    }
+
+    // Helper function to check if an item is selected
+    function isItemSelected(item) {
+        if (!currentItem || !item) return false
+        if (valueRole) return item[valueRole] === currentItem[valueRole]
+        if (typeof item === "string") return item === currentItem
+        // Fallback: try common id properties
+        if (item.id !== undefined && currentItem.id !== undefined) return item.id === currentItem.id
+        return item === currentItem
+    }
 
     // Header
     Rectangle {
-        width: deviceList.width
+        width: dropdown.width
         height: 28
         radius: 4
         color: headerArea.containsMouse ? Colors.surface0 : "transparent"
@@ -33,7 +59,7 @@ Column {
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
-                text: deviceList.headerIcon
+                text: dropdown.headerIcon
                 color: Colors.blue
                 font.pixelSize: 14
                 font.family: "Symbols Nerd Font"
@@ -41,16 +67,14 @@ Column {
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
-                text: deviceList.headerLabel
+                text: dropdown.headerLabel
                 color: Colors.overlay0
                 font.pixelSize: 11
             }
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
-                text: deviceList.currentDevice
-                    ? (deviceList.currentDevice.description || deviceList.currentDevice.name || "Unknown")
-                    : "No device"
+                text: dropdown.getItemText(dropdown.currentItem)
                 color: Colors.text
                 font.pixelSize: 13
                 elide: Text.ElideRight
@@ -59,7 +83,7 @@ Column {
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
-                text: deviceList.expanded ? "\uf106" : "\uf107"
+                text: dropdown.expanded ? "\uf106" : "\uf107"
                 color: Colors.overlay0
                 font.pixelSize: 14
                 font.family: "Symbols Nerd Font"
@@ -72,26 +96,26 @@ Column {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: {
-                deviceList.expanded = !deviceList.expanded
-                deviceList.toggleExpanded()
+                dropdown.expanded = !dropdown.expanded
+                dropdown.toggled(dropdown.expanded)
             }
         }
     }
 
-    // Device list (shown when expanded)
+    // Items list (shown when expanded)
     Column {
-        width: deviceList.width
+        width: dropdown.width
         spacing: 2
-        visible: deviceList.expanded
+        visible: dropdown.expanded
 
         Repeater {
-            model: deviceList.devices
+            model: dropdown.items
 
             Rectangle {
                 required property var modelData
-                property bool isSelected: deviceList.currentDevice && deviceList.currentDevice.id === modelData.id
+                property bool isSelected: dropdown.isItemSelected(modelData)
 
-                width: deviceList.width
+                width: dropdown.width
                 height: 32
                 radius: 4
                 color: isSelected ? Colors.surface1 : (itemArea.containsMouse ? Colors.surface0 : "transparent")
@@ -104,7 +128,7 @@ Column {
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: isSelected ? "\uf00c" : deviceList.headerIcon
+                        text: isSelected ? dropdown.selectedIcon : (dropdown.itemIcon || dropdown.headerIcon)
                         color: isSelected ? Colors.green : Colors.overlay0
                         font.pixelSize: 14
                         font.family: "Symbols Nerd Font"
@@ -112,7 +136,7 @@ Column {
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: modelData.description || modelData.name || "Unknown"
+                        text: dropdown.getItemText(modelData)
                         color: isSelected ? Colors.text : Colors.subtext0
                         font.pixelSize: 13
                         elide: Text.ElideRight
@@ -125,7 +149,7 @@ Column {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: deviceList.deviceSelected(modelData)
+                    onClicked: dropdown.itemSelected(modelData)
                 }
             }
         }
