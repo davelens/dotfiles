@@ -3,6 +3,7 @@ import Quickshell.Wayland
 import Quickshell.I3
 import Quickshell.Io
 import Quickshell.Services.Pipewire
+import Quickshell.Services.UPower
 import QtQuick
 import QtQuick.Controls
 
@@ -133,46 +134,108 @@ Scope {
                 }
             }
 
-            // Left section - Workspaces
+            // Left section - Power Menu, Idle Inhibitor, Workspaces
             Row {
-                id: workspaces
+                id: leftSection
                 anchors.left: parent.left
-                anchors.leftMargin: 12
+                anchors.leftMargin: 4
                 anchors.verticalCenter: parent.verticalCenter
-                spacing: 4
+                spacing: 16
 
-                Repeater {
-                    // Always show workspaces 1-5
-                    model: [1, 2, 3, 4, 5]
+                // Power Menu
+                Rectangle {
+                    width: 28
+                    height: 24
+                    radius: 4
+                    color: powerMenuArea.containsMouse ? "#45475a" : "#313244"
 
-                    Rectangle {
-                        required property int modelData
-                        property bool isActive: I3.focusedWorkspace ? I3.focusedWorkspace.name === modelData.toString() : false
-                        property bool exists: {
-                            if (!I3.workspaces || !I3.workspaces.values) return false;
-                            var ws = I3.workspaces.values;
-                            for (var i = 0; i < ws.length; i++) {
-                                if (ws[i].name === modelData.toString()) return true;
+                    Text {
+                        anchors.centerIn: parent
+                        text: "󰤄"
+                        color: "#cdd6f4"
+                        font.pixelSize: 18
+                        font.family: "Symbols Nerd Font"
+                    }
+
+                    MouseArea {
+                        id: powerMenuArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: powerMenuProc.running = true
+                    }
+                }
+
+                // Idle Inhibitor
+                Rectangle {
+                    width: 28
+                    height: 24
+                    radius: 4
+                    color: idleInhibitorArea.containsMouse ? "#45475a" : "#313244"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: root.idleInhibited ? "󰈈" : "󰈉"
+                        color: root.idleInhibited ? "#89b4fa" : "#cdd6f4"
+                        font.pixelSize: 18
+                        font.family: "Symbols Nerd Font"
+                    }
+
+                    MouseArea {
+                        id: idleInhibitorArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            root.idleInhibited = !root.idleInhibited
+                            if (root.idleInhibited) {
+                                idleInhibitProc.running = true
+                            } else {
+                                idleInhibitProc.signal(15) // SIGTERM
                             }
-                            return false;
                         }
+                    }
+                }
 
-                        width: 32
-                        height: 24
-                        radius: 4
-                        color: isActive ? "#45475a" : (exists ? "#45475a" : "#313244")
+                // Workspaces
+                Row {
+                    id: workspaces
+                    spacing: 4
+
+                    Repeater {
+                        // Always show workspaces 1-5
+                        model: [1, 2, 3, 4, 5]
+
+                        Rectangle {
+                            required property int modelData
+                            property bool isActive: I3.focusedWorkspace ? I3.focusedWorkspace.name === modelData.toString() : false
+                            property bool exists: {
+                                if (!I3.workspaces || !I3.workspaces.values) return false;
+                                var ws = I3.workspaces.values;
+                                for (var i = 0; i < ws.length; i++) {
+                                    if (ws[i].name === modelData.toString()) return true;
+                                }
+                                return false;
+                            }
+
+                            width: 32
+                            height: 24
+                            radius: 4
+                            color: isActive ? "#45475a" : (exists ? "#45475a" : "#313244")
 
                         Text {
                             anchors.centerIn: parent
                             text: root.workspaceIcons[modelData.toString()] || modelData.toString()
                             color: isActive ? "#89b4fa" : (exists ? "#cdd6f4" : "#6c7086")
-                            font.pixelSize: 14
+                            font.pixelSize: 16
                             font.family: "Symbols Nerd Font"
                         }
 
                         MouseArea {
                             anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
                             onClicked: I3.dispatch("workspace number " + modelData)
+                        }
                         }
                     }
                 }
@@ -215,12 +278,13 @@ Scope {
                             return "󰕾"
                         }
                         color: muted ? "#6c7086" : "#cdd6f4"
-                        font.pixelSize: 14
+                        font.pixelSize: 18
                         font.family: "Symbols Nerd Font"
                     }
 
                     MouseArea {
                         anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
                         onClicked: root.volumePopupVisible = !root.volumePopupVisible
                         onWheel: (event) => {
                             if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
@@ -231,44 +295,53 @@ Scope {
                     }
                 }
 
-                Text {
-                    text: "Bat"
-                    color: "#cdd6f4"
-                    font.pixelSize: 14
-                }
-
-                // Idle Inhibitor
-                Text {
-                    text: root.idleInhibited ? "󰈈" : "󰈉"
-                    color: root.idleInhibited ? "#89b4fa" : "#cdd6f4"
-                    font.pixelSize: 14
-                    font.family: "Symbols Nerd Font"
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            root.idleInhibited = !root.idleInhibited
-                            if (root.idleInhibited) {
-                                idleInhibitProc.running = true
-                            } else {
-                                idleInhibitProc.signal(15) // SIGTERM
-                            }
+                // Battery
+                Row {
+                    spacing: 4
+                    visible: UPower.displayDevice && UPower.displayDevice.ready
+                    
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        // percentage is 0-1, multiply by 100 for display
+                        property real percentage: UPower.displayDevice ? UPower.displayDevice.percentage * 100 : 0
+                        // state: 1=charging, 2=discharging, 4=fully-charged
+                        property int batteryState: UPower.displayDevice ? UPower.displayDevice.state : 0
+                        property bool charging: batteryState === 1
+                        property bool fullyCharged: batteryState === 4
+                        
+                        text: {
+                            if (charging) return "󰂄"  // Charging
+                            if (fullyCharged) return "󰂅"  // Plugged in, full
+                            if (percentage >= 90) return "󰁹"  // Full
+                            if (percentage >= 80) return "󰂂"  // 90
+                            if (percentage >= 70) return "󰂁"  // 80
+                            if (percentage >= 60) return "󰂀"  // 70
+                            if (percentage >= 50) return "󰁿"  // 60
+                            if (percentage >= 40) return "󰁾"  // 50
+                            if (percentage >= 30) return "󰁽"  // 40
+                            if (percentage >= 20) return "󰁼"  // 30
+                            if (percentage >= 10) return "󰁻"  // 20
+                            return "󰂃"  // Low/critical
                         }
+                        color: {
+                            if (charging || fullyCharged) return "#a6e3a1"  // Green when charging/full
+                            if (percentage <= 10) return "#f38ba8"  // Red 1-10%
+                            if (percentage <= 25) return "#fab387"  // Orange 11-25%
+                            if (percentage <= 50) return "#f9e2af"  // Yellow 26-50%
+                            return "#a6e3a1"  // Green 51-100%
+                        }
+                        font.pixelSize: 18
+                        font.family: "Symbols Nerd Font"
+                    }
+                    
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: UPower.displayDevice ? Math.round(UPower.displayDevice.percentage * 100) + "%" : ""
+                        color: "#cdd6f4"
+                        font.pixelSize: 12
                     }
                 }
 
-                // Power Menu
-                Text {
-                    text: "󰤄"
-                    color: "#cdd6f4"
-                    font.pixelSize: 14
-                    font.family: "Symbols Nerd Font"
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: powerMenuProc.running = true
-                    }
-                }
             }
 
             // Volume Popup
@@ -280,8 +353,8 @@ Scope {
                 anchor.edges: Edges.Bottom | Edges.Right
                 anchor.gravity: Edges.Bottom | Edges.Left
 
-                implicitWidth: 280
-                implicitHeight: root.deviceListExpanded ? 72 + (root.audioSinks.length * 30) + 8 : 72
+                implicitWidth: 320
+                implicitHeight: root.deviceListExpanded ? 80 + (root.audioSinks.length * 36) + 8 : 80
                 color: "#1e1e2e"
 
                 Column {
@@ -377,8 +450,8 @@ Scope {
                                 ? Math.round(Pipewire.defaultAudioSink.audio.volume * 100) + "%"
                                 : "N/A"
                             color: "#89b4fa"
-                            font.pixelSize: 12
-                            width: 32
+                            font.pixelSize: 14
+                            width: 38
                             horizontalAlignment: Text.AlignRight
                         }
                     }
@@ -386,7 +459,7 @@ Scope {
                     // Current device display
                     Rectangle {
                         width: parent.width
-                        height: 24
+                        height: 28
                         radius: 4
                         color: deviceExpandArea.containsMouse ? "#313244" : "transparent"
 
@@ -400,7 +473,7 @@ Scope {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: "󰓃"
                                 color: "#89b4fa"
-                                font.pixelSize: 12
+                                font.pixelSize: 14
                                 font.family: "Symbols Nerd Font"
                             }
 
@@ -410,7 +483,7 @@ Scope {
                                     ? (Pipewire.defaultAudioSink.description || Pipewire.defaultAudioSink.name || "Unknown")
                                     : "No device"
                                 color: "#cdd6f4"
-                                font.pixelSize: 11
+                                font.pixelSize: 13
                                 elide: Text.ElideRight
                                 width: parent.width - 50
                             }
@@ -419,7 +492,7 @@ Scope {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: root.deviceListExpanded ? "󰅃" : "󰅀"
                                 color: "#6c7086"
-                                font.pixelSize: 12
+                                font.pixelSize: 14
                                 font.family: "Symbols Nerd Font"
                             }
                         }
@@ -449,7 +522,7 @@ Scope {
                                 property bool isDefault: Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.id === modelData.id
 
                                 width: deviceColumn.width
-                                height: 28
+                                height: 32
                                 radius: 4
                                 color: isDefault ? "#45475a" : (deviceMouseArea.containsMouse ? "#313244" : "transparent")
 
@@ -463,7 +536,7 @@ Scope {
                                         anchors.verticalCenter: parent.verticalCenter
                                         text: isDefault ? "󰄬" : "󰓃"
                                         color: isDefault ? "#a6e3a1" : "#6c7086"
-                                        font.pixelSize: 12
+                                        font.pixelSize: 14
                                         font.family: "Symbols Nerd Font"
                                     }
 
@@ -471,7 +544,7 @@ Scope {
                                         anchors.verticalCenter: parent.verticalCenter
                                         text: modelData.description || modelData.name || "Unknown"
                                         color: isDefault ? "#cdd6f4" : "#a6adc8"
-                                        font.pixelSize: 11
+                                        font.pixelSize: 13
                                         elide: Text.ElideRight
                                         width: parent.width - 40
                                     }
