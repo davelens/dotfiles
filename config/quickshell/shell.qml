@@ -15,7 +15,7 @@ Scope {
     // =========================================================================
 
     // Popup management - only one popup open at a time, on one screen
-    property string activePopup: ""  // "", "volume", "brightness"
+    property string activePopup: ""  // "", "volume", "brightness", "display"
     property var activePopupScreen: null  // Track which screen the popup was opened on
     property bool outputDevicesExpanded: false
     property bool inputDevicesExpanded: false
@@ -427,11 +427,11 @@ Scope {
     }
 
     // =========================================================================
-    // BAR
+    // BAR (only on primary screen)
     // =========================================================================
 
     Variants {
-        model: Quickshell.screens
+        model: DisplayConfig.primaryScreen ? [DisplayConfig.primaryScreen] : []
 
         PanelWindow {
             id: panel
@@ -576,6 +576,31 @@ Scope {
                 anchors.rightMargin: 12
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 16
+
+                // Display
+                Rectangle {
+                    id: displayButton
+                    width: 28
+                    height: 24
+                    radius: 4
+                    color: displayArea.containsMouse ? Colors.surface1 : Colors.surface0
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "󰍹"
+                        color: Colors.text
+                        font.pixelSize: 18
+                        font.family: "Symbols Nerd Font"
+                    }
+
+                    MouseArea {
+                        id: displayArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.togglePopup("display", panel.modelData)
+                    }
+                }
 
                 // Brightness
                 Rectangle {
@@ -921,6 +946,107 @@ Scope {
                                     font.pixelSize: 14
                                     width: 44
                                     horizontalAlignment: Text.AlignRight
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // -----------------------------------------------------------------
+            // DISPLAY POPUP
+            // -----------------------------------------------------------------
+            PopupWindow {
+                visible: root.activePopup === "display" && root.activePopupScreen === panel.modelData
+
+                anchor.item: displayButton
+                anchor.edges: Edges.Bottom | Edges.Right
+                anchor.gravity: Edges.Bottom | Edges.Left
+
+                implicitWidth: 280
+                implicitHeight: 16 + Quickshell.screens.length * 40
+                color: Colors.base
+
+                Column {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 8
+                    spacing: 4
+
+                    Repeater {
+                        model: Quickshell.screens
+
+                        Rectangle {
+                            required property var modelData
+                            width: parent.width
+                            height: 32
+                            radius: 4
+                            color: displayItemArea.containsMouse ? Colors.surface1 : Colors.surface0
+
+                            Row {
+                                anchors.fill: parent
+                                anchors.leftMargin: 8
+                                anchors.rightMargin: 8
+                                spacing: 8
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: modelData.name.startsWith("eDP") ? "󰌢" : "󰍹"
+                                    color: DisplayConfig.isPrimary(modelData) ? Colors.blue : Colors.text
+                                    font.pixelSize: 16
+                                    font.family: "Symbols Nerd Font"
+                                }
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: DisplayConfig.friendlyName(modelData)
+                                    color: Colors.text
+                                    font.pixelSize: 13
+                                    width: parent.width - 16 - 8 - 24 - 8 - 24
+                                    elide: Text.ElideRight
+                                }
+
+                                // Primary indicator / selector
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: DisplayConfig.isPrimary(modelData) ? "󰄬" : ""
+                                    color: Colors.blue
+                                    font.pixelSize: 16
+                                    font.family: "Symbols Nerd Font"
+                                    width: 24
+                                    horizontalAlignment: Text.AlignHCenter
+                                }
+
+                                // Rotation toggle
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: "󰑵"
+                                    color: displayRotateArea.containsMouse ? Colors.blue : Colors.overlay0
+                                    font.pixelSize: 16
+                                    font.family: "Symbols Nerd Font"
+                                    width: 24
+                                    horizontalAlignment: Text.AlignHCenter
+
+                                    MouseArea {
+                                        id: displayRotateArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: DisplayConfig.toggleRotation(modelData)
+                                    }
+                                }
+                            }
+
+                            MouseArea {
+                                id: displayItemArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                z: -1
+                                onClicked: {
+                                    DisplayConfig.setPrimary(modelData)
+                                    root.closePopups()
                                 }
                             }
                         }

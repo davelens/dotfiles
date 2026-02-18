@@ -1,3 +1,4 @@
 singleton Colors 1.0 Colors.qml
+singleton DisplayConfig 1.0 DisplayConfig.qml
 singleton Time 1.0 Time.qml
 DeviceList 1.0 DeviceList.qml
