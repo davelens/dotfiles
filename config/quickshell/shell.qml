@@ -14,8 +14,9 @@ Scope {
     // STATE
     // =========================================================================
 
-    // Popup management - only one popup open at a time
+    // Popup management - only one popup open at a time, on one screen
     property string activePopup: ""  // "", "volume", "brightness"
+    property var activePopupScreen: null  // Track which screen the popup was opened on
     property bool outputDevicesExpanded: false
     property bool inputDevicesExpanded: false
 
@@ -50,11 +51,12 @@ Scope {
     // HELPER FUNCTIONS
     // =========================================================================
 
-    function togglePopup(name) {
-        if (activePopup === name) {
+    function togglePopup(name, screen) {
+        if (activePopup === name && activePopupScreen === screen) {
             closePopups()
         } else {
             activePopup = name
+            activePopupScreen = screen
             outputDevicesExpanded = false
             inputDevicesExpanded = false
         }
@@ -62,6 +64,7 @@ Scope {
 
     function closePopups() {
         activePopup = ""
+        activePopupScreen = null
         outputDevicesExpanded = false
         inputDevicesExpanded = false
     }
@@ -595,7 +598,7 @@ Scope {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: root.togglePopup("brightness")
+                        onClicked: root.togglePopup("brightness", panel.modelData)
                         onWheel: event => {
                             var delta = event.angleDelta.y > 0 ? 0.05 : -0.05
                             root.setBrightness(Math.max(0.01, Math.min(1, root.brightnessLevel + delta)))
@@ -628,7 +631,7 @@ Scope {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: root.togglePopup("volume")
+                        onClicked: root.togglePopup("volume", panel.modelData)
                         onWheel: event => {
                             if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
                                 var delta = event.angleDelta.y > 0 ? 0.05 : -0.05
@@ -678,7 +681,7 @@ Scope {
             // VOLUME POPUP
             // -----------------------------------------------------------------
             PopupWindow {
-                visible: root.activePopup === "volume"
+                visible: root.activePopup === "volume" && root.activePopupScreen === panel.modelData
 
                 anchor.item: volumeButton
                 anchor.edges: Edges.Bottom | Edges.Right
@@ -818,7 +821,7 @@ Scope {
             // BRIGHTNESS POPUP
             // -----------------------------------------------------------------
             PopupWindow {
-                visible: root.activePopup === "brightness"
+                visible: root.activePopup === "brightness" && root.activePopupScreen === panel.modelData
 
                 anchor.item: brightnessButton
                 anchor.edges: Edges.Bottom | Edges.Right
