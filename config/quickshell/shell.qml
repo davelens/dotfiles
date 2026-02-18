@@ -22,12 +22,20 @@ Scope {
     // Idle inhibitor
     property bool idleInhibited: false
 
-    // Brightness
-    property real currentBrightness: 0.3
-    property string activeDisplayType: "laptop"  // "laptop" or "external"
+    // Brightness - supports multiple displays
+    // Each display: { id: string, name: string, type: "laptop"|"external", brightness: real, displayNum: int }
+    property var displays: []
     property bool brightnessUserAdjusting: false
-    property int pendingBrightnessPercent: -1
-    property real brightnessLevel: Math.max(0, Math.min(1, currentBrightness))
+    
+    // For bar icon - show average or primary display brightness
+    property real brightnessLevel: {
+        if (displays.length === 0) return 0.5
+        var total = 0
+        for (var i = 0; i < displays.length; i++) {
+            total += displays[i].brightness
+        }
+        return total / displays.length
+    }
 
     // Workspace icons
     readonly property var workspaceIcons: ({
@@ -58,11 +66,28 @@ Scope {
         inputDevicesExpanded = false
     }
 
-    function setBrightness(level) {
-        currentBrightness = level
-        pendingBrightnessPercent = Math.round(level * 100)
+    function setDisplayBrightness(displayId, level) {
         brightnessUserAdjusting = true
-        brightnessDebounce.restart()
+        
+        // Find the display and set brightness
+        for (var j = 0; j < displays.length; j++) {
+            if (displays[j].id === displayId) {
+                var display = displays[j]
+                var percent = Math.round(level * 100)
+                if (display.type === "backlight") {
+                    backlightSetProc.device = display.deviceId
+                    backlightSetProc.targetPercent = percent
+                    backlightSetProc.running = true
+                } else if (display.type === "ddc") {
+                    ddcSetProc.displayNum = display.deviceId
+                    ddcSetProc.targetPercent = percent
+                    ddcSetProc.running = true
+                }
+                break
+            }
+        }
+        
+        brightnessSettleTimer.restart()
     }
 
     function getBrightnessIcon(level) {
@@ -150,97 +175,195 @@ Scope {
         running: false
     }
 
+    // =========================================================================
+    // BRIGHTNESS DETECTION & CONTROL
+    // =========================================================================
+    
+    // Detected DDC display numbers from ddcutil detect
+    property var ddcDisplays: []
+    
+    // Backlight brightness reading (for laptop panels - only if backlight device exists)
     Process {
-        id: laptopBrightnessReadProc
-        command: ["brightnessctl", "-m"]
+        id: backlightReadProc
+        command: ["brightnessctl", "-m", "-c", "backlight"]
         running: true
         stdout: SplitParser {
             onRead: data => {
                 if (root.brightnessUserAdjusting) return
                 // Format: device,class,current,percentage%,max
                 var parts = data.trim().split(",")
-                if (parts.length >= 5) {
+                if (parts.length >= 5 && parts[1] === "backlight") {
+                    var deviceName = parts[0]
                     var current = parseInt(parts[2])
                     var max = parseInt(parts[4])
-                    if (max > 0 && root.activeDisplayType === "laptop") {
-                        root.currentBrightness = current / max
+                    if (max > 0) {
+                        var brightness = current / max
+                        root.updateDisplay("backlight-" + deviceName, "Built-in Display", "backlight", brightness, deviceName)
                     }
                 }
+            }
+        }
+        onExited: exitCode => {
+            // If no backlight device, that's fine - just means no laptop display
+            if (exitCode !== 0) {
+                root.removeDisplaysByType("backlight")
             }
         }
     }
 
     Process {
-        id: laptopBrightnessSetProc
+        id: backlightSetProc
+        property string device: ""
         property int targetPercent: 50
-        command: ["brightnessctl", "set", targetPercent + "%"]
+        command: ["brightnessctl", "-d", device, "set", targetPercent + "%"]
         running: false
     }
 
+    // DDC display detection - finds all external monitors
     Process {
-        id: externalBrightnessReadProc
+        id: ddcDetectProc
+        command: ["ddcutil", "detect", "--brief"]
+        running: true
+        property var foundDisplays: []
+        onStarted: {
+            foundDisplays = []
+        }
+        stdout: SplitParser {
+            onRead: data => {
+                // Look for "Display N" lines (may have leading whitespace)
+                var match = data.match(/^\s*Display\s+(\d+)/)
+                if (match) {
+                    ddcDetectProc.foundDisplays.push(parseInt(match[1]))
+                }
+            }
+        }
+        onExited: exitCode => {
+            root.ddcDisplays = foundDisplays
+            // Remove DDC displays that no longer exist
+            root.removeStaleDisplays()
+            // Read brightness for each detected display
+            for (var i = 0; i < foundDisplays.length; i++) {
+                root.readDdcBrightness(foundDisplays[i])
+            }
+        }
+    }
+
+    // DDC brightness reading - called per display
+    function readDdcBrightness(displayNum) {
+        ddcReadProc.displayNum = displayNum
+        ddcReadProc.running = true
+    }
+    
+    Process {
+        id: ddcReadProc
+        property int displayNum: 1
         property bool foundDisplay: false
         property real detectedBrightness: 0
-        command: ["ddcutil", "getvcp", "10", "--display", "1", "--brief"]
-        running: true
+        command: ["ddcutil", "getvcp", "10", "--display", displayNum.toString(), "--brief"]
+        running: false
         onStarted: {
             foundDisplay = false
             detectedBrightness = 0
         }
         stdout: SplitParser {
             onRead: data => {
+                if (root.brightnessUserAdjusting) return
                 // Format: VCP 10 C current max
                 var parts = data.trim().split(/\s+/)
                 if (parts.length >= 5 && parts[0] === "VCP") {
                     var current = parseInt(parts[3])
                     var max = parseInt(parts[4])
                     if (max > 0) {
-                        externalBrightnessReadProc.detectedBrightness = current / max
-                        externalBrightnessReadProc.foundDisplay = true
+                        ddcReadProc.detectedBrightness = current / max
+                        ddcReadProc.foundDisplay = true
                     }
                 }
             }
         }
         onExited: exitCode => {
-            var detected = (exitCode === 0 && foundDisplay)
-            if (detected) {
-                root.activeDisplayType = "external"
-                root.currentBrightness = detectedBrightness
+            if (exitCode === 0 && foundDisplay) {
+                var name = "External Monitor" + (root.ddcDisplays.length > 1 ? " " + displayNum : "")
+                root.updateDisplay("ddc-" + displayNum, name, "ddc", detectedBrightness, displayNum)
             } else {
-                root.activeDisplayType = "laptop"
-                laptopBrightnessReadProc.running = true
+                root.removeDisplay("ddc-" + displayNum)
             }
         }
     }
 
     Process {
-        id: externalBrightnessSetProc
+        id: ddcSetProc
+        property int displayNum: 1
         property int targetPercent: 50
-        command: ["ddcutil", "setvcp", "10", targetPercent.toString(), "--display", "1"]
+        command: ["ddcutil", "setvcp", "10", targetPercent.toString(), "--display", displayNum.toString()]
         running: false
+    }
+    
+    // Helper function to update or add a display
+    function updateDisplay(id, name, type, brightness, deviceId) {
+        var newDisplays = displays.slice()
+        var found = false
+        for (var i = 0; i < newDisplays.length; i++) {
+            if (newDisplays[i].id === id) {
+                newDisplays[i] = { id: id, name: name, type: type, brightness: brightness, deviceId: deviceId }
+                found = true
+                break
+            }
+        }
+        if (!found) {
+            newDisplays.push({ id: id, name: name, type: type, brightness: brightness, deviceId: deviceId })
+        }
+        displays = newDisplays
+    }
+    
+    // Helper function to remove a display
+    function removeDisplay(id) {
+        var newDisplays = []
+        for (var i = 0; i < displays.length; i++) {
+            if (displays[i].id !== id) {
+                newDisplays.push(displays[i])
+            }
+        }
+        displays = newDisplays
+    }
+    
+    // Remove displays of a specific type
+    function removeDisplaysByType(type) {
+        var newDisplays = []
+        for (var i = 0; i < displays.length; i++) {
+            if (displays[i].type !== type) {
+                newDisplays.push(displays[i])
+            }
+        }
+        displays = newDisplays
+    }
+    
+    // Remove DDC displays that are no longer detected
+    function removeStaleDisplays() {
+        var newDisplays = []
+        for (var i = 0; i < displays.length; i++) {
+            var d = displays[i]
+            if (d.type !== "ddc") {
+                newDisplays.push(d)
+            } else {
+                // Check if this DDC display is still in ddcDisplays
+                var stillExists = false
+                for (var j = 0; j < ddcDisplays.length; j++) {
+                    if (d.deviceId === ddcDisplays[j]) {
+                        stillExists = true
+                        break
+                    }
+                }
+                if (stillExists) {
+                    newDisplays.push(d)
+                }
+            }
+        }
+        displays = newDisplays
     }
 
     // =========================================================================
     // TIMERS
     // =========================================================================
-
-    Timer {
-        id: brightnessDebounce
-        interval: 200
-        onTriggered: {
-            if (root.pendingBrightnessPercent >= 0) {
-                if (root.activeDisplayType === "external") {
-                    externalBrightnessSetProc.targetPercent = root.pendingBrightnessPercent
-                    externalBrightnessSetProc.running = true
-                } else {
-                    laptopBrightnessSetProc.targetPercent = root.pendingBrightnessPercent
-                    laptopBrightnessSetProc.running = true
-                }
-                root.pendingBrightnessPercent = -1
-            }
-            brightnessSettleTimer.restart()
-        }
-    }
 
     Timer {
         id: brightnessSettleTimer
@@ -251,9 +374,13 @@ Scope {
     Timer {
         id: brightnessRefreshTimer
         interval: 5000
-        running: true
+        running: root.activePopup !== "brightness"  // Pause when brightness popup is open
         repeat: true
-        onTriggered: externalBrightnessReadProc.running = true
+        onTriggered: {
+            // Re-detect all displays periodically
+            backlightReadProc.running = true
+            ddcDetectProc.running = true
+        }
     }
 
     // =========================================================================
@@ -698,7 +825,7 @@ Scope {
                 anchor.gravity: Edges.Bottom | Edges.Left
 
                 implicitWidth: 280
-                implicitHeight: 80
+                implicitHeight: 16 + root.displays.length * 56  // margins + per-display height
                 color: Colors.base
 
                 Column {
@@ -708,73 +835,91 @@ Scope {
                     anchors.margins: 8
                     spacing: 8
 
-                    Text {
-                        text: root.activeDisplayType === "external" ? "󰍹  External Monitor" : "󰌢  Laptop Display"
-                        color: Colors.overlay0
-                        font.pixelSize: 11
-                        font.family: "Symbols Nerd Font"
-                    }
+                    Repeater {
+                        model: root.displays
 
-                    Row {
-                        width: parent.width
-                        height: 32
-                        spacing: 8
+                        Column {
+                            width: parent.width
+                            spacing: 4
 
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: root.getBrightnessIcon(root.brightnessLevel)
-                            color: Colors.text
-                            font.pixelSize: 18
-                            font.family: "Symbols Nerd Font"
-                        }
+                            Text {
+                                text: (modelData.type === "ddc" ? "󰍹  " : "󰌢  ") + modelData.name
+                                color: Colors.overlay0
+                                font.pixelSize: 11
+                                font.family: "Symbols Nerd Font"
+                            }
 
-                        Slider {
-                            id: brightnessSlider
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: parent.width - 18 - 44 - 16
-                            height: 20
-                            from: 0.01
-                            to: 1
-                            value: root.brightnessLevel
-                            onMoved: root.setBrightness(value)
+                            Row {
+                                width: parent.width
+                                height: 32
+                                spacing: 8
 
-                            background: Rectangle {
-                                x: brightnessSlider.leftPadding
-                                y: brightnessSlider.topPadding + brightnessSlider.availableHeight / 2 - height / 2
-                                implicitWidth: 200
-                                implicitHeight: 8
-                                width: brightnessSlider.availableWidth
-                                height: 8
-                                radius: 4
-                                color: Colors.surface0
+                                property string displayId: modelData.id
+                                property real displayBrightness: modelData.brightness
 
-                                Rectangle {
-                                    width: brightnessSlider.visualPosition * parent.width
-                                    height: parent.height
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: root.getBrightnessIcon(brightnessSlider.value)
+                                    color: Colors.text
+                                    font.pixelSize: 18
+                                    font.family: "Symbols Nerd Font"
+                                }
+
+                                // NOTE: Sliders in Repeaters - modifying the model array while
+                                // dragging causes re-render, destroying the Slider mid-drag.
+                                // Solutions: don't update array in handler, pause refresh timers
+                                // while popup is open, use onMoved (not onValueChanged).
+                                // Slider also needs explicit height + implicitWidth/Height on background/handle.
+                                Slider {
+                                    id: brightnessSlider
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: parent.width - 18 - 44 - 16
+                                    height: 20
+                                    from: 0.01
+                                    to: 1
+                                    value: parent.displayBrightness
+                                    
+                                    onMoved: root.setDisplayBrightness(parent.displayId, value)
+
+                                    background: Rectangle {
+                                        x: brightnessSlider.leftPadding
+                                        y: brightnessSlider.topPadding + brightnessSlider.availableHeight / 2 - height / 2
+                                        implicitWidth: 200
+                                        implicitHeight: 8
+                                        width: brightnessSlider.availableWidth
+                                        height: 8
+                                        radius: 4
+                                        color: Colors.surface0
+
+                                        Rectangle {
+                                            width: brightnessSlider.visualPosition * parent.width
+                                            height: parent.height
+                                            color: Colors.yellow
+                                            radius: 4
+                                        }
+                                    }
+
+                                    handle: Rectangle {
+                                        x: brightnessSlider.leftPadding + brightnessSlider.visualPosition * (brightnessSlider.availableWidth - width)
+                                        y: brightnessSlider.topPadding + brightnessSlider.availableHeight / 2 - height / 2
+                                        implicitWidth: 14
+                                        implicitHeight: 14
+                                        width: 14
+                                        height: 14
+                                        radius: 7
+                                        color: Colors.text
+                                    }
+                                }
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: Math.round(brightnessSlider.value * 100) + "%"
                                     color: Colors.yellow
-                                    radius: 4
+                                    font.pixelSize: 14
+                                    width: 44
+                                    horizontalAlignment: Text.AlignRight
                                 }
                             }
-
-                            handle: Rectangle {
-                                x: brightnessSlider.leftPadding + brightnessSlider.visualPosition * (brightnessSlider.availableWidth - width)
-                                y: brightnessSlider.topPadding + brightnessSlider.availableHeight / 2 - height / 2
-                                implicitWidth: 14
-                                implicitHeight: 14
-                                width: 14
-                                height: 14
-                                radius: 7
-                                color: Colors.text
-                            }
-                        }
-
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: Math.round(root.brightnessLevel * 100) + "%"
-                            color: Colors.yellow
-                            font.pixelSize: 14
-                            width: 44
-                            horizontalAlignment: Text.AlignRight
                         }
                     }
                 }
