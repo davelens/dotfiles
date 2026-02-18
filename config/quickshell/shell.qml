@@ -13,10 +13,38 @@ Scope {
     // Idle inhibitor state
     property bool idleInhibited: false
 
-    // Volume popup state
-    property bool volumePopupVisible: false
+    // Popup state - only one popup open at a time
+    // Values: "" (none), "volume", "brightness"
+    property string activePopup: ""
     property bool deviceListExpanded: false
     property bool inputDeviceListExpanded: false
+
+    // Brightness state - only ONE source of truth
+    property real currentBrightness: 0.3  // Single brightness value, 0-1
+    property string activeDisplayType: "laptop"  // "laptop" or "external"
+    property bool brightnessUserAdjusting: false  // True when user is actively adjusting
+    
+    // Clamped brightness level for display (ensures 0-1 range)
+    property real brightnessLevel: Math.max(0, Math.min(1, currentBrightness))
+
+    // Helper function to toggle a popup
+    function togglePopup(name) {
+        if (activePopup === name) {
+            activePopup = ""
+            deviceListExpanded = false
+            inputDeviceListExpanded = false
+        } else {
+            activePopup = name
+            deviceListExpanded = false
+            inputDeviceListExpanded = false
+        }
+    }
+
+    function closePopups() {
+        activePopup = ""
+        deviceListExpanded = false
+        inputDeviceListExpanded = false
+    }
 
     // Get list of audio output devices (sinks that are hardware, not streams)
     property var audioSinks: {
@@ -62,6 +90,136 @@ Scope {
         running: false
     }
 
+    // Laptop brightness reading process (brightnessctl)
+    Process {
+        id: laptopBrightnessReadProc
+        command: ["brightnessctl", "-m"]
+        running: true
+        stdout: SplitParser {
+            onRead: data => {
+                // Skip if user is actively adjusting
+                if (root.brightnessUserAdjusting) return
+                
+                // Parse output: device,class,current,percentage%,max
+                // Example: amdgpu_bl2,backlight,17414,28%,62194
+                var parts = data.trim().split(",")
+                if (parts.length >= 5) {
+                    var current = parseInt(parts[2])
+                    var max = parseInt(parts[4])  // Max is the 5th field, not 4th
+                    if (max > 0 && root.activeDisplayType === "laptop") {
+                        root.currentBrightness = current / max
+                    }
+                }
+            }
+        }
+    }
+
+    // Laptop brightness setting process
+    Process {
+        id: laptopBrightnessSetProc
+        property int targetPercent: 50
+        command: ["brightnessctl", "set", targetPercent + "%"]
+        running: false
+    }
+
+    // External monitor detection and brightness reading (ddcutil)
+    Process {
+        id: externalBrightnessReadProc
+        property bool foundDisplay: false
+        property real detectedBrightness: 0
+        command: ["ddcutil", "getvcp", "10", "--display", "1", "--brief"]
+        running: true
+        onStarted: {
+            foundDisplay = false
+            detectedBrightness = 0
+        }
+        stdout: SplitParser {
+            onRead: data => {
+                // Parse output: VCP 10 C 80 100 (code, type, current, max)
+                var parts = data.trim().split(/\s+/)
+                if (parts.length >= 5 && parts[0] === "VCP") {
+                    var current = parseInt(parts[3])
+                    var max = parseInt(parts[4])
+                    if (max > 0) {
+                        externalBrightnessReadProc.detectedBrightness = current / max
+                        externalBrightnessReadProc.foundDisplay = true
+                    }
+                }
+            }
+        }
+        onExited: (exitCode) => {
+            var detected = (exitCode === 0 && foundDisplay)
+            if (detected) {
+                root.activeDisplayType = "external"
+                root.currentBrightness = detectedBrightness
+            } else {
+                root.activeDisplayType = "laptop"
+                // Trigger laptop brightness read to update currentBrightness
+                laptopBrightnessReadProc.running = true
+            }
+        }
+    }
+
+    // External monitor brightness setting process
+    Process {
+        id: externalBrightnessSetProc
+        property int targetPercent: 50
+        command: ["ddcutil", "setvcp", "10", targetPercent.toString(), "--display", "1"]
+        running: false
+    }
+
+    // Debounce timer for brightness changes (ddcutil is slow)
+    property int pendingBrightnessPercent: -1
+    Timer {
+        id: brightnessDebounce
+        interval: 200  // Wait 200ms after last change before applying
+        running: false
+        repeat: false
+        onTriggered: {
+            if (root.pendingBrightnessPercent >= 0) {
+                if (root.activeDisplayType === "external") {
+                    externalBrightnessSetProc.targetPercent = root.pendingBrightnessPercent
+                    externalBrightnessSetProc.running = true
+                } else {
+                    laptopBrightnessSetProc.targetPercent = root.pendingBrightnessPercent
+                    laptopBrightnessSetProc.running = true
+                }
+                root.pendingBrightnessPercent = -1
+            }
+            // Clear the adjusting flag after a delay to let the set command complete
+            brightnessSettleTimer.restart()
+        }
+    }
+    
+    // Timer to clear the adjusting flag after brightness has been set
+    Timer {
+        id: brightnessSettleTimer
+        interval: 1000  // Wait 1 second after setting before allowing refresh
+        running: false
+        repeat: false
+        onTriggered: {
+            root.brightnessUserAdjusting = false
+        }
+    }
+
+    function setBrightness(level) {
+        root.currentBrightness = level
+        root.pendingBrightnessPercent = Math.round(level * 100)
+        root.brightnessUserAdjusting = true
+        brightnessDebounce.restart()
+    }
+
+    // Refresh brightness periodically
+    Timer {
+        interval: 5000  // ddcutil is slow, so less frequent
+        running: true
+        repeat: true
+        onTriggered: {
+            // Only run one - external detection will trigger laptop read if needed
+            externalBrightnessReadProc.running = true
+        }
+    }
+
     // Track the default audio sink
     PwObjectTracker {
         objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : []
@@ -84,7 +242,7 @@ Scope {
             id: clickOverlay
             required property var modelData
             screen: modelData
-            visible: root.volumePopupVisible
+            visible: root.activePopup !== ""
 
             anchors {
                 top: true
@@ -101,11 +259,7 @@ Scope {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: {
-                    root.volumePopupVisible = false
-                    root.deviceListExpanded = false
-                    root.inputDeviceListExpanded = false
-                }
+                onClicked: root.closePopups()
             }
         }
     }
@@ -130,27 +284,19 @@ Scope {
 
             WlrLayershell.namespace: "quickshell"
             WlrLayershell.layer: WlrLayer.Top
-            WlrLayershell.keyboardFocus: root.volumePopupVisible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+            WlrLayershell.keyboardFocus: root.activePopup !== "" ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
             // Handle ESC to close popups
             contentItem {
-                focus: root.volumePopupVisible
-                Keys.onEscapePressed: {
-                    root.volumePopupVisible = false
-                    root.deviceListExpanded = false
-                    root.inputDeviceListExpanded = false
-                }
+                focus: root.activePopup !== ""
+                Keys.onEscapePressed: root.closePopups()
             }
 
             // Close popups when clicking on the bar background
             MouseArea {
                 anchors.fill: parent
                 z: -1
-                onClicked: {
-                    root.volumePopupVisible = false
-                    root.deviceListExpanded = false
-                    root.inputDeviceListExpanded = false
-                }
+                onClicked: root.closePopups()
             }
 
             // Left section - Power Menu, Idle Inhibitor, Workspaces
@@ -268,6 +414,42 @@ Scope {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 16
 
+                // Brightness
+                Rectangle {
+                    id: brightnessItem
+                    width: 28
+                    height: 24
+                    radius: 4
+                    color: brightnessArea.containsMouse ? "#45475a" : "#313244"
+
+                    Text {
+                        anchors.centerIn: parent
+                        property real level: root.brightnessLevel
+                        text: {
+                            if (level < 0.25) return "󰃞"
+                            if (level < 0.5) return "󰃟"
+                            if (level < 0.75) return "󰃠"
+                            return "󰃡"
+                        }
+                        color: "#cdd6f4"
+                        font.pixelSize: 18
+                        font.family: "Symbols Nerd Font"
+                    }
+
+                    MouseArea {
+                        id: brightnessArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.togglePopup("brightness")
+                        onWheel: (event) => {
+                            var delta = event.angleDelta.y > 0 ? 0.05 : -0.05
+                            var newLevel = Math.max(0.01, Math.min(1, root.brightnessLevel + delta))
+                            root.setBrightness(newLevel)
+                        }
+                    }
+                }
+
                 // Volume
                 Rectangle {
                     id: volumeItem
@@ -299,7 +481,7 @@ Scope {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: root.volumePopupVisible = !root.volumePopupVisible
+                        onClicked: root.togglePopup("volume")
                         onWheel: (event) => {
                             if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
                                 var delta = event.angleDelta.y > 0 ? 0.05 : -0.05
@@ -369,7 +551,7 @@ Scope {
             // Volume Popup
             PopupWindow {
                 id: volumePopup
-                visible: root.volumePopupVisible
+                visible: root.activePopup === "volume"
 
                 anchor.item: volumeItem
                 anchor.edges: Edges.Bottom | Edges.Right
@@ -715,6 +897,113 @@ Scope {
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+            }
+
+            // Brightness Popup
+            PopupWindow {
+                id: brightnessPopup
+                visible: root.activePopup === "brightness"
+
+                anchor.item: brightnessItem
+                anchor.edges: Edges.Bottom | Edges.Right
+                anchor.gravity: Edges.Bottom | Edges.Left
+
+                implicitWidth: 280
+                implicitHeight: 80
+                color: "#1e1e2e"
+
+                Column {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 8
+                    spacing: 8
+
+                    // Display label
+                    Text {
+                        text: root.activeDisplayType === "external" ? "󰍹  External Monitor" : "󰌢  Laptop Display"
+                        color: "#6c7086"
+                        font.pixelSize: 11
+                        font.family: "Symbols Nerd Font"
+                    }
+
+                    // Brightness slider row
+                    Row {
+                        width: parent.width
+                        height: 32
+                        spacing: 12
+
+                        // Brightness icon
+                        Text {
+                            id: brightnessMuteIcon
+                            anchors.verticalCenter: parent.verticalCenter
+                            property real level: root.brightnessLevel
+                            text: {
+                                if (level < 0.25) return "󰃞"
+                                if (level < 0.5) return "󰃟"
+                                if (level < 0.75) return "󰃠"
+                                return "󰃡"
+                            }
+                            color: "#cdd6f4"
+                            font.pixelSize: 18
+                            font.family: "Symbols Nerd Font"
+                        }
+
+                        // Slider
+                        Rectangle {
+                            width: parent.width - brightnessMuteIcon.width - brightnessPercent.width - 24
+                            height: 8
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: "#313244"
+                            radius: 4
+
+                            Rectangle {
+                                id: brightnessSliderFill
+                                height: parent.height
+                                width: parent.width * root.brightnessLevel
+                                color: "#f9e2af"
+                                radius: 4
+
+                                Behavior on width {
+                                    NumberAnimation { duration: 50 }
+                                }
+                            }
+
+                            // Slider knob
+                            Rectangle {
+                                x: Math.max(0, Math.min(parent.width - width, brightnessSliderFill.width - width / 2))
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 14
+                                height: 14
+                                radius: 7
+                                color: "#cdd6f4"
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                anchors.margins: -8
+                                onPressed: updateBrightness(mouseX)
+                                onPositionChanged: if (pressed) updateBrightness(mouseX)
+
+                                function updateBrightness(x) {
+                                    var level = Math.max(0.01, Math.min(1, (x + 8) / (parent.width + 16)))
+                                    root.setBrightness(level)
+                                }
+                            }
+                        }
+
+                        // Brightness percentage
+                        Text {
+                            id: brightnessPercent
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: Math.round(root.brightnessLevel * 100) + "%"
+                            color: "#f9e2af"
+                            font.pixelSize: 14
+                            width: 38
+                            horizontalAlignment: Text.AlignRight
                         }
                     }
                 }
