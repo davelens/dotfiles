@@ -84,7 +84,7 @@ Singleton {
     }
 
     // =========================================================================
-    // ROTATION (Sway-specific, isolated for portability)
+    // SWAY-SPECIFIC (isolated for portability)
     // =========================================================================
 
     Process {

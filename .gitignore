@@ -15,6 +15,7 @@ node_modules
 config/tmux/plugins
 config/macos/karabiner/automatic_backups
 config/wezterm/colors/dank-theme.toml
+config/quickshell/displays.json
 # These are symlinks to bin folders of some private repos.
 bin/utilities/ac
 bin/utilities/arch
