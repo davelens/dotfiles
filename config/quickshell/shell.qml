@@ -147,9 +147,15 @@ Scope {
 
                     Rectangle {
                         required property int modelData
-                        property var workspace: I3.findWorkspaceByName(modelData.toString())
-                        property bool isActive: workspace ? workspace.focused : false
-                        property bool exists: workspace !== null
+                        property bool isActive: I3.focusedWorkspace ? I3.focusedWorkspace.name === modelData.toString() : false
+                        property bool exists: {
+                            if (!I3.workspaces || !I3.workspaces.values) return false;
+                            var ws = I3.workspaces.values;
+                            for (var i = 0; i < ws.length; i++) {
+                                if (ws[i].name === modelData.toString()) return true;
+                            }
+                            return false;
+                        }
 
                         width: 32
                         height: 24
