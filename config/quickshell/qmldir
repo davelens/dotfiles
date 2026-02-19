@@ -1,8 +1,7 @@
 singleton Colors 1.0 Colors.qml
 singleton DisplayConfig 1.0 DisplayConfig.qml
 singleton BrightnessManager 1.0 BrightnessManager.qml
+singleton PopupManager 1.0 PopupManager.qml
 singleton Time 1.0 Time.qml
+BarButton 1.0 BarButton.qml
 Dropdown 1.0 Dropdown.qml
-VolumePopup 1.0 VolumePopup.qml
-BrightnessPopup 1.0 BrightnessPopup.qml
-DisplayPopup 1.0 DisplayPopup.qml
