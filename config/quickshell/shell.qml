@@ -8,6 +8,9 @@ import "modules" as Modules
 Scope {
   id: root
 
+  // SETTINGS PANEL
+  SettingsPanel {}
+
   // PIPEWIRE TRACKING
   PwObjectTracker {
     objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : []
