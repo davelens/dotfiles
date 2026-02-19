@@ -34,10 +34,22 @@ BarButton {
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.margins: 24
-            spacing: 4
+            spacing: 12
 
-            Repeater {
-                model: Quickshell.screens
+            // Header
+            Text {
+                text: "Main display"
+                color: Colors.text
+                font.pixelSize: 14
+            }
+
+            // Display list
+            Column {
+                width: parent.width
+                spacing: 4
+
+                Repeater {
+                    model: Quickshell.screens
 
                 Rectangle {
                     required property var modelData
@@ -81,14 +93,21 @@ BarButton {
                         }
 
                         // Rotation toggle
-                        Text {
+                        Item {
+                            id: rotateButton
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "󰑵"
-                            color: displayRotateArea.containsMouse ? Colors.blue : Colors.overlay0
-                            font.pixelSize: 16
-                            font.family: "Symbols Nerd Font"
                             width: 24
-                            horizontalAlignment: Text.AlignHCenter
+                            height: parent.height
+
+                            property bool isLandscape: modelData.width > modelData.height
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "󰑵"
+                                color: displayRotateArea.containsMouse ? Colors.blue : Colors.overlay0
+                                font.pixelSize: 16
+                                font.family: "Symbols Nerd Font"
+                            }
 
                             MouseArea {
                                 id: displayRotateArea
@@ -96,6 +115,30 @@ BarButton {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: DisplayConfig.toggleRotation(modelData)
+                            }
+
+                            // Rotation tooltip
+                            PopupWindow {
+                                visible: displayRotateArea.containsMouse
+
+                                anchor.item: rotateButton
+                                anchor.edges: Edges.Bottom
+                                anchor.gravity: Edges.Bottom
+                                anchor.margins.bottom: -8
+
+                                implicitWidth: rotateTooltipText.implicitWidth + 16
+                                implicitHeight: rotateTooltipText.implicitHeight + 12
+                                color: Colors.crust
+
+                                Rectangle { anchors.fill: parent; color: "transparent"; border.width: 1; border.color: Colors.surface2; z: 100 }
+
+                                Text {
+                                    id: rotateTooltipText
+                                    anchors.centerIn: parent
+                                    text: "Rotate 90°"
+                                    color: Colors.text
+                                    font.pixelSize: 12
+                                }
                             }
                         }
                     }
@@ -112,6 +155,7 @@ BarButton {
                         }
                     }
                 }
+            }
             }
         }
     }

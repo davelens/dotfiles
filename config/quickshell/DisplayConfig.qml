@@ -108,15 +108,15 @@ Singleton {
         rotateProc.running = true
     }
 
-    // Toggle between landscape (normal) and portrait (90)
+    // Track current rotation per screen (by name)
+    property var rotations: ({})
+
+    // Rotate 90° clockwise each time
     function toggleRotation(screen) {
         if (!screen) return
-        // ShellScreen.orientation is available but type is "unknown" in docs.
-        // We'll use width vs height as a heuristic for current orientation.
-        if (screen.width > screen.height) {
-            setRotation(screen, 90)
-        } else {
-            setRotation(screen, 0)
-        }
+        var current = rotations[screen.name] || 0
+        var next = (current + 90) % 360
+        rotations[screen.name] = next
+        setRotation(screen, next)
     }
 }
