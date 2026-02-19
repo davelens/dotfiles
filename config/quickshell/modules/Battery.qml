@@ -100,15 +100,21 @@ Item {
                 var rate = Math.abs(battery.changeRate)
                 var parts = []
 
-                parts.push(rate.toFixed(1) + " W")
-
-                if (!battery.charging && !battery.fullyCharged && battery.timeToEmpty > 0) {
-                    parts.push(battery.formatTime(battery.timeToEmpty) + " remaining")
-                } else if (battery.charging && battery.timeToFull > 0) {
-                    parts.push(battery.formatTime(battery.timeToFull) + " until full")
+                if (battery.fullyCharged) {
+                    parts.push("Fully charged")
+                } else if (battery.charging) {
+                    if (rate > 0) parts.push(rate.toFixed(1) + " W")
+                    if (battery.timeToFull > 0) {
+                        parts.push(battery.formatTime(battery.timeToFull) + " until full")
+                    }
+                } else {
+                    if (rate > 0) parts.push(rate.toFixed(1) + " W")
+                    if (battery.timeToEmpty > 0) {
+                        parts.push(battery.formatTime(battery.timeToEmpty) + " remaining")
+                    }
                 }
 
-                return parts.join("  ·  ")
+                return parts.length > 0 ? parts.join("  ·  ") : "On AC power"
             }
         }
     }
