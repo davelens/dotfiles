@@ -82,10 +82,12 @@ Scope {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 16
 
+        // Hardware controls group
         Row {
           anchors.verticalCenter: parent.verticalCenter
           spacing: 10
 
+          Modules.BluetoothButton { screen: panel.modelData }
           Modules.DisplayButton { screen: panel.modelData }
           Modules.BrightnessButton { screen: panel.modelData }
           Modules.VolumeButton { screen: panel.modelData }

@@ -1,6 +1,7 @@
+singleton BluetoothManager 1.0 BluetoothManager.qml
+singleton BrightnessManager 1.0 BrightnessManager.qml
 singleton Colors 1.0 Colors.qml
 singleton DisplayConfig 1.0 DisplayConfig.qml
-singleton BrightnessManager 1.0 BrightnessManager.qml
 singleton PopupManager 1.0 PopupManager.qml
 singleton Time 1.0 Time.qml
 BarButton 1.0 BarButton.qml

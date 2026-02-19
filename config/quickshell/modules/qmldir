@@ -1,8 +1,9 @@
-PowerButton 1.0 PowerButton.qml
-IdleInhibitorButton 1.0 IdleInhibitorButton.qml
-Workspaces 1.0 Workspaces.qml
-DisplayButton 1.0 DisplayButton.qml
-BrightnessButton 1.0 BrightnessButton.qml
-VolumeButton 1.0 VolumeButton.qml
 Battery 1.0 Battery.qml
+BluetoothButton 1.0 BluetoothButton.qml
+BrightnessButton 1.0 BrightnessButton.qml
 Clock 1.0 Clock.qml
+DisplayButton 1.0 DisplayButton.qml
+IdleInhibitorButton 1.0 IdleInhibitorButton.qml
+PowerButton 1.0 PowerButton.qml
+VolumeButton 1.0 VolumeButton.qml
+Workspaces 1.0 Workspaces.qml
