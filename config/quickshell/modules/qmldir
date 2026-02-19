@@ -6,4 +6,5 @@ DisplayButton 1.0 DisplayButton.qml
 IdleInhibitorButton 1.0 IdleInhibitorButton.qml
 PowerButton 1.0 PowerButton.qml
 VolumeButton 1.0 VolumeButton.qml
+WirelessButton 1.0 WirelessButton.qml
 Workspaces 1.0 Workspaces.qml

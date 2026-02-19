@@ -4,5 +4,6 @@ singleton Colors 1.0 Colors.qml
 singleton DisplayConfig 1.0 DisplayConfig.qml
 singleton PopupManager 1.0 PopupManager.qml
 singleton Time 1.0 Time.qml
+singleton WirelessManager 1.0 WirelessManager.qml
 BarButton 1.0 BarButton.qml
 Dropdown 1.0 Dropdown.qml

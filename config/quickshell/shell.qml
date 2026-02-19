@@ -87,6 +87,7 @@ Scope {
           anchors.verticalCenter: parent.verticalCenter
           spacing: 10
 
+          Modules.WirelessButton { screen: panel.modelData }
           Modules.BluetoothButton { screen: panel.modelData }
           Modules.DisplayButton { screen: panel.modelData }
           Modules.BrightnessButton { screen: panel.modelData }
