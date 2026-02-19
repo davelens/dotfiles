@@ -1,5 +1,6 @@
 Battery 1.0 Battery.qml
 BluetoothButton 1.0 BluetoothButton.qml
+MediaButton 1.0 MediaButton.qml
 BrightnessButton 1.0 BrightnessButton.qml
 Clock 1.0 Clock.qml
 DisplayButton 1.0 DisplayButton.qml

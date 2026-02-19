@@ -75,6 +75,13 @@ Scope {
         Modules.Workspaces {}
       }
 
+      // CENTER SECTION
+      Modules.MediaButton {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        screen: panel.modelData
+      }
+
       // RIGHT SECTION
       Row {
         anchors.right: parent.right
