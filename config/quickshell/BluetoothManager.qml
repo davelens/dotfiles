@@ -106,6 +106,12 @@ Singleton {
         return iconOn
     }
 
+    // Get icon for a device (generic bluetooth device icon)
+    function getDeviceIcon(iconType) {
+        // iconType is not currently tracked, so return generic icon
+        return "󰂱"
+    }
+
     // =========================================================================
     // PROCESSES
     // =========================================================================
