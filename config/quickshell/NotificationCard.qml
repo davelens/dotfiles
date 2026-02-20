@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.Notifications
@@ -27,6 +28,15 @@ Rectangle {
     color: mouseArea.containsMouse ? Colors.surface1 : Colors.crust
     border.width: 2
     border.color: Colors.surface2
+
+    layer.enabled: true
+    layer.effect: MultiEffect {
+        shadowEnabled: true
+        shadowColor: "#80000000"
+        shadowHorizontalOffset: 2
+        shadowVerticalOffset: 2
+        shadowBlur: 0.5
+    }
 
     // Left border for urgency indication
     Rectangle {
