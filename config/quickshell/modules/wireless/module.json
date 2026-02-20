@@ -1,0 +1,10 @@
+{
+  "id": "wireless",
+  "name": "Wireless",
+  "icon": "󰤨",
+  "order": 10,
+  "keywords": "wifi network ssid available networks connected signal strength download upload speed settings",
+  "components": {
+    "settings": "Settings.qml"
+  }
+}

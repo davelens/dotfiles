@@ -3,8 +3,8 @@ import Quickshell.Wayland
 import Quickshell.Services.Notifications
 import QtQuick
 import QtQuick.Controls
-import ".."
-import "../components"
+import "../.."
+import "../../components"
 
 // Notification history panel - slides in from right
 Variants {

@@ -1,0 +1,10 @@
+{
+  "id": "bluetooth",
+  "name": "Bluetooth",
+  "icon": "󰂯",
+  "order": 20,
+  "keywords": "devices paired connected headphones speaker mouse keyboard settings",
+  "components": {
+    "settings": "Settings.qml"
+  }
+}
