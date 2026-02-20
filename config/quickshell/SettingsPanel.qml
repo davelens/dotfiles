@@ -255,11 +255,13 @@ Scope {
                                             spacing: 12
 
                                             Text {
+                                                width: 20
                                                 anchors.verticalCenter: parent.verticalCenter
                                                 text: modelData.icon
                                                 color: root.activeCategory === modelData.id ? Colors.blue : Colors.text
                                                 font.pixelSize: 16
                                                 font.family: "Symbols Nerd Font"
+                                                horizontalAlignment: Text.AlignHCenter
                                             }
 
                                             Text {
