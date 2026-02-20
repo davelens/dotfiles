@@ -11,6 +11,12 @@ Scope {
   // SETTINGS PANEL
   SettingsPanel {}
 
+  // NOTIFICATION POPUPS (floating notifications top-right)
+  NotificationPopups {}
+
+  // NOTIFICATION PANEL (history slide-in)
+  NotificationPanel {}
+
   // PIPEWIRE TRACKING
   PwObjectTracker {
     objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : []
@@ -106,6 +112,7 @@ Scope {
 
         Modules.Battery {}
         Modules.Clock {}
+        Modules.NotificationButton { screen: panel.modelData }
       }
     }
   }

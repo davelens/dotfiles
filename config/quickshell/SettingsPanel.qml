@@ -1,7 +1,9 @@
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Services.Notifications
 import QtQuick
+import QtQuick.Controls
 
 Scope {
     id: root
@@ -14,6 +16,7 @@ Scope {
     readonly property var categories: [
         { id: "wireless", name: "Wireless", icon: "󰤨", keywords: "wifi network ssid available networks connected signal strength download upload speed settings" },
         { id: "bluetooth", name: "Bluetooth", icon: "󰂯", keywords: "devices paired connected headphones speaker mouse keyboard settings" },
+        { id: "notifications", name: "Notifications", icon: "󰂚", keywords: "alerts dnd do not disturb popup history timeout schedule settings" },
         { id: "displays", name: "Displays", icon: "󰍹", keywords: "monitor screen resolution wallpaper background settings coming soon" },
         { id: "audio", name: "Audio", icon: "󰕾", keywords: "sound volume speaker microphone output input settings coming soon" },
         { id: "power", name: "Power", icon: "󰌪", keywords: "battery sleep suspend hibernate shutdown settings coming soon" }
@@ -54,6 +57,10 @@ Scope {
         function toggle(): void { root.visible = !root.visible }
         function show(): void { root.visible = true }
         function hide(): void { root.visible = false }
+        function showNotifications(): void {
+            root.activeCategory = "notifications"
+            root.visible = true
+        }
     }
 
     // Full-screen overlay with centered panel
@@ -310,6 +317,7 @@ Scope {
                                     switch (root.activeCategory) {
                                         case "wireless": return wirelessContent
                                         case "bluetooth": return bluetoothContent
+                                        case "notifications": return notificationsContent
                                         case "displays": return displaysContent
                                         case "audio": return audioContent
                                         case "power": return powerContent
@@ -329,18 +337,24 @@ Scope {
     Component {
         id: wirelessContent
 
-        Column {
-            spacing: 16
+        ScrollView {
+            anchors.fill: parent
+            clip: true
+            contentWidth: availableWidth
 
-            Row {
+            Column {
+                width: parent.width
                 spacing: 16
 
-                Text {
-                    text: "Wireless"
-                    color: Colors.text
-                    font.pixelSize: 24
-                    font.bold: true
-                }
+                Row {
+                    spacing: 16
+
+                    Text {
+                        text: "Wireless"
+                        color: Colors.text
+                        font.pixelSize: 24
+                        font.bold: true
+                    }
 
                 Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
@@ -516,24 +530,31 @@ Scope {
                     }
                 }
             }
+            }
         }
     }
 
     Component {
         id: bluetoothContent
 
-        Column {
-            spacing: 16
+        ScrollView {
+            anchors.fill: parent
+            clip: true
+            contentWidth: availableWidth
 
-            Row {
+            Column {
+                width: parent.width
                 spacing: 16
 
-                Text {
-                    text: "Bluetooth"
-                    color: Colors.text
-                    font.pixelSize: 24
-                    font.bold: true
-                }
+                Row {
+                    spacing: 16
+
+                    Text {
+                        text: "Bluetooth"
+                        color: Colors.text
+                        font.pixelSize: 24
+                        font.bold: true
+                    }
 
                 Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
@@ -753,27 +774,508 @@ Scope {
                     font.pixelSize: 12
                 }
             }
+            }
+        }
+    }
+
+    Component {
+        id: notificationsContent
+
+        ScrollView {
+            anchors.fill: parent
+            clip: true
+            contentWidth: availableWidth
+
+            Column {
+                width: parent.width
+                spacing: 20
+
+                Text {
+                    text: "Notifications"
+                    color: Colors.text
+                    font.pixelSize: 24
+                    font.bold: true
+                }
+
+                // Preview section
+                Rectangle {
+                    width: parent.width
+                    height: previewColumn.height + 32
+                    radius: 8
+                    color: Colors.mantle
+
+                Column {
+                    id: previewColumn
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 16
+                    spacing: 12
+
+                    Text {
+                        text: "Preview"
+                        color: Colors.overlay0
+                        font.pixelSize: 12
+                    }
+
+                    // Preview notification card
+                    NotificationCard {
+                        width: Math.min(parent.width, 360)
+                        appName: "Example App"
+                        appIcon: ""
+                        summary: "This is a notification"
+                        body: "Here's what your notifications look like when they appear."
+                        urgency: NotificationUrgency.Normal
+                        showCloseButton: true
+                        compact: false
+                    }
+
+                    // Test notification button
+                    Rectangle {
+                        width: 180
+                        height: 36
+                        radius: 6
+                        color: testBtnArea.containsMouse ? Colors.surface1 : Colors.surface0
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Send Test Notification"
+                            color: Colors.text
+                            font.pixelSize: 13
+                        }
+
+                        MouseArea {
+                            id: testBtnArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                // Use notify-send to send a test notification
+                                testNotifyProc.running = true
+                            }
+                        }
+                    }
+
+                    Process {
+                        id: testNotifyProc
+                        command: ["notify-send", "-a", "Quickshell", "Test Notification", "This is a test notification from the settings panel."]
+                    }
+                }
+            }
+
+            // Popup Settings
+            Text {
+                text: root.highlightText("Popup Settings", root.searchQuery)
+                textFormat: Text.RichText
+                color: Colors.subtext0
+                font.pixelSize: 14
+            }
+
+            Rectangle {
+                width: parent.width
+                height: popupSettingsColumn.height + 24
+                radius: 8
+                color: Colors.surface0
+
+                Column {
+                    id: popupSettingsColumn
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 12
+                    spacing: 16
+
+                    // Timeout slider
+                    Column {
+                        width: parent.width
+                        spacing: 8
+
+                        Item {
+                            width: parent.width
+                            height: 20
+
+                            Text {
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Auto-dismiss timeout"
+                                color: Colors.subtext1
+                                font.pixelSize: 15
+                            }
+
+                            Text {
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: (NotificationManager.popupTimeout / 1000) + "s"
+                                color: Colors.text
+                                font.pixelSize: 15
+                            }
+                        }
+
+                        Slider {
+                            width: parent.width
+                            height: 24
+                            from: 1000
+                            to: 30000
+                            stepSize: 1000
+                            value: NotificationManager.popupTimeout
+                            live: true
+                            onValueChanged: NotificationManager.popupTimeout = value
+
+                            background: Rectangle {
+                                x: parent.leftPadding
+                                y: parent.topPadding + parent.availableHeight / 2 - height / 2
+                                width: parent.availableWidth
+                                height: 4
+                                radius: 2
+                                color: Colors.surface1
+
+                                Rectangle {
+                                    width: parent.parent.visualPosition * parent.width
+                                    height: parent.height
+                                    radius: 2
+                                    color: Colors.blue
+                                }
+                            }
+
+                            handle: Rectangle {
+                                x: parent.leftPadding + parent.visualPosition * (parent.availableWidth - width)
+                                y: parent.topPadding + parent.availableHeight / 2 - height / 2
+                                width: 16
+                                height: 16
+                                radius: 8
+                                color: Colors.text
+                            }
+                        }
+                    }
+                }
+            }
+
+            // History Settings
+            Text {
+                text: root.highlightText("History", root.searchQuery)
+                textFormat: Text.RichText
+                color: Colors.subtext0
+                font.pixelSize: 14
+            }
+
+            Rectangle {
+                width: parent.width
+                height: historySettingsColumn.height + 24
+                radius: 8
+                color: Colors.surface0
+
+                Column {
+                    id: historySettingsColumn
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 12
+                    spacing: 16
+
+                    // Max history size slider
+                    Column {
+                        width: parent.width
+                        spacing: 8
+
+                        Item {
+                            width: parent.width
+                            height: 20
+
+                            Text {
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Maximum history size"
+                                color: Colors.subtext1
+                                font.pixelSize: 15
+                            }
+
+                            Text {
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: NotificationManager.maxHistorySize + " notifications"
+                                color: Colors.text
+                                font.pixelSize: 15
+                            }
+                        }
+
+                        Slider {
+                            width: parent.width
+                            height: 24
+                            from: 10
+                            to: 200
+                            stepSize: 10
+                            value: NotificationManager.maxHistorySize
+                            live: true
+                            onValueChanged: NotificationManager.maxHistorySize = value
+
+                            background: Rectangle {
+                                x: parent.leftPadding
+                                y: parent.topPadding + parent.availableHeight / 2 - height / 2
+                                width: parent.availableWidth
+                                height: 4
+                                radius: 2
+                                color: Colors.surface1
+
+                                Rectangle {
+                                    width: parent.parent.visualPosition * parent.width
+                                    height: parent.height
+                                    radius: 2
+                                    color: Colors.blue
+                                }
+                            }
+
+                            handle: Rectangle {
+                                x: parent.leftPadding + parent.visualPosition * (parent.availableWidth - width)
+                                y: parent.topPadding + parent.availableHeight / 2 - height / 2
+                                width: 16
+                                height: 16
+                                radius: 8
+                                color: Colors.text
+                            }
+                        }
+                    }
+
+                    // Clear history button
+                    Rectangle {
+                        width: 140
+                        height: 36
+                        radius: 6
+                        color: clearHistoryArea.containsMouse ? Colors.surface1 : Colors.surface2
+                        visible: NotificationManager.getTotalHistoryCount() > 0
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Clear History"
+                            color: clearHistoryArea.containsMouse ? Colors.red : Colors.text
+                            font.pixelSize: 13
+                        }
+
+                        MouseArea {
+                            id: clearHistoryArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: NotificationManager.clearHistory()
+                        }
+                    }
+                }
+            }
+
+            // Do Not Disturb Settings
+            Text {
+                text: root.highlightText("Do Not Disturb", root.searchQuery)
+                textFormat: Text.RichText
+                color: Colors.subtext0
+                font.pixelSize: 14
+            }
+
+            Rectangle {
+                width: parent.width
+                height: dndSettingsColumn.height + 24
+                radius: 8
+                color: Colors.surface0
+
+                Column {
+                    id: dndSettingsColumn
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 12
+                    spacing: 16
+
+                    // DND Schedule toggle
+                    Row {
+                        width: parent.width
+                        spacing: 12
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 44
+                            height: 22
+                            radius: 11
+                            color: NotificationManager.dndScheduleEnabled ? Colors.blue : Colors.surface1
+
+                            Rectangle {
+                                x: NotificationManager.dndScheduleEnabled ? parent.width - width - 3 : 3
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 16
+                                height: 16
+                                radius: 8
+                                color: Colors.text
+                                Behavior on x { NumberAnimation { duration: 150 } }
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: NotificationManager.dndScheduleEnabled = !NotificationManager.dndScheduleEnabled
+                            }
+                        }
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "Enable DND schedule"
+                            color: Colors.text
+                            font.pixelSize: 14
+                        }
+                    }
+
+                    // Time pickers (visible when schedule enabled)
+                    Column {
+                        width: parent.width
+                        spacing: 16
+                        visible: NotificationManager.dndScheduleEnabled
+
+                        // Start time
+                        Row {
+                            spacing: 16
+
+                            Text {
+                                width: 80
+                                text: "Start time"
+                                color: Colors.text
+                                font.pixelSize: 14
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            TimePicker {
+                                hours: NotificationManager.dndStartHour
+                                minutes: NotificationManager.dndStartMinute
+                                onHoursChanged: NotificationManager.dndStartHour = hours
+                                onMinutesChanged: NotificationManager.dndStartMinute = minutes
+                            }
+                        }
+
+                        // End time
+                        Row {
+                            spacing: 16
+
+                            Text {
+                                width: 80
+                                text: "End time"
+                                color: Colors.text
+                                font.pixelSize: 14
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            TimePicker {
+                                hours: NotificationManager.dndEndHour
+                                minutes: NotificationManager.dndEndMinute
+                                onHoursChanged: NotificationManager.dndEndHour = hours
+                                onMinutesChanged: NotificationManager.dndEndMinute = minutes
+                            }
+                        }
+
+                        // Schedule status
+                        Text {
+                            text: "DND will be active from " + NotificationManager.formatTime(NotificationManager.dndStartHour, NotificationManager.dndStartMinute) + 
+                                  " to " + NotificationManager.formatTime(NotificationManager.dndEndHour, NotificationManager.dndEndMinute)
+                            color: Colors.overlay0
+                            font.pixelSize: 12
+                        }
+                    }
+                }
+            }
+
+            // Advanced Settings
+            Text {
+                text: root.highlightText("Advanced", root.searchQuery)
+                textFormat: Text.RichText
+                color: Colors.subtext0
+                font.pixelSize: 14
+            }
+
+            Rectangle {
+                width: parent.width
+                height: advancedSettingsColumn.height + 24
+                radius: 8
+                color: Colors.surface0
+
+                Column {
+                    id: advancedSettingsColumn
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 12
+                    spacing: 12
+
+                    // Critical bypass DND toggle
+                    Row {
+                        width: parent.width
+                        spacing: 12
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 44
+                            height: 22
+                            radius: 11
+                            color: NotificationManager.criticalBypassDnd ? Colors.blue : Colors.surface1
+
+                            Rectangle {
+                                x: NotificationManager.criticalBypassDnd ? parent.width - width - 3 : 3
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 16
+                                height: 16
+                                radius: 8
+                                color: Colors.text
+                                Behavior on x { NumberAnimation { duration: 150 } }
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: NotificationManager.criticalBypassDnd = !NotificationManager.criticalBypassDnd
+                            }
+                        }
+
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 2
+
+                            Text {
+                                text: "Critical notifications bypass DND"
+                                color: Colors.text
+                                font.pixelSize: 14
+                            }
+
+                            Text {
+                                text: "Show critical notifications even when Do Not Disturb is enabled"
+                                color: Colors.overlay0
+                                font.pixelSize: 11
+                            }
+                        }
+                    }
+                }
+            }
+            }
         }
     }
 
     Component {
         id: displaysContent
 
-        Column {
-            spacing: 16
+        ScrollView {
+            anchors.fill: parent
+            clip: true
+            contentWidth: availableWidth
 
-            Text {
-                text: "Displays"
-                color: Colors.text
-                font.pixelSize: 24
-                font.bold: true
-            }
+            Column {
+                width: parent.width
+                spacing: 16
 
-            Text {
-                text: root.highlightText("Display settings coming soon", root.searchQuery)
-                textFormat: Text.RichText
-                color: Colors.overlay0
-                font.pixelSize: 14
+                Text {
+                    text: "Displays"
+                    color: Colors.text
+                    font.pixelSize: 24
+                    font.bold: true
+                }
+
+                Text {
+                    text: root.highlightText("Display settings coming soon", root.searchQuery)
+                    textFormat: Text.RichText
+                    color: Colors.overlay0
+                    font.pixelSize: 14
+                }
             }
         }
     }
@@ -781,21 +1283,28 @@ Scope {
     Component {
         id: audioContent
 
-        Column {
-            spacing: 16
+        ScrollView {
+            anchors.fill: parent
+            clip: true
+            contentWidth: availableWidth
 
-            Text {
-                text: "Audio"
-                color: Colors.text
-                font.pixelSize: 24
-                font.bold: true
-            }
+            Column {
+                width: parent.width
+                spacing: 16
 
-            Text {
-                text: root.highlightText("Audio settings coming soon", root.searchQuery)
-                textFormat: Text.RichText
-                color: Colors.overlay0
-                font.pixelSize: 14
+                Text {
+                    text: "Audio"
+                    color: Colors.text
+                    font.pixelSize: 24
+                    font.bold: true
+                }
+
+                Text {
+                    text: root.highlightText("Audio settings coming soon", root.searchQuery)
+                    textFormat: Text.RichText
+                    color: Colors.overlay0
+                    font.pixelSize: 14
+                }
             }
         }
     }
@@ -803,21 +1312,28 @@ Scope {
     Component {
         id: powerContent
 
-        Column {
-            spacing: 16
+        ScrollView {
+            anchors.fill: parent
+            clip: true
+            contentWidth: availableWidth
 
-            Text {
-                text: "Power"
-                color: Colors.text
-                font.pixelSize: 24
-                font.bold: true
-            }
+            Column {
+                width: parent.width
+                spacing: 16
 
-            Text {
-                text: root.highlightText("Power settings coming soon", root.searchQuery)
-                textFormat: Text.RichText
-                color: Colors.overlay0
-                font.pixelSize: 14
+                Text {
+                    text: "Power"
+                    color: Colors.text
+                    font.pixelSize: 24
+                    font.bold: true
+                }
+
+                Text {
+                    text: root.highlightText("Power settings coming soon", root.searchQuery)
+                    textFormat: Text.RichText
+                    color: Colors.overlay0
+                    font.pixelSize: 14
+                }
             }
         }
     }
@@ -825,13 +1341,20 @@ Scope {
     Component {
         id: placeholderContent
 
-        Column {
-            spacing: 16
+        ScrollView {
+            anchors.fill: parent
+            clip: true
+            contentWidth: availableWidth
 
-            Text {
-                text: "Select a category"
-                color: Colors.overlay0
-                font.pixelSize: 14
+            Column {
+                width: parent.width
+                spacing: 16
+
+                Text {
+                    text: "Select a category"
+                    color: Colors.overlay0
+                    font.pixelSize: 14
+                }
             }
         }
     }
