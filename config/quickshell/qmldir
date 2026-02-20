@@ -14,3 +14,8 @@ NotificationPopups 1.0 NotificationPopups.qml
 SettingsPanel 1.0 SettingsPanel.qml
 TimePicker 1.0 TimePicker.qml
 SwitchToggle 1.0 SwitchToggle.qml
+FocusButton 1.0 FocusButton.qml
+FocusIconButton 1.0 FocusIconButton.qml
+FocusLink 1.0 FocusLink.qml
+FocusListItem 1.0 FocusListItem.qml
+FocusSlider 1.0 FocusSlider.qml

@@ -12,6 +12,11 @@ Scope {
     property string searchQuery: ""
     property string activeCategory: "wireless"
 
+    // Focus mode: "categories" or "content"
+    property string focusMode: "categories"
+    property var contentFocusables: []  // List of focusable items in current panel
+    property int contentFocusIndex: -1  // Current focused item index in content
+
     // Categories configuration with searchable keywords
     readonly property var categories: [
         { id: "wireless", name: "Wireless", icon: "󰤨", keywords: "wifi network ssid available networks connected signal strength download upload speed settings" },
@@ -22,11 +27,19 @@ Scope {
         { id: "power", name: "Power", icon: "󰌪", keywords: "battery sleep suspend hibernate shutdown settings coming soon" }
     ]
 
-    // Clear search when panel is hidden
+    // Clear search and reset focus when panel is hidden
     onVisibleChanged: {
         if (!visible) {
             searchQuery = ""
+            focusMode = "categories"
+            contentFocusIndex = -1
         }
+    }
+
+    // Reset content focus when category changes
+    onActiveCategoryChanged: {
+        contentFocusIndex = -1
+        contentFocusables = []
     }
 
     // Filter categories based on search (matches name or keywords)
@@ -48,6 +61,126 @@ Scope {
         var match = text.substring(idx, idx + query.length)
         var after = text.substring(idx + query.length)
         return before + '<span style="background-color: ' + Colors.yellow + '; color: ' + Colors.crust + ';">' + match + '</span>' + after
+    }
+
+    // Get visible categories (filtered by search)
+    function getVisibleCategories() {
+        return categories.filter(function(cat) { return matchesSearch(cat) })
+    }
+
+    // Select next category
+    function selectNextCategory() {
+        var visible = getVisibleCategories()
+        if (visible.length === 0) return
+        var currentIndex = visible.findIndex(function(cat) { return cat.id === activeCategory })
+        var nextIndex = (currentIndex + 1) % visible.length
+        activeCategory = visible[nextIndex].id
+    }
+
+    // Select previous category
+    function selectPreviousCategory() {
+        var visible = getVisibleCategories()
+        if (visible.length === 0) return
+        var currentIndex = visible.findIndex(function(cat) { return cat.id === activeCategory })
+        var prevIndex = (currentIndex - 1 + visible.length) % visible.length
+        activeCategory = visible[prevIndex].id
+    }
+
+    // Reference to current content loader
+    property var currentContentLoader: null
+
+    // Find all focusable items in the current content
+    function findFocusables(item, result) {
+        if (!item) return
+        // Only include items that have showFocusRing property (our custom focusable components)
+        if (item.showFocusRing !== undefined) {
+            result.push(item)
+        }
+        // Recurse into children
+        if (item.children) {
+            for (var i = 0; i < item.children.length; i++) {
+                findFocusables(item.children[i], result)
+            }
+        }
+        // Also check data (for Repeater items)
+        if (item.contentItem) {
+            findFocusables(item.contentItem, result)
+        }
+    }
+
+    // Refresh the list of focusable items
+    function refreshFocusables() {
+        contentFocusables = []
+        if (currentContentLoader && currentContentLoader.item) {
+            findFocusables(currentContentLoader.item, contentFocusables)
+        }
+    }
+
+    // Focus next item in content
+    function focusNextContent() {
+        refreshFocusables()
+        if (contentFocusables.length === 0) return
+        contentFocusIndex = (contentFocusIndex + 1) % contentFocusables.length
+        var item = contentFocusables[contentFocusIndex]
+        if (item && item.forceActiveFocus) item.forceActiveFocus()
+    }
+
+    // Focus previous item in content
+    function focusPreviousContent() {
+        refreshFocusables()
+        if (contentFocusables.length === 0) return
+        if (contentFocusIndex < 0) contentFocusIndex = contentFocusables.length - 1
+        else contentFocusIndex = (contentFocusIndex - 1 + contentFocusables.length) % contentFocusables.length
+        var item = contentFocusables[contentFocusIndex]
+        if (item && item.forceActiveFocus) item.forceActiveFocus()
+    }
+
+    // Enter content focus mode
+    function enterContentMode() {
+        focusMode = "content"
+        refreshFocusables()
+        // Re-enable focus rings on all content items
+        for (var i = 0; i < contentFocusables.length; i++) {
+            var item = contentFocusables[i]
+            if (item && item.showFocusRing !== undefined) {
+                item.showFocusRing = true
+            }
+        }
+        contentFocusIndex = -1
+        // Focus first item if available
+        if (contentFocusables.length > 0) {
+            contentFocusIndex = 0
+            var item = contentFocusables[0]
+            if (item && item.forceActiveFocus) item.forceActiveFocus()
+        }
+    }
+
+    // Return to category focus mode
+    function enterCategoryMode() {
+        focusMode = "categories"
+        // Hide focus rings on all content items
+        for (var i = 0; i < contentFocusables.length; i++) {
+            var item = contentFocusables[i]
+            if (item && item.showFocusRing !== undefined) {
+                item.showFocusRing = false
+            }
+        }
+        contentFocusIndex = -1
+        // Return focus to panel root
+        if (panelRoot) panelRoot.forceActiveFocus()
+    }
+
+    // Reference to panel root for focus management
+    property var panelRoot: null
+
+    // Reference to search input
+    property var searchInputRef: null
+
+    // Focus the search input
+    function focusSearch() {
+        if (searchInputRef) {
+            searchInputRef.forceActiveFocus()
+        }
     }
 
     // IPC handler to toggle visibility
@@ -86,9 +219,48 @@ Scope {
 
             // Handle keyboard input
             contentItem {
+                id: panelRootItem
                 focus: true
+                Component.onCompleted: root.panelRoot = panelRootItem
                 Keys.onPressed: event => {
-                    if (event.key === Qt.Key_Escape) root.visible = false
+                    // Q or Escape: close settings
+                    if (event.key === Qt.Key_Escape || event.key === Qt.Key_Q) {
+                        root.visible = false
+                        event.accepted = true
+                    }
+                    // Ctrl+L: enter content mode (focus panel content)
+                    else if (event.key === Qt.Key_L && (event.modifiers & Qt.ControlModifier)) {
+                        root.enterContentMode()
+                        event.accepted = true
+                    }
+                    // Ctrl+H: return to category mode
+                    else if (event.key === Qt.Key_H && (event.modifiers & Qt.ControlModifier)) {
+                        root.enterCategoryMode()
+                        event.accepted = true
+                    }
+                    // Ctrl+N: next (category or content item depending on mode)
+                    else if (event.key === Qt.Key_N && (event.modifiers & Qt.ControlModifier)) {
+                        if (root.focusMode === "categories") {
+                            root.selectNextCategory()
+                        } else {
+                            root.focusNextContent()
+                        }
+                        event.accepted = true
+                    }
+                    // Ctrl+P: previous (category or content item depending on mode)
+                    else if (event.key === Qt.Key_P && (event.modifiers & Qt.ControlModifier)) {
+                        if (root.focusMode === "categories") {
+                            root.selectPreviousCategory()
+                        } else {
+                            root.focusPreviousContent()
+                        }
+                        event.accepted = true
+                    }
+                    // Ctrl+F: focus search input
+                    else if (event.key === Qt.Key_F && (event.modifiers & Qt.ControlModifier)) {
+                        root.focusSearch()
+                        event.accepted = true
+                    }
                 }
             }
 
@@ -163,6 +335,7 @@ Scope {
                                 font.pixelSize: 14
                                 clip: true
                                 focus: true
+                                Component.onCompleted: root.searchInputRef = searchInput
 
                                 MouseArea {
                                     anchors.fill: parent
@@ -313,6 +486,7 @@ Scope {
                             }
 
                             Loader {
+                                id: contentLoader
                                 anchors.fill: parent
                                 anchors.margins: 24
                                 sourceComponent: {
@@ -326,6 +500,7 @@ Scope {
                                         default: return placeholderContent
                                     }
                                 }
+                                onLoaded: root.currentContentLoader = contentLoader
                             }
                         }
                     }
@@ -408,22 +583,12 @@ Scope {
                     }
                 }
 
-                Text {
+                FocusLink {
                     anchors.right: parent.right
                     anchors.rightMargin: 16
                     anchors.verticalCenter: parent.verticalCenter
                     text: "Disconnect"
-                    color: wifiDisconnectArea.containsMouse ? Colors.red : Colors.overlay0
-                    font.pixelSize: 13
-
-                    MouseArea {
-                        id: wifiDisconnectArea
-                        anchors.fill: parent
-                        anchors.margins: -8
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: WirelessManager.disconnect()
-                    }
+                    onClicked: WirelessManager.disconnect()
                 }
             }
 
@@ -450,21 +615,10 @@ Scope {
                         font.pixelSize: 14
                     }
 
-                    Text {
-                        text: "󰑐"
-                        color: wifiRefreshArea.containsMouse ? Colors.blue : Colors.overlay0
-                        font.pixelSize: 14
-                        font.family: "Symbols Nerd Font"
+                    FocusIconButton {
+                        icon: "󰑐"
                         visible: !WirelessManager.scanning
-
-                        MouseArea {
-                            id: wifiRefreshArea
-                            anchors.fill: parent
-                            anchors.margins: -4
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: WirelessManager.startScan()
-                        }
+                        onClicked: WirelessManager.startScan()
                     }
                 }
 
@@ -475,53 +629,13 @@ Scope {
                     Repeater {
                         model: WirelessManager.networks.filter(function(n) { return !n.active })
 
-                        Rectangle {
+                        FocusListItem {
                             required property var modelData
 
-                            width: parent.width
-                            height: 48
-                            radius: 6
-                            color: wifiNetArea.containsMouse ? Colors.surface0 : "transparent"
-
-                            Row {
-                                anchors.left: parent.left
-                                anchors.leftMargin: 12
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 12
-
-                                Text {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: WirelessManager.getSignalIcon(modelData.signal)
-                                    color: Colors.overlay0
-                                    font.pixelSize: 16
-                                    font.family: "Symbols Nerd Font"
-                                }
-
-                                Text {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: modelData.ssid
-                                    color: Colors.text
-                                    font.pixelSize: 14
-                                }
-                            }
-
-                            Text {
-                                anchors.right: parent.right
-                                anchors.rightMargin: 12
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: modelData.security ? "󰌾" : ""
-                                color: Colors.overlay0
-                                font.pixelSize: 14
-                                font.family: "Symbols Nerd Font"
-                            }
-
-                            MouseArea {
-                                id: wifiNetArea
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: WirelessManager.connect(modelData.ssid)
-                            }
+                            icon: WirelessManager.getSignalIcon(modelData.signal)
+                            text: modelData.ssid
+                            rightIcon: modelData.security ? "󰌾" : ""
+                            onClicked: WirelessManager.connect(modelData.ssid)
                         }
                     }
                 }
@@ -610,22 +724,12 @@ Scope {
                             }
                         }
 
-                        Text {
+                        FocusLink {
                             anchors.right: parent.right
                             anchors.rightMargin: 16
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Disconnect"
-                            color: btDisconnectArea.containsMouse ? Colors.red : Colors.overlay0
-                            font.pixelSize: 13
-
-                            MouseArea {
-                                id: btDisconnectArea
-                                anchors.fill: parent
-                                anchors.margins: -8
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: BluetoothManager.disconnect(modelData.address)
-                            }
+                            onClicked: BluetoothManager.disconnect(modelData.address)
                         }
                     }
                 }
@@ -655,21 +759,10 @@ Scope {
                         font.pixelSize: 14
                     }
 
-                    Text {
-                        text: "󰑐"
-                        color: btRefreshArea.containsMouse ? Colors.blue : Colors.overlay0
-                        font.pixelSize: 14
-                        font.family: "Symbols Nerd Font"
+                    FocusIconButton {
+                        icon: "󰑐"
                         visible: !BluetoothManager.scanning
-
-                        MouseArea {
-                            id: btRefreshArea
-                            anchors.fill: parent
-                            anchors.margins: -4
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: BluetoothManager.startScan()
-                        }
+                        onClicked: BluetoothManager.startScan()
                     }
                 }
 
@@ -678,53 +771,16 @@ Scope {
                     width: parent.width
                     spacing: 2
 
-                Repeater {
-                    model: BluetoothManager.devices.filter(function(d) { return !d.connected })
+                    Repeater {
+                        model: BluetoothManager.devices.filter(function(d) { return !d.connected })
 
-                    Rectangle {
-                        required property var modelData
+                        FocusListItem {
+                            required property var modelData
 
-                        width: parent.width
-                        height: 48
-                        radius: 6
-                        color: btDeviceArea.containsMouse ? Colors.surface0 : "transparent"
-
-                        Row {
-                            anchors.left: parent.left
-                            anchors.leftMargin: 12
-                            anchors.verticalCenter: parent.verticalCenter
-                            spacing: 12
-
-                            Text {
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: modelData.paired ? "󰂰" : "󰂯"
-                                color: modelData.paired ? Colors.blue : Colors.overlay0
-                                font.pixelSize: 16
-                                font.family: "Symbols Nerd Font"
-                            }
-
-                            Column {
-                                anchors.verticalCenter: parent.verticalCenter
-
-                                Text {
-                                    text: modelData.name
-                                    color: Colors.text
-                                    font.pixelSize: 14
-                                }
-
-                                Text {
-                                    text: modelData.paired ? "Paired" : "Not paired"
-                                    color: Colors.overlay0
-                                    font.pixelSize: 11
-                                }
-                            }
-                        }
-
-                        MouseArea {
-                            id: btDeviceArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: BluetoothManager.busy ? Qt.WaitCursor : Qt.PointingHandCursor
+                            icon: modelData.paired ? "󰂰" : "󰂯"
+                            iconColor: modelData.paired ? Colors.blue : Colors.overlay0
+                            text: modelData.name
+                            subtitle: modelData.paired ? "Paired" : "Not paired"
                             onClicked: {
                                 if (!BluetoothManager.busy) {
                                     BluetoothManager.connect(modelData.address)
@@ -732,7 +788,6 @@ Scope {
                             }
                         }
                     }
-                }
 
                     // Empty state
                     Text {
@@ -821,29 +876,9 @@ Scope {
                     }
 
                     // Test notification button
-                    Rectangle {
-                        width: 180
-                        height: 36
-                        radius: 6
-                        color: testBtnArea.containsMouse ? Colors.surface1 : Colors.surface0
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "Send Test Notification"
-                            color: Colors.text
-                            font.pixelSize: 13
-                        }
-
-                        MouseArea {
-                            id: testBtnArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                // Use notify-send to send a test notification
-                                testNotifyProc.running = true
-                            }
-                        }
+                    FocusButton {
+                        text: "Send Test Notification"
+                        onClicked: testNotifyProc.running = true
                     }
 
                     Process {
@@ -901,40 +936,13 @@ Scope {
                             }
                         }
 
-                        Slider {
+                        FocusSlider {
                             width: parent.width
-                            height: 24
                             from: 1000
                             to: 30000
                             stepSize: 1000
                             value: NotificationManager.popupTimeout
-                            live: true
                             onValueChanged: NotificationManager.popupTimeout = value
-
-                            background: Rectangle {
-                                x: parent.leftPadding
-                                y: parent.topPadding + parent.availableHeight / 2 - height / 2
-                                width: parent.availableWidth
-                                height: 4
-                                radius: 2
-                                color: Colors.surface1
-
-                                Rectangle {
-                                    width: parent.parent.visualPosition * parent.width
-                                    height: parent.height
-                                    radius: 2
-                                    color: Colors.blue
-                                }
-                            }
-
-                            handle: Rectangle {
-                                x: parent.leftPadding + parent.visualPosition * (parent.availableWidth - width)
-                                y: parent.topPadding + parent.availableHeight / 2 - height / 2
-                                width: 16
-                                height: 16
-                                radius: 8
-                                color: Colors.text
-                            }
                         }
                     }
                 }
@@ -988,65 +996,24 @@ Scope {
                             }
                         }
 
-                        Slider {
+                        FocusSlider {
                             width: parent.width
-                            height: 24
                             from: 10
                             to: 200
                             stepSize: 10
                             value: NotificationManager.maxHistorySize
-                            live: true
                             onValueChanged: NotificationManager.maxHistorySize = value
-
-                            background: Rectangle {
-                                x: parent.leftPadding
-                                y: parent.topPadding + parent.availableHeight / 2 - height / 2
-                                width: parent.availableWidth
-                                height: 4
-                                radius: 2
-                                color: Colors.surface1
-
-                                Rectangle {
-                                    width: parent.parent.visualPosition * parent.width
-                                    height: parent.height
-                                    radius: 2
-                                    color: Colors.blue
-                                }
-                            }
-
-                            handle: Rectangle {
-                                x: parent.leftPadding + parent.visualPosition * (parent.availableWidth - width)
-                                y: parent.topPadding + parent.availableHeight / 2 - height / 2
-                                width: 16
-                                height: 16
-                                radius: 8
-                                color: Colors.text
-                            }
                         }
                     }
 
                     // Clear history button
-                    Rectangle {
+                    FocusButton {
                         width: 140
-                        height: 36
-                        radius: 6
-                        color: clearHistoryArea.containsMouse ? Colors.surface1 : Colors.surface2
+                        text: "Clear History"
+                        backgroundColor: Colors.surface2
+                        textHoverColor: Colors.red
                         visible: NotificationManager.getTotalHistoryCount() > 0
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "Clear History"
-                            color: clearHistoryArea.containsMouse ? Colors.red : Colors.text
-                            font.pixelSize: 13
-                        }
-
-                        MouseArea {
-                            id: clearHistoryArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: NotificationManager.clearHistory()
-                        }
+                        onClicked: NotificationManager.clearHistory()
                     }
                 }
             }
