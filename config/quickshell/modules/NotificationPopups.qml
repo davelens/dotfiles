@@ -105,7 +105,7 @@ Variants {
           }
 
           onClicked: {
-            NotificationManager.dismissPopup(notificationItem.notificationId)
+            NotificationManager.invokeDefaultAction(notificationItem.notificationId)
           }
 
           MouseArea {

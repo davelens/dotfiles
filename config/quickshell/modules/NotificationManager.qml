@@ -86,7 +86,7 @@ Singleton {
     id: server
 
     bodySupported: true
-    actionsSupported: false          // click-to-dismiss only
+    actionsSupported: true           // support notification actions (e.g., Discord "open conversation")
     imageSupported: true             // for app icons
     persistenceSupported: true       // for history
     keepOnReload: true
@@ -133,23 +133,31 @@ Singleton {
   }
 
   function getAppIcon(notification) {
-    if (notification.appIcon) {
-      return notification.appIcon
-    }
-    if (notification.desktopEntry) {
-      // Try the desktop entry as-is, then try lowercase last part (e.g., "discord")
-      var icon = Quickshell.iconPath(notification.desktopEntry, true)
+    // Helper to resolve an icon name/path
+    function resolveIcon(name) {
+      if (!name) return ""
+      // Absolute path - use directly
+      if (name.startsWith("/")) return name
+      // Try as icon name
+      var icon = Quickshell.iconPath(name, true)
       if (icon) return icon
-
-      // Extract app name and try lowercase
-      var entry = notification.desktopEntry
-      if (entry.indexOf(".") !== -1) {
-        var parts = entry.split(".")
+      // If it's an app ID (e.g., "com.discordapp.Discord"), try lowercase last part
+      if (name.indexOf(".") !== -1) {
+        var parts = name.split(".")
         var appName = parts[parts.length - 1].toLowerCase()
         icon = Quickshell.iconPath(appName, true)
         if (icon) return icon
       }
+      return ""
     }
+
+    // Try appIcon first, then desktopEntry
+    var icon = resolveIcon(notification.appIcon)
+    if (icon) return icon
+
+    icon = resolveIcon(notification.desktopEntry)
+    if (icon) return icon
+
     return ""
   }
 
@@ -207,6 +215,48 @@ Singleton {
         break
       }
     }
+  }
+
+  function invokeDefaultAction(notificationId) {
+    // Remove from visible popups
+    for (var i = 0; i < popupModel.count; i++) {
+      if (popupModel.get(i).notificationId === notificationId) {
+        popupModel.remove(i)
+        break
+      }
+    }
+
+    // Find the notification and invoke its default action
+    for (var j = 0; j < server.trackedNotifications.values.length; j++) {
+      var n = server.trackedNotifications.values[j]
+      if (n.id === notificationId) {
+        // Look for "default" action (clicking the notification body)
+        if (n.actions) {
+          for (var k = 0; k < n.actions.length; k++) {
+            if (n.actions[k].identifier === "default") {
+              n.actions[k].invoke()
+              // Focus the app's window to switch to its workspace
+              focusAppWindow(n.desktopEntry)
+              return
+            }
+          }
+        }
+        // No default action found, just dismiss
+        n.dismiss()
+        return
+      }
+    }
+  }
+
+  // Focus an app's window by its desktop entry (app_id in Sway)
+  function focusAppWindow(desktopEntry) {
+    if (!desktopEntry) return
+    focusProc.command = ["swaymsg", "[app_id=" + desktopEntry + "] focus"]
+    focusProc.running = true
+  }
+
+  Process {
+    id: focusProc
   }
 
   function addToHistory(notification) {
