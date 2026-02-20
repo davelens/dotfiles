@@ -15,6 +15,7 @@ Singleton {
   // File paths for consumers
   readonly property string displaysPath: dataDir + "/displays.json"
   readonly property string notificationSettingsPath: dataDir + "/notification-settings.json"
+  readonly property string statusbarPath: dataDir + "/statusbar.json"
 
   // Track initialization
   property bool ready: false
@@ -30,6 +31,7 @@ Singleton {
     onExited: (code) => {
       checkDisplays.running = true
       checkNotificationSettings.running = true
+      checkStatusbar.running = true
     }
   }
 
@@ -83,8 +85,33 @@ Singleton {
     }
   }
 
+  // Check if statusbar.json exists
+  Process {
+    id: checkStatusbar
+    command: ["test", "-f", dataManager.statusbarPath]
+    onExited: (code) => {
+      if (code !== 0) {
+        copyStatusbar.running = true
+      } else {
+        statusbarReady = true
+        checkReady()
+      }
+    }
+  }
+  property bool statusbarReady: false
+
+  // Copy statusbar.json if missing
+  Process {
+    id: copyStatusbar
+    command: ["cp", dataManager.defaultsDir + "/statusbar.json", dataManager.statusbarPath]
+    onExited: {
+      statusbarReady = true
+      checkReady()
+    }
+  }
+
   function checkReady() {
-    if (displaysReady && notificationSettingsReady) {
+    if (displaysReady && notificationSettingsReady && statusbarReady) {
       ready = true
     }
   }

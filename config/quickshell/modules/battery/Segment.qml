@@ -5,6 +5,8 @@ import "../.."
 
 Item {
   id: battery
+  property var screen
+
   anchors.verticalCenter: parent.verticalCenter
   width: batteryRow.width
   height: batteryRow.height

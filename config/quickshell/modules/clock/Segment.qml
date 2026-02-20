@@ -4,6 +4,8 @@ import "../.."
 
 Item {
   id: clock
+  property var screen
+
   anchors.verticalCenter: parent.verticalCenter
   width: timeText.width
   height: timeText.height

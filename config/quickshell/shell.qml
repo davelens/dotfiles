@@ -3,8 +3,6 @@ import Quickshell.Wayland
 import Quickshell.Services.Pipewire
 import QtQuick
 
-import "modules" as Modules
-
 Scope {
   id: root
 
@@ -52,7 +50,7 @@ Scope {
 
   // BAR (only on primary screen)
   Variants {
-    model: DisplayConfig.primaryScreen ? [DisplayConfig.primaryScreen] : []
+    model: DisplayConfig.primaryScreen && StatusbarManager.ready ? [DisplayConfig.primaryScreen] : []
 
     PanelWindow {
       required property var modelData
@@ -75,44 +73,96 @@ Scope {
       // LEFT SECTION
       Row {
         anchors.left: parent.left
-        anchors.leftMargin: 4
+        anchors.leftMargin: StatusbarManager.barMargins.left
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 20
+        spacing: StatusbarManager.sectionSpacing.left
 
-        Modules.PowerButton {}
-        Modules.IdleInhibitorButton {}
-        Modules.Workspaces {}
+        Repeater {
+          model: StatusbarManager.leftItems.filter(function(i) { return i.enabled })
+
+          Item {
+            required property var modelData
+            width: loader.item ? loader.item.width + modelData.marginLeft + modelData.marginRight : 0
+            height: loader.item ? loader.item.height : 24
+            anchors.verticalCenter: parent.verticalCenter
+
+            Loader {
+              id: loader
+              x: modelData.marginLeft
+              anchors.verticalCenter: parent.verticalCenter
+
+              Component.onCompleted: {
+                var url = ModuleRegistry.getBarComponentUrl(modelData.id)
+                if (url) {
+                  setSource(url, { "screen": panel.modelData })
+                }
+              }
+            }
+          }
+        }
       }
 
       // CENTER SECTION
-      Modules.MediaButton {
+      Row {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        screen: panel.modelData
+        spacing: StatusbarManager.sectionSpacing.center
+
+        Repeater {
+          model: StatusbarManager.centerItems.filter(function(i) { return i.enabled })
+
+          Item {
+            required property var modelData
+            width: loader.item ? loader.item.width + modelData.marginLeft + modelData.marginRight : 0
+            height: loader.item ? loader.item.height : 24
+            anchors.verticalCenter: parent.verticalCenter
+
+            Loader {
+              id: loader
+              x: modelData.marginLeft
+              anchors.verticalCenter: parent.verticalCenter
+
+              Component.onCompleted: {
+                var url = ModuleRegistry.getBarComponentUrl(modelData.id)
+                if (url) {
+                  setSource(url, { "screen": panel.modelData })
+                }
+              }
+            }
+          }
+        }
       }
 
       // RIGHT SECTION
       Row {
         anchors.right: parent.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: StatusbarManager.barMargins.right
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 16
+        spacing: StatusbarManager.sectionSpacing.right
 
-        // Hardware controls group
-        Row {
-          anchors.verticalCenter: parent.verticalCenter
-          spacing: 10
+        Repeater {
+          model: StatusbarManager.rightItems.filter(function(i) { return i.enabled })
 
-          Modules.WirelessButton { screen: panel.modelData }
-          Modules.BluetoothButton { screen: panel.modelData }
-          Modules.DisplayButton { screen: panel.modelData }
-          Modules.BrightnessButton { screen: panel.modelData }
-          Modules.VolumeButton { screen: panel.modelData }
+          Item {
+            required property var modelData
+            width: loader.item ? loader.item.width + modelData.marginLeft + modelData.marginRight : 0
+            height: loader.item ? loader.item.height : 24
+            anchors.verticalCenter: parent.verticalCenter
+
+            Loader {
+              id: loader
+              x: modelData.marginLeft
+              anchors.verticalCenter: parent.verticalCenter
+
+              Component.onCompleted: {
+                var url = ModuleRegistry.getBarComponentUrl(modelData.id)
+                if (url) {
+                  setSource(url, { "screen": panel.modelData })
+                }
+              }
+            }
+          }
         }
-
-        Modules.Battery {}
-        Modules.Clock {}
-        Modules.NotificationButton { screen: panel.modelData }
       }
     }
   }

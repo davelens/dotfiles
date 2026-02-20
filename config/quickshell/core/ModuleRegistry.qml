@@ -105,4 +105,42 @@ Singleton {
     }
     return null
   }
+
+  // Get modules that have a bar component (button or segment)
+  function getBarComponents() {
+    return modules.filter(function(m) {
+      return m.components && (m.components.button || m.components.segment)
+    }).map(function(m) {
+      var type = m.components.button ? "button" : "segment"
+      var file = m.components.button || m.components.segment
+      return {
+        id: m.id,
+        name: m.name,
+        icon: m.icon,
+        type: type,
+        url: "file://" + m.path + "/" + file
+      }
+    })
+  }
+
+  // Get the URL for a bar component by module ID
+  function getBarComponentUrl(id) {
+    var module = getModule(id)
+    if (!module || !module.components) return ""
+    var file = module.components.button || module.components.segment
+    if (!file) return ""
+    return "file://" + module.path + "/" + file
+  }
+
+  // Check if a module exists and has a bar component
+  function hasBarComponent(id) {
+    var module = getModule(id)
+    return module && module.components && (module.components.button || module.components.segment)
+  }
+
+  // Check if a module's bar component is a button (vs segment)
+  function isButton(id) {
+    var module = getModule(id)
+    return module && module.components && module.components.button
+  }
 }

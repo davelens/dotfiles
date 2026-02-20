@@ -1,0 +1,11 @@
+{
+  "id": "statusbar",
+  "name": "Status Bar",
+  "icon": "󰍜",
+  "order": 5,
+  "keywords": "bar panel layout position order arrange buttons segments left center right",
+  "components": {
+    "manager": "Manager.qml",
+    "settings": "Settings.qml"
+  }
+}

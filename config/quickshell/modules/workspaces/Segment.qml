@@ -3,6 +3,8 @@ import Quickshell.I3
 import "../.."
 
 Row {
+  property var screen
+
   anchors.verticalCenter: parent.verticalCenter
   spacing: 2
 

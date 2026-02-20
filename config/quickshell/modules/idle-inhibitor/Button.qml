@@ -6,6 +6,7 @@ import "../../core/components"
 BarButton {
   id: button
 
+  property var screen
   property bool inhibited: false
 
   icon: inhibited ? "󰈈" : "󰈉"

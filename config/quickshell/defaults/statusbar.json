@@ -1,0 +1,29 @@
+{
+  "barMargins": {
+    "left": 4,
+    "right": 10
+  },
+  "sectionSpacing": {
+    "left": 0,
+    "center": 0,
+    "right": 0
+  },
+  "left": [
+    { "id": "power", "enabled": true, "marginLeft": 0, "marginRight": 20 },
+    { "id": "idle-inhibitor", "enabled": true, "marginLeft": 0, "marginRight": 20 },
+    { "id": "workspaces", "enabled": true, "marginLeft": 0, "marginRight": 0 }
+  ],
+  "center": [
+    { "id": "media", "enabled": true, "marginLeft": 0, "marginRight": 0 }
+  ],
+  "right": [
+    { "id": "wireless", "enabled": true, "marginLeft": 0, "marginRight": 10 },
+    { "id": "bluetooth", "enabled": true, "marginLeft": 0, "marginRight": 10 },
+    { "id": "display", "enabled": true, "marginLeft": 0, "marginRight": 10 },
+    { "id": "brightness", "enabled": true, "marginLeft": 0, "marginRight": 10 },
+    { "id": "volume", "enabled": true, "marginLeft": 0, "marginRight": 16 },
+    { "id": "battery", "enabled": true, "marginLeft": 0, "marginRight": 16 },
+    { "id": "clock", "enabled": true, "marginLeft": 0, "marginRight": 16 },
+    { "id": "notifications", "enabled": true, "marginLeft": 0, "marginRight": 0 }
+  ]
+}
