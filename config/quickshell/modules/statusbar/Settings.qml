@@ -486,10 +486,14 @@ ScrollView {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             activeFocusOnTab: true
+            selectByMouse: true
             validator: IntValidator { bottom: 0; top: 100 }
+            onActiveFocusChanged: if (activeFocus) selectAll()
             onEditingFinished: {
               StatusbarManager.setMargins(item.id, parseInt(text) || 0, item.marginRight)
             }
+            Keys.onReturnPressed: focus = false
+            Keys.onEnterPressed: focus = false
           }
         }
 
@@ -518,10 +522,14 @@ ScrollView {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             activeFocusOnTab: true
+            selectByMouse: true
             validator: IntValidator { bottom: 0; top: 100 }
+            onActiveFocusChanged: if (activeFocus) selectAll()
             onEditingFinished: {
               StatusbarManager.setMargins(item.id, item.marginLeft, parseInt(text) || 0)
             }
+            Keys.onReturnPressed: focus = false
+            Keys.onEnterPressed: focus = false
           }
         }
       }

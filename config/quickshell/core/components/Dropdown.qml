@@ -1,11 +1,12 @@
 import QtQuick
+import QtQuick.Controls
 import "../.."
 
 // Reusable expandable dropdown component
 // Can display any list of items with customizable display
-Column {
+// In compact mode, items appear as overlay; otherwise they flow in Column
+Item {
   id: dropdown
-  spacing: 2
 
   // Required properties
   required property var items           // Array of items to display
@@ -22,6 +23,13 @@ Column {
 
   // State
   property bool expanded: false
+
+  // Size: in compact mode, fixed to header size only; otherwise grows with content
+  implicitWidth: compact ? width : contentColumn.width
+  implicitHeight: compact ? 28 : contentColumn.height
+
+  // Prevent child items from affecting size in compact mode
+  clip: false
 
   // Signals
   signal itemSelected(var item)
@@ -52,60 +60,163 @@ Column {
     return item === currentItem
   }
 
-  // Header
+  // Non-compact mode: Column layout where items flow below header
+  Column {
+    id: contentColumn
+    spacing: 2
+    visible: !dropdown.compact
+
+    // Header (non-compact)
+    Rectangle {
+      width: dropdown.width
+      height: 28
+      radius: 4
+      color: headerAreaNormal.containsMouse ? Colors.surface0 : "transparent"
+
+      Row {
+        anchors.fill: parent
+        anchors.leftMargin: 4
+        anchors.rightMargin: 4
+        spacing: 6
+
+        Text {
+          anchors.verticalCenter: parent.verticalCenter
+          text: dropdown.headerIcon
+          color: Colors.blue
+          font.pixelSize: 14
+          font.family: "Symbols Nerd Font"
+          visible: dropdown.headerIcon
+        }
+
+        Text {
+          anchors.verticalCenter: parent.verticalCenter
+          text: dropdown.headerLabel
+          color: Colors.overlay0
+          font.pixelSize: 14
+          visible: dropdown.headerLabel
+        }
+
+        Text {
+          anchors.verticalCenter: parent.verticalCenter
+          text: dropdown.getItemText(dropdown.currentItem, false)
+          color: Colors.text
+          font.pixelSize: 13
+          elide: Text.ElideRight
+          width: parent.width - 90
+        }
+
+        Text {
+          anchors.verticalCenter: parent.verticalCenter
+          text: dropdown.expanded ? "\uf106" : "\uf107"
+          color: Colors.overlay0
+          font.pixelSize: 14
+          font.family: "Symbols Nerd Font"
+        }
+      }
+
+      MouseArea {
+        id: headerAreaNormal
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: {
+          dropdown.expanded = !dropdown.expanded
+          dropdown.toggled(dropdown.expanded)
+        }
+      }
+    }
+
+    // Items list (non-compact, flows in Column)
+    Column {
+      width: dropdown.width
+      spacing: 2
+      visible: dropdown.expanded
+
+      Repeater {
+        model: dropdown.items
+
+        Rectangle {
+          required property var modelData
+          property bool isSelected: dropdown.isItemSelected(modelData)
+
+          width: dropdown.width
+          height: 32
+          radius: 4
+          color: isSelected ? Colors.surface1 : (itemAreaNormal.containsMouse ? Colors.surface0 : "transparent")
+
+          Row {
+            anchors.fill: parent
+            anchors.leftMargin: 8
+            anchors.rightMargin: 8
+            spacing: 8
+
+            Text {
+              anchors.verticalCenter: parent.verticalCenter
+              text: isSelected ? dropdown.selectedIcon : (dropdown.itemIcon || dropdown.headerIcon)
+              color: isSelected ? Colors.green : Colors.overlay0
+              font.pixelSize: 14
+              font.family: "Symbols Nerd Font"
+            }
+
+            Text {
+              anchors.verticalCenter: parent.verticalCenter
+              text: dropdown.getItemText(modelData, false)
+              color: isSelected ? Colors.text : Colors.subtext0
+              font.pixelSize: 13
+              elide: Text.ElideRight
+              width: parent.width - 40
+            }
+          }
+
+          MouseArea {
+            id: itemAreaNormal
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: dropdown.itemSelected(modelData)
+          }
+        }
+      }
+    }
+  }
+
+  // Compact mode: Header is the main element, items overlay below
   Rectangle {
+    id: compactHeader
+    visible: dropdown.compact
     width: dropdown.width
     height: 28
     radius: 4
-    color: dropdown.compact
-      ? (headerArea.containsMouse ? Colors.surface1 : Colors.surface0)
-      : (headerArea.containsMouse ? Colors.surface0 : "transparent")
-    border.width: dropdown.compact ? 1 : 0
+    color: headerAreaCompact.containsMouse ? Colors.surface1 : Colors.surface0
+    border.width: 1
     border.color: Colors.surface2
 
     Row {
       anchors.fill: parent
-      anchors.leftMargin: dropdown.compact ? 8 : 4
-      anchors.rightMargin: dropdown.compact ? 8 : 4
-      spacing: dropdown.compact ? 4 : 6
+      anchors.leftMargin: 8
+      anchors.rightMargin: 8
+      spacing: 4
 
       Text {
         anchors.verticalCenter: parent.verticalCenter
-        text: dropdown.headerIcon
-        color: Colors.blue
-        font.pixelSize: 14
-        font.family: "Symbols Nerd Font"
-        visible: !dropdown.compact && dropdown.headerIcon
-      }
-
-      Text {
-        anchors.verticalCenter: parent.verticalCenter
-        text: dropdown.headerLabel
-        color: Colors.overlay0
-        font.pixelSize: 14
-        visible: !dropdown.compact && dropdown.headerLabel
-      }
-
-      Text {
-        anchors.verticalCenter: parent.verticalCenter
-        text: dropdown.getItemText(dropdown.currentItem, dropdown.compact)
+        text: dropdown.getItemText(dropdown.currentItem, true)
         color: Colors.text
-        font.pixelSize: dropdown.compact ? 12 : 13
+        font.pixelSize: 12
         elide: Text.ElideRight
-        width: dropdown.compact ? parent.width - 20 : parent.width - 90
+        width: parent.width - 20
       }
 
       Text {
         anchors.verticalCenter: parent.verticalCenter
         text: dropdown.expanded ? "\uf106" : "\uf107"
         color: Colors.overlay0
-        font.pixelSize: dropdown.compact ? 10 : 14
+        font.pixelSize: 10
         font.family: "Symbols Nerd Font"
       }
     }
 
     MouseArea {
-      id: headerArea
+      id: headerAreaCompact
       anchors.fill: parent
       hoverEnabled: true
       cursorShape: Qt.PointingHandCursor
@@ -116,55 +227,62 @@ Column {
     }
   }
 
-  // Items list (shown when expanded)
-  Column {
+  // Compact items list (using Popup for proper overlay behavior)
+  Popup {
+    id: compactPopup
+    visible: dropdown.compact && dropdown.expanded
+    x: 0
+    y: compactHeader.height + 2
     width: dropdown.width
-    spacing: 2
-    visible: dropdown.expanded
+    padding: 0
+    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
-    Repeater {
-      model: dropdown.items
+    onClosed: {
+      if (dropdown.expanded) {
+        dropdown.expanded = false
+        dropdown.toggled(false)
+      }
+    }
 
-      Rectangle {
-        required property var modelData
-        property bool isSelected: dropdown.isItemSelected(modelData)
+    background: Rectangle {
+      radius: 4
+      color: Colors.surface0
+      border.width: 1
+      border.color: Colors.surface2
+    }
 
-        width: dropdown.width
-        height: 32
-        radius: 4
-        color: isSelected ? Colors.surface1 : (itemArea.containsMouse ? Colors.surface0 : "transparent")
+    contentItem: Column {
+      id: itemsColumn
+      width: dropdown.width
+      spacing: 0
 
-        Row {
-          anchors.fill: parent
-          anchors.leftMargin: 8
-          anchors.rightMargin: 8
-          spacing: 8
+      Repeater {
+        id: itemsRepeaterCompact
+        model: dropdown.items
+
+        Rectangle {
+          required property var modelData
+          property bool isSelected: dropdown.isItemSelected(modelData)
+
+          width: dropdown.width
+          height: 32
+          radius: 4
+          color: isSelected ? Colors.surface1 : (itemAreaCompact.containsMouse ? Colors.surface1 : "transparent")
 
           Text {
-            anchors.verticalCenter: parent.verticalCenter
-            text: isSelected ? dropdown.selectedIcon : (dropdown.itemIcon || dropdown.headerIcon)
-            color: isSelected ? Colors.green : Colors.overlay0
-            font.pixelSize: 14
-            font.family: "Symbols Nerd Font"
-            visible: !dropdown.compact
-          }
-
-          Text {
-            anchors.verticalCenter: parent.verticalCenter
-            text: dropdown.getItemText(modelData, dropdown.compact)
+            anchors.centerIn: parent
+            text: dropdown.getItemText(modelData, true)
             color: isSelected ? Colors.text : Colors.subtext0
-            font.pixelSize: dropdown.compact ? 12 : 13
-            elide: Text.ElideRight
-            width: dropdown.compact ? parent.width - 16 : parent.width - 40
+            font.pixelSize: 12
           }
-        }
 
-        MouseArea {
-          id: itemArea
-          anchors.fill: parent
-          hoverEnabled: true
-          cursorShape: Qt.PointingHandCursor
-          onClicked: dropdown.itemSelected(modelData)
+          MouseArea {
+            id: itemAreaCompact
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: dropdown.itemSelected(modelData)
+          }
         }
       }
     }
