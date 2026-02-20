@@ -118,11 +118,56 @@ Scope {
         }
     }
 
-    // Focus an item via keyboard (sets keyboardFocus flag)
+    // Find the Flickable ancestor of an item (ScrollView's internal Flickable)
+    function findFlickable(item) {
+        var parent = item ? item.parent : null
+        while (parent) {
+            // Flickable has contentY and flick method
+            if (parent.contentY !== undefined && parent.contentHeight !== undefined && parent.height !== undefined) {
+                return parent
+            }
+            parent = parent.parent
+        }
+        return null
+    }
+
+    // Scroll to make an item visible
+    function scrollToItem(item) {
+        if (!item) return
+        var flickable = findFlickable(item)
+        if (!flickable) return
+
+        // Map item position to flickable's content coordinates
+        var mapped = item.mapToItem(flickable.contentItem, 0, 0)
+        var itemTop = mapped.y
+        var itemBottom = itemTop + item.height
+
+        // Current visible area
+        var visibleTop = flickable.contentY
+        var visibleBottom = visibleTop + flickable.height
+
+        // Add padding for focus ring
+        var padding = 24
+
+        // Scroll if item is outside visible area
+        if (itemTop - padding < visibleTop) {
+            // Item is above visible area - scroll up
+            flickable.contentY = Math.max(0, itemTop - padding)
+        } else if (itemBottom + padding > visibleBottom) {
+            // Item is below visible area - scroll down
+            flickable.contentY = Math.min(
+                flickable.contentHeight - flickable.height,
+                itemBottom + padding - flickable.height
+            )
+        }
+    }
+
+    // Focus an item via keyboard (sets keyboardFocus flag and scrolls to it)
     function focusItemViaKeyboard(item) {
         if (item) {
             if (item.keyboardFocus !== undefined) item.keyboardFocus = true
             if (item.forceActiveFocus) item.forceActiveFocus()
+            scrollToItem(item)
         }
     }
 

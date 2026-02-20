@@ -1,6 +1,7 @@
 singleton BluetoothManager 1.0 modules/BluetoothManager.qml
 singleton BrightnessManager 1.0 modules/BrightnessManager.qml
 singleton Colors 1.0 modules/Colors.qml
+singleton DataManager 1.0 modules/DataManager.qml
 singleton DisplayConfig 1.0 modules/DisplayConfig.qml
 singleton NotificationManager 1.0 modules/NotificationManager.qml
 singleton PopupManager 1.0 modules/PopupManager.qml

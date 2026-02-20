@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
 import QtQuick
+import ".."
 
 Singleton {
     id: notificationManager
@@ -25,7 +26,8 @@ Singleton {
     // File-based persistence
     FileView {
         id: settingsFile
-        path: Quickshell.shellDir + "/notification-settings.json"
+        path: DataManager.notificationSettingsPath
+        blockLoading: !DataManager.ready
 
         // Reload file when it changes on disk
         watchChanges: true

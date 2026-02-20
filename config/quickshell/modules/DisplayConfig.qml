@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.I3
 import QtQuick
+import ".."
 
 Singleton {
     id: displayConfig
@@ -14,8 +15,8 @@ Singleton {
 
     FileView {
         id: configFile
-        path: Qt.resolvedUrl("./displays.json")
-        blockLoading: true
+        path: DataManager.displaysPath
+        blockLoading: !DataManager.ready
 
         watchChanges: true
         onFileChanged: reload()
