@@ -17,6 +17,9 @@ Rectangle {
     property bool showCloseButton: true
     property bool compact: false  // Compact mode for history panel
 
+    // Track hover state
+    property bool hovered: hoverHandler.hovered
+
     signal dismissed()
     signal clicked()
 
@@ -26,9 +29,14 @@ Rectangle {
     bottomLeftRadius: 0
     topRightRadius: 8
     bottomRightRadius: 8
-    color: mouseArea.containsMouse ? Colors.surface1 : Colors.crust
+    color: hovered ? Colors.surface1 : Colors.crust
     border.width: 2
     border.color: Colors.surface2
+
+    // Hover detection without blocking mouse events
+    HoverHandler {
+        id: hoverHandler
+    }
 
     layer.enabled: true
     layer.effect: MultiEffect {
@@ -105,16 +113,20 @@ Rectangle {
             maximumLineCount: 1
         }
 
-        // Body
-        Text {
+        // Body (selectable)
+        TextEdit {
             width: parent.width
+            height: Math.min(implicitHeight, 36)  // ~2 lines at 14px
             text: body
             color: Colors.subtext0
             font.pixelSize: 14
             wrapMode: Text.WordWrap
-            elide: Text.ElideRight
-            maximumLineCount: 2
+            readOnly: true
+            selectByMouse: true
+            selectionColor: Colors.surface2
+            selectedTextColor: Colors.text
             visible: body !== ""
+            clip: true
         }
     }
 
@@ -140,49 +152,55 @@ Rectangle {
             maximumLineCount: 1
         }
 
-        // Body (single line)
-        Text {
+        // Body (selectable, single line)
+        TextEdit {
             width: parent.width
+            height: Math.min(implicitHeight, 18)  // ~1 line at 12px
             text: body
             color: Colors.subtext0
             font.pixelSize: 12
-            elide: Text.ElideRight
-            maximumLineCount: 1
+            readOnly: true
+            selectByMouse: true
+            selectionColor: Colors.surface2
+            selectedTextColor: Colors.text
             visible: body !== ""
+            clip: true
         }
     }
 
     // Close button
-    Text {
-        visible: showCloseButton && mouseArea.containsMouse
+    Rectangle {
+        id: closeButton
+        visible: showCloseButton && card.hovered
         anchors.right: parent.right
-        anchors.rightMargin: 14
+        anchors.rightMargin: 10
         anchors.top: parent.top
-        anchors.topMargin: compact ? 10 : 12
-        text: "󰅖"
-        color: closeArea.containsMouse ? Colors.red : Colors.overlay0
-        font.pixelSize: 14
-        font.family: "Symbols Nerd Font"
+        anchors.topMargin: compact ? 6 : 8
+        width: 24
+        height: 24
+        radius: 12
+        color: closeArea.containsMouse ? Colors.surface2 : "transparent"
+
+        Text {
+            anchors.centerIn: parent
+            text: "󰅖"
+            color: closeArea.containsMouse ? Colors.red : Colors.overlay0
+            font.pixelSize: 14
+            font.family: "Symbols Nerd Font"
+        }
 
         MouseArea {
             id: closeArea
             anchors.fill: parent
-            anchors.margins: -6
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: function(event) {
-                event.accepted = true
-                card.dismissed()
-            }
+            onClicked: card.dismissed()
         }
     }
 
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: card.clicked()
+    // Click handler for the card (tap handler doesn't block text selection)
+    TapHandler {
+        onTapped: card.clicked()
     }
 
     Behavior on color {
