@@ -70,6 +70,16 @@ Scope {
       WlrLayershell.namespace: "quickshell-bar"
       WlrLayershell.layer: WlrLayer.Top
 
+      // Helper function to build props for dynamically loaded bar components
+      function buildBarComponentProps(moduleId) {
+        var props = { "screen": panel.modelData }
+        // Pass singleton references for modules that need them
+        if (moduleId === "notifications") {
+          props.notificationManager = NotificationManager
+        }
+        return props
+      }
+
       // LEFT SECTION
       Row {
         anchors.left: parent.left
@@ -80,24 +90,26 @@ Scope {
         Repeater {
           model: StatusbarManager.leftItems.filter(function(i) { return i.enabled })
 
-          Item {
+          Row {
             required property var modelData
-            width: loader.item ? loader.item.width + modelData.marginLeft + modelData.marginRight : 0
-            height: loader.item ? loader.item.height : 24
             anchors.verticalCenter: parent.verticalCenter
+            spacing: 0
+
+            Item { width: modelData.marginLeft; height: 1 }
 
             Loader {
               id: loader
-              x: modelData.marginLeft
               anchors.verticalCenter: parent.verticalCenter
 
               Component.onCompleted: {
                 var url = ModuleRegistry.getBarComponentUrl(modelData.id)
                 if (url) {
-                  setSource(url, { "screen": panel.modelData })
+                  setSource(url, panel.buildBarComponentProps(modelData.id))
                 }
               }
             }
+
+            Item { width: modelData.marginRight; height: 1 }
           }
         }
       }
@@ -111,24 +123,26 @@ Scope {
         Repeater {
           model: StatusbarManager.centerItems.filter(function(i) { return i.enabled })
 
-          Item {
+          Row {
             required property var modelData
-            width: loader.item ? loader.item.width + modelData.marginLeft + modelData.marginRight : 0
-            height: loader.item ? loader.item.height : 24
             anchors.verticalCenter: parent.verticalCenter
+            spacing: 0
+
+            Item { width: modelData.marginLeft; height: 1 }
 
             Loader {
               id: loader
-              x: modelData.marginLeft
               anchors.verticalCenter: parent.verticalCenter
 
               Component.onCompleted: {
                 var url = ModuleRegistry.getBarComponentUrl(modelData.id)
                 if (url) {
-                  setSource(url, { "screen": panel.modelData })
+                  setSource(url, panel.buildBarComponentProps(modelData.id))
                 }
               }
             }
+
+            Item { width: modelData.marginRight; height: 1 }
           }
         }
       }
@@ -143,24 +157,26 @@ Scope {
         Repeater {
           model: StatusbarManager.rightItems.filter(function(i) { return i.enabled })
 
-          Item {
+          Row {
             required property var modelData
-            width: loader.item ? loader.item.width + modelData.marginLeft + modelData.marginRight : 0
-            height: loader.item ? loader.item.height : 24
             anchors.verticalCenter: parent.verticalCenter
+            spacing: 0
+
+            Item { width: modelData.marginLeft; height: 1 }
 
             Loader {
               id: loader
-              x: modelData.marginLeft
               anchors.verticalCenter: parent.verticalCenter
 
               Component.onCompleted: {
                 var url = ModuleRegistry.getBarComponentUrl(modelData.id)
                 if (url) {
-                  setSource(url, { "screen": panel.modelData })
+                  setSource(url, panel.buildBarComponentProps(modelData.id))
                 }
               }
             }
+
+            Item { width: modelData.marginRight; height: 1 }
           }
         }
       }

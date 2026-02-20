@@ -9,15 +9,18 @@ BarButton {
   // Required: screen for positioning
   required property var screen
 
-  icon: NotificationManager.getIcon()
-  iconColor: NotificationManager.isDndActive ? Colors.overlay0 : Colors.text
+  // NotificationManager can be passed from shell.qml or fallback to import
+  property var notificationManager: NotificationManager
 
-  onClicked: NotificationManager.togglePanel()
+  icon: notificationManager.getIcon()
+  iconColor: notificationManager.isDndActive ? Colors.overlay0 : Colors.text
+
+  onClicked: notificationManager.togglePanel()
 
   // Unread badge
   Rectangle {
     id: badge
-    visible: NotificationManager.unreadCount > 0 && !NotificationManager.isDndActive
+    visible: button.notificationManager.unreadCount > 0 && !button.notificationManager.isDndActive
     anchors.right: parent.right
     anchors.rightMargin: -2
     anchors.top: parent.top
@@ -30,7 +33,7 @@ BarButton {
     Text {
       id: badgeText
       anchors.centerIn: parent
-      text: NotificationManager.unreadCount > 99 ? "99+" : NotificationManager.unreadCount.toString()
+      text: button.notificationManager.unreadCount > 99 ? "99+" : button.notificationManager.unreadCount.toString()
       color: Colors.crust
       font.pixelSize: 9
       font.bold: true

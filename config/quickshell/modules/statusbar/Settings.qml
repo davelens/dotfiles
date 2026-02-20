@@ -442,99 +442,17 @@ ScrollView {
       }
 
       // Section dropdown
-      Rectangle {
+      Dropdown {
         anchors.verticalCenter: parent.verticalCenter
         width: 90
-        height: 28
-        radius: 4
-        color: sectionDropdownArea.containsMouse ? Colors.surface1 : Colors.surface0
-        border.width: 1
-        border.color: Colors.surface2
-
-        Row {
-          anchors.centerIn: parent
-          spacing: 4
-
-          Text {
-            text: section.charAt(0).toUpperCase() + section.slice(1)
-            color: Colors.text
-            font.pixelSize: 12
+        compact: true
+        items: ["left", "center", "right"]
+        currentItem: section
+        onItemSelected: selectedSection => {
+          if (selectedSection !== section) {
+            StatusbarManager.moveToSection(item.id, selectedSection)
           }
-
-          Text {
-            text: "󰅀"
-            color: Colors.overlay0
-            font.pixelSize: 10
-            font.family: "Symbols Nerd Font"
-          }
-        }
-
-        MouseArea {
-          id: sectionDropdownArea
-          anchors.fill: parent
-          hoverEnabled: true
-          cursorShape: Qt.PointingHandCursor
-          onClicked: sectionMenu.open()
-        }
-
-        Menu {
-          id: sectionMenu
-          y: parent.height
-
-          background: Rectangle {
-            color: Colors.surface0
-            radius: 4
-            border.width: 1
-            border.color: Colors.surface2
-          }
-
-          MenuItem {
-            text: "Left"
-            enabled: section !== "left"
-            onTriggered: StatusbarManager.moveToSection(item.id, "left")
-
-            background: Rectangle {
-              color: parent.highlighted ? Colors.surface1 : "transparent"
-            }
-
-            contentItem: Text {
-              text: parent.text
-              color: parent.enabled ? Colors.text : Colors.overlay0
-              font.pixelSize: 12
-            }
-          }
-
-          MenuItem {
-            text: "Center"
-            enabled: section !== "center"
-            onTriggered: StatusbarManager.moveToSection(item.id, "center")
-
-            background: Rectangle {
-              color: parent.highlighted ? Colors.surface1 : "transparent"
-            }
-
-            contentItem: Text {
-              text: parent.text
-              color: parent.enabled ? Colors.text : Colors.overlay0
-              font.pixelSize: 12
-            }
-          }
-
-          MenuItem {
-            text: "Right"
-            enabled: section !== "right"
-            onTriggered: StatusbarManager.moveToSection(item.id, "right")
-
-            background: Rectangle {
-              color: parent.highlighted ? Colors.surface1 : "transparent"
-            }
-
-            contentItem: Text {
-              text: parent.text
-              color: parent.enabled ? Colors.text : Colors.overlay0
-              font.pixelSize: 12
-            }
-          }
+          expanded = false
         }
       }
 
@@ -555,8 +473,11 @@ ScrollView {
           height: 24
           radius: 4
           color: Colors.surface1
+          border.width: leftMarginInput.activeFocus ? 2 : 0
+          border.color: Colors.peach
 
           TextInput {
+            id: leftMarginInput
             anchors.fill: parent
             anchors.margins: 4
             text: item.marginLeft
@@ -564,6 +485,7 @@ ScrollView {
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            activeFocusOnTab: true
             validator: IntValidator { bottom: 0; top: 100 }
             onEditingFinished: {
               StatusbarManager.setMargins(item.id, parseInt(text) || 0, item.marginRight)
@@ -583,8 +505,11 @@ ScrollView {
           height: 24
           radius: 4
           color: Colors.surface1
+          border.width: rightMarginInput.activeFocus ? 2 : 0
+          border.color: Colors.peach
 
           TextInput {
+            id: rightMarginInput
             anchors.fill: parent
             anchors.margins: 4
             text: item.marginRight
@@ -592,6 +517,7 @@ ScrollView {
             font.pixelSize: 12
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            activeFocusOnTab: true
             validator: IntValidator { bottom: 0; top: 100 }
             onEditingFinished: {
               StatusbarManager.setMargins(item.id, item.marginLeft, parseInt(text) || 0)

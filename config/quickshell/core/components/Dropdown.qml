@@ -9,11 +9,12 @@ Column {
 
   // Required properties
   required property var items           // Array of items to display
-  required property string headerIcon   // Icon shown in header
-  required property string headerLabel  // Label shown in header
 
   // Optional properties
+  property string headerIcon: ""        // Icon shown in header (required if not compact)
+  property string headerLabel: ""       // Label shown in header (required if not compact)
   property var currentItem: null        // Currently selected item (for highlighting)
+  property bool compact: false          // Compact mode: hides icon/label, just shows value + chevron
   property string textRole: ""          // Property name to use for display text (if items are objects)
   property string valueRole: ""         // Property name to use for comparison (if items are objects)
   property string itemIcon: ""          // Icon to show for each item (empty = use headerIcon)
@@ -26,10 +27,16 @@ Column {
   signal itemSelected(var item)
   signal toggled(bool expanded)
 
+  // Helper function to capitalize first letter
+  function capitalize(str) {
+    if (!str || typeof str !== "string") return str
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  }
+
   // Helper function to get display text from an item
-  function getItemText(item) {
+  function getItemText(item, shouldCapitalize) {
     if (!item) return "None"
-    if (typeof item === "string") return item
+    if (typeof item === "string") return shouldCapitalize ? capitalize(item) : item
     if (textRole && item[textRole]) return item[textRole]
     // Fallback: try common property names
     return item.description || item.name || item.text || item.label || String(item)
@@ -50,13 +57,17 @@ Column {
     width: dropdown.width
     height: 28
     radius: 4
-    color: headerArea.containsMouse ? Colors.surface0 : "transparent"
+    color: dropdown.compact
+      ? (headerArea.containsMouse ? Colors.surface1 : Colors.surface0)
+      : (headerArea.containsMouse ? Colors.surface0 : "transparent")
+    border.width: dropdown.compact ? 1 : 0
+    border.color: Colors.surface2
 
     Row {
       anchors.fill: parent
-      anchors.leftMargin: 4
-      anchors.rightMargin: 4
-      spacing: 6
+      anchors.leftMargin: dropdown.compact ? 8 : 4
+      anchors.rightMargin: dropdown.compact ? 8 : 4
+      spacing: dropdown.compact ? 4 : 6
 
       Text {
         anchors.verticalCenter: parent.verticalCenter
@@ -64,6 +75,7 @@ Column {
         color: Colors.blue
         font.pixelSize: 14
         font.family: "Symbols Nerd Font"
+        visible: !dropdown.compact && dropdown.headerIcon
       }
 
       Text {
@@ -71,22 +83,23 @@ Column {
         text: dropdown.headerLabel
         color: Colors.overlay0
         font.pixelSize: 14
+        visible: !dropdown.compact && dropdown.headerLabel
       }
 
       Text {
         anchors.verticalCenter: parent.verticalCenter
-        text: dropdown.getItemText(dropdown.currentItem)
+        text: dropdown.getItemText(dropdown.currentItem, dropdown.compact)
         color: Colors.text
-        font.pixelSize: 13
+        font.pixelSize: dropdown.compact ? 12 : 13
         elide: Text.ElideRight
-        width: parent.width - 90
+        width: dropdown.compact ? parent.width - 20 : parent.width - 90
       }
 
       Text {
         anchors.verticalCenter: parent.verticalCenter
         text: dropdown.expanded ? "\uf106" : "\uf107"
         color: Colors.overlay0
-        font.pixelSize: 14
+        font.pixelSize: dropdown.compact ? 10 : 14
         font.family: "Symbols Nerd Font"
       }
     }
@@ -133,15 +146,16 @@ Column {
             color: isSelected ? Colors.green : Colors.overlay0
             font.pixelSize: 14
             font.family: "Symbols Nerd Font"
+            visible: !dropdown.compact
           }
 
           Text {
             anchors.verticalCenter: parent.verticalCenter
-            text: dropdown.getItemText(modelData)
+            text: dropdown.getItemText(modelData, dropdown.compact)
             color: isSelected ? Colors.text : Colors.subtext0
-            font.pixelSize: 13
+            font.pixelSize: dropdown.compact ? 12 : 13
             elide: Text.ElideRight
-            width: parent.width - 40
+            width: dropdown.compact ? parent.width - 16 : parent.width - 40
           }
         }
 
