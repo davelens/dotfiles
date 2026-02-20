@@ -107,12 +107,58 @@ Singleton {
   // PUBLIC API
   // =========================================================================
 
+  function getAppName(notification) {
+    var appName = notification.appName || ""
+
+    // If appName looks like an app ID (e.g., "Com.discordapp.Discord"), extract last part
+    if (appName.indexOf(".") !== -1) {
+      var parts = appName.split(".")
+      return parts[parts.length - 1]
+    }
+
+    // If no appName or it's "notify-send", try desktopEntry
+    if (!appName || appName === "notify-send") {
+      if (notification.desktopEntry) {
+        var entry = notification.desktopEntry
+        // desktopEntry can also be an app ID, so extract last part
+        if (entry.indexOf(".") !== -1) {
+          var parts = entry.split(".")
+          return parts[parts.length - 1]
+        }
+        return entry.charAt(0).toUpperCase() + entry.slice(1)
+      }
+    }
+
+    return appName || "Unknown"
+  }
+
+  function getAppIcon(notification) {
+    if (notification.appIcon) {
+      return notification.appIcon
+    }
+    if (notification.desktopEntry) {
+      // Try the desktop entry as-is, then try lowercase last part (e.g., "discord")
+      var icon = Quickshell.iconPath(notification.desktopEntry, true)
+      if (icon) return icon
+
+      // Extract app name and try lowercase
+      var entry = notification.desktopEntry
+      if (entry.indexOf(".") !== -1) {
+        var parts = entry.split(".")
+        var appName = parts[parts.length - 1].toLowerCase()
+        icon = Quickshell.iconPath(appName, true)
+        if (icon) return icon
+      }
+    }
+    return ""
+  }
+
   function showPopup(notification) {
     // Insert at beginning (max 5)
     popupModel.insert(0, {
       notificationId: notification.id,
-      appName: notification.appName || "Unknown",
-      appIcon: notification.appIcon || "",
+      appName: getAppName(notification),
+      appIcon: getAppIcon(notification),
       summary: notification.summary || "",
       body: notification.body || "",
       urgency: notification.urgency,
@@ -164,11 +210,12 @@ Singleton {
   }
 
   function addToHistory(notification) {
-    var appName = notification.appName || "Unknown"
+    var appName = getAppName(notification)
+    var appIcon = getAppIcon(notification)
     var entry = {
       id: notification.id,
       appName: appName,
-      appIcon: notification.appIcon || "",
+      appIcon: appIcon,
       summary: notification.summary || "",
       body: notification.body || "",
       urgency: notification.urgency,
@@ -194,7 +241,7 @@ Singleton {
       // Create new group
       newHistory.unshift({
         appName: appName,
-        appIcon: notification.appIcon || "",
+        appIcon: appIcon,
         notifications: [entry],
         expanded: true
       })
