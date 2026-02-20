@@ -53,7 +53,10 @@ Singleton {
 
     property bool dndEnabled: false              // manual DND toggle
     property bool panelOpen: false               // history panel visibility
-    property var visibleNotifications: []        // currently showing popups (max 5)
+    
+    // Use ListModel for proper add/remove animations
+    property alias visibleNotifications: popupModel
+    ListModel { id: popupModel }
     property var history: []                     // all notifications grouped by app
     property int unreadCount: 0                  // unread notification count
 
@@ -103,11 +106,9 @@ Singleton {
     // =========================================================================
 
     function showPopup(notification) {
-        // Add to visible list (max 5)
-        var visible = visibleNotifications.slice()
-        visible.unshift({
-            notification: notification,
-            id: notification.id,
+        // Insert at beginning (max 5)
+        popupModel.insert(0, {
+            notificationId: notification.id,
             appName: notification.appName || "Unknown",
             appIcon: notification.appIcon || "",
             summary: notification.summary || "",
@@ -116,23 +117,24 @@ Singleton {
             timestamp: new Date()
         })
 
-        // Limit to 5 visible
-        if (visible.length > 5) {
-            visible = visible.slice(0, 5)
+        // Remove excess
+        while (popupModel.count > 5) {
+            popupModel.remove(popupModel.count - 1)
         }
-
-        visibleNotifications = visible
     }
 
     function dismissPopup(notificationId) {
         // Remove from visible
-        visibleNotifications = visibleNotifications.filter(function(n) {
-            return n.id !== notificationId
-        })
+        for (var i = 0; i < popupModel.count; i++) {
+            if (popupModel.get(i).notificationId === notificationId) {
+                popupModel.remove(i)
+                break
+            }
+        }
 
         // Find and dismiss the actual notification
-        for (var i = 0; i < server.trackedNotifications.values.length; i++) {
-            var n = server.trackedNotifications.values[i]
+        for (var j = 0; j < server.trackedNotifications.values.length; j++) {
+            var n = server.trackedNotifications.values[j]
             if (n.id === notificationId) {
                 n.dismiss()
                 break
@@ -142,13 +144,16 @@ Singleton {
 
     function expirePopup(notificationId) {
         // Remove from visible
-        visibleNotifications = visibleNotifications.filter(function(n) {
-            return n.id !== notificationId
-        })
+        for (var i = 0; i < popupModel.count; i++) {
+            if (popupModel.get(i).notificationId === notificationId) {
+                popupModel.remove(i)
+                break
+            }
+        }
 
         // Find and expire the actual notification
-        for (var i = 0; i < server.trackedNotifications.values.length; i++) {
-            var n = server.trackedNotifications.values[i]
+        for (var j = 0; j < server.trackedNotifications.values.length; j++) {
+            var n = server.trackedNotifications.values[j]
             if (n.id === notificationId) {
                 n.expire()
                 break
@@ -243,7 +248,7 @@ Singleton {
         }
 
         history = []
-        visibleNotifications = []
+        popupModel.clear()
         unreadCount = 0
     }
 

@@ -19,9 +19,14 @@ Rectangle {
     signal clicked()
 
     width: parent ? parent.width : 360
-    height: compact ? compactLayout.height + 16 : fullLayout.height + 20
-    radius: 8
-    color: mouseArea.containsMouse ? Colors.surface1 : Colors.surface0
+    height: compact ? compactLayout.height + 24 : fullLayout.height + 28
+    topLeftRadius: 0
+    bottomLeftRadius: 0
+    topRightRadius: 8
+    bottomRightRadius: 8
+    color: mouseArea.containsMouse ? Colors.surface1 : Colors.crust
+    border.width: 2
+    border.color: Colors.surface2
 
     // Left border for urgency indication
     Rectangle {
@@ -29,7 +34,6 @@ Rectangle {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: 3
-        radius: 8
         color: {
             if (urgency === NotificationUrgency.Critical) return Colors.red
             if (urgency === NotificationUrgency.Low) return Colors.surface2
@@ -44,9 +48,9 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.leftMargin: 12
-        anchors.rightMargin: showCloseButton ? 36 : 12
-        anchors.topMargin: 10
+        anchors.leftMargin: 26
+        anchors.rightMargin: showCloseButton ? 40 : 26
+        anchors.topMargin: 12
         spacing: 4
 
         // Header row: icon + app name
@@ -57,7 +61,7 @@ Rectangle {
             IconImage {
                 id: iconImage
                 anchors.verticalCenter: parent.verticalCenter
-                implicitSize: 16
+                implicitSize: 18
                 source: appIcon
                 visible: appIcon !== ""
             }
@@ -66,7 +70,7 @@ Rectangle {
                 visible: appIcon === ""
                 text: "󰀄"
                 color: Colors.overlay0
-                font.pixelSize: 14
+                font.pixelSize: 16
                 font.family: "Symbols Nerd Font"
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -74,7 +78,7 @@ Rectangle {
             Text {
                 text: appName
                 color: Colors.overlay1
-                font.pixelSize: 12
+                font.pixelSize: 14
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
@@ -84,7 +88,7 @@ Rectangle {
             width: parent.width
             text: summary
             color: Colors.text
-            font.pixelSize: 14
+            font.pixelSize: 15
             font.bold: true
             elide: Text.ElideRight
             maximumLineCount: 1
@@ -95,7 +99,7 @@ Rectangle {
             width: parent.width
             text: body
             color: Colors.subtext0
-            font.pixelSize: 13
+            font.pixelSize: 14
             wrapMode: Text.WordWrap
             elide: Text.ElideRight
             maximumLineCount: 2
@@ -110,9 +114,9 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.leftMargin: 12
-        anchors.rightMargin: showCloseButton ? 32 : 12
-        anchors.topMargin: 8
+        anchors.leftMargin: 16
+        anchors.rightMargin: showCloseButton ? 36 : 16
+        anchors.topMargin: 10
         spacing: 2
 
         // Summary
@@ -141,9 +145,9 @@ Rectangle {
     Text {
         visible: showCloseButton && mouseArea.containsMouse
         anchors.right: parent.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: 14
         anchors.top: parent.top
-        anchors.topMargin: compact ? 8 : 10
+        anchors.topMargin: compact ? 10 : 12
         text: "󰅖"
         color: closeArea.containsMouse ? Colors.red : Colors.overlay0
         font.pixelSize: 14
