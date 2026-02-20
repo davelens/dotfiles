@@ -2,32 +2,24 @@ import Quickshell
 import QtQuick
 import ".."
 
-Item {
+BarButton {
     id: button
 
     // Required: screen for positioning
     required property var screen
 
-    width: iconText.width + (badge.visible ? badge.width + 2 : 0)
-    height: 32
+    icon: NotificationManager.getIcon()
+    iconColor: NotificationManager.isDndActive ? Colors.overlay0 : Colors.text
 
-    // Bell icon
-    Text {
-        id: iconText
-        anchors.verticalCenter: parent.verticalCenter
-        text: NotificationManager.getIcon()
-        color: NotificationManager.isDndActive ? Colors.overlay0 : Colors.text
-        font.pixelSize: 16
-        font.family: "Symbols Nerd Font"
-    }
+    onClicked: NotificationManager.togglePanel()
 
     // Unread badge
     Rectangle {
         id: badge
         visible: NotificationManager.unreadCount > 0 && !NotificationManager.isDndActive
-        anchors.left: iconText.right
-        anchors.leftMargin: 2
-        anchors.top: iconText.top
+        anchors.right: parent.right
+        anchors.rightMargin: -2
+        anchors.top: parent.top
         anchors.topMargin: -2
         width: Math.max(badgeText.width + 6, height)
         height: 14
@@ -42,13 +34,5 @@ Item {
             font.pixelSize: 9
             font.bold: true
         }
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: NotificationManager.togglePanel()
     }
 }

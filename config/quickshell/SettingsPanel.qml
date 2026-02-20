@@ -1114,7 +1114,7 @@ Scope {
 
                         // Schedule status
                         Text {
-                            text: "DND will be active from " + NotificationManager.formatTime(NotificationManager.dndStartHour, NotificationManager.dndStartMinute) + 
+                            text: "DND will be active from " + NotificationManager.formatTime(NotificationManager.dndStartHour, NotificationManager.dndStartMinute) +
                                   " to " + NotificationManager.formatTime(NotificationManager.dndEndHour, NotificationManager.dndEndMinute)
                             color: Colors.overlay0
                             font.pixelSize: 12
