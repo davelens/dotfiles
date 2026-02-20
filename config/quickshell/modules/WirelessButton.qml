@@ -158,29 +158,10 @@ BarButton {
                 Item { width: parent.width - 120; height: 1 }
 
                 // Power toggle
-                Rectangle {
+                SwitchToggle {
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 44
-                    height: 22
-                    radius: 11
-                    color: WirelessManager.enabled ? Colors.blue : Colors.surface0
-
-                    Rectangle {
-                        x: WirelessManager.enabled ? parent.width - width - 3 : 3
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 16
-                        height: 16
-                        radius: 8
-                        color: Colors.text
-
-                        Behavior on x { NumberAnimation { duration: 150 } }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: WirelessManager.toggleEnabled()
-                    }
+                    checked: WirelessManager.enabled
+                    onClicked: WirelessManager.toggleEnabled()
                 }
             }
 

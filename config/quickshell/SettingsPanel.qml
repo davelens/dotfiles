@@ -356,28 +356,10 @@ Scope {
                         font.bold: true
                     }
 
-                Rectangle {
+                SwitchToggle {
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 44
-                    height: 22
-                    radius: 11
-                    color: WirelessManager.enabled ? Colors.blue : Colors.surface0
-
-                    Rectangle {
-                        x: WirelessManager.enabled ? parent.width - width - 3 : 3
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 16
-                        height: 16
-                        radius: 8
-                        color: Colors.text
-                        Behavior on x { NumberAnimation { duration: 150 } }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: WirelessManager.toggleEnabled()
-                    }
+                    checked: WirelessManager.enabled
+                    onClicked: WirelessManager.toggleEnabled()
                 }
             }
 
@@ -556,28 +538,10 @@ Scope {
                         font.bold: true
                     }
 
-                Rectangle {
+                SwitchToggle {
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 44
-                    height: 22
-                    radius: 11
-                    color: BluetoothManager.powered ? Colors.blue : Colors.surface0
-
-                    Rectangle {
-                        x: BluetoothManager.powered ? parent.width - width - 3 : 3
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 16
-                        height: 16
-                        radius: 8
-                        color: Colors.text
-                        Behavior on x { NumberAnimation { duration: 150 } }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: BluetoothManager.togglePower()
-                    }
+                    checked: BluetoothManager.powered
+                    onClicked: BluetoothManager.togglePower()
                 }
             }
 
@@ -1088,28 +1052,10 @@ Scope {
                         width: parent.width
                         spacing: 12
 
-                        Rectangle {
+                        SwitchToggle {
                             anchors.verticalCenter: parent.verticalCenter
-                            width: 44
-                            height: 22
-                            radius: 11
-                            color: NotificationManager.dndScheduleEnabled ? Colors.blue : Colors.surface1
-
-                            Rectangle {
-                                x: NotificationManager.dndScheduleEnabled ? parent.width - width - 3 : 3
-                                anchors.verticalCenter: parent.verticalCenter
-                                width: 16
-                                height: 16
-                                radius: 8
-                                color: Colors.text
-                                Behavior on x { NumberAnimation { duration: 150 } }
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: NotificationManager.dndScheduleEnabled = !NotificationManager.dndScheduleEnabled
-                            }
+                            checked: NotificationManager.dndScheduleEnabled
+                            onClicked: NotificationManager.dndScheduleEnabled = !NotificationManager.dndScheduleEnabled
                         }
 
                         Text {
@@ -1204,28 +1150,10 @@ Scope {
                         width: parent.width
                         spacing: 12
 
-                        Rectangle {
+                        SwitchToggle {
                             anchors.verticalCenter: parent.verticalCenter
-                            width: 44
-                            height: 22
-                            radius: 11
-                            color: NotificationManager.criticalBypassDnd ? Colors.blue : Colors.surface1
-
-                            Rectangle {
-                                x: NotificationManager.criticalBypassDnd ? parent.width - width - 3 : 3
-                                anchors.verticalCenter: parent.verticalCenter
-                                width: 16
-                                height: 16
-                                radius: 8
-                                color: Colors.text
-                                Behavior on x { NumberAnimation { duration: 150 } }
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: NotificationManager.criticalBypassDnd = !NotificationManager.criticalBypassDnd
-                            }
+                            checked: NotificationManager.criticalBypassDnd
+                            onClicked: NotificationManager.criticalBypassDnd = !NotificationManager.criticalBypassDnd
                         }
 
                         Column {

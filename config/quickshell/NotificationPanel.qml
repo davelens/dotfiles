@@ -155,32 +155,11 @@ Variants {
                                 spacing: 12
 
                                 // DND toggle switch
-                                Rectangle {
+                                SwitchToggle {
                                     id: dndToggle
                                     anchors.verticalCenter: parent.verticalCenter
-                                    width: 44
-                                    height: 22
-                                    radius: 11
-                                    color: NotificationManager.dndEnabled ? Colors.blue : Colors.surface0
-                                    border.width: 1
-                                    border.color: Colors.text
-
-                                    Rectangle {
-                                        x: NotificationManager.dndEnabled ? parent.width - width - 3 : 3
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        width: 16
-                                        height: 16
-                                        radius: 8
-                                        color: Colors.text
-
-                                        Behavior on x { NumberAnimation { duration: 150 } }
-                                    }
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: NotificationManager.toggleDnd()
-                                    }
+                                    checked: NotificationManager.dndEnabled
+                                    onClicked: NotificationManager.toggleDnd()
                                 }
 
                                 Column {

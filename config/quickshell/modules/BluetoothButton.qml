@@ -99,29 +99,10 @@ BarButton {
                 Item { width: parent.width - 140; height: 1 }
 
                 // Power toggle
-                Rectangle {
+                SwitchToggle {
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 44
-                    height: 22
-                    radius: 11
-                    color: BluetoothManager.powered ? Colors.blue : Colors.surface0
-
-                    Rectangle {
-                        x: BluetoothManager.powered ? parent.width - width - 3 : 3
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 16
-                        height: 16
-                        radius: 8
-                        color: Colors.text
-
-                        Behavior on x { NumberAnimation { duration: 150 } }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: BluetoothManager.togglePower()
-                    }
+                    checked: BluetoothManager.powered
+                    onClicked: BluetoothManager.togglePower()
                 }
             }
 
