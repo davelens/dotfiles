@@ -1,4 +1,5 @@
 import QtQuick
+import ".."
 
 // Reusable expandable dropdown component
 // Can display any list of items with customizable display

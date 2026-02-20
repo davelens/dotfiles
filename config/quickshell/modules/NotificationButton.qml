@@ -1,6 +1,7 @@
 import Quickshell
 import QtQuick
 import ".."
+import "../components"
 
 BarButton {
     id: button

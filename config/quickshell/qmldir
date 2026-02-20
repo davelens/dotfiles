@@ -1,21 +1,12 @@
-singleton BluetoothManager 1.0 BluetoothManager.qml
-singleton BrightnessManager 1.0 BrightnessManager.qml
-singleton Colors 1.0 Colors.qml
-singleton DisplayConfig 1.0 DisplayConfig.qml
-singleton NotificationManager 1.0 NotificationManager.qml
-singleton PopupManager 1.0 PopupManager.qml
-singleton Time 1.0 Time.qml
-singleton WirelessManager 1.0 WirelessManager.qml
-BarButton 1.0 BarButton.qml
-Dropdown 1.0 Dropdown.qml
-NotificationCard 1.0 NotificationCard.qml
-NotificationPanel 1.0 NotificationPanel.qml
-NotificationPopups 1.0 NotificationPopups.qml
-SettingsPanel 1.0 SettingsPanel.qml
-TimePicker 1.0 TimePicker.qml
-SwitchToggle 1.0 SwitchToggle.qml
-FocusButton 1.0 FocusButton.qml
-FocusIconButton 1.0 FocusIconButton.qml
-FocusLink 1.0 FocusLink.qml
-FocusListItem 1.0 FocusListItem.qml
-FocusSlider 1.0 FocusSlider.qml
+singleton BluetoothManager 1.0 modules/BluetoothManager.qml
+singleton BrightnessManager 1.0 modules/BrightnessManager.qml
+singleton Colors 1.0 modules/Colors.qml
+singleton DisplayConfig 1.0 modules/DisplayConfig.qml
+singleton NotificationManager 1.0 modules/NotificationManager.qml
+singleton PopupManager 1.0 modules/PopupManager.qml
+singleton Time 1.0 modules/Time.qml
+singleton WirelessManager 1.0 modules/WirelessManager.qml
+NotificationCard 1.0 modules/NotificationCard.qml
+NotificationPanel 1.0 modules/NotificationPanel.qml
+NotificationPopups 1.0 modules/NotificationPopups.qml
+SettingsPanel 1.0 modules/SettingsPanel.qml

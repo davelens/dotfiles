@@ -1,0 +1,10 @@
+{
+    "criticalBypassDnd": true,
+    "dndEndHour": 8,
+    "dndEndMinute": 0,
+    "dndScheduleEnabled": false,
+    "dndStartHour": 21,
+    "dndStartMinute": 0,
+    "maxHistorySize": 100,
+    "popupTimeout": 6000
+}

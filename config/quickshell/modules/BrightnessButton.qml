@@ -2,6 +2,7 @@ import Quickshell
 import QtQuick
 import QtQuick.Controls
 import ".."
+import "../components"
 
 BarButton {
     id: button

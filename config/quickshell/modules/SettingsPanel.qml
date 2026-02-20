@@ -4,6 +4,8 @@ import Quickshell.Wayland
 import Quickshell.Services.Notifications
 import QtQuick
 import QtQuick.Controls
+import ".."
+import "../components"
 
 Scope {
     id: root

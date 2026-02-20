@@ -2,6 +2,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Notifications
 import QtQuick
+import ".."
 
 // Notification popups window - displays in top-right corner
 Variants {

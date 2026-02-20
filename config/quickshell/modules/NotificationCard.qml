@@ -3,6 +3,7 @@ import QtQuick.Effects
 import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.Notifications
+import ".."
 
 Rectangle {
     id: card
