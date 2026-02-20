@@ -5,6 +5,8 @@
   "order": 20,
   "keywords": "devices paired connected headphones speaker mouse keyboard settings",
   "components": {
+    "manager": "Manager.qml",
+    "button": "Button.qml",
     "settings": "Settings.qml"
   }
 }

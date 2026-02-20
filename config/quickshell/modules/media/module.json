@@ -1,0 +1,10 @@
+{
+  "id": "media",
+  "name": "Media",
+  "icon": "󰎈",
+  "order": 130,
+  "keywords": "music player mpris spotify",
+  "components": {
+    "segment": "Segment.qml"
+  }
+}

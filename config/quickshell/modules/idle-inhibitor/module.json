@@ -1,0 +1,10 @@
+{
+  "id": "idle-inhibitor",
+  "name": "Idle Inhibitor",
+  "icon": "󰈈",
+  "order": 210,
+  "keywords": "idle inhibit caffeine sleep prevent",
+  "components": {
+    "button": "Button.qml"
+  }
+}

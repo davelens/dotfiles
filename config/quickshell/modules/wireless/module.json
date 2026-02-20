@@ -5,6 +5,8 @@
   "order": 10,
   "keywords": "wifi network ssid available networks connected signal strength download upload speed settings",
   "components": {
+    "manager": "Manager.qml",
+    "button": "Button.qml",
     "settings": "Settings.qml"
   }
 }

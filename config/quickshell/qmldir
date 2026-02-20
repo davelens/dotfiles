@@ -1,14 +1,14 @@
-singleton BluetoothManager 1.0 modules/BluetoothManager.qml
-singleton BrightnessManager 1.0 modules/BrightnessManager.qml
-singleton Colors 1.0 modules/Colors.qml
-singleton DataManager 1.0 modules/DataManager.qml
-singleton DisplayConfig 1.0 modules/DisplayConfig.qml
-singleton ModuleRegistry 1.0 modules/ModuleRegistry.qml
+singleton Colors 1.0 core/Colors.qml
+singleton DataManager 1.0 core/DataManager.qml
+singleton ModuleRegistry 1.0 core/ModuleRegistry.qml
+singleton PopupManager 1.0 core/PopupManager.qml
+singleton Time 1.0 core/Time.qml
+singleton BluetoothManager 1.0 modules/bluetooth/Manager.qml
+singleton BrightnessManager 1.0 modules/brightness/Manager.qml
+singleton DisplayConfig 1.0 modules/display/Config.qml
 singleton NotificationManager 1.0 modules/notifications/Manager.qml
-singleton PopupManager 1.0 modules/PopupManager.qml
-singleton Time 1.0 modules/Time.qml
-singleton WirelessManager 1.0 modules/WirelessManager.qml
+singleton WirelessManager 1.0 modules/wireless/Manager.qml
 NotificationCard 1.0 modules/notifications/Card.qml
 NotificationPanel 1.0 modules/notifications/Panel.qml
 NotificationPopups 1.0 modules/notifications/Popups.qml
-SettingsPanel 1.0 modules/SettingsPanel.qml
+SettingsPanel 1.0 core/components/SettingsPanel.qml

@@ -1,0 +1,10 @@
+{
+  "id": "battery",
+  "name": "Battery",
+  "icon": "󰁹",
+  "order": 110,
+  "keywords": "battery power charge percentage",
+  "components": {
+    "segment": "Segment.qml"
+  }
+}

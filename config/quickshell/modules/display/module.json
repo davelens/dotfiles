@@ -1,0 +1,11 @@
+{
+  "id": "display",
+  "name": "Displays",
+  "icon": "󰍹",
+  "order": 40,
+  "keywords": "monitor screen resolution wallpaper background rotation transform",
+  "components": {
+    "config": "Config.qml",
+    "button": "Button.qml"
+  }
+}

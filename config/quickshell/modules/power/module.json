@@ -1,0 +1,10 @@
+{
+  "id": "power",
+  "name": "Power",
+  "icon": "⏻",
+  "order": 200,
+  "keywords": "power shutdown reboot logout suspend",
+  "components": {
+    "button": "Button.qml"
+  }
+}

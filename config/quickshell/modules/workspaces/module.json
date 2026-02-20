@@ -1,0 +1,10 @@
+{
+  "id": "workspaces",
+  "name": "Workspaces",
+  "icon": "󰍹",
+  "order": 100,
+  "keywords": "workspace desktop virtual switch",
+  "components": {
+    "segment": "Segment.qml"
+  }
+}

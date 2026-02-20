@@ -1,0 +1,10 @@
+{
+  "id": "clock",
+  "name": "Clock",
+  "icon": "󰥔",
+  "order": 120,
+  "keywords": "time date clock",
+  "components": {
+    "segment": "Segment.qml"
+  }
+}

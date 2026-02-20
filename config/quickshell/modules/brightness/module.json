@@ -1,0 +1,11 @@
+{
+  "id": "brightness",
+  "name": "Brightness",
+  "icon": "󰃟",
+  "order": 50,
+  "keywords": "screen backlight display light dim",
+  "components": {
+    "manager": "Manager.qml",
+    "button": "Button.qml"
+  }
+}
