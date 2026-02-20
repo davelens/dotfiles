@@ -425,89 +425,101 @@ Scope {
                 }
             }
 
-            Row {
-                spacing: 8
-                visible: WirelessManager.enabled
-
-                Text {
-                    text: WirelessManager.scanning ? "Scanning..." : root.highlightText("Available Networks", root.searchQuery)
-                    textFormat: Text.RichText
-                    color: Colors.overlay0
-                    font.pixelSize: 12
-                }
-
-                Text {
-                    text: "󰑐"
-                    color: wifiRefreshArea.containsMouse ? Colors.blue : Colors.overlay0
-                    font.pixelSize: 14
-                    font.family: "Symbols Nerd Font"
-                    visible: !WirelessManager.scanning
-
-                    MouseArea {
-                        id: wifiRefreshArea
-                        anchors.fill: parent
-                        anchors.margins: -4
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: WirelessManager.startScan()
-                    }
-                }
+            // Separator after connected network
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: Colors.surface1
+                visible: WirelessManager.connectedNetwork !== null
             }
 
             Column {
                 width: parent.width
-                spacing: 2
+                spacing: 6
                 visible: WirelessManager.enabled
 
-                Repeater {
-                    model: WirelessManager.networks.filter(function(n) { return !n.active })
+                Row {
+                    spacing: 8
 
-                    Rectangle {
-                        required property var modelData
+                    Text {
+                        text: WirelessManager.scanning ? "Scanning..." : root.highlightText("Available Networks", root.searchQuery)
+                        textFormat: Text.RichText
+                        color: Colors.subtext0
+                        font.pixelSize: 14
+                    }
 
-                        width: parent.width
-                        height: 48
-                        radius: 6
-                        color: wifiNetArea.containsMouse ? Colors.surface0 : "transparent"
+                    Text {
+                        text: "󰑐"
+                        color: wifiRefreshArea.containsMouse ? Colors.blue : Colors.overlay0
+                        font.pixelSize: 14
+                        font.family: "Symbols Nerd Font"
+                        visible: !WirelessManager.scanning
 
-                        Row {
-                            anchors.left: parent.left
-                            anchors.leftMargin: 12
-                            anchors.verticalCenter: parent.verticalCenter
-                            spacing: 12
+                        MouseArea {
+                            id: wifiRefreshArea
+                            anchors.fill: parent
+                            anchors.margins: -4
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: WirelessManager.startScan()
+                        }
+                    }
+                }
+
+                Column {
+                    width: parent.width
+                    spacing: 2
+
+                    Repeater {
+                        model: WirelessManager.networks.filter(function(n) { return !n.active })
+
+                        Rectangle {
+                            required property var modelData
+
+                            width: parent.width
+                            height: 48
+                            radius: 6
+                            color: wifiNetArea.containsMouse ? Colors.surface0 : "transparent"
+
+                            Row {
+                                anchors.left: parent.left
+                                anchors.leftMargin: 12
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 12
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: WirelessManager.getSignalIcon(modelData.signal)
+                                    color: Colors.overlay0
+                                    font.pixelSize: 16
+                                    font.family: "Symbols Nerd Font"
+                                }
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: modelData.ssid
+                                    color: Colors.text
+                                    font.pixelSize: 14
+                                }
+                            }
 
                             Text {
+                                anchors.right: parent.right
+                                anchors.rightMargin: 12
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: WirelessManager.getSignalIcon(modelData.signal)
+                                text: modelData.security ? "󰌾" : ""
                                 color: Colors.overlay0
-                                font.pixelSize: 16
+                                font.pixelSize: 14
                                 font.family: "Symbols Nerd Font"
                             }
 
-                            Text {
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: modelData.ssid
-                                color: Colors.text
-                                font.pixelSize: 14
+                            MouseArea {
+                                id: wifiNetArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: WirelessManager.connect(modelData.ssid)
                             }
-                        }
-
-                        Text {
-                            anchors.right: parent.right
-                            anchors.rightMargin: 12
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: modelData.security ? "󰌾" : ""
-                            color: Colors.overlay0
-                            font.pixelSize: 14
-                            font.family: "Symbols Nerd Font"
-                        }
-
-                        MouseArea {
-                            id: wifiNetArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: WirelessManager.connect(modelData.ssid)
                         }
                     }
                 }
@@ -617,41 +629,52 @@ Scope {
                 }
             }
 
-            // Devices header with scan status
-            Row {
-                spacing: 8
-                visible: BluetoothManager.powered
-
-                Text {
-                    text: BluetoothManager.scanning ? "Scanning..." : root.highlightText("Available Devices", root.searchQuery)
-                    textFormat: Text.RichText
-                    color: Colors.overlay0
-                    font.pixelSize: 12
-                }
-
-                Text {
-                    text: "󰑐"
-                    color: btRefreshArea.containsMouse ? Colors.blue : Colors.overlay0
-                    font.pixelSize: 14
-                    font.family: "Symbols Nerd Font"
-                    visible: !BluetoothManager.scanning
-
-                    MouseArea {
-                        id: btRefreshArea
-                        anchors.fill: parent
-                        anchors.margins: -4
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: BluetoothManager.startScan()
-                    }
-                }
+            // Separator after connected devices
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: Colors.surface1
+                visible: BluetoothManager.powered && BluetoothManager.connectedDevices.length > 0
             }
 
-            // Device list (paired but not connected, and discovered)
+            // Devices section with header and list
             Column {
                 width: parent.width
-                spacing: 2
+                spacing: 6
                 visible: BluetoothManager.powered
+
+                Row {
+                    spacing: 8
+
+                    Text {
+                        text: BluetoothManager.scanning ? "Scanning..." : root.highlightText("Available Devices", root.searchQuery)
+                        textFormat: Text.RichText
+                        color: Colors.subtext0
+                        font.pixelSize: 14
+                    }
+
+                    Text {
+                        text: "󰑐"
+                        color: btRefreshArea.containsMouse ? Colors.blue : Colors.overlay0
+                        font.pixelSize: 14
+                        font.family: "Symbols Nerd Font"
+                        visible: !BluetoothManager.scanning
+
+                        MouseArea {
+                            id: btRefreshArea
+                            anchors.fill: parent
+                            anchors.margins: -4
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: BluetoothManager.startScan()
+                        }
+                    }
+                }
+
+                // Device list (paired but not connected, and discovered)
+                Column {
+                    width: parent.width
+                    spacing: 2
 
                 Repeater {
                     model: BluetoothManager.devices.filter(function(d) { return !d.connected })
@@ -709,13 +732,14 @@ Scope {
                     }
                 }
 
-                // Empty state
-                Text {
-                    text: BluetoothManager.scanning ? "Looking for devices..." : "No devices found"
-                    color: Colors.overlay0
-                    font.pixelSize: 13
-                    visible: BluetoothManager.devices.filter(function(d) { return !d.connected }).length === 0
-                    topPadding: 8
+                    // Empty state
+                    Text {
+                        text: BluetoothManager.scanning ? "Looking for devices..." : "No devices found"
+                        color: Colors.overlay0
+                        font.pixelSize: 13
+                        visible: BluetoothManager.devices.filter(function(d) { return !d.connected }).length === 0
+                        topPadding: 8
+                    }
                 }
             }
 
@@ -919,7 +943,7 @@ Scope {
                 text: root.highlightText("History", root.searchQuery)
                 textFormat: Text.RichText
                 color: Colors.subtext0
-                font.pixelSize: 14
+                font.pixelSize: 15
             }
 
             Rectangle {
