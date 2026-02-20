@@ -116,13 +116,20 @@ Scope {
         }
     }
 
+    // Focus an item via keyboard (sets keyboardFocus flag)
+    function focusItemViaKeyboard(item) {
+        if (item) {
+            if (item.keyboardFocus !== undefined) item.keyboardFocus = true
+            if (item.forceActiveFocus) item.forceActiveFocus()
+        }
+    }
+
     // Focus next item in content
     function focusNextContent() {
         refreshFocusables()
         if (contentFocusables.length === 0) return
         contentFocusIndex = (contentFocusIndex + 1) % contentFocusables.length
-        var item = contentFocusables[contentFocusIndex]
-        if (item && item.forceActiveFocus) item.forceActiveFocus()
+        focusItemViaKeyboard(contentFocusables[contentFocusIndex])
     }
 
     // Focus previous item in content
@@ -131,8 +138,7 @@ Scope {
         if (contentFocusables.length === 0) return
         if (contentFocusIndex < 0) contentFocusIndex = contentFocusables.length - 1
         else contentFocusIndex = (contentFocusIndex - 1 + contentFocusables.length) % contentFocusables.length
-        var item = contentFocusables[contentFocusIndex]
-        if (item && item.forceActiveFocus) item.forceActiveFocus()
+        focusItemViaKeyboard(contentFocusables[contentFocusIndex])
     }
 
     // Enter content focus mode
@@ -150,8 +156,7 @@ Scope {
         // Focus first item if available
         if (contentFocusables.length > 0) {
             contentFocusIndex = 0
-            var item = contentFocusables[0]
-            if (item && item.forceActiveFocus) item.forceActiveFocus()
+            focusItemViaKeyboard(contentFocusables[0])
         }
     }
 
@@ -223,8 +228,13 @@ Scope {
                 focus: true
                 Component.onCompleted: root.panelRoot = panelRootItem
                 Keys.onPressed: event => {
+                    // Ctrl+[: drop focus from search input (vim escape)
+                    if (event.key === Qt.Key_BracketLeft && (event.modifiers & Qt.ControlModifier)) {
+                        panelRootItem.forceActiveFocus()
+                        event.accepted = true
+                    }
                     // Q or Escape: close settings
-                    if (event.key === Qt.Key_Escape || event.key === Qt.Key_Q) {
+                    else if (event.key === Qt.Key_Escape || event.key === Qt.Key_Q) {
                         root.visible = false
                         event.accepted = true
                     }

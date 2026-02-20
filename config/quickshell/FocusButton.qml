@@ -13,11 +13,18 @@ Item {
     // Allow parent to control whether focus ring is shown
     property bool showFocusRing: true
 
-    // Focus support
-    property bool focused: activeFocus && showFocusRing
+    // Track if focus came from keyboard (not mouse)
+    property bool keyboardFocus: false
+
+    // Focus support - only show ring for keyboard focus
+    property bool focused: activeFocus && showFocusRing && keyboardFocus
     property bool hovered: mouseArea.containsMouse
     focus: true
     activeFocusOnTab: true
+
+    onActiveFocusChanged: {
+        if (!activeFocus) keyboardFocus = false
+    }
 
     signal clicked()
 
