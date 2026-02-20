@@ -57,28 +57,16 @@ Variants {
             id: panelContent
             anchors.top: parent.top
             anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.rightMargin: NotificationManager.panelOpen ? 0 : -width
             width: 380
             color: Colors.base
 
-            // Track if animation should be enabled (after first proper positioning)
-            property bool animationEnabled: false
-
-            // Slide animation - position from right edge
-            x: parent.width > 0 ? (NotificationManager.panelOpen ? parent.width - width : parent.width) : parent.width
-            
-            Behavior on x {
-                enabled: panelContent.animationEnabled
+            Behavior on anchors.rightMargin {
                 NumberAnimation {
                     id: slideAnimation
                     duration: 250
                     easing.type: Easing.OutCubic
-                }
-            }
-
-            // Enable animation after parent width is valid and panel has been positioned
-            onXChanged: {
-                if (!animationEnabled && parent.width > 0 && x === parent.width) {
-                    animationEnabled = true
                 }
             }
 
