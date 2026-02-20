@@ -10,9 +10,12 @@ BarButton {
   // Required: screen for popup management
   required property var screen
 
+  // PopupManager passed from shell.qml for singleton consistency
+  property var popupManager: PopupManager
+
   icon: BrightnessManager.getIcon(BrightnessManager.averageLevel)
 
-  onClicked: PopupManager.toggle("brightness", screen)
+  onClicked: button.popupManager.toggle("brightness", screen)
 
   onWheel: event => {
     var delta = event.angleDelta.y > 0 ? 0.05 : -0.05
@@ -26,7 +29,7 @@ BarButton {
   PopupWindow {
     id: popup
 
-    property bool isOpen: PopupManager.isOpen("brightness", button.screen)
+    property bool isOpen: button.popupManager.isOpen("brightness", button.screen)
 
     visible: isOpen
 

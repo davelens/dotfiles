@@ -72,8 +72,11 @@ Scope {
 
       // Helper function to build props for dynamically loaded bar components
       function buildBarComponentProps(moduleId) {
-        var props = { "screen": panel.modelData }
-        // Pass singleton references for modules that need them
+        var props = {
+          "screen": panel.modelData,
+          "popupManager": PopupManager  // Pass to all components for singleton consistency
+        }
+        // Pass additional singleton references for modules that need them
         if (moduleId === "notifications") {
           props.notificationManager = NotificationManager
         }

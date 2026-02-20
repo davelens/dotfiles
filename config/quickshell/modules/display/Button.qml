@@ -9,14 +9,17 @@ BarButton {
   // Required: screen for popup management
   required property var screen
 
+  // PopupManager passed from shell.qml for singleton consistency
+  property var popupManager: PopupManager
+
   icon: "󰍹"
 
-  onClicked: PopupManager.toggle("display", screen)
+  onClicked: button.popupManager.toggle("display", screen)
 
   PopupWindow {
     id: popup
 
-    visible: PopupManager.isOpen("display", button.screen)
+    visible: button.popupManager.isOpen("display", button.screen)
 
     anchor.item: button
     anchor.edges: Edges.Bottom | Edges.Right
@@ -152,7 +155,7 @@ BarButton {
             z: -1
             onClicked: {
               DisplayConfig.setPrimary(modelData)
-              PopupManager.close()
+              button.popupManager.close()
             }
           }
         }

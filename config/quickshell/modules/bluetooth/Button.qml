@@ -9,15 +9,18 @@ BarButton {
   // Required: screen for popup management
   required property var screen
 
+  // PopupManager passed from shell.qml for singleton consistency
+  property var popupManager: PopupManager
+
   icon: BluetoothManager.getIcon()
   iconColor: BluetoothManager.powered ? Colors.text : Colors.overlay0
 
-  onClicked: PopupManager.toggle("bluetooth", screen)
+  onClicked: button.popupManager.toggle("bluetooth", screen)
 
   PopupWindow {
     id: popup
 
-    property bool isOpen: PopupManager.isOpen("bluetooth", button.screen)
+    property bool isOpen: button.popupManager.isOpen("bluetooth", button.screen)
 
     visible: isOpen
 

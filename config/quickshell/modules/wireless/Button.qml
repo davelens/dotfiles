@@ -9,6 +9,9 @@ BarButton {
   // Required: screen for popup management
   required property var screen
 
+  // PopupManager passed from shell.qml for singleton consistency
+  property var popupManager: PopupManager
+
   // Force reactive update by depending on the properties that affect the icon
   icon: {
     var _ = WirelessManager.enabled
@@ -17,11 +20,11 @@ BarButton {
   }
   iconColor: WirelessManager.enabled ? Colors.text : Colors.overlay0
 
-  onClicked: PopupManager.toggle("wireless", screen)
+  onClicked: button.popupManager.toggle("wireless", screen)
 
   // Bar icon tooltip
   PopupWindow {
-    visible: button.hovered && WirelessManager.connectedNetwork && !PopupManager.isOpen("wireless", button.screen)
+    visible: button.hovered && WirelessManager.connectedNetwork && !button.popupManager.isOpen("wireless", button.screen)
 
     anchor.item: button
     anchor.edges: Edges.Bottom | Edges.Right
@@ -77,7 +80,7 @@ BarButton {
   PopupWindow {
     id: popup
 
-    property bool isOpen: PopupManager.isOpen("wireless", button.screen)
+    property bool isOpen: button.popupManager.isOpen("wireless", button.screen)
 
     visible: isOpen
 

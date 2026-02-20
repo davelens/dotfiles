@@ -11,6 +11,9 @@ BarButton {
   // Required: screen for popup management
   required property var screen
 
+  // PopupManager passed from shell.qml for singleton consistency
+  property var popupManager: PopupManager
+
   property var sink: Pipewire.defaultAudioSink
   property real volume: sink && sink.audio ? sink.audio.volume : 0
   property bool muted: sink && sink.audio ? sink.audio.muted : false
@@ -26,7 +29,7 @@ BarButton {
     return "󰕾"
   }
 
-  onClicked: PopupManager.toggle("volume", screen)
+  onClicked: popupManager.toggle("volume", screen)
 
   onWheel: event => {
     if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
@@ -67,7 +70,7 @@ BarButton {
   PopupWindow {
     id: popup
 
-    visible: PopupManager.isOpen("volume", button.screen)
+    visible: button.popupManager.isOpen("volume", button.screen)
 
     anchor.item: button
     anchor.edges: Edges.Bottom | Edges.Right
@@ -77,8 +80,8 @@ BarButton {
     implicitWidth: 320
     implicitHeight: {
       var h = 32 + 8 + 28 + 8 + 1 + 8 + 28
-      if (PopupManager.outputDevicesExpanded) h += button.audioSinks.length * 34 + button.audioSinks.length * 2
-      if (PopupManager.inputDevicesExpanded) h += button.audioSources.length * 34 + button.audioSources.length * 2
+      if (button.popupManager.outputDevicesExpanded) h += button.audioSinks.length * 34 + button.audioSinks.length * 2
+      if (button.popupManager.inputDevicesExpanded) h += button.audioSources.length * 34 + button.audioSources.length * 2
       return h + 48
     }
     color: Colors.base
@@ -184,8 +187,8 @@ BarButton {
         headerLabel: "Output"
         textRole: "description"
         valueRole: "id"
-        expanded: PopupManager.outputDevicesExpanded
-        onToggled: expanded => PopupManager.outputDevicesExpanded = expanded
+        expanded: button.popupManager.outputDevicesExpanded
+        onToggled: expanded => button.popupManager.outputDevicesExpanded = expanded
         onItemSelected: item => Pipewire.preferredDefaultAudioSink = item
       }
 
@@ -204,8 +207,8 @@ BarButton {
         headerLabel: "Input"
         textRole: "description"
         valueRole: "id"
-        expanded: PopupManager.inputDevicesExpanded
-        onToggled: expanded => PopupManager.inputDevicesExpanded = expanded
+        expanded: button.popupManager.inputDevicesExpanded
+        onToggled: expanded => button.popupManager.inputDevicesExpanded = expanded
         onItemSelected: item => Pipewire.preferredDefaultAudioSource = item
       }
     }
