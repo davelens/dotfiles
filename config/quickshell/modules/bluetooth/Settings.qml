@@ -49,8 +49,15 @@ ScrollView {
     // Connected devices list
     Column {
       width: parent.width
-      spacing: 4
+      spacing: 8
       visible: BluetoothManager.powered && BluetoothManager.connectedDevices.length > 0
+
+      Text {
+        text: settingsRoot.highlightText("Connected devices", settingsRoot.searchQuery)
+        textFormat: Text.RichText
+        color: Colors.subtext0
+        font.pixelSize: 14
+      }
 
       Repeater {
         model: BluetoothManager.connectedDevices

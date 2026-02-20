@@ -97,7 +97,7 @@ BarButton {
       } else {
         // Connected network (if any)
         if (WirelessManager.connectedNetwork) {
-          h += 36 + 6 + 32 + 12 // network row + spacing + connection info + spacing
+          h += 16 + 6 + 36 + 6 + 32 + 12 // header + spacing + network row + spacing + connection info + spacing
         }
 
         // "Networks" header
@@ -179,6 +179,12 @@ BarButton {
         width: parent.width
         spacing: 6
         visible: WirelessManager.connectedNetwork !== null
+
+        Text {
+          text: "Connected network"
+          color: Colors.overlay0
+          font.pixelSize: 12
+        }
 
         Rectangle {
           id: connectedNetworkRect

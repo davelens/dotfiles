@@ -46,55 +46,67 @@ ScrollView {
       }
     }
 
-    Rectangle {
+    Column {
       width: parent.width
-      height: 80
-      radius: 8
-      color: Colors.surface0
+      spacing: 8
       visible: WirelessManager.connectedNetwork !== null
 
-      Column {
-        anchors.left: parent.left
-        anchors.leftMargin: 16
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: 4
-
-        Text {
-          text: WirelessManager.connectedNetwork ? WirelessManager.connectedNetwork.ssid : ""
-          color: Colors.text
-          font.pixelSize: 16
-        }
-
-        Text {
-          text: settingsRoot.highlightText("Connected", settingsRoot.searchQuery)
-          textFormat: Text.RichText
-          color: Colors.green
-          font.pixelSize: 12
-        }
-
-        Row {
-          spacing: 16
-
-          Text {
-            text: "Down: " + WirelessManager.formatSpeed(WirelessManager.downloadSpeed)
-            color: Colors.overlay0
-            font.pixelSize: 12
-          }
-
-          Text {
-            text: "Up: " + WirelessManager.formatSpeed(WirelessManager.uploadSpeed)
-            color: Colors.overlay0
-            font.pixelSize: 12
-          }
-        }
+      Text {
+        text: settingsRoot.highlightText("Connected network", settingsRoot.searchQuery)
+        textFormat: Text.RichText
+        color: Colors.subtext0
+        font.pixelSize: 14
       }
 
-      FocusLink {
-        anchors.right: parent.right
-        anchors.rightMargin: 16
-        anchors.verticalCenter: parent.verticalCenter
-        text: "Disconnect"
-        onClicked: WirelessManager.disconnect()
+      Rectangle {
+        width: parent.width
+        height: 80
+        radius: 8
+        color: Colors.surface0
+
+        Column {
+          anchors.left: parent.left
+          anchors.leftMargin: 16
+          anchors.verticalCenter: parent.verticalCenter
+          spacing: 4
+
+          Text {
+            text: WirelessManager.connectedNetwork ? WirelessManager.connectedNetwork.ssid : ""
+            color: Colors.text
+            font.pixelSize: 16
+          }
+
+          Text {
+            text: settingsRoot.highlightText("Connected", settingsRoot.searchQuery)
+            textFormat: Text.RichText
+            color: Colors.green
+            font.pixelSize: 12
+          }
+
+          Row {
+            spacing: 16
+
+            Text {
+              text: "Down: " + WirelessManager.formatSpeed(WirelessManager.downloadSpeed)
+              color: Colors.overlay0
+              font.pixelSize: 12
+            }
+
+            Text {
+              text: "Up: " + WirelessManager.formatSpeed(WirelessManager.uploadSpeed)
+              color: Colors.overlay0
+              font.pixelSize: 12
+            }
+          }
+        }
+
+        FocusLink {
+          anchors.right: parent.right
+          anchors.rightMargin: 16
+          anchors.verticalCenter: parent.verticalCenter
+          text: "Disconnect"
+          onClicked: WirelessManager.disconnect()
+        }
       }
     }
 

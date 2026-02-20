@@ -38,7 +38,7 @@ BarButton {
         // Connected devices section
         var connectedCount = BluetoothManager.connectedDevices.length
         if (connectedCount > 0) {
-          h += connectedCount * 36 + (connectedCount - 1) * 4 + 12 // rows + spacing between + spacing after
+          h += 16 + 4 + connectedCount * 36 + (connectedCount - 1) * 4 + 12 // header + spacing + rows + spacing between + spacing after
         }
 
         // "Scanning..." / "Devices" label
@@ -120,6 +120,12 @@ BarButton {
         width: parent.width
         spacing: 4
         visible: BluetoothManager.connectedDevices.length > 0
+
+        Text {
+          text: "Connected devices"
+          color: Colors.overlay0
+          font.pixelSize: 12
+        }
 
         Repeater {
           model: BluetoothManager.connectedDevices
