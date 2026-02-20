@@ -7,85 +7,85 @@ import QtQuick
 // Manages user data files in $XDG_DATA_HOME/quickshell/
 // Copies defaults from shellDir/defaults/ if files don't exist
 Singleton {
-    id: dataManager
+  id: dataManager
 
-    readonly property string dataDir: (Quickshell.env("XDG_DATA_HOME") || (Quickshell.env("HOME") + "/.local/share")) + "/quickshell"
-    readonly property string defaultsDir: Quickshell.shellDir + "/defaults"
+  readonly property string dataDir: (Quickshell.env("XDG_DATA_HOME") || (Quickshell.env("HOME") + "/.local/share")) + "/quickshell"
+  readonly property string defaultsDir: Quickshell.shellDir + "/defaults"
 
-    // File paths for consumers
-    readonly property string displaysPath: dataDir + "/displays.json"
-    readonly property string notificationSettingsPath: dataDir + "/notification-settings.json"
+  // File paths for consumers
+  readonly property string displaysPath: dataDir + "/displays.json"
+  readonly property string notificationSettingsPath: dataDir + "/notification-settings.json"
 
-    // Track initialization
-    property bool ready: false
+  // Track initialization
+  property bool ready: false
 
-    Component.onCompleted: {
-        ensureDataDir.running = true
+  Component.onCompleted: {
+    ensureDataDir.running = true
+  }
+
+  // Step 1: Ensure data directory exists
+  Process {
+    id: ensureDataDir
+    command: ["mkdir", "-p", dataDir]
+    onExited: (code) => {
+      checkDisplays.running = true
+      checkNotificationSettings.running = true
     }
+  }
 
-    // Step 1: Ensure data directory exists
-    Process {
-        id: ensureDataDir
-        command: ["mkdir", "-p", dataDir]
-        onExited: (code) => {
-            checkDisplays.running = true
-            checkNotificationSettings.running = true
-        }
+  // Step 2: Check if displays.json exists
+  Process {
+    id: checkDisplays
+    command: ["test", "-f", dataManager.displaysPath]
+    onExited: (code) => {
+      if (code !== 0) {
+        copyDisplays.running = true
+      } else {
+        displaysReady = true
+        checkReady()
+      }
     }
+  }
+  property bool displaysReady: false
 
-    // Step 2: Check if displays.json exists
-    Process {
-        id: checkDisplays
-        command: ["test", "-f", dataManager.displaysPath]
-        onExited: (code) => {
-            if (code !== 0) {
-                copyDisplays.running = true
-            } else {
-                displaysReady = true
-                checkReady()
-            }
-        }
+  // Step 3: Copy displays.json if missing
+  Process {
+    id: copyDisplays
+    command: ["cp", dataManager.defaultsDir + "/displays.json", dataManager.displaysPath]
+    onExited: {
+      displaysReady = true
+      checkReady()
     }
-    property bool displaysReady: false
+  }
 
-    // Step 3: Copy displays.json if missing
-    Process {
-        id: copyDisplays
-        command: ["cp", dataManager.defaultsDir + "/displays.json", dataManager.displaysPath]
-        onExited: {
-            displaysReady = true
-            checkReady()
-        }
+  // Step 2b: Check if notification-settings.json exists
+  Process {
+    id: checkNotificationSettings
+    command: ["test", "-f", dataManager.notificationSettingsPath]
+    onExited: (code) => {
+      if (code !== 0) {
+        copyNotificationSettings.running = true
+      } else {
+        notificationSettingsReady = true
+        checkReady()
+      }
     }
+  }
+  property bool notificationSettingsReady: false
 
-    // Step 2b: Check if notification-settings.json exists
-    Process {
-        id: checkNotificationSettings
-        command: ["test", "-f", dataManager.notificationSettingsPath]
-        onExited: (code) => {
-            if (code !== 0) {
-                copyNotificationSettings.running = true
-            } else {
-                notificationSettingsReady = true
-                checkReady()
-            }
-        }
+  // Step 3b: Copy notification-settings.json if missing
+  Process {
+    id: copyNotificationSettings
+    command: ["cp", dataManager.defaultsDir + "/notification-settings.json", dataManager.notificationSettingsPath]
+    onExited: {
+      notificationSettingsReady = true
+      checkReady()
     }
-    property bool notificationSettingsReady: false
+  }
 
-    // Step 3b: Copy notification-settings.json if missing
-    Process {
-        id: copyNotificationSettings
-        command: ["cp", dataManager.defaultsDir + "/notification-settings.json", dataManager.notificationSettingsPath]
-        onExited: {
-            notificationSettingsReady = true
-            checkReady()
-        }
+  function checkReady() {
+    if (displaysReady && notificationSettingsReady) {
+      ready = true
     }
-
-    function checkReady() {
-        if (displaysReady && notificationSettingsReady) {
-            ready = true
-        }
-    }
+  }
 }

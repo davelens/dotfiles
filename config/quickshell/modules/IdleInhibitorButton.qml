@@ -4,25 +4,25 @@ import ".."
 import "../components"
 
 BarButton {
-    id: button
+  id: button
 
-    property bool inhibited: false
+  property bool inhibited: false
 
-    icon: inhibited ? "󰈈" : "󰈉"
-    iconColor: inhibited ? Colors.blue : Colors.text
+  icon: inhibited ? "󰈈" : "󰈉"
+  iconColor: inhibited ? Colors.blue : Colors.text
 
-    Process {
-        id: inhibitProc
-        command: ["systemd-inhibit", "--what=idle", "--who=quickshell", "--why=User requested", "sleep", "infinity"]
-        running: false
+  Process {
+    id: inhibitProc
+    command: ["systemd-inhibit", "--what=idle", "--who=quickshell", "--why=User requested", "sleep", "infinity"]
+    running: false
+  }
+
+  onClicked: {
+    inhibited = !inhibited
+    if (inhibited) {
+      inhibitProc.running = true
+    } else {
+      inhibitProc.signal(15)  // SIGTERM
     }
-
-    onClicked: {
-        inhibited = !inhibited
-        if (inhibited) {
-            inhibitProc.running = true
-        } else {
-            inhibitProc.signal(15)  // SIGTERM
-        }
-    }
+  }
 }
