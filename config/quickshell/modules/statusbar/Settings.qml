@@ -101,10 +101,16 @@ ScrollView {
             }
 
             contentItem: TextInput {
+              z: 2
               text: leftMarginSpin.textFromValue(leftMarginSpin.value, leftMarginSpin.locale)
               color: Colors.text
+              font.pixelSize: 13
               horizontalAlignment: Qt.AlignHCenter
               verticalAlignment: Qt.AlignVCenter
+              anchors.left: parent.left
+              anchors.right: parent.right
+              anchors.leftMargin: 24
+              anchors.rightMargin: 24
               readOnly: !leftMarginSpin.editable
               validator: leftMarginSpin.validator
               inputMethodHints: Qt.ImhFormattedNumbersOnly
@@ -171,10 +177,16 @@ ScrollView {
             }
 
             contentItem: TextInput {
+              z: 2
               text: rightMarginSpin.textFromValue(rightMarginSpin.value, rightMarginSpin.locale)
               color: Colors.text
+              font.pixelSize: 13
               horizontalAlignment: Qt.AlignHCenter
               verticalAlignment: Qt.AlignVCenter
+              anchors.left: parent.left
+              anchors.right: parent.right
+              anchors.leftMargin: 24
+              anchors.rightMargin: 24
               readOnly: !rightMarginSpin.editable
               validator: rightMarginSpin.validator
               inputMethodHints: Qt.ImhFormattedNumbersOnly
