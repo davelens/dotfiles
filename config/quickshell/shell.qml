@@ -6,21 +6,18 @@ import QtQuick
 Scope {
   id: root
 
-  // SETTINGS PANEL
   SettingsPanel {}
-
-  // NOTIFICATION POPUPS (floating notifications top-right)
+  // Floating notifications top-right
   NotificationPopups {}
-
-  // NOTIFICATION PANEL (history slide-in)
+  // Notifications history panel slide-in
   NotificationPanel {}
 
-  // PIPEWIRE TRACKING
+  // Pipewire tracking
   PwObjectTracker {
     objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : []
   }
 
-  // CLICK-OUTSIDE OVERLAY
+  // Click-outside overlay
   Variants {
     model: Quickshell.screens
 
@@ -48,7 +45,7 @@ Scope {
     }
   }
 
-  // BAR (only on primary screen)
+  // Makes the statusbar only appear on primary screen
   Variants {
     model: DisplayConfig.primaryScreen && StatusbarManager.ready ? [DisplayConfig.primaryScreen] : []
 
@@ -70,20 +67,20 @@ Scope {
       WlrLayershell.namespace: "quickshell-bar"
       WlrLayershell.layer: WlrLayer.Top
 
-      // Helper function to build props for dynamically loaded bar components
+      // Helper function to build props for dynamically loaded bar components.
       function buildBarComponentProps(moduleId) {
         var props = {
           "screen": panel.modelData,
-          "popupManager": PopupManager  // Pass to all components for singleton consistency
+          "popupManager": PopupManager
         }
-        // Pass additional singleton references for modules that need them
+        // Pass additional singleton references for modules that need them.
         if (moduleId === "notifications") {
           props.notificationManager = NotificationManager
         }
         return props
       }
 
-      // LEFT SECTION
+      // Left section
       Row {
         anchors.left: parent.left
         anchors.leftMargin: StatusbarManager.barMargins.left
@@ -117,7 +114,7 @@ Scope {
         }
       }
 
-      // CENTER SECTION
+      // Center section
       Row {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
@@ -150,7 +147,7 @@ Scope {
         }
       }
 
-      // RIGHT SECTION
+      // Right section
       Row {
         anchors.right: parent.right
         anchors.rightMargin: StatusbarManager.barMargins.right
