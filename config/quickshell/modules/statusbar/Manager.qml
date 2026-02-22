@@ -192,63 +192,43 @@ Singleton {
     saveConfig()
   }
 
-  // Move item up within its section
-  function moveUp(id) {
-    var found = findItem(id)
-    if (!found || found.index === 0) return
-
-    var items = getItemsForSection(found.section).slice()
-    var temp = items[found.index - 1]
-    items[found.index - 1] = items[found.index]
-    items[found.index] = temp
-
-    if (found.section === "left") leftItems = items
-    else if (found.section === "center") centerItems = items
-    else if (found.section === "right") rightItems = items
-
-    saveConfig()
-  }
-
-  // Move item down within its section
-  function moveDown(id) {
+  // Move item to a target section at a specific index.
+  // Handles both reordering within a section and cross-section moves.
+  function moveItem(id, targetSection, targetIndex) {
     var found = findItem(id)
     if (!found) return
 
-    var items = getItemsForSection(found.section).slice()
-    if (found.index >= items.length - 1) return
+    var sameSection = found.section === targetSection
 
-    var temp = items[found.index + 1]
-    items[found.index + 1] = items[found.index]
-    items[found.index] = temp
+    if (sameSection) {
+      var items = getItemsForSection(found.section).slice()
+      var item = items.splice(found.index, 1)[0]
+      // Adjust target index since we removed the item
+      if (targetIndex > found.index) targetIndex--
+      items.splice(targetIndex, 0, item)
 
-    if (found.section === "left") leftItems = items
-    else if (found.section === "center") centerItems = items
-    else if (found.section === "right") rightItems = items
+      if (found.section === "left") leftItems = items
+      else if (found.section === "center") centerItems = items
+      else if (found.section === "right") rightItems = items
+    } else {
+      // Remove from source section
+      var srcItems = getItemsForSection(found.section).slice()
+      var movedItem = srcItems.splice(found.index, 1)[0]
 
-    saveConfig()
-  }
+      // Insert into target section
+      var dstItems = getItemsForSection(targetSection).slice()
+      targetIndex = Math.min(targetIndex, dstItems.length)
+      dstItems.splice(targetIndex, 0, movedItem)
 
-  // Move item to a different section
-  function moveToSection(id, newSection) {
-    var found = findItem(id)
-    if (!found || found.section === newSection) return
+      // Update both sections
+      if (found.section === "left") leftItems = srcItems
+      else if (found.section === "center") centerItems = srcItems
+      else if (found.section === "right") rightItems = srcItems
 
-    // Remove from old section
-    var oldItems = getItemsForSection(found.section).slice()
-    var item = oldItems.splice(found.index, 1)[0]
-
-    // Add to new section
-    var newItems = getItemsForSection(newSection).slice()
-    newItems.push(item)
-
-    // Update both sections
-    if (found.section === "left") leftItems = oldItems
-    else if (found.section === "center") centerItems = oldItems
-    else if (found.section === "right") rightItems = oldItems
-
-    if (newSection === "left") leftItems = newItems
-    else if (newSection === "center") centerItems = newItems
-    else if (newSection === "right") rightItems = newItems
+      if (targetSection === "left") leftItems = dstItems
+      else if (targetSection === "center") centerItems = dstItems
+      else if (targetSection === "right") rightItems = dstItems
+    }
 
     saveConfig()
   }

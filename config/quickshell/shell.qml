@@ -68,12 +68,14 @@ Scope {
       WlrLayershell.layer: WlrLayer.Top
 
       // Helper function to build props for dynamically loaded bar components.
+      // Only pass singleton references to modules that need them to
+      // avoid "non-existent property" warnings from Loader.setSource().
       function buildBarComponentProps(moduleId) {
-        var props = {
-          "screen": panel.modelData,
-          "popupManager": PopupManager
+        var props = { "screen": panel.modelData }
+        var popupModules = ["volume", "brightness", "display", "bluetooth", "wireless"]
+        if (popupModules.indexOf(moduleId) !== -1) {
+          props.popupManager = PopupManager
         }
-        // Pass additional singleton references for modules that need them.
         if (moduleId === "notifications") {
           props.notificationManager = NotificationManager
         }
