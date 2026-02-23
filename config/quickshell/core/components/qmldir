@@ -1,6 +1,7 @@
 BarButton 1.0 BarButton.qml
 BarSection 1.0 BarSection.qml
 Dropdown 1.0 Dropdown.qml
+PopupBase 1.0 PopupBase.qml
 FocusButton 1.0 FocusButton.qml
 FocusIconButton 1.0 FocusIconButton.qml
 FocusLink 1.0 FocusLink.qml

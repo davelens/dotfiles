@@ -1,5 +1,4 @@
 import Quickshell
-import Quickshell.Wayland
 import QtQuick
 import QtQuick.Controls
 import "../.."
@@ -9,146 +8,91 @@ Variants {
   model: PopupManager.isOpen("brightness") && DisplayConfig.primaryScreen
          ? [DisplayConfig.primaryScreen] : []
 
-  PanelWindow {
-    required property var modelData
-
-    id: panel
-    screen: modelData
-
-    anchors {
-      top: true
-      left: true
-      right: true
-      bottom: true
-    }
-
-    margins.top: 42
-    color: "transparent"
-    exclusionMode: ExclusionMode.Ignore
-
-    WlrLayershell.namespace: "quickshell-popup"
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-
-    contentItem {
-      focus: true
-      Keys.onPressed: function(event) {
-        if (event.key === Qt.Key_Escape
-            || (event.key === Qt.Key_BracketLeft && (event.modifiers & Qt.ControlModifier))) {
-          PopupManager.close()
-          event.accepted = true
-        }
-      }
-    }
+  PopupBase {
+    popupWidth: 320
 
     // Pause brightness refresh while popup is open
     Component.onCompleted: BrightnessManager.popupOpen = true
     Component.onDestruction: BrightnessManager.popupOpen = false
 
-    // Click outside to close
-    MouseArea {
-      anchors.fill: parent
-      onClicked: PopupManager.close()
-    }
-
-    // Popup content
-    Rectangle {
-      x: PopupManager.anchorRight - width
-      y: 0
-      width: 320
-      height: content.implicitHeight + 48
-      color: Colors.base
-      border.width: 1
-      border.color: Colors.surface2
+    Repeater {
+      model: BrightnessManager.displays
 
       Column {
-        id: content
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.margins: 24
-        spacing: 8
+        width: parent.width
+        spacing: 4
 
-        Repeater {
-          model: BrightnessManager.displays
+        Text {
+          text: (modelData.type === "ddc" ? "󰍹  " : "󰌢  ") + modelData.name
+          color: Colors.overlay0
+          font.pixelSize: 16
+          font.family: "Symbols Nerd Font"
+        }
 
-          Column {
-            width: parent.width
-            spacing: 4
+        Row {
+          width: parent.width
+          height: 32
+          spacing: 8
 
-            Text {
-              text: (modelData.type === "ddc" ? "󰍹  " : "󰌢  ") + modelData.name
-              color: Colors.overlay0
-              font.pixelSize: 16
-              font.family: "Symbols Nerd Font"
-            }
+          property string displayId: modelData.id
+          property real displayBrightness: modelData.brightness
 
-            Row {
-              width: parent.width
-              height: 32
-              spacing: 8
+          Text {
+            anchors.verticalCenter: parent.verticalCenter
+            text: BrightnessManager.getIcon(brightnessSlider.value)
+            color: Colors.text
+            font.pixelSize: 20
+            font.family: "Symbols Nerd Font"
+          }
 
-              property string displayId: modelData.id
-              property real displayBrightness: modelData.brightness
+          Slider {
+            id: brightnessSlider
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width - 18 - 44 - 16
+            height: 20
+            from: 0.01
+            to: 1
+            value: parent.displayBrightness
 
-              Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: BrightnessManager.getIcon(brightnessSlider.value)
-                color: Colors.text
-                font.pixelSize: 20
-                font.family: "Symbols Nerd Font"
-              }
+            onMoved: BrightnessManager.setBrightness(parent.displayId, value)
 
-              Slider {
-                id: brightnessSlider
-                anchors.verticalCenter: parent.verticalCenter
-                width: parent.width - 18 - 44 - 16
-                height: 20
-                from: 0.01
-                to: 1
-                value: parent.displayBrightness
+            background: Rectangle {
+              x: brightnessSlider.leftPadding
+              y: brightnessSlider.topPadding + brightnessSlider.availableHeight / 2 - height / 2
+              implicitWidth: 200
+              implicitHeight: 8
+              width: brightnessSlider.availableWidth
+              height: 8
+              radius: 4
+              color: Colors.surface0
 
-                onMoved: BrightnessManager.setBrightness(parent.displayId, value)
-
-                background: Rectangle {
-                  x: brightnessSlider.leftPadding
-                  y: brightnessSlider.topPadding + brightnessSlider.availableHeight / 2 - height / 2
-                  implicitWidth: 200
-                  implicitHeight: 8
-                  width: brightnessSlider.availableWidth
-                  height: 8
-                  radius: 4
-                  color: Colors.surface0
-
-                  Rectangle {
-                    width: brightnessSlider.visualPosition * parent.width
-                    height: parent.height
-                    color: Colors.yellow
-                    radius: 4
-                  }
-                }
-
-                handle: Rectangle {
-                  x: brightnessSlider.leftPadding + brightnessSlider.visualPosition * (brightnessSlider.availableWidth - width)
-                  y: brightnessSlider.topPadding + brightnessSlider.availableHeight / 2 - height / 2
-                  implicitWidth: 14
-                  implicitHeight: 14
-                  width: 14
-                  height: 14
-                  radius: 7
-                  color: Colors.text
-                }
-              }
-
-              Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: Math.round(brightnessSlider.value * 100) + "%"
+              Rectangle {
+                width: brightnessSlider.visualPosition * parent.width
+                height: parent.height
                 color: Colors.yellow
-                font.pixelSize: 16
-                width: 44
-                horizontalAlignment: Text.AlignRight
+                radius: 4
               }
             }
+
+            handle: Rectangle {
+              x: brightnessSlider.leftPadding + brightnessSlider.visualPosition * (brightnessSlider.availableWidth - width)
+              y: brightnessSlider.topPadding + brightnessSlider.availableHeight / 2 - height / 2
+              implicitWidth: 14
+              implicitHeight: 14
+              width: 14
+              height: 14
+              radius: 7
+              color: Colors.text
+            }
+          }
+
+          Text {
+            anchors.verticalCenter: parent.verticalCenter
+            text: Math.round(brightnessSlider.value * 100) + "%"
+            color: Colors.yellow
+            font.pixelSize: 16
+            width: 44
+            horizontalAlignment: Text.AlignRight
           }
         }
       }
