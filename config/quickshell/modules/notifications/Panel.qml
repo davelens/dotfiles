@@ -40,7 +40,8 @@ Variants {
     contentItem {
       focus: NotificationManager.panelOpen
       Keys.onPressed: function(event) {
-        if (event.key === Qt.Key_Escape) {
+        if (event.key === Qt.Key_Escape
+            || (event.key === Qt.Key_BracketLeft && (event.modifiers & Qt.ControlModifier))) {
           NotificationManager.closePanel()
           event.accepted = true
         }

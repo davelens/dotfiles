@@ -285,9 +285,13 @@ Scope {
         focus: true
         Component.onCompleted: root.panelRoot = panelRootItem
         Keys.onPressed: event => {
-          // Ctrl+[: drop focus from search input (vim escape)
+          // Ctrl+[: blur search if focused, otherwise close panel
           if (event.key === Qt.Key_BracketLeft && (event.modifiers & Qt.ControlModifier)) {
-            panelRootItem.forceActiveFocus()
+            if (root.searchInputRef && root.searchInputRef.activeFocus) {
+              panelRootItem.forceActiveFocus()
+            } else {
+              root.visible = false
+            }
             event.accepted = true
           }
           // Q or Escape: close settings
