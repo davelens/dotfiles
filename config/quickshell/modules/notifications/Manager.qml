@@ -404,6 +404,18 @@ Singleton {
     command: ["qs", "ipc", "call", "settings", "showNotifications"]
   }
 
+  // IPC handler for external control (e.g. qs ipc call notifications toggle)
+  IpcHandler {
+    target: "notifications"
+
+    function toggle(): void { notificationManager.togglePanel() }
+    function show(): void {
+      notificationManager.panelOpen = true
+      notificationManager.markAllAsRead()
+    }
+    function hide(): void { notificationManager.closePanel() }
+  }
+
   // =========================================================================
   // DND SCHEDULE LOGIC
   // =========================================================================
