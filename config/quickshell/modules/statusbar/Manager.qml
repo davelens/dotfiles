@@ -17,6 +17,9 @@ Singleton {
   // Section spacing (between items in each section)
   property var sectionSpacing: ({ left: 0, center: 0, right: 0 })
 
+  // Whether popup buttons show a stem connector to their popup
+  property bool popupStem: false
+
   // Items in each section
   property var leftItems: []
   property var centerItems: []
@@ -102,6 +105,9 @@ Singleton {
           right: config.sectionSpacing.right || 0
         }
       }
+
+      // Load popup stem setting
+      popupStem = config.popupStem !== undefined ? config.popupStem : false
 
       // Load items, filtering out modules that don't exist
       leftItems = filterValidItems(config.left || [])
@@ -247,6 +253,12 @@ Singleton {
     saveConfig()
   }
 
+  // Toggle popup stem connector
+  function togglePopupStem() {
+    popupStem = !popupStem
+    saveConfig()
+  }
+
   // Reset to defaults
   function resetToDefaults() {
     resetProc.running = true
@@ -266,6 +278,7 @@ Singleton {
     var config = {
       barMargins: barMargins,
       sectionSpacing: sectionSpacing,
+      popupStem: popupStem,
       left: leftItems.map(stripMeta),
       center: centerItems.map(stripMeta),
       right: rightItems.map(stripMeta)

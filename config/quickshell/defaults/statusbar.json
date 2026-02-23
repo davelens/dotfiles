@@ -1,13 +1,14 @@
 {
   "barMargins": {
-    "left": 4,
-    "right": 10
+    "left": 8,
+    "right": 8
   },
   "sectionSpacing": {
     "left": 0,
     "center": 0,
     "right": 0
   },
+  "popupStem": false,
   "left": [
     { "id": "power", "enabled": true, "marginLeft": 0, "marginRight": 20 },
     { "id": "idle-inhibitor", "enabled": true, "marginLeft": 0, "marginRight": 20 },

@@ -360,6 +360,25 @@ Item {
         }
       }
 
+      // Popup stem toggle
+      Row {
+        spacing: 12
+
+        Text {
+          anchors.verticalCenter: parent.verticalCenter
+          text: settingsRoot.highlightText("Popup stem connector", settingsRoot.searchQuery)
+          textFormat: Text.RichText
+          color: Colors.text
+          font.pixelSize: 14
+        }
+
+        SwitchToggle {
+          anchors.verticalCenter: parent.verticalCenter
+          checked: StatusbarManager.popupStem
+          onClicked: StatusbarManager.togglePopupStem()
+        }
+      }
+
       Rectangle { width: parent.width; height: 1; color: Colors.surface1 }
 
       // Left section

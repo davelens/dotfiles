@@ -12,6 +12,9 @@ Rectangle {
   property var popupManager: null
   property string popupId: ""
 
+  // Whether this button's popup is currently open (visual effects only when stem is enabled)
+  readonly property bool popupOpen: StatusbarManager.popupStem && popupId !== "" && popupManager && popupManager.isOpen(popupId)
+
   // Optional customization
   property int iconSize: 18
   property color iconColor: Colors.text
@@ -28,7 +31,42 @@ Rectangle {
   width: 28
   height: 24
   radius: 4
-  color: mouseArea.containsMouse ? Colors.surface1 : Colors.surface0
+  bottomLeftRadius: popupOpen ? 0 : 4
+  bottomRightRadius: popupOpen ? 0 : 4
+  color: {
+    if (popupOpen) return Colors.base
+    return mouseArea.containsMouse ? Colors.surface1 : Colors.surface0
+  }
+
+  // Left border when popup is open
+  Rectangle {
+    visible: button.popupOpen
+    anchors.left: parent.left
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    width: 1
+    color: Colors.surface2
+  }
+
+  // Top border when popup is open
+  Rectangle {
+    visible: button.popupOpen
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    height: 1
+    color: Colors.surface2
+  }
+
+  // Right border when popup is open
+  Rectangle {
+    visible: button.popupOpen
+    anchors.right: parent.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    width: 1
+    color: Colors.surface2
+  }
 
   Text {
     anchors.centerIn: parent
