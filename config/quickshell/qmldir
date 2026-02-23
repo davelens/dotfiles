@@ -14,3 +14,8 @@ NotificationCard 1.0 modules/notifications/Card.qml
 NotificationPanel 1.0 modules/notifications/Panel.qml
 NotificationPopups 1.0 modules/notifications/Popups.qml
 SettingsPanel 1.0 core/components/SettingsPanel.qml
+VolumePopup 1.0 modules/volume/Popup.qml
+BrightnessPopup 1.0 modules/brightness/Popup.qml
+DisplayPopup 1.0 modules/display/Popup.qml
+BluetoothPopup 1.0 modules/bluetooth/Popup.qml
+WirelessPopup 1.0 modules/wireless/Popup.qml

@@ -12,37 +12,16 @@ Scope {
   // Notifications history panel slide-in
   NotificationPanel {}
 
+  // Module popups (PanelWindow-based, with click-outside and ESC support)
+  VolumePopup {}
+  BrightnessPopup {}
+  DisplayPopup {}
+  BluetoothPopup {}
+  WirelessPopup {}
+
   // Pipewire tracking
   PwObjectTracker {
     objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : []
-  }
-
-  // Click-outside overlay
-  Variants {
-    model: Quickshell.screens
-
-    PanelWindow {
-      required property var modelData
-      screen: modelData
-      visible: PopupManager.activePopup !== ""
-
-      anchors {
-        top: true
-        left: true
-        right: true
-        bottom: true
-      }
-
-      color: "transparent"
-      exclusionMode: ExclusionMode.Ignore
-      WlrLayershell.namespace: "quickshell-overlay"
-      WlrLayershell.layer: WlrLayer.Top
-
-      MouseArea {
-        anchors.fill: parent
-        onClicked: PopupManager.close()
-      }
-    }
   }
 
   // Makes the statusbar only appear on primary screen
