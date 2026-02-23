@@ -6,6 +6,11 @@ Rectangle {
 
   // Required
   required property string icon
+  required property var screen
+
+  // Popup toggle: set popupId to auto-handle click via popupManager
+  property var popupManager: null
+  property string popupId: ""
 
   // Optional customization
   property int iconSize: 18
@@ -38,7 +43,16 @@ Rectangle {
     anchors.fill: parent
     hoverEnabled: true
     cursorShape: Qt.PointingHandCursor
-    onClicked: button.clicked()
+
+    onClicked: {
+      if (button.popupId !== "" && button.popupManager) {
+        var mapped = button.mapToItem(null, button.width, 0)
+        button.popupManager.toggle(button.popupId, button.screen, mapped.x)
+      } else {
+        button.clicked()
+      }
+    }
+
     onWheel: event => button.wheel(event)
   }
 }

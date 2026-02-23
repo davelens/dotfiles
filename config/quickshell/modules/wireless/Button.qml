@@ -6,11 +6,7 @@ import "../../core/components"
 BarButton {
   id: button
 
-  // Required: screen for popup management
-  required property var screen
-
-  // PopupManager passed from shell.qml for singleton consistency
-  property var popupManager: PopupManager
+  popupId: "wireless"
 
   // Force reactive update by depending on the properties that affect the icon
   icon: {
@@ -19,11 +15,6 @@ BarButton {
     return WirelessManager.getIcon()
   }
   iconColor: WirelessManager.enabled ? Colors.text : Colors.overlay0
-
-  onClicked: {
-    var mapped = mapToItem(null, width, 0)
-    popupManager.toggle("wireless", screen, mapped.x)
-  }
 
   // Bar icon tooltip
   PopupWindow {

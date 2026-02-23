@@ -7,16 +7,11 @@ import "../../core/components"
 BarButton {
   id: button
 
-  // Required: screen for popup management
-  required property var screen
-
-  // PopupManager passed from shell.qml for singleton consistency
-  property var popupManager: PopupManager
-
   property var sink: Pipewire.defaultAudioSink
   property real volume: sink && sink.audio ? sink.audio.volume : 0
   property bool muted: sink && sink.audio ? sink.audio.muted : false
 
+  popupId: "volume"
   icon: getVolumeIcon(volume, muted)
   iconSize: 24
   iconColor: muted ? Colors.overlay0 : Colors.text
@@ -26,11 +21,6 @@ BarButton {
     if (volume < 0.25) return "󰕿"
     if (volume < 0.50) return "󰖀"
     return "󰕾"
-  }
-
-  onClicked: {
-    var mapped = mapToItem(null, width, 0)
-    popupManager.toggle("volume", screen, mapped.x)
   }
 
   onWheel: event => {

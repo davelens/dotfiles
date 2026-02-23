@@ -6,9 +6,6 @@ import "../../core/components"
 BarButton {
   id: button
 
-  // Required: screen for positioning
-  required property var screen
-
   // NotificationManager can be passed from shell.qml or fallback to import
   property var notificationManager: NotificationManager
 

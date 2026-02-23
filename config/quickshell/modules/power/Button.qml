@@ -4,8 +4,6 @@ import "../.."
 import "../../core/components"
 
 BarButton {
-  property var screen
-
   icon: "⏻"
   iconSize: 28
   iconColor: Colors.blue

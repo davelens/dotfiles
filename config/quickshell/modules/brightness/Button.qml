@@ -6,18 +6,8 @@ import "../../core/components"
 BarButton {
   id: button
 
-  // Required: screen for popup management
-  required property var screen
-
-  // PopupManager passed from shell.qml for singleton consistency
-  property var popupManager: PopupManager
-
+  popupId: "brightness"
   icon: BrightnessManager.getIcon(BrightnessManager.averageLevel)
-
-  onClicked: {
-    var mapped = mapToItem(null, width, 0)
-    popupManager.toggle("brightness", screen, mapped.x)
-  }
 
   onWheel: event => {
     var delta = event.angleDelta.y > 0 ? 0.05 : -0.05
