@@ -144,6 +144,7 @@ bindsym $mod+Space exec $launcher
 # bindsym $mod+u exec $browser
 bindsym $mod+c exec cliphist list | ~/.local/bin/rofi-start --dmenu --theme style-5-no-indent | cliphist decode | wl-copy
 bindsym $mod+m exec cliphist list | ~/.local/bin/rofi-start --mode calc -modi calc -no-show-match -no-sort
+bindsym $mod+n exec qs ipc call notifications toggle
 
 ### Actions ###################################################################
 
