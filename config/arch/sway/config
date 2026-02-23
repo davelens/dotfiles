@@ -77,10 +77,6 @@ for_window [app_id="librewolf" title=".*Extension.*"] floating enable
 
 ### Displays and window output ################################################
 
-# Forces to always output workspace 2 to my built-in display when multiple
-# monitors are connected.
-workspace 2 output eDP-2
-
 # kanshi handles automatic dp configuration when monitors connect/disconnect.
 exec_always pkill kanshi; kanshi
 
