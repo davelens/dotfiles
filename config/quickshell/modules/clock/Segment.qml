@@ -5,6 +5,7 @@ import "../.."
 Item {
   id: clock
   property var screen
+  property bool barFocused: false
 
   anchors.verticalCenter: parent.verticalCenter
   width: timeText.width
@@ -24,7 +25,7 @@ Item {
   }
 
   PopupWindow {
-    visible: hoverArea.containsMouse
+    visible: hoverArea.containsMouse || clock.barFocused
 
     anchor.item: clock
     anchor.edges: Edges.Bottom | Edges.Right

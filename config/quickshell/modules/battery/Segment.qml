@@ -6,6 +6,7 @@ import "../.."
 Item {
   id: battery
   property var screen
+  property bool barFocused: false
 
   anchors.verticalCenter: parent.verticalCenter
   width: batteryRow.width
@@ -79,7 +80,7 @@ Item {
 
   // Tooltip
   PopupWindow {
-    visible: hoverArea.containsMouse
+    visible: hoverArea.containsMouse || battery.barFocused
 
     anchor.item: battery
     anchor.edges: Edges.Bottom | Edges.Right
