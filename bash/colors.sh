@@ -16,36 +16,36 @@ if [[ ! "$LS_COLORS" =~ "di=0;34:" ]]; then
   export LS_COLORS
 fi
 
-# This seems to be more consistent than \033[0m
-CNONE="$(tput sgr0)"                    # Unsets color to term's fg color.
-CBOLD="$(tput bold)"                    # Bold
-CEM="$(tput sitm 2>/dev/null || true)"  # Start italic mode
-CNEM="$(tput ritm 2>/dev/null || true)" # Reset italic mode
-CUN="$(tput smul)"                      # Start underline mode
-CNUN="$(tput rmul)"                     # Reset underline mode
-CSTR="$(printf '\e[9m')"                # Start strikethrough mode
+# ANSI escape sequences (no subshells needed).
+CNONE=$'\e[0m' # Reset all attributes
+CBOLD=$'\e[1m' # Bold
+CEM=$'\e[3m'   # Start italic mode
+CNEM=$'\e[23m' # Reset italic mode
+CUN=$'\e[4m'   # Start underline mode
+CNUN=$'\e[24m' # Reset underline mode
+CSTR=$'\e[9m'  # Start strikethrough mode
 export CNONE CBOLD CEM CNEM CUN CNUN CSTR
 
 # Foreground colors
-FGK="$(tput setaf 0)" # black
-FGR="$(tput setaf 1)" # red
-FGG="$(tput setaf 2)" # green
-FGY="$(tput setaf 3)" # yellow
-FGB="$(tput setaf 4)" # blue
-FGM="$(tput setaf 5)" # magenta
-FGC="$(tput setaf 6)" # cyan
-FGW="$(tput setaf 7)" # white
+FGK=$'\e[30m' # black
+FGR=$'\e[31m' # red
+FGG=$'\e[32m' # green
+FGY=$'\e[33m' # yellow
+FGB=$'\e[34m' # blue
+FGM=$'\e[35m' # magenta
+FGC=$'\e[36m' # cyan
+FGW=$'\e[37m' # white
 export FGK FGR FGG FGY FGB FGM FGC FGW
 
 # Background colors
-BGK="$(tput setab 0)" # black
-BGR="$(tput setab 1)" # red
-BGG="$(tput setab 2)" # green
-BGY="$(tput setab 3)" # yellow
-BGB="$(tput setab 4)" # blue
-BGM="$(tput setab 5)" # magenta
-BGC="$(tput setab 6)" # cyan
-BGW="$(tput setab 7)" # white
+BGK=$'\e[40m' # black
+BGR=$'\e[41m' # red
+BGG=$'\e[42m' # green
+BGY=$'\e[43m' # yellow
+BGB=$'\e[44m' # blue
+BGM=$'\e[45m' # magenta
+BGC=$'\e[46m' # cyan
+BGW=$'\e[47m' # white
 export BGK BGR BGG BGY BGB BGM BGC BGW
 
 BFGK=$CBOLD$FGK # Bold black
