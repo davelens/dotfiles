@@ -3,6 +3,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Services.Pipewire
 import QtQuick
+import "core/components"
 
 Scope {
   id: root
@@ -48,6 +49,9 @@ Scope {
       WlrLayershell.layer: WlrLayer.Top
       WlrLayershell.keyboardFocus: barFocusActive
         ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+
+      // Modules that use PanelWindow popups (referenced by focus mode and prop builder)
+      property var popupModules: ["volume", "brightness", "display", "bluetooth", "wireless"]
 
       // Bar focus mode state
       property bool barFocusActive: false
@@ -166,9 +170,7 @@ Scope {
           }
         }
 
-        // Popup modules
-        var popupModules = ["volume", "brightness", "display", "bluetooth", "wireless"]
-        if (popupModules.indexOf(moduleId) !== -1) {
+        if (panel.popupModules.indexOf(moduleId) !== -1) {
           PopupManager.toggle(moduleId, panel.modelData, anchorRight)
           return
         }
@@ -200,7 +202,6 @@ Scope {
       // avoid "non-existent property" warnings from Loader.setSource().
       function buildBarComponentProps(moduleId) {
         var props = { "screen": panel.modelData }
-        var popupModules = ["volume", "brightness", "display", "bluetooth", "wireless"]
         if (popupModules.indexOf(moduleId) !== -1) {
           props.popupManager = PopupManager
         }
@@ -211,70 +212,20 @@ Scope {
       }
 
       // Left section
-      Row {
+      BarSection {
         anchors.left: parent.left
         anchors.leftMargin: StatusbarManager.barMargins.left
-        anchors.verticalCenter: parent.verticalCenter
         spacing: StatusbarManager.sectionSpacing.left
-
-        Repeater {
-          model: StatusbarManager.leftItems.filter(function(i) { return i.enabled })
-
-          Row {
-            required property var modelData
-            anchors.verticalCenter: parent.verticalCenter
-            spacing: 0
-
-            Item { width: modelData.marginLeft; height: 1 }
-
-            Loader {
-              id: loader
-              anchors.verticalCenter: parent.verticalCenter
-
-              Component.onCompleted: {
-                var url = ModuleRegistry.getBarComponentUrl(modelData.id)
-                if (url) {
-                  setSource(url, panel.buildBarComponentProps(modelData.id))
-                }
-              }
-            }
-
-            Item { width: modelData.marginRight; height: 1 }
-          }
-        }
+        items: StatusbarManager.leftItems
+        buildProps: panel.buildBarComponentProps
       }
 
       // Center section
-      Row {
+      BarSection {
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
         spacing: StatusbarManager.sectionSpacing.center
-
-        Repeater {
-          model: StatusbarManager.centerItems.filter(function(i) { return i.enabled })
-
-          Row {
-            required property var modelData
-            anchors.verticalCenter: parent.verticalCenter
-            spacing: 0
-
-            Item { width: modelData.marginLeft; height: 1 }
-
-            Loader {
-              id: loader
-              anchors.verticalCenter: parent.verticalCenter
-
-              Component.onCompleted: {
-                var url = ModuleRegistry.getBarComponentUrl(modelData.id)
-                if (url) {
-                  setSource(url, panel.buildBarComponentProps(modelData.id))
-                }
-              }
-            }
-
-            Item { width: modelData.marginRight; height: 1 }
-          }
-        }
+        items: StatusbarManager.centerItems
+        buildProps: panel.buildBarComponentProps
       }
 
       // Right section
