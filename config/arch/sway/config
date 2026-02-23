@@ -14,7 +14,7 @@ set $up         k
 set $right      l
 
 # Applications
-set $term       wezterm
+set $term       foot
 set $browser    firefox
 set $launcher   '~/.local/bin/rofi-start'
 
