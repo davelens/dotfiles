@@ -1,6 +1,7 @@
 import Quickshell
 import Quickshell.Wayland
 import QtQuick
+import QtQuick.Controls
 import "../.."
 import "../../core/components"
 
@@ -62,7 +63,7 @@ Variants {
     Rectangle {
       x: PopupManager.anchorRight - width
       y: 0
-      width: 340
+      width: 380
       height: {
         // Header (28) + spacing (12) + separator (1) + spacing (12)
         var h = 28 + 12 + 1 + 12
@@ -79,7 +80,8 @@ Variants {
 
           var visibleDevices = BluetoothManager.devices.filter(d => !d.connected).length
           if (visibleDevices > 0) {
-            h += visibleDevices * 36 + (visibleDevices - 1) * 2
+            var displayCount = Math.min(visibleDevices, 6)
+            h += displayCount * 36 + (displayCount - 1) * 2
           } else {
             h += 40
           }
@@ -109,7 +111,7 @@ Variants {
             anchors.verticalCenter: parent.verticalCenter
             text: BluetoothManager.getIcon()
             color: BluetoothManager.powered ? Colors.blue : Colors.overlay0
-            font.pixelSize: 18
+            font.pixelSize: 20
             font.family: "Symbols Nerd Font"
           }
 
@@ -117,7 +119,7 @@ Variants {
             anchors.verticalCenter: parent.verticalCenter
             text: "Bluetooth"
             color: Colors.text
-            font.pixelSize: 14
+            font.pixelSize: 16
           }
 
           Item { width: parent.width - 140; height: 1 }
@@ -146,7 +148,7 @@ Variants {
           Text {
             text: "Connected devices"
             color: Colors.overlay0
-            font.pixelSize: 12
+            font.pixelSize: 14
           }
 
           Repeater {
@@ -166,7 +168,7 @@ Variants {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "󰂱"
                 color: Colors.green
-                font.pixelSize: 16
+                font.pixelSize: 18
                 font.family: "Symbols Nerd Font"
               }
 
@@ -178,7 +180,7 @@ Variants {
                 anchors.verticalCenter: parent.verticalCenter
                 text: modelData.name
                 color: Colors.text
-                font.pixelSize: 13
+                font.pixelSize: 15
                 elide: Text.ElideRight
               }
 
@@ -189,7 +191,7 @@ Variants {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "󰅖"
                 color: disconnectArea.containsMouse ? Colors.red : Colors.overlay0
-                font.pixelSize: 14
+                font.pixelSize: 16
                 font.family: "Symbols Nerd Font"
 
                 MouseArea {
@@ -219,14 +221,14 @@ Variants {
               anchors.verticalCenter: parent.verticalCenter
               text: BluetoothManager.scanning ? "Scanning..." : "Devices"
               color: Colors.overlay0
-              font.pixelSize: 12
+              font.pixelSize: 14
             }
 
             Text {
               anchors.verticalCenter: parent.verticalCenter
               text: "󰔟"
               color: Colors.blue
-              font.pixelSize: 12
+              font.pixelSize: 14
               font.family: "Symbols Nerd Font"
               visible: BluetoothManager.scanning
 
@@ -246,7 +248,7 @@ Variants {
             anchors.verticalCenter: parent.verticalCenter
             text: "󰑐"
             color: refreshArea.containsMouse ? Colors.blue : Colors.overlay0
-            font.pixelSize: 14
+            font.pixelSize: 16
             font.family: "Symbols Nerd Font"
             visible: !BluetoothManager.scanning
 
@@ -260,72 +262,85 @@ Variants {
           }
         }
 
-        // Device list
-        Column {
+        // Device list (scrollable, max 6 visible)
+        ScrollView {
           width: parent.width
-          spacing: 2
           visible: BluetoothManager.powered
+          clip: true
+          contentWidth: availableWidth
 
-          Repeater {
-            model: BluetoothManager.devices
+          height: {
+            var visibleDevices = BluetoothManager.devices.filter(d => !d.connected).length
+            if (visibleDevices === 0) return 40
+            var displayCount = Math.min(visibleDevices, 6)
+            return displayCount * 36 + (displayCount - 1) * 2
+          }
 
-            Rectangle {
-              required property var modelData
-              width: parent.width
-              height: 36
-              radius: 4
-              color: deviceArea.containsMouse ? Colors.surface0 : "transparent"
+          Column {
+            width: parent.width
+            spacing: 2
 
-              visible: !modelData.connected
+            Repeater {
+              model: BluetoothManager.devices
 
-              Row {
-                anchors.fill: parent
-                anchors.leftMargin: 10
-                anchors.rightMargin: 10
-                spacing: 10
+              Rectangle {
+                required property var modelData
+                width: parent.width
+                height: 36
+                radius: 4
+                color: deviceArea.containsMouse ? Colors.surface0 : "transparent"
 
-                Text {
-                  anchors.verticalCenter: parent.verticalCenter
-                  text: modelData.paired ? "󰂰" : "󰂯"
-                  color: modelData.paired ? Colors.blue : Colors.overlay0
-                  font.pixelSize: 16
-                  font.family: "Symbols Nerd Font"
+                visible: !modelData.connected
+
+                Row {
+                  anchors.fill: parent
+                  anchors.leftMargin: 10
+                  anchors.rightMargin: 10
+                  spacing: 10
+
+                  Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: modelData.paired ? "󰂰" : "󰂯"
+                    color: modelData.paired ? Colors.blue : Colors.overlay0
+                    font.pixelSize: 18
+                    font.family: "Symbols Nerd Font"
+                  }
+
+                  Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: modelData.name
+                    color: Colors.text
+                    font.pixelSize: 15
+                    width: parent.width - 50
+                    elide: Text.ElideRight
+                  }
                 }
 
-                Text {
-                  anchors.verticalCenter: parent.verticalCenter
-                  text: modelData.name
-                  color: Colors.text
-                  font.pixelSize: 13
-                  width: parent.width - 50
-                  elide: Text.ElideRight
-                }
-              }
-
-              MouseArea {
-                id: deviceArea
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: BluetoothManager.busy ? Qt.WaitCursor : Qt.PointingHandCursor
-                onClicked: {
-                  if (!BluetoothManager.busy) {
-                    BluetoothManager.connect(modelData.address)
+                MouseArea {
+                  id: deviceArea
+                  anchors.fill: parent
+                  hoverEnabled: true
+                  cursorShape: BluetoothManager.busy ? Qt.WaitCursor : Qt.PointingHandCursor
+                  onClicked: {
+                    if (!BluetoothManager.busy) {
+                      BluetoothManager.connect(modelData.address)
+                    }
                   }
                 }
               }
             }
-          }
 
-          // Empty state
-          Text {
-            width: parent.width
-            text: BluetoothManager.scanning ? "Looking for devices..." : "No devices found"
-            color: Colors.overlay0
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
-            visible: BluetoothManager.devices.length === 0
-            topPadding: 8
-            bottomPadding: 8
+            // Empty state
+            Text {
+              width: parent.width
+              text: BluetoothManager.scanning ? "Looking for devices..." : "No devices found"
+              color: Colors.overlay0
+              font.pixelSize: 14
+              horizontalAlignment: Text.AlignHCenter
+              visible: BluetoothManager.devices.length === 0
+              topPadding: 8
+              bottomPadding: 8
+            }
           }
         }
 
@@ -339,7 +354,7 @@ Variants {
             width: parent.width
             text: "Bluetooth is off"
             color: Colors.overlay0
-            font.pixelSize: 13
+            font.pixelSize: 15
             horizontalAlignment: Text.AlignHCenter
             topPadding: 8
           }
@@ -348,7 +363,7 @@ Variants {
             width: parent.width
             text: "Toggle the switch above to enable"
             color: Colors.overlay1
-            font.pixelSize: 11
+            font.pixelSize: 13
             horizontalAlignment: Text.AlignHCenter
             bottomPadding: 8
           }

@@ -51,7 +51,7 @@ Variants {
     Rectangle {
       x: PopupManager.anchorRight - width
       y: 0
-      width: 320
+      width: 360
       height: content.implicitHeight + 48
       color: Colors.base
       border.width: 1
@@ -111,7 +111,7 @@ Variants {
             anchors.verticalCenter: parent.verticalCenter
             text: parent.muted ? "󰝟" : "󰕾"
             color: parent.muted ? Colors.red : Colors.text
-            font.pixelSize: 18
+            font.pixelSize: 20
             font.family: "Symbols Nerd Font"
 
             MouseArea {
@@ -173,7 +173,7 @@ Variants {
             anchors.verticalCenter: parent.verticalCenter
             text: Math.round(parent.volume * 100) + "%"
             color: Colors.blue
-            font.pixelSize: 14
+            font.pixelSize: 16
             width: 44
             horizontalAlignment: Text.AlignRight
           }

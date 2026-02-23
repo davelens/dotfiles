@@ -1,6 +1,7 @@
 import Quickshell
 import Quickshell.Wayland
 import QtQuick
+import QtQuick.Controls
 import "../.."
 import "../../core/components"
 
@@ -60,7 +61,7 @@ Variants {
     Rectangle {
       x: PopupManager.anchorRight - width
       y: 0
-      width: 340
+      width: 380
       height: {
         // Header (28) + spacing (12) + separator (1) + spacing (12)
         var h = 28 + 12 + 1 + 12
@@ -76,7 +77,7 @@ Variants {
 
           var visibleNetworks = WirelessManager.networks.filter(n => !n.active).length
           if (visibleNetworks > 0) {
-            var displayCount = Math.min(visibleNetworks, 8)
+            var displayCount = Math.min(visibleNetworks, 6)
             h += displayCount * 36 + (displayCount - 1) * 2
           } else {
             h += 40
@@ -107,7 +108,7 @@ Variants {
             anchors.verticalCenter: parent.verticalCenter
             text: WirelessManager.getIcon()
             color: WirelessManager.enabled ? Colors.blue : Colors.overlay0
-            font.pixelSize: 18
+            font.pixelSize: 20
             font.family: "Symbols Nerd Font"
           }
 
@@ -115,7 +116,7 @@ Variants {
             anchors.verticalCenter: parent.verticalCenter
             text: "Wi-Fi"
             color: Colors.text
-            font.pixelSize: 14
+            font.pixelSize: 16
           }
 
           Item { width: parent.width - 120; height: 1 }
@@ -144,7 +145,7 @@ Variants {
           Text {
             text: "Connected network"
             color: Colors.overlay0
-            font.pixelSize: 12
+            font.pixelSize: 14
           }
 
           Rectangle {
@@ -160,7 +161,7 @@ Variants {
               anchors.verticalCenter: parent.verticalCenter
               text: WirelessManager.getIcon()
               color: Colors.green
-              font.pixelSize: 16
+              font.pixelSize: 18
               font.family: "Symbols Nerd Font"
             }
 
@@ -172,7 +173,7 @@ Variants {
               anchors.verticalCenter: parent.verticalCenter
               text: WirelessManager.connectedNetwork ? WirelessManager.connectedNetwork.ssid : ""
               color: Colors.text
-              font.pixelSize: 13
+              font.pixelSize: 15
               elide: Text.ElideRight
             }
 
@@ -183,7 +184,7 @@ Variants {
               anchors.verticalCenter: parent.verticalCenter
               text: "󰅖"
               color: disconnectArea.containsMouse ? Colors.red : Colors.overlay0
-              font.pixelSize: 14
+              font.pixelSize: 16
               font.family: "Symbols Nerd Font"
 
               MouseArea {
@@ -205,13 +206,13 @@ Variants {
             Text {
               text: "Uptime: " + WirelessManager.getConnectionDurationLong()
               color: Colors.overlay0
-              font.pixelSize: 12
+              font.pixelSize: 14
             }
 
             Text {
               text: "Down: " + WirelessManager.formatSpeed(WirelessManager.downloadSpeed) + "  Up: " + WirelessManager.formatSpeed(WirelessManager.uploadSpeed)
               color: Colors.overlay0
-              font.pixelSize: 12
+              font.pixelSize: 14
             }
           }
         }
@@ -231,14 +232,14 @@ Variants {
               anchors.verticalCenter: parent.verticalCenter
               text: WirelessManager.scanning ? "Scanning..." : "Networks"
               color: Colors.overlay0
-              font.pixelSize: 12
+              font.pixelSize: 14
             }
 
             Text {
               anchors.verticalCenter: parent.verticalCenter
               text: "󰔟"
               color: Colors.blue
-              font.pixelSize: 12
+              font.pixelSize: 14
               font.family: "Symbols Nerd Font"
               visible: WirelessManager.scanning
 
@@ -258,7 +259,7 @@ Variants {
             anchors.verticalCenter: parent.verticalCenter
             text: "󰑐"
             color: refreshArea.containsMouse ? Colors.blue : Colors.overlay0
-            font.pixelSize: 14
+            font.pixelSize: 16
             font.family: "Symbols Nerd Font"
             visible: !WirelessManager.scanning
 
@@ -272,79 +273,92 @@ Variants {
           }
         }
 
-        // Network list
-        Column {
+        // Network list (scrollable, max 6 visible)
+        ScrollView {
           width: parent.width
-          spacing: 2
           visible: WirelessManager.enabled
+          clip: true
+          contentWidth: availableWidth
 
-          Repeater {
-            model: WirelessManager.networks.filter(n => !n.active).slice(0, 8)
+          height: {
+            var visibleNetworks = WirelessManager.networks.filter(n => !n.active).length
+            if (visibleNetworks === 0) return 40
+            var displayCount = Math.min(visibleNetworks, 6)
+            return displayCount * 36 + (displayCount - 1) * 2
+          }
 
-            Rectangle {
-              required property var modelData
-              width: parent.width
-              height: 36
-              radius: 4
-              color: networkArea.containsMouse ? Colors.surface0 : "transparent"
+          Column {
+            width: parent.width
+            spacing: 2
 
-              Text {
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                anchors.verticalCenter: parent.verticalCenter
-                text: WirelessManager.getSignalIcon(modelData.signal)
-                color: Colors.overlay0
-                font.pixelSize: 16
-                font.family: "Symbols Nerd Font"
-              }
+            Repeater {
+              model: WirelessManager.networks.filter(n => !n.active)
 
-              Text {
-                anchors.left: parent.left
-                anchors.leftMargin: 34
-                anchors.right: securityIcon.left
-                anchors.rightMargin: 8
-                anchors.verticalCenter: parent.verticalCenter
-                text: modelData.ssid
-                color: Colors.text
-                font.pixelSize: 13
-                elide: Text.ElideRight
-              }
+              Rectangle {
+                required property var modelData
+                width: parent.width
+                height: 36
+                radius: 4
+                color: networkArea.containsMouse ? Colors.surface0 : "transparent"
 
-              Text {
-                id: securityIcon
-                anchors.right: parent.right
-                anchors.rightMargin: 10
-                anchors.verticalCenter: parent.verticalCenter
-                text: modelData.security ? "󰌾" : ""
-                color: Colors.overlay0
-                font.pixelSize: 12
-                font.family: "Symbols Nerd Font"
-              }
+                Text {
+                  anchors.left: parent.left
+                  anchors.leftMargin: 10
+                  anchors.verticalCenter: parent.verticalCenter
+                  text: WirelessManager.getSignalIcon(modelData.signal)
+                  color: Colors.overlay0
+                  font.pixelSize: 18
+                  font.family: "Symbols Nerd Font"
+                }
 
-              MouseArea {
-                id: networkArea
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: WirelessManager.busy ? Qt.WaitCursor : Qt.PointingHandCursor
-                onClicked: {
-                  if (!WirelessManager.busy) {
-                    WirelessManager.connect(modelData.ssid)
+                Text {
+                  anchors.left: parent.left
+                  anchors.leftMargin: 34
+                  anchors.right: securityIcon.left
+                  anchors.rightMargin: 8
+                  anchors.verticalCenter: parent.verticalCenter
+                  text: modelData.ssid
+                  color: Colors.text
+                  font.pixelSize: 15
+                  elide: Text.ElideRight
+                }
+
+                Text {
+                  id: securityIcon
+                  anchors.right: parent.right
+                  anchors.rightMargin: 10
+                  anchors.verticalCenter: parent.verticalCenter
+                  text: modelData.security ? "󰌾" : ""
+                  color: Colors.overlay0
+                  font.pixelSize: 14
+                  font.family: "Symbols Nerd Font"
+                }
+
+                MouseArea {
+                  id: networkArea
+                  anchors.fill: parent
+                  hoverEnabled: true
+                  cursorShape: WirelessManager.busy ? Qt.WaitCursor : Qt.PointingHandCursor
+                  onClicked: {
+                    if (!WirelessManager.busy) {
+                      WirelessManager.connect(modelData.ssid)
+                    }
                   }
                 }
               }
             }
-          }
 
-          // Empty state
-          Text {
-            width: parent.width
-            text: WirelessManager.scanning ? "Looking for networks..." : "No networks found"
-            color: Colors.overlay0
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
-            visible: WirelessManager.networks.filter(n => !n.active).length === 0
-            topPadding: 8
-            bottomPadding: 8
+            // Empty state
+            Text {
+              width: parent.width
+              text: WirelessManager.scanning ? "Looking for networks..." : "No networks found"
+              color: Colors.overlay0
+              font.pixelSize: 14
+              horizontalAlignment: Text.AlignHCenter
+              visible: WirelessManager.networks.filter(n => !n.active).length === 0
+              topPadding: 8
+              bottomPadding: 8
+            }
           }
         }
 
@@ -358,7 +372,7 @@ Variants {
             width: parent.width
             text: "Wi-Fi is off"
             color: Colors.overlay0
-            font.pixelSize: 13
+            font.pixelSize: 15
             horizontalAlignment: Text.AlignHCenter
             topPadding: 8
           }
@@ -367,7 +381,7 @@ Variants {
             width: parent.width
             text: "Toggle the switch above to enable"
             color: Colors.overlay1
-            font.pixelSize: 11
+            font.pixelSize: 13
             horizontalAlignment: Text.AlignHCenter
             bottomPadding: 8
           }

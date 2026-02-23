@@ -54,7 +54,7 @@ Variants {
     Rectangle {
       x: PopupManager.anchorRight - width
       y: 0
-      width: 280
+      width: 320
       height: content.implicitHeight + 48
       color: Colors.base
       border.width: 1
@@ -78,7 +78,7 @@ Variants {
             Text {
               text: (modelData.type === "ddc" ? "󰍹  " : "󰌢  ") + modelData.name
               color: Colors.overlay0
-              font.pixelSize: 14
+              font.pixelSize: 16
               font.family: "Symbols Nerd Font"
             }
 
@@ -94,7 +94,7 @@ Variants {
                 anchors.verticalCenter: parent.verticalCenter
                 text: BrightnessManager.getIcon(brightnessSlider.value)
                 color: Colors.text
-                font.pixelSize: 18
+                font.pixelSize: 20
                 font.family: "Symbols Nerd Font"
               }
 
@@ -143,7 +143,7 @@ Variants {
                 anchors.verticalCenter: parent.verticalCenter
                 text: Math.round(brightnessSlider.value * 100) + "%"
                 color: Colors.yellow
-                font.pixelSize: 14
+                font.pixelSize: 16
                 width: 44
                 horizontalAlignment: Text.AlignRight
               }

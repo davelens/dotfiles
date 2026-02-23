@@ -83,7 +83,7 @@ Item {
           anchors.verticalCenter: parent.verticalCenter
           text: dropdown.headerIcon
           color: Colors.blue
-          font.pixelSize: 14
+          font.pixelSize: 16
           font.family: "Symbols Nerd Font"
           visible: dropdown.headerIcon
         }
@@ -92,7 +92,7 @@ Item {
           anchors.verticalCenter: parent.verticalCenter
           text: dropdown.headerLabel
           color: Colors.overlay0
-          font.pixelSize: 14
+          font.pixelSize: 16
           visible: dropdown.headerLabel
         }
 
@@ -100,7 +100,7 @@ Item {
           anchors.verticalCenter: parent.verticalCenter
           text: dropdown.getItemText(dropdown.currentItem, false)
           color: Colors.text
-          font.pixelSize: 13
+          font.pixelSize: 15
           elide: Text.ElideRight
           width: parent.width - 90
         }
@@ -109,7 +109,7 @@ Item {
           anchors.verticalCenter: parent.verticalCenter
           text: dropdown.expanded ? "\uf106" : "\uf107"
           color: Colors.overlay0
-          font.pixelSize: 14
+          font.pixelSize: 16
           font.family: "Symbols Nerd Font"
         }
       }
@@ -154,7 +154,7 @@ Item {
               anchors.verticalCenter: parent.verticalCenter
               text: isSelected ? dropdown.selectedIcon : (dropdown.itemIcon || dropdown.headerIcon)
               color: isSelected ? Colors.green : Colors.overlay0
-              font.pixelSize: 14
+              font.pixelSize: 16
               font.family: "Symbols Nerd Font"
             }
 
@@ -162,7 +162,7 @@ Item {
               anchors.verticalCenter: parent.verticalCenter
               text: dropdown.getItemText(modelData, false)
               color: isSelected ? Colors.text : Colors.subtext0
-              font.pixelSize: 13
+              font.pixelSize: 15
               elide: Text.ElideRight
               width: parent.width - 40
             }

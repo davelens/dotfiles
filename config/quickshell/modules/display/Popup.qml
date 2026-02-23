@@ -49,7 +49,7 @@ Variants {
     Rectangle {
       x: PopupManager.anchorRight - width
       y: 0
-      width: 280
+      width: 320
       height: content.implicitHeight + 48
       color: Colors.base
       border.width: 1
@@ -67,7 +67,7 @@ Variants {
         Text {
           text: "Main display"
           color: Colors.text
-          font.pixelSize: 14
+          font.pixelSize: 16
         }
 
         // Display list
@@ -95,7 +95,7 @@ Variants {
                   anchors.verticalCenter: parent.verticalCenter
                   text: modelData.name.startsWith("eDP") ? "󰌢" : "󰍹"
                   color: DisplayConfig.isPrimary(modelData) ? Colors.blue : Colors.text
-                  font.pixelSize: 16
+                  font.pixelSize: 18
                   font.family: "Symbols Nerd Font"
                 }
 
@@ -103,7 +103,7 @@ Variants {
                   anchors.verticalCenter: parent.verticalCenter
                   text: DisplayConfig.friendlyName(modelData)
                   color: Colors.text
-                  font.pixelSize: 13
+                  font.pixelSize: 15
                   width: parent.width - 16 - 8 - 24 - 8 - 24
                   elide: Text.ElideRight
                 }
@@ -113,7 +113,7 @@ Variants {
                   anchors.verticalCenter: parent.verticalCenter
                   text: DisplayConfig.isPrimary(modelData) ? "󰄬" : ""
                   color: Colors.blue
-                  font.pixelSize: 16
+                  font.pixelSize: 18
                   font.family: "Symbols Nerd Font"
                   width: 24
                   horizontalAlignment: Text.AlignHCenter
@@ -132,7 +132,7 @@ Variants {
                     anchors.centerIn: parent
                     text: "󰑵"
                     color: displayRotateArea.containsMouse ? Colors.blue : Colors.overlay0
-                    font.pixelSize: 16
+                    font.pixelSize: 18
                     font.family: "Symbols Nerd Font"
                   }
 
