@@ -282,8 +282,9 @@ bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
 ## Alt+Tab window switching (swtchr)
 # Uses a Sway mode to prevent key consumption while swtchr is open.
 # Releasing Alt switches to the selected window.
-bindsym $mod+Tab mode swtchr; exec swtchr
-mode swtchr bindsym Escape mode default
+# NOTE: Disabled for now; I might try my hand at a custom one with Quickshell.
+# bindsym $mod+Tab mode swtchr; exec swtchr
+# mode swtchr bindsym Escape mode default
 
 # Status Bar
 # Read `man 5 sway-bar` for more info.
