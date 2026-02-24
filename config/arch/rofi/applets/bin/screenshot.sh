@@ -63,6 +63,8 @@ take_screenshot_area() {
   local geometry
   # Capture output of slurp first so we can cancel if it fails.
   geometry=$(slurp) || return
+  dir="$(xdg-user-dir PICTURES)/screenshots"
+  mkdir -p "$dir"
   cd "$dir" && grim -g "$geometry" - | screenshot_to_clipboard
   send_notification_and_open_preview
 }
@@ -74,7 +76,7 @@ main() {
   msg="DIR: $(xdg-user-dir PICTURES)/Screenshots"
   layout=$(cat "$theme" | grep 'USE_ICON' | cut -d'=' -f2)
   geometry=$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | "\(.current_mode.width)x\(.current_mode.height)"')
-  dir="$(xdg-user-dir Pictures)/screenshots"
+  dir="$(xdg-user-dir PICTURES)/screenshots"
   file="$(date +%Y-%m-%d-%H-%M-%S)_${geometry}.png"
 
   if [[ "$theme" == *'type-1'* ]]; then
