@@ -281,6 +281,7 @@ Scope {
           Row {
             required property var modelData
             required property int index
+            visible: !loader.item || loader.item.visible
             anchors.verticalCenter: parent.verticalCenter
             spacing: 0
 
