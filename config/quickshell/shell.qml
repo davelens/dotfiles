@@ -171,10 +171,10 @@ Scope {
           } else if (event.key === Qt.Key_Space || event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
             panel.activateFocusedItem()
             event.accepted = true
-          } else if (event.key === Qt.Key_L && (event.modifiers & Qt.ControlModifier)) {
+          } else if (event.key === Qt.Key_L) {
             panel.barFocusIndex = panel.nextFocusIndex(panel.barFocusIndex)
             event.accepted = true
-          } else if (event.key === Qt.Key_H && (event.modifiers & Qt.ControlModifier)) {
+          } else if (event.key === Qt.Key_H) {
             panel.barFocusIndex = panel.prevFocusIndex(panel.barFocusIndex)
             event.accepted = true
           }
