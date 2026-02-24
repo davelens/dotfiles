@@ -40,9 +40,9 @@ Row {
         anchors.verticalCenter: parent.verticalCenter
 
         Component.onCompleted: {
-          var url = ModuleRegistry.getBarComponentUrl(modelData.id)
-          if (url) {
-            setSource(url, section.buildProps(modelData.id))
+          var relPath = ModuleRegistry.getBarComponentRelPath(modelData.id)
+          if (relPath) {
+            setSource("../../" + relPath, section.buildProps(modelData.id))
           }
         }
       }

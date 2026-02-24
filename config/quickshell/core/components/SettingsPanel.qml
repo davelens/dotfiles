@@ -236,11 +236,11 @@ Scope {
     }
   }
 
-  // Get the settings component URL for a category
+  // Get the settings component path for a category (relative to shell root)
   function getSettingsUrl(categoryId) {
     var module = ModuleRegistry.getModule(categoryId)
-    if (module && module.resolvedComponents && module.resolvedComponents.settings) {
-      return module.resolvedComponents.settings
+    if (module && module.components && module.components.settings) {
+      return "../../modules/" + module.dirName + "/" + module.components.settings
     }
     return ""
   }

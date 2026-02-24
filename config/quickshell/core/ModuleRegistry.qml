@@ -132,6 +132,16 @@ Singleton {
     return "file://" + module.path + "/" + file
   }
 
+  // Get the relative path for a bar component (from shell root)
+  // Used to avoid file:// singleton isolation with Loader.setSource()
+  function getBarComponentRelPath(id) {
+    var module = getModule(id)
+    if (!module || !module.components) return ""
+    var file = module.components.button || module.components.segment
+    if (!file) return ""
+    return "modules/" + module.dirName + "/" + file
+  }
+
   // Check if a module exists and has a bar component
   function hasBarComponent(id) {
     var module = getModule(id)

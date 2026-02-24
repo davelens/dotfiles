@@ -297,9 +297,9 @@ Scope {
                 anchors.verticalCenter: parent.verticalCenter
 
                 Component.onCompleted: {
-                  var url = ModuleRegistry.getBarComponentUrl(modelData.id)
-                  if (url) {
-                    setSource(url, panel.buildBarComponentProps(modelData.id))
+                  var relPath = ModuleRegistry.getBarComponentRelPath(modelData.id)
+                  if (relPath) {
+                    setSource(relPath, panel.buildBarComponentProps(modelData.id))
                   }
                 }
               }
