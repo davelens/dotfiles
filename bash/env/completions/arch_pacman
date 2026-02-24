@@ -6,7 +6,7 @@ _arch_pacman_completions() {
 
   case "$prev" in
     pacman)
-      COMPREPLY=($(compgen -W "--install-from-file --update" -- "$cur"))
+      COMPREPLY=($(compgen -W "--clean --install-from-file --update" -- "$cur"))
       ;;
     --install-from-file)
       # Complete file paths without adding space after directories
