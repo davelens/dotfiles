@@ -59,15 +59,17 @@ assign [app_id="^Spotify$"] workspace number 4
 assign [class="steam"] workspace number 5
 
 # Floating windows
+# Get a list of app IDs with `swaymsg -t get_tree`.
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="dialog"] floating enable
-for_window [app_id="org.gnome.Nautilus"] floating enable
-for_window [app_id="org.gnome.NautilusPreviewer"] floating enable
-for_window [class="com.github.phase1geo.annotator"] floating enable
-for_window [app_id="org.gnome.Calendar"] floating enable
-for_window [app_id="pavucontrol"] floating enable
-for_window [app_id="blueman-manager"] floating enable
+# see ./bin/autoload/float
 for_window [app_id="floating-term"] floating enable
+# All Gnome apps can open floating (Nautilus/Files, Calendar, Text Editor,...)
+for_window [app_id="org.gnome.*"] floating enable
+# App-specific overrides
+for_window [app_id="annotator"] floating enable
+for_window [app_id="pavucontrol"] floating enable
+# Meant to isolate an extension's windows so they open as float.
 for_window [app_id="Firefox" title=".*Extension.*"] floating enable
 for_window [app_id="librewolf" title=".*Extension.*"] floating enable
 
