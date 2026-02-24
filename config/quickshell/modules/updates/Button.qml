@@ -11,7 +11,6 @@ BarButton {
 
   // Whether this button should be shown in the bar (checked by shell.qml delegate)
   property bool showInBar: updateCount > 0
-  onShowInBarChanged: if (showInBar) Qt.callLater(storeAnchor)
 
   popupId: "updates"
 

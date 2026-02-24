@@ -77,20 +77,13 @@ Rectangle {
   }
 
   // Store anchor position for IPC toggles (so popup appears below the button)
-  function storeAnchor() {
-    if (popupId !== "" && popupManager && screen) {
-      var mapped = button.mapToItem(null, button.width, 0)
-      if (mapped.x > 0) {
-        popupManager.storedAnchors = Object.assign({}, popupManager.storedAnchors,
-          (function() { var o = {}; o[popupId] = { screen: screen, right: mapped.x }; return o })()
-        )
-      }
+  // Register this button with PopupManager so IPC toggles can compute
+  // the anchor position at open time (avoids stale stored positions).
+  Component.onCompleted: {
+    if (popupId !== "" && popupManager) {
+      popupManager.registerButton(popupId, button)
     }
   }
-
-  Component.onCompleted: storeAnchor()
-  onXChanged: storeAnchor()
-  onVisibleChanged: if (visible) storeAnchor()
 
   MouseArea {
     id: mouseArea

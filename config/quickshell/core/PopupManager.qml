@@ -20,8 +20,30 @@ Singleton {
   property bool outputDevicesExpanded: false
   property bool inputDevicesExpanded: false
 
-  // Stored anchor positions per popup (for IPC toggle without a button click)
+  // Registered button references per popup (for IPC toggle anchor computation)
+  property var registeredButtons: ({})
+
+  // Legacy stored anchors (kept as fallback)
   property var storedAnchors: ({})
+
+  // Register a button for a popup (called from BarButton)
+  function registerButton(name: string, buttonRef: var): void {
+    var buttons = Object.assign({}, registeredButtons)
+    buttons[name] = buttonRef
+    registeredButtons = buttons
+  }
+
+  // Compute anchor position from a registered button
+  function getButtonAnchor(name: string): var {
+    var btn = registeredButtons[name]
+    if (btn && btn.screen) {
+      var mapped = btn.mapToItem(null, btn.width, 0)
+      if (mapped.x > btn.width) {
+        return { screen: btn.screen, right: mapped.x }
+      }
+    }
+    return null
+  }
 
   function toggle(name: string, screen: var, buttonRight: real): void {
     if (activePopup === name && activePopupScreen === screen) {
@@ -32,11 +54,6 @@ Singleton {
       anchorRight = buttonRight
       outputDevicesExpanded = false
       inputDevicesExpanded = false
-
-      // Store anchor for future IPC toggles
-      var anchors = storedAnchors
-      anchors[name] = { screen: screen, right: buttonRight }
-      storedAnchors = anchors
     }
   }
 
@@ -59,12 +76,12 @@ Singleton {
       if (popupManager.activePopup === name) {
         popupManager.close()
       } else {
-        // Use stored anchor position if available, otherwise fall back to screen edge
-        var stored = popupManager.storedAnchors[name]
-        if (stored) {
+        // Compute anchor from the registered button at toggle time
+        var anchor = popupManager.getButtonAnchor(name)
+        if (anchor) {
           popupManager.activePopup = name
-          popupManager.activePopupScreen = stored.screen
-          popupManager.anchorRight = stored.right
+          popupManager.activePopupScreen = anchor.screen
+          popupManager.anchorRight = anchor.right
         } else if (DisplayConfig.primaryScreen) {
           popupManager.activePopup = name
           popupManager.activePopupScreen = DisplayConfig.primaryScreen
