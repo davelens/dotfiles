@@ -70,6 +70,7 @@ for_window [app_id="org.gnome.*"] floating enable
 for_window [app_id="annotator"] floating enable
 for_window [app_id="pavucontrol"] floating enable
 for_window [app_id="virt-manager"] floating enable
+for_window [app_id="nm-connection-editor"] floating enable
 # Meant to isolate an extension's windows so they open as float.
 for_window [app_id="Firefox" title=".*Extension.*"] floating enable
 for_window [app_id="librewolf" title=".*Extension.*"] floating enable
