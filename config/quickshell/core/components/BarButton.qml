@@ -76,6 +76,22 @@ Rectangle {
     font.family: "Symbols Nerd Font"
   }
 
+  // Store anchor position for IPC toggles (so popup appears below the button)
+  function storeAnchor() {
+    if (popupId !== "" && popupManager && screen) {
+      var mapped = button.mapToItem(null, button.width, 0)
+      if (mapped.x > 0) {
+        popupManager.storedAnchors = Object.assign({}, popupManager.storedAnchors,
+          (function() { var o = {}; o[popupId] = { screen: screen, right: mapped.x }; return o })()
+        )
+      }
+    }
+  }
+
+  Component.onCompleted: storeAnchor()
+  onXChanged: storeAnchor()
+  onVisibleChanged: if (visible) storeAnchor()
+
   MouseArea {
     id: mouseArea
     anchors.fill: parent
