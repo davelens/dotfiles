@@ -29,7 +29,7 @@ Variants {
         Rectangle {
           required property var modelData
           width: parent.width
-          height: 32
+          height: 40
           radius: 4
           color: displayItemArea.containsMouse ? Colors.surface1 : Colors.surface0
 
@@ -47,13 +47,25 @@ Variants {
               font.family: "Symbols Nerd Font"
             }
 
-            Text {
+            Column {
               anchors.verticalCenter: parent.verticalCenter
-              text: DisplayConfig.friendlyName(modelData)
-              color: Colors.text
-              font.pixelSize: 15
               width: parent.width - 16 - 8 - 24 - 8 - 24
-              elide: Text.ElideRight
+              spacing: 1
+
+              Text {
+                width: parent.width
+                text: DisplayConfig.friendlyName(modelData)
+                color: Colors.text
+                font.pixelSize: 14
+                elide: Text.ElideRight
+              }
+
+              Text {
+                width: parent.width
+                text: modelData.name
+                color: Colors.overlay0
+                font.pixelSize: 11
+              }
             }
 
             // Primary indicator
