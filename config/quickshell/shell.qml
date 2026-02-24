@@ -246,6 +246,10 @@ Scope {
         if (moduleId === "notifications") {
           props.notificationManager = NotificationManager
         }
+        if (moduleId === "updates") {
+          props.updatesManager = UpdatesManager
+          props.updateCount = Qt.binding(function() { return UpdatesManager.totalCount })
+        }
         return props
       }
 
@@ -281,7 +285,7 @@ Scope {
           Row {
             required property var modelData
             required property int index
-            visible: !loader.item || loader.item.visible
+            visible: !loader.item || (loader.item.showInBar !== undefined ? loader.item.showInBar : true)
             anchors.verticalCenter: parent.verticalCenter
             spacing: 0
 

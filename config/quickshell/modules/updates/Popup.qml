@@ -16,6 +16,7 @@ Variants {
     id: popup
     popupWidth: 860
     contentSpacing: 12
+    stemEnabled: UpdatesManager.totalCount > 0
 
     // Column height for the scrollable lists
     property int maxVisibleItems: 12

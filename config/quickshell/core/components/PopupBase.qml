@@ -22,6 +22,12 @@ PanelWindow {
   // Content column spacing (default 8, override for 12 etc.)
   property int contentSpacing: 8
 
+  // Per-popup stem override (set to false to force-disable stem)
+  property bool stemEnabled: true
+
+  // Resolved stem visibility: global setting AND per-popup override
+  readonly property bool showStem: StatusbarManager.popupStem && stemEnabled
+
   // Stem connector dimensions
   property int stemWidth: 28
   property int stemHeight: 20
@@ -42,8 +48,8 @@ PanelWindow {
     bottom: true
   }
 
-  margins.top: StatusbarManager.popupStem ? 28 : 52
-  color: "transparent"
+  margins.top: popupBase.showStem ? 28 : 52
+  color: "#80000000"
   exclusionMode: ExclusionMode.Ignore
 
   WlrLayershell.namespace: "quickshell-popup"
@@ -70,14 +76,18 @@ PanelWindow {
   // Popup content rectangle
   Rectangle {
     id: popupRect
-    x: PopupManager.anchorRight - width
-    y: StatusbarManager.popupStem ? popupBase.stemHeight : 0
+    x: {
+      var ideal = PopupManager.anchorRight - width
+      if (ideal < 0) return popupBase.width - width - 24
+      return ideal
+    }
+    y: popupBase.showStem ? popupBase.stemHeight : 0
     width: popupBase.popupWidth
     height: popupBase.popupHeight > 0
       ? popupBase.popupHeight
       : contentColumn.implicitHeight + 48
     radius: 5
-    topRightRadius: StatusbarManager.popupStem ? 0 : 5
+    topRightRadius: popupBase.showStem ? 0 : 5
     color: Colors.base
     border.width: 1
     border.color: Colors.surface2
@@ -96,7 +106,7 @@ PanelWindow {
   // The stem's right edge aligns with the popup's right edge so the
   // right border continues straight from bar to popup bottom.
   Canvas {
-    visible: StatusbarManager.popupStem
+    visible: popupBase.showStem
     id: stemCanvas
 
     // The stem left edge (absolute x), used for positioning
@@ -160,7 +170,7 @@ PanelWindow {
 
   // Cover the popup's top border under the stem (between the two border strokes)
   Rectangle {
-    visible: StatusbarManager.popupStem
+    visible: popupBase.showStem
     x: stemCanvas.stemLeftX - 10
     y: popupBase.stemHeight
     width: popupBase.stemWidth + 9

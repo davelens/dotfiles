@@ -6,16 +6,21 @@ import "../../core/components"
 BarButton {
   id: button
 
-  visible: UpdatesManager.totalCount > 0
+  property var updatesManager: UpdatesManager
+  property int updateCount: 0
+
+  // Whether this button should be shown in the bar (checked by shell.qml delegate)
+  property bool showInBar: updateCount > 0
+  onShowInBarChanged: if (showInBar) Qt.callLater(storeAnchor)
 
   popupId: "updates"
 
-  icon: UpdatesManager.getIcon()
+  icon: updatesManager.getIcon()
   iconColor: Colors.green
 
   // Hover tooltip showing update count breakdown
   PopupWindow {
-    visible: button.hovered && !button.popupManager.isOpen("updates")
+    visible: button.hovered && !button.popupManager.isOpen("updates") && button.visible
 
     anchor.item: button
     anchor.edges: Edges.Bottom | Edges.Right
@@ -35,30 +40,30 @@ BarButton {
 
       // Single line for checking / up to date states
       Text {
-        visible: UpdatesManager.checking || UpdatesManager.totalCount === 0
-        text: UpdatesManager.checking ? "Checking for updates..." : "System up to date"
+        visible: button.updatesManager.checking || button.updatesManager.totalCount === 0
+        text: button.updatesManager.checking ? "Checking for updates..." : "System up to date"
         color: Colors.text
         font.pixelSize: 13
       }
 
       // Breakdown lines when updates are available
       Text {
-        visible: UpdatesManager.pacmanUpdates.length > 0
-        text: UpdatesManager.pacmanUpdates.length + " system update" + (UpdatesManager.pacmanUpdates.length !== 1 ? "s" : "")
+        visible: button.updatesManager.pacmanUpdates.length > 0
+        text: button.updatesManager.pacmanUpdates.length + " system update" + (button.updatesManager.pacmanUpdates.length !== 1 ? "s" : "")
         color: Colors.text
         font.pixelSize: 13
       }
 
       Text {
-        visible: UpdatesManager.aurUpdates.length > 0
-        text: UpdatesManager.aurUpdates.length + " package update" + (UpdatesManager.aurUpdates.length !== 1 ? "s" : "")
+        visible: button.updatesManager.aurUpdates.length > 0
+        text: button.updatesManager.aurUpdates.length + " package update" + (button.updatesManager.aurUpdates.length !== 1 ? "s" : "")
         color: Colors.text
         font.pixelSize: 13
       }
 
       Text {
-        visible: UpdatesManager.flatpakUpdates.length > 0
-        text: UpdatesManager.flatpakUpdates.length + " flatpak update" + (UpdatesManager.flatpakUpdates.length !== 1 ? "s" : "")
+        visible: button.updatesManager.flatpakUpdates.length > 0
+        text: button.updatesManager.flatpakUpdates.length + " flatpak update" + (button.updatesManager.flatpakUpdates.length !== 1 ? "s" : "")
         color: Colors.text
         font.pixelSize: 13
       }

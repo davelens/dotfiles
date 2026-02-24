@@ -16,7 +16,10 @@ Singleton {
   property var flatpakUpdates: []
 
   // Total count across all sources
-  readonly property int totalCount: pacmanUpdates.length + aurUpdates.length + flatpakUpdates.length
+  readonly property int totalCount: pacmanCount + aurCount + flatpakCount
+  property int pacmanCount: 0
+  property int aurCount: 0
+  property int flatpakCount: 0
 
   // Whether a check is currently running
   property bool checking: false
@@ -195,8 +198,10 @@ Singleton {
           }
         }
         manager.pacmanUpdates = updates
+        manager.pacmanCount = updates.length
       } else {
         manager.pacmanUpdates = []
+        manager.pacmanCount = 0
       }
       checkAurProc.running = true
     }
@@ -227,8 +232,10 @@ Singleton {
           }
         }
         manager.aurUpdates = updates
+        manager.aurCount = updates.length
       } else {
         manager.aurUpdates = []
+        manager.aurCount = 0
       }
       checkFlatpakProc.running = true
     }
@@ -260,8 +267,10 @@ Singleton {
           }
         }
         manager.flatpakUpdates = updates
+        manager.flatpakCount = updates.length
       } else {
         manager.flatpakUpdates = []
+        manager.flatpakCount = 0
       }
       manager.checking = false
     }
