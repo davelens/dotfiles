@@ -48,8 +48,10 @@ PanelWindow {
     bottom: true
   }
 
-  margins.top: popupBase.showStem ? 28 : 52
-  color: "#80000000"
+  // Vertical offset for content (keeps popup below the bar)
+  readonly property int contentOffset: popupBase.showStem ? 28 : 52
+
+  color: "transparent"
   exclusionMode: ExclusionMode.Ignore
 
   WlrLayershell.namespace: "quickshell-popup"
@@ -67,6 +69,15 @@ PanelWindow {
     }
   }
 
+  // Dimming overlay below the bar (bar stays fully visible)
+  Rectangle {
+    x: 0
+    y: 32
+    width: popupBase.width
+    height: popupBase.height - 32
+    color: "#80000000"
+  }
+
   // Click outside to close
   MouseArea {
     anchors.fill: parent
@@ -81,7 +92,7 @@ PanelWindow {
       if (ideal < 0) return popupBase.width - width - 24
       return ideal
     }
-    y: popupBase.showStem ? popupBase.stemHeight : 0
+    y: popupBase.contentOffset + (popupBase.showStem ? popupBase.stemHeight : 0)
     width: popupBase.popupWidth
     height: popupBase.popupHeight > 0
       ? popupBase.popupHeight
@@ -116,7 +127,7 @@ PanelWindow {
     // corner arc) to the popup's right edge, and from y=0 down past
     // the junction with the popup rect
     x: stemLeftX - popupBase.stemRadius
-    y: 0
+    y: popupBase.contentOffset
     width: popupBase.stemWidth + popupBase.stemRadius + 1
     height: popupBase.stemHeight + popupBase.stemRadius
 
@@ -172,7 +183,7 @@ PanelWindow {
   Rectangle {
     visible: popupBase.showStem
     x: stemCanvas.stemLeftX - 10
-    y: popupBase.stemHeight
+    y: popupBase.contentOffset + popupBase.stemHeight
     width: popupBase.stemWidth + 9
     height: 1
     color: Colors.base
