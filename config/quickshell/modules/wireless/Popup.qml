@@ -49,29 +49,33 @@ Variants {
     }
 
     // Header with power toggle
-    Row {
+    Item {
       width: parent.width
       height: 28
-      spacing: 8
 
-      Text {
+      Row {
+        anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        text: WirelessManager.getIcon()
-        color: WirelessManager.enabled ? Colors.blue : Colors.overlay0
-        font.pixelSize: 20
-        font.family: "Symbols Nerd Font"
-      }
+        spacing: 8
 
-      Text {
-        anchors.verticalCenter: parent.verticalCenter
-        text: "Wi-Fi"
-        color: Colors.text
-        font.pixelSize: 16
-      }
+        Text {
+          anchors.verticalCenter: parent.verticalCenter
+          text: WirelessManager.getIcon()
+          color: WirelessManager.enabled ? Colors.blue : Colors.overlay0
+          font.pixelSize: 20
+          font.family: "Symbols Nerd Font"
+        }
 
-      Item { width: parent.width - 120; height: 1 }
+        Text {
+          anchors.verticalCenter: parent.verticalCenter
+          text: "Wi-Fi"
+          color: Colors.text
+          font.pixelSize: 16
+        }
+      }
 
       SwitchToggle {
+        anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         checked: WirelessManager.enabled
         onClicked: WirelessManager.toggleEnabled()

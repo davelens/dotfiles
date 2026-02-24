@@ -52,29 +52,33 @@ Variants {
     }
 
     // Header with power toggle
-    Row {
+    Item {
       width: parent.width
       height: 28
-      spacing: 8
 
-      Text {
+      Row {
+        anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        text: BluetoothManager.getIcon()
-        color: BluetoothManager.powered ? Colors.blue : Colors.overlay0
-        font.pixelSize: 20
-        font.family: "Symbols Nerd Font"
-      }
+        spacing: 8
 
-      Text {
-        anchors.verticalCenter: parent.verticalCenter
-        text: "Bluetooth"
-        color: Colors.text
-        font.pixelSize: 16
-      }
+        Text {
+          anchors.verticalCenter: parent.verticalCenter
+          text: BluetoothManager.getIcon()
+          color: BluetoothManager.powered ? Colors.blue : Colors.overlay0
+          font.pixelSize: 20
+          font.family: "Symbols Nerd Font"
+        }
 
-      Item { width: parent.width - 140; height: 1 }
+        Text {
+          anchors.verticalCenter: parent.verticalCenter
+          text: "Bluetooth"
+          color: Colors.text
+          font.pixelSize: 16
+        }
+      }
 
       SwitchToggle {
+        anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         checked: BluetoothManager.powered
         onClicked: BluetoothManager.togglePower()
