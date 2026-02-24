@@ -1,0 +1,11 @@
+{
+  "id": "updates",
+  "name": "System Updates",
+  "icon": "󰄠",
+  "order": 15,
+  "keywords": "packages pacman paru aur flatpak upgrade system",
+  "components": {
+    "manager": "Manager.qml",
+    "button": "Button.qml"
+  }
+}

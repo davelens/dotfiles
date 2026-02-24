@@ -20,6 +20,7 @@ Scope {
   DisplayPopup {}
   BluetoothPopup {}
   WirelessPopup {}
+  UpdatesPopup {}
 
   // Pipewire tracking
   PwObjectTracker {
@@ -51,7 +52,7 @@ Scope {
         ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
       // Modules that use PanelWindow popups (referenced by focus mode and prop builder)
-      property var popupModules: ["volume", "brightness", "display", "bluetooth", "wireless"]
+      property var popupModules: ["volume", "brightness", "display", "bluetooth", "wireless", "updates"]
 
       // Bar focus mode state
       property bool barFocusActive: false

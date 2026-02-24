@@ -10,6 +10,7 @@ singleton DisplayConfig 1.0 modules/display/Config.qml
 singleton NotificationManager 1.0 modules/notifications/Manager.qml
 singleton WirelessManager 1.0 modules/wireless/Manager.qml
 singleton StatusbarManager 1.0 modules/statusbar/Manager.qml
+singleton UpdatesManager 1.0 modules/updates/Manager.qml
 NotificationCard 1.0 modules/notifications/Card.qml
 NotificationPanel 1.0 modules/notifications/Panel.qml
 NotificationPopups 1.0 modules/notifications/Popups.qml
@@ -19,3 +20,4 @@ BrightnessPopup 1.0 modules/brightness/Popup.qml
 DisplayPopup 1.0 modules/display/Popup.qml
 BluetoothPopup 1.0 modules/bluetooth/Popup.qml
 WirelessPopup 1.0 modules/wireless/Popup.qml
+UpdatesPopup 1.0 modules/updates/Popup.qml

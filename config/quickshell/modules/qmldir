@@ -7,6 +7,7 @@ IdleInhibitorButton 1.0 idle-inhibitor/Button.qml
 MediaButton 1.0 media/Segment.qml
 NotificationButton 1.0 notifications/Button.qml
 PowerButton 1.0 power/Button.qml
+UpdatesButton 1.0 updates/Button.qml
 VolumeButton 1.0 volume/Button.qml
 WirelessButton 1.0 wireless/Button.qml
 Workspaces 1.0 workspaces/Segment.qml

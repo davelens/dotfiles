@@ -147,6 +147,7 @@ bindsym $mod+m exec cliphist list | ~/.local/bin/rofi-start --mode calc -modi ca
 bindsym $mod+n exec qs ipc call notifications toggle
 bindsym $mod+Shift+s exec qs ipc call bar toggle
 bindsym $mod+s exec qs ipc call settings toggle
+bindsym $mod+u exec qs ipc call popup toggle updates
 
 ### Actions ###################################################################
 
