@@ -44,6 +44,9 @@ Variants {
             || (event.key === Qt.Key_BracketLeft && (event.modifiers & Qt.ControlModifier))) {
           NotificationManager.closePanel()
           event.accepted = true
+        } else if (event.key === Qt.Key_C && !(event.modifiers & Qt.ControlModifier)) {
+          NotificationManager.clearHistory()
+          event.accepted = true
         }
       }
     }
