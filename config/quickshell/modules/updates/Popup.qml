@@ -15,6 +15,7 @@ Variants {
   PopupBase {
     id: popup
     popupWidth: 860
+    popupRightMargin: UpdatesManager.totalCount > 0 ? -1 : 20
     contentSpacing: 12
     stemEnabled: UpdatesManager.totalCount > 0
 

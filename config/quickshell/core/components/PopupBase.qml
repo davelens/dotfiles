@@ -22,6 +22,9 @@ PanelWindow {
   // Content column spacing (default 8, override for 12 etc.)
   property int contentSpacing: 8
 
+  // Override to position popup with a fixed right margin from screen edge (-1 = use anchor)
+  property int popupRightMargin: -1
+
   // Per-popup stem override (set to false to force-disable stem)
   property bool stemEnabled: true
 
@@ -88,6 +91,8 @@ PanelWindow {
   Rectangle {
     id: popupRect
     x: {
+      if (popupBase.popupRightMargin >= 0)
+        return popupBase.width - width - popupBase.popupRightMargin
       var ideal = PopupManager.anchorRight - width
       if (ideal < 0) return popupBase.width - width - 24
       return ideal
