@@ -9,6 +9,16 @@ Item {
   // Required: screen reference for width calculation
   required property var screen
 
+  // Bar focus mode support
+  property bool barFocused: false
+
+  // Toggle playback (called by focus mode activation)
+  function activate() {
+    if (activePlayer && activePlayer.canTogglePlaying) {
+      activePlayer.togglePlaying()
+    }
+  }
+
   // Get the first active player (playing or paused with content)
   readonly property var activePlayer: {
     for (var i = 0; i < Mpris.players.values.length; i++) {
@@ -81,13 +91,19 @@ Item {
     }
   }
 
+  // Focus indicator
+  Rectangle {
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    width: content.width
+    height: 2
+    color: Colors.blue
+    visible: root.barFocused
+  }
+
   MouseArea {
     anchors.fill: parent
     cursorShape: Qt.PointingHandCursor
-    onClicked: {
-      if (root.activePlayer && root.activePlayer.canTogglePlaying) {
-        root.activePlayer.togglePlaying()
-      }
-    }
+    onClicked: root.activate()
   }
 }

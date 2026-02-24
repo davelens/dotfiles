@@ -55,19 +55,36 @@ Scope {
       property var popupModules: ["volume", "brightness", "display", "bluetooth", "wireless", "updates"]
 
       // Bar focus mode state
+      // Index -1 = center section, 0+ = right section items
       property bool barFocusActive: false
       property int barFocusIndex: 0
       property var rightEnabledItems: StatusbarManager.rightItems.filter(function(i) { return i.enabled })
+
+      // Check if center section has a visible, focusable item
+      property bool centerFocusAvailable: {
+        var item = centerSection.itemAt(0)
+        return item && item.visible && item.hasOwnProperty("barFocused")
+      }
 
       // Modules to skip during keyboard navigation (they have their own keybinds)
       property var skipModules: ["notifications"]
 
       function isFocusable(index) {
+        // Center section (index -1)
+        if (index === -1) return centerFocusAvailable
         if (index < 0 || index >= rightEnabledItems.length) return false
         return skipModules.indexOf(rightEnabledItems[index].id) === -1
       }
 
       function nextFocusIndex(from) {
+        // From center section, go to first right item
+        if (from === -1) {
+          for (var i = 0; i < rightEnabledItems.length; i++) {
+            if (isFocusable(i)) return i
+          }
+          return -1
+        }
+        // From right items, continue through right
         for (var i = from + 1; i < rightEnabledItems.length; i++) {
           if (isFocusable(i)) return i
         }
@@ -75,9 +92,13 @@ Scope {
       }
 
       function prevFocusIndex(from) {
+        // From right items, go backwards to find previous focusable
         for (var i = from - 1; i >= 0; i--) {
           if (isFocusable(i)) return i
         }
+        // No more focusable right items, try center section
+        if (centerFocusAvailable) return -1
+        // Can't go further left
         return from
       }
 
@@ -93,6 +114,13 @@ Scope {
       onBarFocusActiveChanged: updateSegmentFocus()
 
       function updateSegmentFocus() {
+        // Update center section focus (index -1)
+        var centerItem = centerSection.itemAt(0)
+        if (centerItem && centerItem.hasOwnProperty("barFocused")) {
+          centerItem.barFocused = barFocusActive && barFocusIndex === -1
+        }
+
+        // Update right section focus
         for (var i = 0; i < rightEnabledItems.length; i++) {
           var delegate = rightRepeater.itemAt(i)
           if (!delegate) continue
@@ -140,7 +168,7 @@ Scope {
               || (event.key === Qt.Key_BracketLeft && (event.modifiers & Qt.ControlModifier))) {
             panel.barFocusActive = false
             event.accepted = true
-          } else if (event.key === Qt.Key_Space) {
+          } else if (event.key === Qt.Key_Space || event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
             panel.activateFocusedItem()
             event.accepted = true
           } else if (event.key === Qt.Key_L && (event.modifiers & Qt.ControlModifier)) {
@@ -155,6 +183,15 @@ Scope {
 
       // Activate the currently focused bar item
       function activateFocusedItem() {
+        // Handle center section activation (index -1)
+        if (barFocusIndex === -1) {
+          var centerItem = centerSection.itemAt(0)
+          if (centerItem && centerItem.activate) {
+            centerItem.activate()
+          }
+          return
+        }
+
         if (barFocusIndex < 0 || barFocusIndex >= rightEnabledItems.length) return
 
         var item = rightEnabledItems[barFocusIndex]
@@ -223,6 +260,7 @@ Scope {
 
       // Center section
       BarSection {
+        id: centerSection
         anchors.horizontalCenter: parent.horizontalCenter
         spacing: StatusbarManager.sectionSpacing.center
         items: StatusbarManager.centerItems
