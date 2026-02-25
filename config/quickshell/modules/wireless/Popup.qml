@@ -31,7 +31,9 @@ Variants {
         h += 50
       } else {
         if (WirelessManager.connectedNetwork) {
-          h += 16 + 6 + 36 + 6 + 32 + 12
+          // Label (16) + spacing (6) + row (36) + spacing (6) + info (32) + spacing (12)
+          // + separator (1) + spacing (12)
+          h += 16 + 6 + 36 + 6 + 32 + 12 + 1 + 12
         }
 
         h += 20 + 12
@@ -137,6 +139,13 @@ Variants {
           font.pixelSize: 14
         }
       }
+    }
+
+    Rectangle {
+      width: parent.width
+      height: 1
+      color: Colors.surface1
+      visible: WirelessManager.connectedNetwork !== null
     }
 
     // Networks header

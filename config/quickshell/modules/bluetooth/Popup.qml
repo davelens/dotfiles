@@ -34,7 +34,8 @@ Variants {
       } else {
         var connectedCount = BluetoothManager.connectedDevices.length
         if (connectedCount > 0) {
-          h += 16 + 4 + connectedCount * 36 + (connectedCount - 1) * 4 + 12
+          // Label (16) + column spacing (4) + rows + separator (1) + spacings (12*3)
+          h += 16 + 4 + connectedCount * 36 + (connectedCount - 1) * 4 + 12 + 1 + 12
         }
 
         h += 20 + 12
@@ -127,6 +128,13 @@ Variants {
           onClicked: BluetoothManager.disconnect(modelData.address)
         }
       }
+    }
+
+    Rectangle {
+      width: parent.width
+      height: 1
+      color: Colors.surface1
+      visible: BluetoothManager.connectedDevices.length > 0
     }
 
     // Scanning indicator / devices header
