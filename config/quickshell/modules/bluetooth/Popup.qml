@@ -142,7 +142,7 @@ Variants {
 
         Text {
           anchors.verticalCenter: parent.verticalCenter
-          text: BluetoothManager.scanning ? "Scanning..." : "Devices"
+          text: BluetoothManager.scanning ? "Scanning..." : "Available devices"
           color: Colors.overlay0
           font.pixelSize: 14
         }
@@ -165,23 +165,15 @@ Variants {
         }
       }
 
-      // Refresh button
-      Text {
+      FocusIconButton {
         anchors.right: parent.right
+        anchors.rightMargin: 12
         anchors.verticalCenter: parent.verticalCenter
-        text: "󰑐"
-        color: refreshArea.containsMouse ? Colors.blue : Colors.overlay0
-        font.pixelSize: 16
-        font.family: "Symbols Nerd Font"
+        icon: "󰑐"
+        iconSize: 16
+        hoverColor: Colors.blue
         visible: !BluetoothManager.scanning
-
-        MouseArea {
-          id: refreshArea
-          anchors.fill: parent
-          hoverEnabled: true
-          cursorShape: Qt.PointingHandCursor
-          onClicked: BluetoothManager.startScan()
-        }
+        onClicked: BluetoothManager.startScan()
       }
     }
 

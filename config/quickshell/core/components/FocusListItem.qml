@@ -44,7 +44,7 @@ Item {
   width: parent ? parent.width : 200
   height: itemHeight > 0 ? itemHeight : (subtitle ? 56 : 48)
 
-  // Focus ring
+  // Focus ring (outer when bodyMargins > 0, inset when 0)
   Rectangle {
     anchors.fill: body
     anchors.margins: -3
@@ -52,7 +52,7 @@ Item {
     color: "transparent"
     border.width: 2
     border.color: Colors.peach
-    visible: item.focused
+    visible: item.focused && item.bodyMargins > 0
   }
 
   Rectangle {
@@ -62,6 +62,8 @@ Item {
     anchors.rightMargin: item.bodyMargins
     radius: item.bodyRadius
     color: item.hovered || item.focused ? item.hoverBackgroundColor : item.backgroundColor
+    border.width: item.focused && item.bodyMargins === 0 ? 2 : 0
+    border.color: Colors.peach
 
     Row {
       anchors.left: parent.left

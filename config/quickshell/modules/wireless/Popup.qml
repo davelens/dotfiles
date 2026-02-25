@@ -152,7 +152,7 @@ Variants {
 
         Text {
           anchors.verticalCenter: parent.verticalCenter
-          text: WirelessManager.scanning ? "Scanning..." : "Networks"
+          text: WirelessManager.scanning ? "Scanning..." : "Available networks"
           color: Colors.overlay0
           font.pixelSize: 14
         }
@@ -175,23 +175,15 @@ Variants {
         }
       }
 
-      // Refresh button
-      Text {
+      FocusIconButton {
         anchors.right: parent.right
+        anchors.rightMargin: 12
         anchors.verticalCenter: parent.verticalCenter
-        text: "󰑐"
-        color: refreshArea.containsMouse ? Colors.blue : Colors.overlay0
-        font.pixelSize: 16
-        font.family: "Symbols Nerd Font"
+        icon: "󰑐"
+        iconSize: 16
+        hoverColor: Colors.blue
         visible: !WirelessManager.scanning
-
-        MouseArea {
-          id: refreshArea
-          anchors.fill: parent
-          hoverEnabled: true
-          cursorShape: Qt.PointingHandCursor
-          onClicked: WirelessManager.startScan()
-        }
+        onClicked: WirelessManager.startScan()
       }
     }
 
