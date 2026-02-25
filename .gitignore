@@ -21,3 +21,8 @@ bin/utilities/ac
 bin/utilities/arch
 bin/utilities/opencode
 bin/utilities/wsl
+
+# Exclude all markdown files in the project root except README.md and LICENSE.md
+/*.md
+!README.md
+!LICENSE.md
