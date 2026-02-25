@@ -102,53 +102,21 @@ Variants {
         font.pixelSize: 14
       }
 
-      Rectangle {
-        id: connectedNetworkRect
-        width: parent.width
-        height: 36
-        radius: 4
-        color: Colors.surface1
-
-        Text {
-          anchors.left: parent.left
-          anchors.leftMargin: 10
-          anchors.verticalCenter: parent.verticalCenter
-          text: WirelessManager.getIcon()
-          color: Colors.green
-          font.pixelSize: 18
-          font.family: "Symbols Nerd Font"
-        }
-
-        Text {
-          anchors.left: parent.left
-          anchors.leftMargin: 34
-          anchors.right: disconnectBtn.left
-          anchors.rightMargin: 10
-          anchors.verticalCenter: parent.verticalCenter
-          text: WirelessManager.connectedNetwork ? WirelessManager.connectedNetwork.ssid : ""
-          color: Colors.text
-          font.pixelSize: 15
-          elide: Text.ElideRight
-        }
-
-        Text {
-          id: disconnectBtn
-          anchors.right: parent.right
-          anchors.rightMargin: 10
-          anchors.verticalCenter: parent.verticalCenter
-          text: "󰅖"
-          color: disconnectArea.containsMouse ? Colors.red : Colors.overlay0
-          font.pixelSize: 16
-          font.family: "Symbols Nerd Font"
-
-          MouseArea {
-            id: disconnectArea
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: WirelessManager.disconnect()
-          }
-        }
+      FocusListItem {
+        itemHeight: 36
+        bodyMargins: 0
+        bodyRadius: 4
+        icon: WirelessManager.getIcon()
+        iconSize: 18
+        iconColor: Colors.green
+        text: WirelessManager.connectedNetwork ? WirelessManager.connectedNetwork.ssid : ""
+        fontSize: 15
+        rightIcon: "󰅖"
+        rightIconColor: Colors.overlay0
+        rightIconHoverColor: Colors.red
+        backgroundColor: Colors.surface1
+        hoverBackgroundColor: Colors.surface1
+        onClicked: WirelessManager.disconnect()
       }
 
       // Connection info
@@ -248,56 +216,20 @@ Variants {
         Repeater {
           model: WirelessManager.networks.filter(n => !n.active)
 
-          Rectangle {
+          FocusListItem {
             required property var modelData
-            width: parent.width
-            height: 36
-            radius: 4
-            color: networkArea.containsMouse ? Colors.surface0 : "transparent"
 
-            Text {
-              anchors.left: parent.left
-              anchors.leftMargin: 10
-              anchors.verticalCenter: parent.verticalCenter
-              text: WirelessManager.getSignalIcon(modelData.signal)
-              color: Colors.overlay0
-              font.pixelSize: 18
-              font.family: "Symbols Nerd Font"
-            }
-
-            Text {
-              anchors.left: parent.left
-              anchors.leftMargin: 34
-              anchors.right: securityIcon.left
-              anchors.rightMargin: 8
-              anchors.verticalCenter: parent.verticalCenter
-              text: modelData.ssid
-              color: Colors.text
-              font.pixelSize: 15
-              elide: Text.ElideRight
-            }
-
-            Text {
-              id: securityIcon
-              anchors.right: parent.right
-              anchors.rightMargin: 10
-              anchors.verticalCenter: parent.verticalCenter
-              text: modelData.security ? "󰌾" : ""
-              color: Colors.overlay0
-              font.pixelSize: 14
-              font.family: "Symbols Nerd Font"
-            }
-
-            MouseArea {
-              id: networkArea
-              anchors.fill: parent
-              hoverEnabled: true
-              cursorShape: WirelessManager.busy ? Qt.WaitCursor : Qt.PointingHandCursor
-              onClicked: {
-                if (!WirelessManager.busy) {
-                  WirelessManager.connect(modelData.ssid)
-                }
-              }
+            itemHeight: 36
+            bodyMargins: 0
+            bodyRadius: 4
+            icon: WirelessManager.getSignalIcon(modelData.signal)
+            iconSize: 18
+            text: modelData.ssid
+            fontSize: 15
+            rightIcon: modelData.security ? "󰌾" : ""
+            hoverBackgroundColor: Colors.surface0
+            onClicked: {
+              if (!WirelessManager.busy) WirelessManager.connect(modelData.ssid)
             }
           }
         }

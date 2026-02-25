@@ -11,8 +11,17 @@ Item {
   property int iconSize: 16
   property int fontSize: 14
   property int subtitleFontSize: 11
-  property color iconColor: Colors.overlay0  // Default icon color
-  property color subtitleColor: Colors.overlay0  // Subtitle text color
+  property color iconColor: Colors.overlay0
+  property color subtitleColor: Colors.overlay0
+
+  // Configurable dimensions and colors (defaults match settings panel usage)
+  property int itemHeight: -1  // -1 = auto (56 with subtitle, 48 without)
+  property color rightIconColor: Colors.overlay0
+  property color rightIconHoverColor: rightIconColor
+  property color backgroundColor: "transparent"
+  property color hoverBackgroundColor: Colors.surface0
+  property int bodyMargins: 4
+  property int bodyRadius: 6
 
   // Allow parent to control whether focus ring is shown
   property bool showFocusRing: true
@@ -33,7 +42,7 @@ Item {
   signal clicked()
 
   width: parent ? parent.width : 200
-  height: subtitle ? 56 : 48  // Taller when subtitle present
+  height: itemHeight > 0 ? itemHeight : (subtitle ? 56 : 48)
 
   // Focus ring
   Rectangle {
@@ -49,10 +58,10 @@ Item {
   Rectangle {
     id: body
     anchors.fill: parent
-    anchors.leftMargin: 4
-    anchors.rightMargin: 4
-    radius: 6
-    color: item.hovered || item.focused ? Colors.surface0 : "transparent"
+    anchors.leftMargin: item.bodyMargins
+    anchors.rightMargin: item.bodyMargins
+    radius: item.bodyRadius
+    color: item.hovered || item.focused ? item.hoverBackgroundColor : item.backgroundColor
 
     Row {
       anchors.left: parent.left
@@ -93,7 +102,7 @@ Item {
       anchors.rightMargin: 12
       anchors.verticalCenter: parent.verticalCenter
       text: item.rightIcon
-      color: Colors.overlay0
+      color: item.hovered || item.focused ? item.rightIconHoverColor : item.rightIconColor
       font.pixelSize: item.iconSize
       font.family: "Symbols Nerd Font"
       visible: item.rightIcon !== ""

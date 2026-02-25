@@ -108,54 +108,23 @@ Variants {
       Repeater {
         model: BluetoothManager.connectedDevices
 
-        Rectangle {
+        FocusListItem {
           required property var modelData
-          required property int index
-          width: parent.width
-          height: 36
-          radius: 4
-          color: Colors.surface1
 
-          Text {
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            anchors.verticalCenter: parent.verticalCenter
-            text: "󰂱"
-            color: Colors.green
-            font.pixelSize: 18
-            font.family: "Symbols Nerd Font"
-          }
-
-          Text {
-            anchors.left: parent.left
-            anchors.leftMargin: 34
-            anchors.right: disconnectBtn.left
-            anchors.rightMargin: 10
-            anchors.verticalCenter: parent.verticalCenter
-            text: modelData.name
-            color: Colors.text
-            font.pixelSize: 15
-            elide: Text.ElideRight
-          }
-
-          Text {
-            id: disconnectBtn
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.verticalCenter: parent.verticalCenter
-            text: "󰅖"
-            color: disconnectArea.containsMouse ? Colors.red : Colors.overlay0
-            font.pixelSize: 16
-            font.family: "Symbols Nerd Font"
-
-            MouseArea {
-              id: disconnectArea
-              anchors.fill: parent
-              hoverEnabled: true
-              cursorShape: Qt.PointingHandCursor
-              onClicked: BluetoothManager.disconnect(modelData.address)
-            }
-          }
+          itemHeight: 36
+          bodyMargins: 0
+          bodyRadius: 4
+          icon: "󰂱"
+          iconSize: 18
+          iconColor: Colors.green
+          text: modelData.name
+          fontSize: 15
+          rightIcon: "󰅖"
+          rightIconColor: Colors.overlay0
+          rightIconHoverColor: Colors.red
+          backgroundColor: Colors.surface1
+          hoverBackgroundColor: Colors.surface1
+          onClicked: BluetoothManager.disconnect(modelData.address)
         }
       }
     }
@@ -237,49 +206,21 @@ Variants {
         Repeater {
           model: BluetoothManager.devices
 
-          Rectangle {
+          FocusListItem {
             required property var modelData
-            width: parent.width
-            height: 36
-            radius: 4
-            color: deviceArea.containsMouse ? Colors.surface0 : "transparent"
 
             visible: !modelData.connected
-
-            Row {
-              anchors.fill: parent
-              anchors.leftMargin: 10
-              anchors.rightMargin: 10
-              spacing: 10
-
-              Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: modelData.paired ? "󰂰" : "󰂯"
-                color: modelData.paired ? Colors.blue : Colors.overlay0
-                font.pixelSize: 18
-                font.family: "Symbols Nerd Font"
-              }
-
-              Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: modelData.name
-                color: Colors.text
-                font.pixelSize: 15
-                width: parent.width - 50
-                elide: Text.ElideRight
-              }
-            }
-
-            MouseArea {
-              id: deviceArea
-              anchors.fill: parent
-              hoverEnabled: true
-              cursorShape: BluetoothManager.busy ? Qt.WaitCursor : Qt.PointingHandCursor
-              onClicked: {
-                if (!BluetoothManager.busy) {
-                  BluetoothManager.connect(modelData.address)
-                }
-              }
+            itemHeight: 36
+            bodyMargins: 0
+            bodyRadius: 4
+            icon: modelData.paired ? "󰂰" : "󰂯"
+            iconSize: 18
+            iconColor: modelData.paired ? Colors.blue : Colors.overlay0
+            text: modelData.name
+            fontSize: 15
+            hoverBackgroundColor: Colors.surface0
+            onClicked: {
+              if (!BluetoothManager.busy) BluetoothManager.connect(modelData.address)
             }
           }
         }
