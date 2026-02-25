@@ -152,19 +152,18 @@ Rectangle {
       maximumLineCount: 1
     }
 
-    // Body (selectable, single line)
+    // Body (selectable, word-wrapped)
     TextEdit {
       width: parent.width
-      height: Math.min(implicitHeight, 18)  // ~1 line at 12px
       text: body
       color: Colors.subtext0
       font.pixelSize: 12
+      wrapMode: Text.WordWrap
       readOnly: true
       selectByMouse: true
       selectionColor: Colors.surface2
       selectedTextColor: Colors.text
       visible: body !== ""
-      clip: true
     }
   }
 
