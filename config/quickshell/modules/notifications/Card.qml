@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.Notifications
 import "../.."
+import "../../core/components"
 
 Rectangle {
   id: card
@@ -15,13 +16,24 @@ Rectangle {
   property string body: ""
   property var urgency: NotificationUrgency.Normal
   property bool showCloseButton: true
-  property bool compact: false  // Compact mode for history panel
+  property bool compact: false
   property int notificationId: -1
-  property var actions: []       // Non-default actions [{identifier, text}]
-  property string image: ""      // Optional image preview (e.g. screenshot)
+  property var actions: []
+  property string image: ""
 
   // Track hover state
   property bool hovered: hoverHandler.hovered
+
+  // Focusable contract (for compact cards in history panel)
+  property bool showFocusRing: compact
+  property bool keyboardFocus: false
+  property bool focused: activeFocus && showFocusRing && keyboardFocus
+  focus: compact
+  activeFocusOnTab: compact
+
+  onActiveFocusChanged: {
+    if (!activeFocus) keyboardFocus = false
+  }
 
   signal dismissed()
   signal clicked()
@@ -32,9 +44,17 @@ Rectangle {
   bottomLeftRadius: 0
   topRightRadius: 8
   bottomRightRadius: 8
-  color: hovered ? Colors.surface1 : Colors.crust
-  border.width: 2
-  border.color: Colors.surface2
+  color: hovered || focused ? Colors.surface1 : Colors.crust
+  border.width: focused ? 2 : 2
+  border.color: focused ? Colors.peach : Colors.surface2
+
+  // Copy body text to clipboard
+  Keys.onPressed: function(event) {
+    if (event.key === Qt.Key_Y && compact) {
+      Quickshell.clipboardText = card.body || card.summary
+      event.accepted = true
+    }
+  }
 
   // Hover detection without blocking mouse events
   HoverHandler {
@@ -221,34 +241,18 @@ Rectangle {
     }
   }
 
-  // Close button
-  Rectangle {
-    id: closeButton
-    visible: showCloseButton && card.hovered
+  // Close button (visible on hover or keyboard focus)
+  FocusIconButton {
+    visible: showCloseButton && (card.hovered || card.focused || focused)
     anchors.right: parent.right
     anchors.rightMargin: 10
     anchors.top: parent.top
     anchors.topMargin: compact ? 6 : 8
-    width: 24
-    height: 24
-    radius: 12
-    color: closeArea.containsMouse ? Colors.surface2 : "transparent"
-
-    Text {
-      anchors.centerIn: parent
-      text: "󰅖"
-      color: closeArea.containsMouse ? Colors.red : Colors.overlay0
-      font.pixelSize: 14
-      font.family: "Symbols Nerd Font"
-    }
-
-    MouseArea {
-      id: closeArea
-      anchors.fill: parent
-      hoverEnabled: true
-      cursorShape: Qt.PointingHandCursor
-      onClicked: card.dismissed()
-    }
+    icon: "󰅖"
+    iconSize: 14
+    iconColor: Colors.overlay0
+    hoverColor: Colors.red
+    onClicked: card.dismissed()
   }
 
   // Click handler for the card (tap handler doesn't block text selection)

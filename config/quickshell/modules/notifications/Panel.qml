@@ -36,16 +36,105 @@ Variants {
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: NotificationManager.panelOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-    // ESC key handling
+    // Keyboard focus cycling state
+    property var focusables: []
+    property int focusIndex: -1
+
+    // Recursively find visible, enabled items with showFocusRing
+    function findFocusables(item, result) {
+      if (!item || !item.visible) return
+      if (item.showFocusRing !== undefined && item.enabled !== false) {
+        result.push(item)
+      }
+      if (item.children) {
+        for (var i = 0; i < item.children.length; i++) {
+          findFocusables(item.children[i], result)
+        }
+      }
+      if (item.contentItem) {
+        findFocusables(item.contentItem, result)
+      }
+    }
+
+    function refreshFocusables() {
+      focusables = []
+      findFocusables(panelColumn, focusables)
+    }
+
+    function findFlickable(item) {
+      var p = item ? item.parent : null
+      while (p) {
+        if (p.contentY !== undefined && p.contentHeight !== undefined && p.height !== undefined)
+          return p
+        p = p.parent
+      }
+      return null
+    }
+
+    function scrollToItem(item) {
+      if (!item) return
+      var flickable = findFlickable(item)
+      if (!flickable) return
+      var mapped = item.mapToItem(flickable.contentItem, 0, 0)
+      var itemTop = mapped.y
+      var itemBottom = itemTop + item.height
+      var visibleTop = flickable.contentY
+      var visibleBottom = visibleTop + flickable.height
+      var padding = 24
+      if (itemTop - padding < visibleTop)
+        flickable.contentY = Math.max(0, itemTop - padding)
+      else if (itemBottom + padding > visibleBottom)
+        flickable.contentY = Math.min(flickable.contentHeight - flickable.height, itemBottom + padding - flickable.height)
+    }
+
+    function focusItem(item) {
+      if (!item) return
+      if (item.keyboardFocus !== undefined) item.keyboardFocus = true
+      if (item.showFocusRing !== undefined) item.showFocusRing = true
+      if (item.forceActiveFocus) item.forceActiveFocus()
+      scrollToItem(item)
+    }
+
+    function focusNext() {
+      refreshFocusables()
+      if (focusables.length === 0) return
+      focusIndex = (focusIndex + 1) % focusables.length
+      focusItem(focusables[focusIndex])
+    }
+
+    function focusPrevious() {
+      refreshFocusables()
+      if (focusables.length === 0) return
+      if (focusIndex < 0) focusIndex = focusables.length - 1
+      else focusIndex = (focusIndex - 1 + focusables.length) % focusables.length
+      focusItem(focusables[focusIndex])
+    }
+
+    function resetFocus() {
+      for (var i = 0; i < focusables.length; i++) {
+        if (focusables[i].keyboardFocus !== undefined)
+          focusables[i].keyboardFocus = false
+      }
+      focusIndex = -1
+      focusables = []
+    }
+
     contentItem {
       focus: NotificationManager.panelOpen
       Keys.onPressed: function(event) {
         if (event.key === Qt.Key_Escape
             || (event.key === Qt.Key_BracketLeft && (event.modifiers & Qt.ControlModifier))) {
+          panel.resetFocus()
           NotificationManager.closePanel()
           event.accepted = true
         } else if (event.key === Qt.Key_C && !(event.modifiers & Qt.ControlModifier)) {
           NotificationManager.clearHistory()
+          event.accepted = true
+        } else if (event.key === Qt.Key_N && (event.modifiers & Qt.ControlModifier)) {
+          panel.focusNext()
+          event.accepted = true
+        } else if (event.key === Qt.Key_P && (event.modifiers & Qt.ControlModifier)) {
+          panel.focusPrevious()
           event.accepted = true
         }
       }
@@ -86,6 +175,7 @@ Variants {
       }
 
       Column {
+        id: panelColumn
         anchors.fill: parent
         anchors.margins: 16
         spacing: 16
@@ -104,23 +194,13 @@ Variants {
             font.bold: true
           }
 
-          // Close button
-          Text {
+          FocusIconButton {
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            text: "󰅖"
-            color: closeArea.containsMouse ? Colors.red : Colors.overlay0
-            font.pixelSize: 18
-            font.family: "Symbols Nerd Font"
-
-            MouseArea {
-              id: closeArea
-              anchors.fill: parent
-              anchors.margins: -8
-              hoverEnabled: true
-              cursorShape: Qt.PointingHandCursor
-              onClicked: NotificationManager.closePanel()
-            }
+            icon: "󰅖"
+            iconSize: 18
+            hoverColor: Colors.red
+            onClicked: NotificationManager.closePanel()
           }
         }
 
@@ -177,21 +257,14 @@ Variants {
               }
 
               // Configure button (aligned right)
-              Text {
+              FocusLink {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 text: "Configure"
-                color: configArea.containsMouse ? Colors.blue : Colors.overlay0
-                font.pixelSize: 12
-
-                MouseArea {
-                  id: configArea
-                  anchors.fill: parent
-                  anchors.margins: -4
-                  hoverEnabled: true
-                  cursorShape: Qt.PointingHandCursor
-                  onClicked: NotificationManager.openSettingsNotifications()
-                }
+                textColor: Colors.overlay0
+                hoverColor: Colors.blue
+                fontSize: 12
+                onClicked: NotificationManager.openSettingsNotifications()
               }
             }
           }
@@ -246,54 +319,20 @@ Variants {
                 width: parent.width
                 spacing: 4
 
-                // Group header (app name)
-                Rectangle {
-                  width: parent.width
-                  height: 36
-                  radius: 6
-                  color: groupHeaderArea.containsMouse ? Colors.surface0 : "transparent"
-
-                  Row {
-                    anchors.left: parent.left
-                    anchors.leftMargin: 8
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 8
-
-                    // Expand/collapse arrow
-                    Text {
-                      text: groupColumn.modelData.expanded ? "󰅀" : "󰅂"
-                      color: Colors.overlay0
-                      font.pixelSize: 12
-                      font.family: "Symbols Nerd Font"
-                      anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Text {
-                      text: groupColumn.modelData.appName
-                      color: Colors.text
-                      font.pixelSize: 13
-                      font.bold: true
-                      anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Text {
-                      text: "(" + groupColumn.modelData.notifications.length + ")"
-                      color: Colors.overlay0
-                      font.pixelSize: 12
-                      anchors.verticalCenter: parent.verticalCenter
-                    }
-                  }
-
-                  MouseArea {
-                    id: groupHeaderArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: NotificationManager.toggleGroup(groupColumn.modelData.appName)
-                  }
+                // Group header
+                FocusListItem {
+                  itemHeight: 36
+                  bodyMargins: 0
+                  bodyRadius: 6
+                  icon: groupColumn.modelData.expanded ? "󰅀" : "󰅂"
+                  iconSize: 12
+                  text: groupColumn.modelData.appName + " (" + groupColumn.modelData.notifications.length + ")"
+                  fontSize: 13
+                  hoverBackgroundColor: Colors.surface0
+                  onClicked: NotificationManager.toggleGroup(groupColumn.modelData.appName)
                 }
 
-                // Notifications in group (collapsed)
+                // Notifications in group
                 Column {
                   width: parent.width
                   spacing: 4
@@ -331,32 +370,18 @@ Variants {
         }
 
         // Clear all button
-        Rectangle {
+        FocusButton {
           id: clearButton
           width: parent.width
           height: 40
-          radius: 8
-          color: clearButtonArea.containsMouse ? Colors.surface1 : Colors.surface0
+          text: "Clear All Notifications"
+          fontSize: 13
+          backgroundColor: Colors.surface0
+          hoverColor: Colors.surface1
+          textColor: Colors.text
+          textHoverColor: Colors.red
           visible: NotificationManager.history.length > 0
-
-          Text {
-            anchors.centerIn: parent
-            text: "Clear All Notifications"
-            color: clearButtonArea.containsMouse ? Colors.red : Colors.text
-            font.pixelSize: 13
-          }
-
-          MouseArea {
-            id: clearButtonArea
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: NotificationManager.clearHistory()
-          }
-
-          Behavior on color {
-            ColorAnimation { duration: 100 }
-          }
+          onClicked: NotificationManager.clearHistory()
         }
       }
     }
