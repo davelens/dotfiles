@@ -82,7 +82,7 @@ flameshot gui --raw 2>/dev/null >"$filepath"
 
 if [[ ! -s "$filepath" ]]; then
   rm -f "$filepath"
-  notify "Screenshot" "Cancelled or empty capture"
+  notify-send -a "General" "Screenshot" "Cancelled or empty capture"
   exit 1
 fi
 
@@ -104,12 +104,15 @@ clipboard_text() {
 }
 
 if command -v notify-send &>/dev/null; then
-  action=$(notify-send "Screenshot copied to clipboard" \
-    "Click to copy path instead" \
-    --action="default=Copy path" --wait) || true
-  if [[ "$action" == "default" ]]; then
-    clipboard_text "$filepath"
-  fi
+  action=$(notify-send -a "General" "Screenshot copied to clipboard" "$filename" \
+    -h "string:image-path:$filepath" \
+    --action="copy-path=Copy path" \
+    --action="open=Open image" \
+    --wait) || true
+  case "$action" in
+    copy-path) clipboard_text "$filepath" ;;
+    open) open_file "$filepath" & ;;
+  esac
 elif [[ "$platform" == "macos" ]]; then
-  osascript -e "display notification \"Click to copy path instead\" with title \"Screenshot copied to clipboard\""
+  osascript -e "display notification \"$filename\" with title \"Screenshot copied to clipboard\""
 fi
