@@ -11,6 +11,14 @@ Item {
   property real stepSize: 1
   property bool live: true
 
+  // Configurable appearance (defaults match settings panel usage)
+  property color accentColor: Colors.blue
+  property color trackColor: Colors.surface1
+  property int trackHeight: 4
+  property int handleSize: 16
+
+  signal moved()
+
   // Allow parent to control whether focus ring is shown
   property bool showFocusRing: true
 
@@ -54,29 +62,30 @@ Item {
     live: slider.live
 
     onValueChanged: slider.value = value
+    onMoved: slider.moved()
 
     background: Rectangle {
       x: control.leftPadding
       y: control.topPadding + control.availableHeight / 2 - height / 2
       width: control.availableWidth
-      height: 4
-      radius: 2
-      color: Colors.surface1
+      height: slider.trackHeight
+      radius: height / 2
+      color: slider.trackColor
 
       Rectangle {
         width: control.visualPosition * parent.width
         height: parent.height
-        radius: 2
-        color: Colors.blue
+        radius: parent.radius
+        color: slider.accentColor
       }
     }
 
     handle: Rectangle {
       x: control.leftPadding + control.visualPosition * (control.availableWidth - width)
       y: control.topPadding + control.availableHeight / 2 - height / 2
-      width: 16
-      height: 16
-      radius: 8
+      width: slider.handleSize
+      height: slider.handleSize
+      radius: slider.handleSize / 2
       color: Colors.text
     }
   }
@@ -94,9 +103,11 @@ Item {
   Keys.onPressed: function(event) {
     if (event.key === Qt.Key_H || event.key === Qt.Key_Left) {
       control.decrease()
+      slider.moved()
       event.accepted = true
     } else if (event.key === Qt.Key_L || event.key === Qt.Key_Right) {
       control.increase()
+      slider.moved()
       event.accepted = true
     }
   }

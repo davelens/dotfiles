@@ -56,65 +56,35 @@ Variants {
       property real volume: sink && sink.audio ? sink.audio.volume : 0
       property bool muted: sink && sink.audio ? sink.audio.muted : false
 
-      Text {
+      FocusIconButton {
         anchors.verticalCenter: parent.verticalCenter
-        text: parent.muted ? "󰝟" : "󰕾"
-        color: parent.muted ? Colors.red : Colors.text
-        font.pixelSize: 20
-        font.family: "Symbols Nerd Font"
-
-        MouseArea {
-          anchors.fill: parent
-          cursorShape: Qt.PointingHandCursor
-          onClicked: {
-            if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
-              Pipewire.defaultAudioSink.audio.muted = !Pipewire.defaultAudioSink.audio.muted
-            }
+        icon: parent.muted ? "󰝟" : "󰕾"
+        iconColor: parent.muted ? Colors.red : Colors.text
+        hoverColor: parent.muted ? Colors.red : Colors.blue
+        iconSize: 20
+        onClicked: {
+          if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
+            Pipewire.defaultAudioSink.audio.muted = !Pipewire.defaultAudioSink.audio.muted
           }
         }
       }
 
-      Slider {
-        id: volumeSlider
+      FocusSlider {
         anchors.verticalCenter: parent.verticalCenter
-        width: parent.width - 18 - 44 - 16
+        width: parent.width - 28 - 44 - 16
         height: 20
         from: 0
         to: 1
+        stepSize: 0.02
         value: parent.volume
+        accentColor: Colors.blue
+        trackColor: Colors.surface0
+        trackHeight: 8
+        handleSize: 14
         onMoved: {
           if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
             Pipewire.defaultAudioSink.audio.volume = value
           }
-        }
-
-        background: Rectangle {
-          x: volumeSlider.leftPadding
-          y: volumeSlider.topPadding + volumeSlider.availableHeight / 2 - height / 2
-          implicitWidth: 200
-          implicitHeight: 8
-          width: volumeSlider.availableWidth
-          height: 8
-          radius: 4
-          color: Colors.surface0
-
-          Rectangle {
-            width: volumeSlider.visualPosition * parent.width
-            height: parent.height
-            color: Colors.blue
-            radius: 4
-          }
-        }
-
-        handle: Rectangle {
-          x: volumeSlider.leftPadding + volumeSlider.visualPosition * (volumeSlider.availableWidth - width)
-          y: volumeSlider.topPadding + volumeSlider.availableHeight / 2 - height / 2
-          implicitWidth: 14
-          implicitHeight: 14
-          width: 14
-          height: 14
-          radius: 7
-          color: Colors.text
         }
       }
 

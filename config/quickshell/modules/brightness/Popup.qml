@@ -45,45 +45,20 @@ Variants {
             font.family: "Symbols Nerd Font"
           }
 
-          Slider {
+          FocusSlider {
             id: brightnessSlider
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width - 18 - 44 - 16
             height: 20
             from: 0.01
             to: 1
+            stepSize: 0.02
             value: parent.displayBrightness
-
+            accentColor: Colors.yellow
+            trackColor: Colors.surface0
+            trackHeight: 8
+            handleSize: 14
             onMoved: BrightnessManager.setBrightness(parent.displayId, value)
-
-            background: Rectangle {
-              x: brightnessSlider.leftPadding
-              y: brightnessSlider.topPadding + brightnessSlider.availableHeight / 2 - height / 2
-              implicitWidth: 200
-              implicitHeight: 8
-              width: brightnessSlider.availableWidth
-              height: 8
-              radius: 4
-              color: Colors.surface0
-
-              Rectangle {
-                width: brightnessSlider.visualPosition * parent.width
-                height: parent.height
-                color: Colors.yellow
-                radius: 4
-              }
-            }
-
-            handle: Rectangle {
-              x: brightnessSlider.leftPadding + brightnessSlider.visualPosition * (brightnessSlider.availableWidth - width)
-              y: brightnessSlider.topPadding + brightnessSlider.availableHeight / 2 - height / 2
-              implicitWidth: 14
-              implicitHeight: 14
-              width: 14
-              height: 14
-              radius: 7
-              color: Colors.text
-            }
           }
 
           Text {
