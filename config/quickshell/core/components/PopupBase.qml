@@ -46,10 +46,10 @@ PanelWindow {
   property var focusables: []
   property int focusIndex: -1
 
-  // Recursively find items with showFocusRing (FocusButton, SwitchToggle, FocusSlider)
+  // Recursively find visible, enabled items with showFocusRing
   function findFocusables(item, result) {
     if (!item || !item.visible) return
-    if (item.showFocusRing !== undefined) {
+    if (item.showFocusRing !== undefined && item.enabled !== false) {
       result.push(item)
     }
     if (item.children) {
