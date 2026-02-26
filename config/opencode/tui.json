@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/tui.json",
+  "theme": "system",
+  "keybinds": {
+    "leader": "ctrl+space",
+    "session_new": "none",
+    "messages_page_up": "<leader>p",
+    "messages_page_down": "<leader>n"
+  }
+}
