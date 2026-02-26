@@ -57,6 +57,17 @@ Singleton {
     checkPacmanProc.running = true
   }
 
+  // Look up version info for a package
+  function findPackage(name, source) {
+    var list = source === "pacman" ? pacmanUpdates
+              : source === "aur" ? aurUpdates
+              : flatpakUpdates
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].name === name) return list[i]
+    }
+    return null
+  }
+
   // Update a single package
   function updatePackage(name, source) {
     if (systemUpdating || isUpdating(name)) return
@@ -65,12 +76,16 @@ Singleton {
     pkgs[name] = true
     updatingPackages = pkgs
 
+    var pkg = findPackage(name, source)
+    var from = pkg ? pkg.currentVersion : ""
+    var to = pkg ? pkg.newVersion : ""
+
     if (source === "flatpak") {
-      singleUpdateHelper.start(["flatpak", "update", "-y", name], name)
+      singleUpdateHelper.start(["flatpak", "update", "-y", name], name, from, to)
     } else if (source === "aur") {
-      singleUpdateHelper.start(["paru", "-S", "--needed", "--noconfirm", name], name)
+      singleUpdateHelper.start(["paru", "-S", "--needed", "--noconfirm", name], name, from, to)
     } else {
-      singleUpdateHelper.start(["bash", "-c", "sudo pacman -Sy && sudo pacman -S --needed --noconfirm " + name], name)
+      singleUpdateHelper.start(["bash", "-c", "sudo pacman -Sy && sudo pacman -S --needed --noconfirm " + name], name, from, to)
     }
   }
 
@@ -121,9 +136,9 @@ Singleton {
     systemUpdating = false
     updatingPackages = {}
     if (success) {
-      notifyProc.command = ["notify-send", "System Updates", "System update completed successfully", "-i", "package-install"]
+      notifyProc.command = ["notify-send", "-a", "General", "System Updates", "System update completed successfully", "-i", "package-install"]
     } else {
-      notifyProc.command = ["notify-send", "System Updates", "System update failed", "-i", "dialog-error"]
+      notifyProc.command = ["notify-send", "-a", "General", "System Updates", "System update failed", "-i", "dialog-error"]
     }
     notifyProc.running = true
     recheckTimer.restart()
@@ -136,8 +151,8 @@ Singleton {
     property var queue: []
     property bool busy: false
 
-    function start(cmd, pkgName) {
-      queue.push({ command: cmd, name: pkgName })
+    function start(cmd, pkgName, fromVersion, toVersion) {
+      queue.push({ command: cmd, name: pkgName, from: fromVersion || "", to: toVersion || "" })
       processNext()
     }
 
@@ -146,11 +161,13 @@ Singleton {
       busy = true
       var item = queue.shift()
       singleProc.pkgName = item.name
+      singleProc.fromVersion = item.from
+      singleProc.toVersion = item.to
       singleProc.command = item.command
       singleProc.running = true
     }
 
-    function onFinished(pkgName, exitCode) {
+    function onFinished(pkgName, fromVersion, toVersion, exitCode) {
       busy = false
       // Remove from updatingPackages
       var pkgs = Object.assign({}, manager.updatingPackages)
@@ -158,9 +175,11 @@ Singleton {
       manager.updatingPackages = pkgs
 
       if (exitCode === 0) {
-        notifyProc.command = ["notify-send", "System Updates", "Updated " + pkgName, "-i", "package-install"]
+        var body = "Updated " + pkgName
+        if (fromVersion && toVersion) body += "\n" + fromVersion + " → " + toVersion
+        notifyProc.command = ["notify-send", "-a", "General", "System Updates", body, "-i", "package-install"]
       } else {
-        notifyProc.command = ["notify-send", "System Updates", "Failed to update " + pkgName, "-i", "dialog-error"]
+        notifyProc.command = ["notify-send", "-a", "General", "System Updates", "Failed to update " + pkgName, "-i", "dialog-error"]
       }
       notifyProc.running = true
 
@@ -280,7 +299,9 @@ Singleton {
   Process {
     id: singleProc
     property string pkgName: ""
-    onExited: exitCode => singleUpdateHelper.onFinished(pkgName, exitCode)
+    property string fromVersion: ""
+    property string toVersion: ""
+    onExited: exitCode => singleUpdateHelper.onFinished(pkgName, fromVersion, toVersion, exitCode)
   }
 
   // Source-level update process (update all in one source)
@@ -299,9 +320,9 @@ Singleton {
       manager.updatingPackages = pkgs
 
       if (exitCode === 0) {
-        notifyProc.command = ["notify-send", "System Updates", "Updated all " + source + " packages", "-i", "package-install"]
+        notifyProc.command = ["notify-send", "-a", "General", "System Updates", "Updated all " + source + " packages", "-i", "package-install"]
       } else {
-        notifyProc.command = ["notify-send", "System Updates", "Failed to update " + source + " packages", "-i", "dialog-error"]
+        notifyProc.command = ["notify-send", "-a", "General", "System Updates", "Failed to update " + source + " packages", "-i", "dialog-error"]
       }
       notifyProc.running = true
       recheckTimer.restart()

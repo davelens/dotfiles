@@ -135,9 +135,11 @@ Rectangle {
 
     // Image preview
     Image {
-      visible: image !== ""
-      source: image
-      width: parent.width
+      id: previewImage
+      visible: previewImage.status === Image.Ready
+      source: image || ""
+      width: visible ? parent.width : 0
+      height: visible ? implicitHeight * (parent.width / Math.max(implicitWidth, 1)) : 0
       fillMode: Image.PreserveAspectFit
       smooth: true
     }

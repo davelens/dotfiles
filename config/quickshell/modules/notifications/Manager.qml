@@ -161,13 +161,19 @@ Singleton {
     return ""
   }
 
+  function getImage(notification) {
+    var hints = notification.hints || {}
+    if (hints["image-path"]) return "file://" + hints["image-path"]
+    return ""
+  }
+
   function showPopup(notification) {
     // Insert at beginning (max 5)
     popupModel.insert(0, {
       notificationId: notification.id,
       appName: getAppName(notification),
       appIcon: getAppIcon(notification),
-      image: notification.image || "",
+      image: getImage(notification),
       summary: notification.summary || "",
       body: notification.body || "",
       urgency: notification.urgency,
