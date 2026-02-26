@@ -60,13 +60,12 @@ take_screenshot_window() {
 }
 
 take_screenshot_area() {
-  local geometry
-  # Capture output of slurp first so we can cancel if it fails.
-  geometry=$(slurp) || return
-  dir="$(xdg-user-dir PICTURES)/screenshots"
-  mkdir -p "$dir"
-  cd "$dir" && grim -g "$geometry" - | screenshot_to_clipboard
-  send_notification_and_open_preview
+  local real_script repo_root
+  real_script="$(readlink -f "${BASH_SOURCE[0]}")"
+  repo_root="$(cd "$(dirname "$real_script")/../../../../.." && pwd)"
+  export DOTFILES_REPO_HOME="$repo_root"
+  export XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
+  "$repo_root/bin/utilities/misc/screenshot" &
 }
 
 main() {
