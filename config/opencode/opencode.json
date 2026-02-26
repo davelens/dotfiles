@@ -9,9 +9,8 @@
   "theme": "system",
   "permission": {
     "external_directory": {
-      "~/Repositories/davelens/dotfiles/**": "allow",
-      "~/Repositories/davelens/dotsys/**": "allow",
-      "~/Repositories/davelens/dotvim/**": "allow"
+      "~/.config/**": "allow",
+      "~/Repositories/**": "allow"
     }
   },
   "plugin": [
