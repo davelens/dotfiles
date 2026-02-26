@@ -467,6 +467,7 @@ Singleton {
       notificationManager.markAllAsRead()
     }
     function hide(): void { notificationManager.closePanel() }
+    function clearAll(): void { notificationManager.clearHistory() }
   }
 
   // =========================================================================

@@ -19,14 +19,14 @@ pipe_options_to_rofi() {
 }
 
 send_notification_and_open_preview() {
-  notify_cmd_shot="notify-send"
+  if [[ "$notify" != "false" ]]; then
+    notify-send -i edit-copy "Screenshot" "Copied to clipboard"
 
-  $notify_cmd_shot -i edit-copy "Screenshot" "Copied to clipboard"
-
-  if [[ -e "$dir/$file" ]]; then
-    $notify_cmd_shot -i document-save "Screenshot saved" "$file"
-  else
-    $notify_cmd_shot -i user-trash "Screenshot deleted"
+    if [[ -e "$dir/$file" ]]; then
+      notify-send -i document-save "Screenshot saved" "$file"
+    else
+      notify-send -i user-trash "Screenshot deleted"
+    fi
   fi
 
   sushi "$dir"/"$file"
@@ -38,9 +38,10 @@ screenshot_to_clipboard() {
 
 countdown() {
   for sec in $(seq "$1" -1 1); do
-    notify-send -t 1000 -i image-x-generic "Screenshot" "Taking in ${sec}s"
+    notify-send -t 1000 -i image-x-generic "Screenshot" "Recording in ${sec}s"
     sleep 1
   done
+  qs ipc call notifications clearAll
 }
 
 record_screen_delay() {
