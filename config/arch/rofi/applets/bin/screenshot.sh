@@ -44,14 +44,18 @@ countdown() {
   qs ipc call notifications clearAll
 }
 
-record_screen_delay() {
-  countdown "${1:-5}"
+utility_dir() {
   local real_script repo_root
   real_script="$(readlink -f "${BASH_SOURCE[0]}")"
   repo_root="$(cd "$(dirname "$real_script")/../../../../.." && pwd)"
   export DOTFILES_REPO_HOME="$repo_root"
   export XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
-  "$repo_root/bin/utilities/misc/screencast" &
+  echo "$repo_root/bin/utilities"
+}
+
+record_screen_delay() {
+  countdown "${1:-5}"
+  "$(utility_dir)/misc/screencast" &
 }
 
 take_screenshot_full() {
@@ -71,12 +75,7 @@ take_screenshot_window() {
 }
 
 take_screenshot_area() {
-  local real_script repo_root
-  real_script="$(readlink -f "${BASH_SOURCE[0]}")"
-  repo_root="$(cd "$(dirname "$real_script")/../../../../.." && pwd)"
-  export DOTFILES_REPO_HOME="$repo_root"
-  export XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
-  "$repo_root/bin/utilities/misc/screenshot" &
+  "$(utility_dir)/misc/screenshot" &
 }
 
 main() {
