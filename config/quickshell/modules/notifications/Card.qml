@@ -16,6 +16,9 @@ Rectangle {
   property var urgency: NotificationUrgency.Normal
   property bool showCloseButton: true
   property bool compact: false  // Compact mode for history panel
+  property int notificationId: -1
+  property var actions: []       // Non-default actions [{identifier, text}]
+  property string image: ""      // Optional image preview (e.g. screenshot)
 
   // Track hover state
   property bool hovered: hoverHandler.hovered
@@ -74,6 +77,7 @@ Rectangle {
 
     // Header row: icon + app name
     Row {
+      visible: appName !== "General"
       spacing: 8
 
       // App icon
@@ -127,6 +131,54 @@ Rectangle {
       selectedTextColor: Colors.text
       visible: body !== ""
       clip: true
+    }
+
+    // Image preview
+    Image {
+      visible: image !== ""
+      source: image
+      width: parent.width
+      fillMode: Image.PreserveAspectFit
+      smooth: true
+    }
+
+    // Action buttons
+    Row {
+      visible: actions.length > 0
+      spacing: 6
+      topPadding: 4
+
+      Repeater {
+        model: actions
+
+        Rectangle {
+          required property var modelData
+          width: actionLabel.implicitWidth + 16
+          height: 26
+          radius: 4
+          color: actionArea.containsMouse ? Colors.surface2 : Colors.surface0
+
+          Text {
+            id: actionLabel
+            anchors.centerIn: parent
+            text: modelData.text
+            color: Colors.blue
+            font.pixelSize: 12
+          }
+
+          MouseArea {
+            id: actionArea
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: NotificationManager.invokeAction(card.notificationId, modelData.identifier)
+          }
+
+          Behavior on color {
+            ColorAnimation { duration: 100 }
+          }
+        }
+      }
     }
   }
 

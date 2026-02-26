@@ -55,6 +55,7 @@ Variants {
         required property int notificationId
         required property string appName
         required property string appIcon
+        required property string image
         required property string summary
         required property string body
         required property var urgency
@@ -68,11 +69,14 @@ Variants {
         NotificationCard {
           id: card
           width: parent.width
+          notificationId: notificationItem.notificationId
           appName: notificationItem.appName
           appIcon: notificationItem.appIcon
+          image: notificationItem.image
           summary: notificationItem.summary
           body: notificationItem.body
           urgency: notificationItem.urgency
+          actions: NotificationManager.getActions(notificationItem.notificationId)
           showCloseButton: true
           compact: false
 

@@ -167,6 +167,7 @@ Singleton {
       notificationId: notification.id,
       appName: getAppName(notification),
       appIcon: getAppIcon(notification),
+      image: notification.image || "",
       summary: notification.summary || "",
       body: notification.body || "",
       urgency: notification.urgency,
@@ -246,6 +247,52 @@ Singleton {
         return
       }
     }
+  }
+
+  function invokeAction(notificationId, actionIdentifier) {
+    // Remove from visible popups
+    for (var i = 0; i < popupModel.count; i++) {
+      if (popupModel.get(i).notificationId === notificationId) {
+        popupModel.remove(i)
+        break
+      }
+    }
+
+    // Find the notification and invoke the matching action
+    for (var j = 0; j < server.trackedNotifications.values.length; j++) {
+      var n = server.trackedNotifications.values[j]
+      if (n.id === notificationId) {
+        if (n.actions) {
+          for (var k = 0; k < n.actions.length; k++) {
+            if (n.actions[k].identifier === actionIdentifier) {
+              n.actions[k].invoke()
+              return
+            }
+          }
+        }
+        n.dismiss()
+        return
+      }
+    }
+  }
+
+  // Return non-default actions for a notification (for rendering buttons)
+  function getActions(notificationId) {
+    for (var i = 0; i < server.trackedNotifications.values.length; i++) {
+      var n = server.trackedNotifications.values[i]
+      if (n.id === notificationId) {
+        var result = []
+        if (n.actions) {
+          for (var j = 0; j < n.actions.length; j++) {
+            if (n.actions[j].identifier !== "default") {
+              result.push({ identifier: n.actions[j].identifier, text: n.actions[j].text })
+            }
+          }
+        }
+        return result
+      }
+    }
+    return []
   }
 
   // Focus an app's window by its desktop entry (app_id in Sway)
