@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# TODO: Make this accept some params to control fps, codec, input device, and output file.
+
+gpu-screen-recorder -w screen -f 60 -c mp4 -a "bluez_input.80:99:E7:71:33:33" -o ~/Videos/screencasts/"$(date +%Y-%m-%d_%H-%M-%S)".mp4

@@ -15,7 +15,7 @@ rofi_cmd() {
 }
 
 pipe_options_to_rofi() {
-  echo -e "$option_1\n$option_2\n$option_3\n$option_4\n$option_5" | rofi_cmd
+  echo -e "$option_1\n$option_2\n$option_3\n$option_4\n$option_5\n$option_6" | rofi_cmd
 }
 
 send_notification_and_open_preview() {
@@ -41,6 +41,16 @@ countdown() {
     notify-send -t 1000 -i image-x-generic "Screenshot" "Taking in ${sec}s"
     sleep 1
   done
+}
+
+record_screen_delay() {
+  countdown "${1:-5}"
+  local real_script repo_root
+  real_script="$(readlink -f "${BASH_SOURCE[0]}")"
+  repo_root="$(cd "$(dirname "$real_script")/../../../../.." && pwd)"
+  export DOTFILES_REPO_HOME="$repo_root"
+  export XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
+  "$repo_root/bin/utilities/misc/screencast" &
 }
 
 take_screenshot_full() {
@@ -80,18 +90,18 @@ main() {
 
   if [[ "$theme" == *'type-1'* ]]; then
     list_col='1'
-    list_row='5'
+    list_row='6'
     win_width='400px'
   elif [[ "$theme" == *'type-3'* ]]; then
     list_col='1'
-    list_row='5'
+    list_row='6'
     win_width='120px'
   elif [[ "$theme" == *'type-5'* ]]; then
     list_col='1'
-    list_row='5'
+    list_row='6'
     win_width='520px'
   elif [[ ("$theme" == *'type-2'*) || ("$theme" == *'type-4'*) ]]; then
-    list_col='5'
+    list_col='6'
     list_row='1'
     win_width='670px'
   fi
@@ -102,12 +112,14 @@ main() {
     option_3=" Capture Window"
     option_4=" Capture in 5s"
     option_5=" Capture in 10s"
+    option_6="󰕧 Record screen in 5s"
   else
     option_1=""
     option_2=""
     option_3=""
     option_4=""
     option_5=""
+    option_6="󰕧"
   fi
 
   [ ! -d "$dir" ] && mkdir -p "$dir"
@@ -118,6 +130,7 @@ main() {
   "$option_3") take_screenshot_window ;;
   "$option_4") take_screenshot_delay 5 ;;
   "$option_5") take_screenshot_delay 10 ;;
+  "$option_6") record_screen_delay 5 ;;
   esac
 }
 
