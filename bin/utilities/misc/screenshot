@@ -1,55 +1,115 @@
 #!/usr/bin/env bash
 
-# TODO: This is very old and needs a better/more configurable solution.
-# I moved the SCREENSHOT_* env vars from my global env file in here for now.
+# Flameshot-based screenshot tool.
+# Captures a selected area, saves it to disk, and copies it to clipboard.
+# Supports macOS, Linux (Wayland/X11), and WSL2.
 
-###############################################################################
+set -euo pipefail
 
-# Stops further execution after any error.
-set -e
-SCREENSHOT_HOST=davelens
-SCREENSHOT_URL=https://www.davelens.be/screenshots
-SCREENSHOT_REMOTE_PATH=screenshots
+platform="$("$XDG_BIN_HOME/os" --platform)"
 
-clipboard_text() {
-  if command -v pbcopy &>/dev/null; then
-    pbcopy
-  elif command -v wl-copy &>/dev/null; then
-    wl-copy
-  elif command -v xclip &>/dev/null; then
-    xclip -selection clipboard
-  elif command -v clip.exe &>/dev/null; then
-    clip.exe
+screenshot_dir() {
+  if [[ "$platform" == "macos" ]]; then
+    echo "$HOME/Pictures/screenshots"
+  elif command -v xdg-user-dir &>/dev/null; then
+    echo "$(xdg-user-dir PICTURES)/screenshots"
   else
-    echo "No clipboard utility found" >&2
-    return 1
+    echo "$HOME/Pictures/screenshots"
+  fi
+}
+
+screen_geometry() {
+  if command -v swaymsg &>/dev/null; then
+    swaymsg -t get_outputs | jq -r '.[] | select(.focused) | "\(.current_mode.width)x\(.current_mode.height)"'
+  elif command -v xdpyinfo &>/dev/null; then
+    xdpyinfo | grep dimensions | awk '{print $2}'
+  elif [[ "$platform" == "macos" ]]; then
+    system_profiler SPDisplaysDataType | grep Resolution | head -1 | awk '{print $2"x"$4}'
+  else
+    echo "unknown"
   fi
 }
 
 clipboard_image() {
   local file="$1"
-  if [[ "$(uname)" == "Darwin" ]]; then
-    osascript -e "set the clipboard to (read (POSIX file \"$file\") as JPEG picture)"
-  elif command -v wl-copy &>/dev/null; then
-    wl-copy < "$file"
-  elif command -v xclip &>/dev/null; then
-    xclip -selection clipboard -t image/png -i "$file"
-  else
-    echo "No clipboard utility found for images" >&2
-    return 1
+  case $("$XDG_BIN_HOME/os") in
+  macos)
+    osascript -e "set the clipboard to (read (POSIX file \"$file\") as «class PNGf»)"
+    ;;
+  wsl)
+    # clip.exe only supports text, so copy the file path instead.
+    echo "$file" | clip.exe
+    ;;
+  *)
+    if command -v wl-copy &>/dev/null; then
+      wl-copy -t image/png <"$file"
+    elif command -v xclip &>/dev/null; then
+      xclip -selection clipboard -t image/png -i "$file"
+    else
+      echo "No clipboard utility found" >&2
+      return 1
+    fi
+    ;;
+  esac
+}
+
+notify() {
+  local title="$1" body="$2"
+  if command -v notify-send &>/dev/null; then
+    notify-send "$title" "$body"
+  elif [[ "$platform" == "macos" ]]; then
+    osascript -e "display notification \"$body\" with title \"$title\""
   fi
 }
 
-filename="$(date +%Y-%m-%d-%H-%M-%S).jpg"
-full_path=$TMPDIR/$filename
+open_file() {
+  local file="$1"
+  if [[ "$platform" == "macos" ]]; then
+    open "$file"
+  elif command -v xdg-open &>/dev/null; then
+    sushi "$file"
+  fi
+}
 
-screencapture -ix "$full_path"
+dir="$(screenshot_dir)"
+mkdir -p "$dir"
 
-if [[ "$1" == "--no-link" ]]; then
-  clipboard_image "$full_path"
-else
-  scp "$full_path" "$SCREENSHOT_HOST":"$SCREENSHOT_REMOTE_PATH"/"$filename"
-  echo "$SCREENSHOT_URL/$filename" | clipboard_text
+geometry="$(screen_geometry)"
+filename="$(date +%Y-%m-%d-%H-%M-%S)_${geometry}.png"
+filepath="${dir}/${filename}"
+
+flameshot gui --raw 2>/dev/null >"$filepath"
+
+if [[ ! -s "$filepath" ]]; then
+  rm -f "$filepath"
+  notify "Screenshot" "Cancelled or empty capture"
+  exit 1
 fi
 
-rm "$full_path"
+clipboard_image "$filepath"
+
+clipboard_text() {
+  local text="$1"
+  case "$("$XDG_BIN_HOME/os")" in
+    macos) echo -n "$text" | pbcopy ;;
+    wsl) echo -n "$text" | clip.exe ;;
+    *)
+      if command -v wl-copy &>/dev/null; then
+        echo -n "$text" | wl-copy
+      elif command -v xclip &>/dev/null; then
+        echo -n "$text" | xclip -selection clipboard
+      fi
+      ;;
+  esac
+}
+
+if command -v notify-send &>/dev/null; then
+  action=$(notify-send "Screenshot copied to clipboard" \
+    "Click to copy path instead" \
+    --action="default=Copy path" --wait) || true
+  if [[ "$action" == "default" ]]; then
+    clipboard_text "$filepath"
+  fi
+elif [[ "$platform" == "macos" ]]; then
+  osascript -e "display notification \"Click to copy path instead\" with title \"Screenshot copied to clipboard\""
+fi
