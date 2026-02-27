@@ -95,6 +95,7 @@ Singleton {
 
     pendingSSID = ""
     busy = true
+    connectProc.lastSSID = ssid
     if (password) {
       connectProc.command = ["nmcli", "dev", "wifi", "connect", ssid, "password", password]
     } else {
@@ -341,11 +342,26 @@ Singleton {
   // Connect to network
   Process {
     id: connectProc
+    property string lastSSID: ""
     command: []
     onExited: exitCode => {
       wirelessManager.busy = false
       if (exitCode !== 0) {
-        wirelessManager.connectError = "Connection failed. Check your password."
+        // Find the network to check if it's secured
+        var network = null
+        for (var i = 0; i < wirelessManager.networks.length; i++) {
+          if (wirelessManager.networks[i].ssid === lastSSID) {
+            network = wirelessManager.networks[i]
+            break
+          }
+        }
+        // Show password prompt if the network is secured
+        if (network && network.security) {
+          wirelessManager.pendingSSID = lastSSID
+          wirelessManager.connectError = "Connection failed. Check your password."
+        } else {
+          wirelessManager.connectError = "Connection failed."
+        }
       } else {
         wirelessManager.connectError = ""
         wirelessManager.pendingSSID = ""
