@@ -31,6 +31,9 @@ Singleton {
   // Operation in progress
   property bool busy: false
 
+  // SSID currently being connected to (for UI feedback)
+  property string connectingSSID: ""
+
   // Suppress refreshes briefly after operations
   property bool suppressRefresh: false
 
@@ -95,6 +98,7 @@ Singleton {
 
     pendingSSID = ""
     busy = true
+    connectingSSID = ssid
     connectProc.lastSSID = ssid
     if (password) {
       connectProc.command = ["nmcli", "dev", "wifi", "connect", ssid, "password", password]
@@ -346,6 +350,7 @@ Singleton {
     command: []
     onExited: exitCode => {
       wirelessManager.busy = false
+      wirelessManager.connectingSSID = ""
       if (exitCode !== 0) {
         // Find the network to check if it's secured
         var network = null

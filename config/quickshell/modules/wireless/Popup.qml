@@ -9,10 +9,12 @@ Variants {
 
   property bool isOpen: PopupManager.isOpen("wireless")
 
-  // Start scan when popup opens
+  // Start scan when popup opens, clear pending state when it closes
   onIsOpenChanged: {
     if (isOpen && WirelessManager.enabled) {
       WirelessManager.startScan()
+    } else if (!isOpen) {
+      WirelessManager.cancelPending()
     }
   }
 
@@ -42,6 +44,11 @@ Variants {
         if (visibleNetworks > 0) {
           var displayCount = Math.min(visibleNetworks, 6)
           h += displayCount * 36 + (displayCount - 1) * 2
+          // Password input row: padding (4) + input (36) + spacing (4) + optional error (20)
+          if (WirelessManager.pendingSSID) {
+            h += 44
+            if (WirelessManager.connectError) h += 20
+          }
         } else {
           h += 40
         }
@@ -207,7 +214,12 @@ Variants {
         var visibleNetworks = WirelessManager.networks.filter(n => !n.active).length
         if (visibleNetworks === 0) return 40
         var displayCount = Math.min(visibleNetworks, 6)
-        return displayCount * 36 + (displayCount - 1) * 2
+        var h = displayCount * 36 + (displayCount - 1) * 2
+        if (WirelessManager.pendingSSID) {
+          h += 44
+          if (WirelessManager.connectError) h += 20
+        }
+        return h
       }
 
       Column {
@@ -217,20 +229,161 @@ Variants {
         Repeater {
           model: WirelessManager.networks.filter(n => !n.active)
 
-          FocusListItem {
+          Column {
             required property var modelData
 
-            itemHeight: 36
-            bodyMargins: 0
-            bodyRadius: 4
-            icon: WirelessManager.getSignalIcon(modelData.signal)
-            iconSize: 18
-            text: modelData.ssid
-            fontSize: 15
-            rightIcon: modelData.security ? "󰌾" : ""
-            hoverBackgroundColor: Colors.surface0
-            onClicked: {
-              if (!WirelessManager.busy) WirelessManager.connect(modelData.ssid)
+            width: parent.width
+            spacing: 0
+
+            property bool isPending: WirelessManager.pendingSSID === modelData.ssid
+
+            FocusListItem {
+              property bool isConnecting: WirelessManager.connectingSSID === modelData.ssid
+
+              itemHeight: 36
+              bodyMargins: 0
+              bodyRadius: 4
+              icon: WirelessManager.getSignalIcon(modelData.signal)
+              iconSize: 18
+              iconColor: isConnecting ? Colors.blue : Colors.overlay0
+              text: isConnecting ? modelData.ssid + "  —  Connecting..." : modelData.ssid
+              fontSize: 15
+              rightIcon: modelData.security ? "󰌾" : ""
+              hoverBackgroundColor: Colors.surface0
+              onClicked: {
+                if (!WirelessManager.busy) WirelessManager.connect(modelData.ssid)
+              }
+            }
+
+            // Inline password input
+            Column {
+              id: passwordColumn
+              width: parent.width
+              spacing: 4
+              visible: parent.isPending
+              topPadding: 4
+
+              onVisibleChanged: {
+                if (visible) {
+                  passwordInput.text = ""
+                  WirelessManager.connectError = ""
+                  passwordInput.forceActiveFocus()
+                }
+              }
+
+              Rectangle {
+                width: parent.width
+                height: 36
+                radius: 4
+                color: Colors.surface0
+                border.width: 1
+                border.color: passwordInput.activeFocus ? Colors.blue : Colors.surface1
+
+                Row {
+                  anchors.fill: parent
+                  anchors.leftMargin: 10
+                  anchors.rightMargin: 4
+                  spacing: 4
+
+                  TextInput {
+                    id: passwordInput
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: parent.width - toggleVisibility.width - connectBtn.width - 12
+                    color: Colors.text
+                    font.pixelSize: 14
+                    clip: true
+                    echoMode: TextInput.Password
+
+                    Text {
+                      anchors.fill: parent
+                      anchors.verticalCenter: parent.verticalCenter
+                      text: "Enter password"
+                      color: Colors.overlay0
+                      font.pixelSize: 14
+                      visible: !passwordInput.text && !passwordInput.activeFocus
+                    }
+
+                    Keys.onReturnPressed: {
+                      if (passwordInput.text) {
+                        WirelessManager.connect(modelData.ssid, passwordInput.text)
+                      }
+                    }
+                    Keys.onEnterPressed: {
+                      if (passwordInput.text) {
+                        WirelessManager.connect(modelData.ssid, passwordInput.text)
+                      }
+                    }
+                    Keys.onEscapePressed: WirelessManager.cancelPending()
+                  }
+
+                  // Show/hide password toggle
+                  Text {
+                    id: toggleVisibility
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: passwordInput.echoMode === TextInput.Password ? "󰈈" : "󰈉"
+                    color: toggleMouse.containsMouse ? Colors.text : Colors.overlay0
+                    font.pixelSize: 16
+                    font.family: "Symbols Nerd Font"
+                    width: 28
+                    horizontalAlignment: Text.AlignHCenter
+
+                    MouseArea {
+                      id: toggleMouse
+                      anchors.fill: parent
+                      hoverEnabled: true
+                      cursorShape: Qt.PointingHandCursor
+                      onClicked: {
+                        passwordInput.echoMode = passwordInput.echoMode === TextInput.Password
+                          ? TextInput.Normal
+                          : TextInput.Password
+                      }
+                    }
+                  }
+
+                  // Connect button
+                  Rectangle {
+                    id: connectBtn
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: 28
+                    height: 28
+                    radius: 4
+                    color: connectBtnMouse.containsMouse && passwordInput.text
+                      ? Colors.blue : "transparent"
+
+                    Text {
+                      anchors.centerIn: parent
+                      text: "󰁔"
+                      color: passwordInput.text
+                        ? (connectBtnMouse.containsMouse ? Colors.base : Colors.blue)
+                        : Colors.surface2
+                      font.pixelSize: 16
+                      font.family: "Symbols Nerd Font"
+                    }
+
+                    MouseArea {
+                      id: connectBtnMouse
+                      anchors.fill: parent
+                      hoverEnabled: true
+                      cursorShape: passwordInput.text ? Qt.PointingHandCursor : Qt.ArrowCursor
+                      onClicked: {
+                        if (passwordInput.text) {
+                          WirelessManager.connect(modelData.ssid, passwordInput.text)
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+              // Error message
+              Text {
+                width: parent.width
+                text: WirelessManager.connectError
+                color: Colors.red
+                font.pixelSize: 12
+                leftPadding: 10
+                visible: WirelessManager.connectError !== ""
+              }
             }
           }
         }
