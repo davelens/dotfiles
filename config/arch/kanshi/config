@@ -5,7 +5,7 @@ profile laptop {
 
 profile home {
     output eDP-2 disable
-    output DP-4 enable position 0,0 scale 1.0
+    output DP-3 enable position 0,0 scale 1.0
     exec systemctl --user restart quickshell.service
 }
 
