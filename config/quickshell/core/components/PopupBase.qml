@@ -281,9 +281,9 @@ PanelWindow {
   // Cover the popup's top border under the stem (between the two border strokes)
   Rectangle {
     visible: popupBase.showStem
-    x: stemCanvas.stemLeftX
+    x: stemCanvas.stemLeftX - 10
     y: popupBase.contentOffset + popupBase.stemHeight
-    width: popupBase.stemWidth - 1
+    width: popupBase.stemWidth + 9
     height: 1
     color: Colors.base
   }
