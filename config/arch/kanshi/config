@@ -12,6 +12,6 @@ profile home {
 profile work {
     output eDP-2 disable
     output DP-6 disable
-    output DP-7 enable position 0,0 scale 1.5
+    output DP-7 enable position 0,0 scale 1.4
     exec systemctl --user restart quickshell.service
 }
