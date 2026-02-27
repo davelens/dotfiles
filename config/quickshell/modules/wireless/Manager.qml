@@ -34,6 +34,15 @@ Singleton {
   // Suppress refreshes briefly after operations
   property bool suppressRefresh: false
 
+  // Saved WiFi connection profiles (SSIDs with stored credentials)
+  property var savedConnections: []
+
+  // SSID awaiting password entry (non-empty triggers password prompt in UI)
+  property string pendingSSID: ""
+
+  // Error message from last failed connection attempt
+  property string connectError: ""
+
   // Network speeds (bytes per second)
   property real downloadSpeed: 0
   property real uploadSpeed: 0
@@ -64,10 +73,39 @@ Singleton {
     scanProc.running = true
   }
 
-  function connect(ssid) {
+  function connect(ssid, password) {
+    connectError = ""
+
+    // If the network is secured and has no saved profile, prompt for password
+    if (!password) {
+      var network = null
+      for (var i = 0; i < networks.length; i++) {
+        if (networks[i].ssid === ssid) {
+          network = networks[i]
+          break
+        }
+      }
+
+      var hasSavedProfile = savedConnections.indexOf(ssid) >= 0
+      if (network && network.security && !hasSavedProfile) {
+        pendingSSID = ssid
+        return
+      }
+    }
+
+    pendingSSID = ""
     busy = true
-    connectProc.ssid = ssid
+    if (password) {
+      connectProc.command = ["nmcli", "dev", "wifi", "connect", ssid, "password", password]
+    } else {
+      connectProc.command = ["nmcli", "dev", "wifi", "connect", ssid]
+    }
     connectProc.running = true
+  }
+
+  function cancelPending() {
+    pendingSSID = ""
+    connectError = ""
   }
 
   function disconnect() {
@@ -185,6 +223,7 @@ Singleton {
       wirelessManager.enabled = statusProc.output.trim() === "enabled"
       if (wirelessManager.enabled) {
         networkListProc.running = true
+        savedConnectionsProc.running = true
       } else {
         wirelessManager.connectedNetwork = null
         wirelessManager.networks = []
@@ -276,13 +315,42 @@ Singleton {
     }
   }
 
+  // Fetch saved WiFi connection profiles
+  Process {
+    id: savedConnectionsProc
+    command: ["nmcli", "-t", "-f", "NAME,TYPE", "connection", "show"]
+    property string output: ""
+    onStarted: output = ""
+    stdout: SplitParser {
+      onRead: data => savedConnectionsProc.output += data + "\n"
+    }
+    onExited: {
+      var lines = savedConnectionsProc.output.trim().split("\n")
+      var saved = []
+      var suffix = ":802-11-wireless"
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i]
+        if (line.length > suffix.length && line.slice(-suffix.length) === suffix) {
+          saved.push(line.slice(0, -suffix.length))
+        }
+      }
+      wirelessManager.savedConnections = saved
+    }
+  }
+
   // Connect to network
   Process {
     id: connectProc
-    property string ssid: ""
-    command: ["nmcli", "dev", "wifi", "connect", ssid]
-    onExited: {
+    command: []
+    onExited: exitCode => {
       wirelessManager.busy = false
+      if (exitCode !== 0) {
+        wirelessManager.connectError = "Connection failed. Check your password."
+      } else {
+        wirelessManager.connectError = ""
+        wirelessManager.pendingSSID = ""
+        savedConnectionsProc.running = true
+      }
       wirelessManager.refresh()
     }
   }
