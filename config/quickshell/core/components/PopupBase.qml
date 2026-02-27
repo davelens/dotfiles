@@ -221,11 +221,13 @@ PanelWindow {
 
     // Canvas covers from stem left minus the radius (for the inverted
     // corner arc) to the popup's right edge, and from y=0 down past
-    // the junction with the popup rect
+    // the junction with the popup rect. The 2px overlap hides sub-pixel
+    // gaps from fractional display scaling.
+    property int overlap: 2
     x: stemLeftX - popupBase.stemRadius
-    y: popupBase.contentOffset
+    y: popupBase.contentOffset - overlap
     width: popupBase.stemWidth + popupBase.stemRadius + 1
-    height: popupBase.stemHeight + popupBase.stemRadius
+    height: popupBase.stemHeight + popupBase.stemRadius + overlap
 
     onPaint: {
       var ctx = getContext("2d")
@@ -234,24 +236,25 @@ PanelWindow {
       var r = popupBase.stemRadius
       var sh = popupBase.stemHeight
       var sw = popupBase.stemWidth
+      var ov = overlap
 
       // Stem left edge relative to this canvas = r (since canvas x = stemLeftX - r)
       var sl = r
       // Stem right edge relative to this canvas
       var sr = r + sw
 
-      // Fill the stem body
+      // Fill the stem body (starts at ov to overlap behind the bar)
       ctx.fillStyle = Colors.base.toString()
       ctx.beginPath()
-      ctx.rect(sl, 0, sw, sh)
+      ctx.rect(sl, 0, sw, sh + ov)
       ctx.fill()
 
       // Fill the inverted corner area (triangle + arc cutout on the left)
       ctx.beginPath()
-      ctx.moveTo(0, sh)
-      ctx.lineTo(sl, sh)
-      ctx.lineTo(sl, sh - r)
-      ctx.arcTo(sl, sh, 0, sh, r)
+      ctx.moveTo(0, sh + ov)
+      ctx.lineTo(sl, sh + ov)
+      ctx.lineTo(sl, sh + ov - r)
+      ctx.arcTo(sl, sh + ov, 0, sh + ov, r)
       ctx.closePath()
       ctx.fill()
 
@@ -260,14 +263,14 @@ PanelWindow {
       ctx.lineWidth = 1
       ctx.beginPath()
       ctx.moveTo(sl + 0.5, 0)
-      ctx.lineTo(sl + 0.5, sh - r)
-      ctx.arcTo(sl + 0.5, sh, 0, sh, r)
+      ctx.lineTo(sl + 0.5, sh + ov - r)
+      ctx.arcTo(sl + 0.5, sh + ov, 0, sh + ov, r)
       ctx.stroke()
 
       // Stroke: right border of stem (continues the popup's right border)
       ctx.beginPath()
       ctx.moveTo(sr - 0.5, 0)
-      ctx.lineTo(sr - 0.5, sh)
+      ctx.lineTo(sr - 0.5, sh + ov)
       ctx.stroke()
     }
 
@@ -278,9 +281,9 @@ PanelWindow {
   // Cover the popup's top border under the stem (between the two border strokes)
   Rectangle {
     visible: popupBase.showStem
-    x: stemCanvas.stemLeftX - 10
+    x: stemCanvas.stemLeftX
     y: popupBase.contentOffset + popupBase.stemHeight
-    width: popupBase.stemWidth + 9
+    width: popupBase.stemWidth - 1
     height: 1
     color: Colors.base
   }
