@@ -11,11 +11,28 @@ Variants {
     popupWidth: 320
     contentSpacing: 12
 
-    // Header
-    Text {
-      text: "Main display"
-      color: Colors.text
-      font.pixelSize: 16
+    // Header with configure link
+    Item {
+      width: parent.width
+      height: 20
+
+      Text {
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        text: "Main display"
+        color: Colors.text
+        font.pixelSize: 16
+      }
+
+      FocusLink {
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        text: "Configure"
+        textColor: Colors.overlay0
+        hoverColor: Colors.blue
+        fontSize: 12
+        onClicked: DisplayConfig.openSettings()
+      }
     }
 
     // Display list

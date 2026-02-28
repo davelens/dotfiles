@@ -256,6 +256,10 @@ Scope {
       root.activeCategory = "notifications"
       root.visible = true
     }
+    function showCategory(categoryId: string): void {
+      root.activeCategory = categoryId
+      root.visible = true
+    }
   }
 
   // Full-screen overlay with centered panel

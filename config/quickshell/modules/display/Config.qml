@@ -84,6 +84,17 @@ Singleton {
     adapter.primaryDisplayId = screenId(screen)
   }
 
+  // Open the settings panel to the display category
+  function openSettings() {
+    PopupManager.close()
+    settingsIpcProc.running = true
+  }
+
+  Process {
+    id: settingsIpcProc
+    command: ["qs", "ipc", "call", "settings", "showCategory", "display"]
+  }
+
   // =========================================================================
   // SWAY-SPECIFIC (isolated for portability)
   // =========================================================================
