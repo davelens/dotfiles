@@ -4,8 +4,7 @@ import "../.."
 import "../../core/components"
 
 BarButton {
-  icon: "⏻"
-  iconSize: 28
+  icon: "󰐥"
   iconColor: Colors.blue
 
   Process {
