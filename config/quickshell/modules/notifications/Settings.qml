@@ -84,11 +84,9 @@ ScrollView {
     }
 
     // Popup Settings
-    Text {
+    TitleText {
       text: settingsRoot.highlightText("Popup Settings", settingsRoot.searchQuery)
       textFormat: Text.RichText
-      color: Colors.subtext0
-      font.pixelSize: 14
     }
 
     Rectangle {
@@ -144,11 +142,9 @@ ScrollView {
     }
 
     // History Settings
-    Text {
+    TitleText {
       text: settingsRoot.highlightText("History", settingsRoot.searchQuery)
       textFormat: Text.RichText
-      color: Colors.subtext0
-      font.pixelSize: 15
     }
 
     Rectangle {
@@ -214,11 +210,9 @@ ScrollView {
     }
 
     // Do Not Disturb Settings
-    Text {
+    TitleText {
       text: settingsRoot.highlightText("Do Not Disturb", settingsRoot.searchQuery)
       textFormat: Text.RichText
-      color: Colors.subtext0
-      font.pixelSize: 14
     }
 
     Rectangle {
@@ -310,11 +304,9 @@ ScrollView {
     }
 
     // Advanced Settings
-    Text {
+    TitleText {
       text: settingsRoot.highlightText("Advanced", settingsRoot.searchQuery)
       textFormat: Text.RichText
-      color: Colors.subtext0
-      font.pixelSize: 14
     }
 
     Rectangle {

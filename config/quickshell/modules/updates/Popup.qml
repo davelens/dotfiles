@@ -214,10 +214,8 @@ Variants {
         spacing: 8
 
         // Header
-        Text {
+        TitleText {
           text: "Official (" + UpdatesManager.pacmanUpdates.length + ")"
-          color: Colors.overlay0
-          font.pixelSize: 14
         }
 
         // Update all button
@@ -334,10 +332,8 @@ Variants {
         width: (parent.width - 50) / 3
         spacing: 8
 
-        Text {
+        TitleText {
           text: "AUR (" + UpdatesManager.aurUpdates.length + ")"
-          color: Colors.overlay0
-          font.pixelSize: 14
         }
 
         FocusButton {
@@ -451,10 +447,8 @@ Variants {
         width: (parent.width - 50) / 3
         spacing: 8
 
-        Text {
+        TitleText {
           text: "Flatpak (" + UpdatesManager.flatpakUpdates.length + ")"
-          color: Colors.overlay0
-          font.pixelSize: 14
         }
 
         FocusButton {

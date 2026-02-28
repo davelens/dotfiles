@@ -51,11 +51,9 @@ ScrollView {
       spacing: 8
       visible: WirelessManager.connectedNetwork !== null
 
-      Text {
+      TitleText {
         text: settingsRoot.highlightText("Connected network", settingsRoot.searchQuery)
         textFormat: Text.RichText
-        color: Colors.subtext0
-        font.pixelSize: 14
       }
 
       Rectangle {
@@ -126,11 +124,9 @@ ScrollView {
       Row {
         spacing: 8
 
-        Text {
+        TitleText {
           text: WirelessManager.scanning ? "Scanning..." : settingsRoot.highlightText("Available Networks", settingsRoot.searchQuery)
           textFormat: Text.RichText
-          color: Colors.subtext0
-          font.pixelSize: 14
         }
 
         FocusIconButton {

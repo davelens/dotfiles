@@ -197,11 +197,9 @@ Item {
         width: parent.width
         spacing: 8
 
-        Text {
+        TitleText {
           text: settingsRoot.highlightText("Bar Margins", settingsRoot.searchQuery)
           textFormat: Text.RichText
-          color: Colors.subtext0
-          font.pixelSize: 14
         }
 
         Row {
@@ -387,11 +385,9 @@ Item {
         width: parent.width
         spacing: 8
 
-        Text {
+        TitleText {
           text: settingsRoot.highlightText("Left Section", settingsRoot.searchQuery)
           textFormat: Text.RichText
-          color: Colors.subtext0
-          font.pixelSize: 14
         }
 
         Column {
@@ -423,11 +419,9 @@ Item {
         width: parent.width
         spacing: 8
 
-        Text {
+        TitleText {
           text: settingsRoot.highlightText("Center Section", settingsRoot.searchQuery)
           textFormat: Text.RichText
-          color: Colors.subtext0
-          font.pixelSize: 14
         }
 
         Column {
@@ -459,11 +453,9 @@ Item {
         width: parent.width
         spacing: 8
 
-        Text {
+        TitleText {
           text: settingsRoot.highlightText("Right Section", settingsRoot.searchQuery)
           textFormat: Text.RichText
-          color: Colors.subtext0
-          font.pixelSize: 14
         }
 
         Column {

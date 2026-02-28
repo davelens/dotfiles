@@ -105,10 +105,8 @@ Variants {
       spacing: 6
       visible: WirelessManager.connectedNetwork !== null
 
-      Text {
+      TitleText {
         text: "Connected network"
-        color: Colors.overlay0
-        font.pixelSize: 14
       }
 
       FocusListItem {
@@ -166,11 +164,9 @@ Variants {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 8
 
-        Text {
+        TitleText {
           anchors.verticalCenter: parent.verticalCenter
           text: WirelessManager.scanning ? "Scanning..." : "Available networks"
-          color: Colors.overlay0
-          font.pixelSize: 14
         }
 
         Text {

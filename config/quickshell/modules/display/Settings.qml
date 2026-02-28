@@ -331,11 +331,9 @@ ScrollView {
     }
 
     // Monitor layout section
-    Text {
+    TitleText {
       text: settingsRoot.highlightText("Monitor Layout", settingsRoot.searchQuery)
       textFormat: Text.RichText
-      color: Colors.subtext0
-      font.pixelSize: 14
     }
 
     // Canvas area
@@ -608,11 +606,9 @@ ScrollView {
     }
 
     // Primary display section
-    Text {
+    TitleText {
       text: settingsRoot.highlightText("Primary Display", settingsRoot.searchQuery)
       textFormat: Text.RichText
-      color: Colors.subtext0
-      font.pixelSize: 14
     }
 
     Rectangle {

@@ -11,3 +11,4 @@ FocusListItem 1.0 FocusListItem.qml
 FocusSlider 1.0 FocusSlider.qml
 SwitchToggle 1.0 SwitchToggle.qml
 TimePicker 1.0 TimePicker.qml
+TitleText 1.0 TitleText.qml

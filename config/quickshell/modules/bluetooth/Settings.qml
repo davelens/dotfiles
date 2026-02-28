@@ -52,11 +52,9 @@ ScrollView {
       spacing: 8
       visible: BluetoothManager.powered && BluetoothManager.connectedDevices.length > 0
 
-      Text {
+      TitleText {
         text: settingsRoot.highlightText("Connected devices", settingsRoot.searchQuery)
         textFormat: Text.RichText
-        color: Colors.subtext0
-        font.pixelSize: 14
       }
 
       Repeater {
@@ -132,11 +130,9 @@ ScrollView {
       Row {
         spacing: 8
 
-        Text {
+        TitleText {
           text: BluetoothManager.scanning ? "Scanning..." : settingsRoot.highlightText("Available Devices", settingsRoot.searchQuery)
           textFormat: Text.RichText
-          color: Colors.subtext0
-          font.pixelSize: 14
         }
 
         FocusIconButton {

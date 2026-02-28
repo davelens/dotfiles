@@ -100,10 +100,8 @@ Variants {
       spacing: 4
       visible: BluetoothManager.connectedDevices.length > 0
 
-      Text {
+      TitleText {
         text: "Connected devices"
-        color: Colors.overlay0
-        font.pixelSize: 14
       }
 
       Repeater {
@@ -148,11 +146,9 @@ Variants {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 8
 
-        Text {
+        TitleText {
           anchors.verticalCenter: parent.verticalCenter
           text: BluetoothManager.scanning ? "Scanning..." : "Available devices"
-          color: Colors.overlay0
-          font.pixelSize: 14
         }
 
         Text {
