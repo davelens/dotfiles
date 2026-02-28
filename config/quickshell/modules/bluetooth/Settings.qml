@@ -184,14 +184,12 @@ ScrollView {
       spacing: 8
       visible: !BluetoothManager.powered
 
-      Text {
+      BodyText {
         text: "Bluetooth is off"
-        color: Colors.overlay0
-        font.pixelSize: 14
         topPadding: 16
       }
 
-      HelpText {
+      BodyText {
         text: "Turn on Bluetooth to connect to devices"
       }
     }
