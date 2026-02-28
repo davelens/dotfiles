@@ -172,8 +172,6 @@ ScrollView {
         // Empty state
         BodyText {
           text: BluetoothManager.scanning ? "Looking for devices..." : "No devices found"
-          color: Colors.overlay0
-          font.pixelSize: 13
           visible: BluetoothManager.devices.filter(function(d) { return !d.connected }).length === 0
           topPadding: 8
         }
