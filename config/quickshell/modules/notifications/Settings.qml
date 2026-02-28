@@ -54,10 +54,8 @@ ScrollView {
         anchors.margins: 16
         spacing: 12
 
-        Text {
+        HelpText {
           text: "Preview"
-          color: Colors.overlay0
-          font.pixelSize: 12
         }
 
         // Preview notification card
@@ -303,11 +301,9 @@ ScrollView {
           }
 
           // Schedule status
-          Text {
+          HelpText {
             text: "DND will be active from " + NotificationManager.formatTime(NotificationManager.dndStartHour, NotificationManager.dndStartMinute) +
                 " to " + NotificationManager.formatTime(NotificationManager.dndEndHour, NotificationManager.dndEndMinute)
-            color: Colors.overlay0
-            font.pixelSize: 12
           }
         }
       }
@@ -356,10 +352,8 @@ ScrollView {
               font.pixelSize: 14
             }
 
-            Text {
+            HelpText {
               text: "Show critical notifications even when Do Not Disturb is enabled"
-              color: Colors.overlay0
-              font.pixelSize: 11
             }
           }
         }

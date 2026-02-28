@@ -226,11 +226,10 @@ Variants {
         }
 
         // Empty state
-        Text {
+        BodyText {
           width: parent.width
           text: BluetoothManager.scanning ? "Looking for devices..." : "No devices found"
           color: Colors.overlay0
-          font.pixelSize: 14
           horizontalAlignment: Text.AlignHCenter
           visible: BluetoothManager.devices.length === 0
           topPadding: 8

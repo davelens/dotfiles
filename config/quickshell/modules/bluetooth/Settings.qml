@@ -170,7 +170,7 @@ ScrollView {
         }
 
         // Empty state
-        Text {
+        BodyText {
           text: BluetoothManager.scanning ? "Looking for devices..." : "No devices found"
           color: Colors.overlay0
           font.pixelSize: 13
@@ -193,10 +193,8 @@ ScrollView {
         topPadding: 16
       }
 
-      Text {
+      HelpText {
         text: "Turn on Bluetooth to connect to devices"
-        color: Colors.overlay1
-        font.pixelSize: 12
       }
     }
   }

@@ -571,24 +571,20 @@ ScrollView {
       }
 
       // Multi-monitor hint
-      Text {
+      HelpText {
         visible: settingsRoot.activeCount > 1
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 8
         anchors.horizontalCenter: parent.horizontalCenter
         text: "Click a monitor to reposition it"
-        color: Colors.overlay0
-        font.pixelSize: 11
         z: 5
       }
     }
 
     // Single-monitor message (below the canvas)
-    Text {
+    HelpText {
       visible: settingsRoot.activeCount <= 1
       text: "Connect a second display to arrange layout"
-      color: Colors.overlay0
-      font.pixelSize: 12
     }
 
     // Apply button row
@@ -633,10 +629,8 @@ ScrollView {
         anchors.margins: 12
         spacing: 4
 
-        Text {
+        HelpText {
           text: "Select which display hosts the status bar"
-          color: Colors.overlay0
-          font.pixelSize: 12
           bottomPadding: 8
         }
 

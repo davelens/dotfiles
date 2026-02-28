@@ -389,11 +389,10 @@ Variants {
         }
 
         // Empty state
-        Text {
+        BodyText {
           width: parent.width
           text: WirelessManager.scanning ? "Looking for networks..." : "No networks found"
           color: Colors.overlay0
-          font.pixelSize: 14
           horizontalAlignment: Text.AlignHCenter
           visible: WirelessManager.networks.filter(n => !n.active).length === 0
           topPadding: 8
