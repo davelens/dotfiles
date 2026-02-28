@@ -88,11 +88,9 @@ Item {
           visible: dropdown.headerIcon
         }
 
-        Text {
+        AnnotationText {
           anchors.verticalCenter: parent.verticalCenter
           text: dropdown.headerLabel
-          color: Colors.overlay0
-          font.pixelSize: 16
           visible: dropdown.headerLabel
         }
 
