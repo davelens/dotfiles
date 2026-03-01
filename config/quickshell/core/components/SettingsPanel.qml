@@ -261,6 +261,8 @@ Scope {
     return ""
   }
 
+  property bool defaultsLoaded: false
+
   function loadAllDefaults() {
     var cmds = []
     var modules = ModuleRegistry.modules
@@ -282,8 +284,16 @@ Scope {
         var current = root.activeCategory
         root.activeCategory = ""
         Qt.callLater(function() { root.activeCategory = current })
+        root.defaultsLoaded = true
+        defaultsHideTimer.restart()
       }
     }
+  }
+
+  Timer {
+    id: defaultsHideTimer
+    interval: 5000
+    onTriggered: root.defaultsLoaded = false
   }
 
   // IPC handler to toggle visibility
@@ -568,6 +578,14 @@ Scope {
                     }
                   }
                 }
+              }
+
+              SuccessText {
+                anchors.bottom: loadDefaultsButton.top
+                anchors.bottomMargin: 8
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "  Defaults loaded"
+                visible: root.defaultsLoaded
               }
 
               FocusButton {
