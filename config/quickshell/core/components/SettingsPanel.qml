@@ -261,6 +261,31 @@ Scope {
     return ""
   }
 
+  function loadAllDefaults() {
+    var cmds = []
+    var modules = ModuleRegistry.modules
+    for (var i = 0; i < modules.length; i++) {
+      var m = modules[i]
+      var defaultsFile = m.path + "/defaults.json"
+      var stateFile = DataManager.getStatePath(m.id)
+      cmds.push("[ -f '" + defaultsFile + "' ] && cp '" + defaultsFile + "' '" + stateFile + "'")
+    }
+    cmds.push("cp '" + GeneralSettings.defaultsPath + "' '" + GeneralSettings.statePath + "'")
+    loadDefaultsProc.command = ["sh", "-c", cmds.join(" ; ")]
+    loadDefaultsProc.running = true
+  }
+
+  Process {
+    id: loadDefaultsProc
+    onExited: function(exitCode, exitStatus) {
+      if (exitCode === 0) {
+        var current = root.activeCategory
+        root.activeCategory = ""
+        Qt.callLater(function() { root.activeCategory = current })
+      }
+    }
+  }
+
   // IPC handler to toggle visibility
   IpcHandler {
     target: "settings"
@@ -481,7 +506,9 @@ Scope {
               }
 
               Column {
-                anchors.fill: parent
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
                 anchors.topMargin: 8
                 spacing: 2
 
@@ -541,6 +568,21 @@ Scope {
                     }
                   }
                 }
+              }
+
+              FocusButton {
+                id: loadDefaultsButton
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: 12
+                width: parent.width - 24
+                height: 32
+                text: "Load Defaults"
+                fontSize: 12
+                backgroundColor: Colors.surface0
+                hoverColor: Colors.surface1
+                onClicked: root.loadAllDefaults()
               }
 
               Rectangle {
