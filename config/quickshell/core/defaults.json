@@ -1,10 +1,10 @@
 {
   "settingsCategoryOrder": [
     "statusbar",
-    "recording",
+    "display",
     "wireless",
     "bluetooth",
     "notifications",
-    "display"
+    "recording"
   ]
 }
