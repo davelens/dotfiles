@@ -73,7 +73,9 @@ Scope {
         // Center section (index -1)
         if (index === -1) return centerFocusAvailable
         if (index < 0 || index >= rightEnabledItems.length) return false
-        return skipModules.indexOf(rightEnabledItems[index].id) === -1
+        if (skipModules.indexOf(rightEnabledItems[index].id) !== -1) return false
+        var delegate = rightRepeater.itemAt(index)
+        return delegate && delegate.visible
       }
 
       function nextFocusIndex(from) {
