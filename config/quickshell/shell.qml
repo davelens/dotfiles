@@ -19,7 +19,7 @@ Scope {
       // Module popups (e.g. volume, bluetooth, wireless popup windows)
       var popups = ModuleRegistry.getPopupModules()
       for (var i = 0; i < popups.length; i++) {
-        var popupPath = "modules/" + popups[i].dirName + "/" + popups[i].components.popup
+        var popupPath = ModuleRegistry.getPopupRelPath(popups[i].id)
         var popupComp = Qt.createComponent(popupPath)
         if (popupComp.status === Component.Ready) {
           popupComp.createObject(root)
@@ -31,7 +31,7 @@ Scope {
       // Root components (e.g. notification panel, notification popups)
       var rootComps = ModuleRegistry.getRootComponents()
       for (var j = 0; j < rootComps.length; j++) {
-        var rootPath = "modules/" + rootComps[j].dirName + "/" + rootComps[j].file
+        var rootPath = ModuleRegistry.getRelPath(rootComps[j].module, rootComps[j].file)
         var rootComp = Qt.createComponent(rootPath)
         if (rootComp.status === Component.Ready) {
           rootComp.createObject(root)

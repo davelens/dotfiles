@@ -3,7 +3,7 @@ pragma Singleton
 import Quickshell
 import Quickshell.Io
 import QtQuick
-import "../.."
+import ".."
 
 Singleton {
   id: manager

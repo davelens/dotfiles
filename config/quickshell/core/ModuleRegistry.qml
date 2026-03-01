@@ -14,15 +14,17 @@ Singleton {
   // Whether discovery has completed
   property bool ready: false
 
-  // Path to modules directory
-  readonly property string modulesPath: Quickshell.env("HOME") + "/.config/quickshell/modules"
+  // Paths to scan for module.json manifests
+  readonly property string configRoot: Quickshell.env("HOME") + "/.config/quickshell"
+  readonly property string modulesPath: configRoot + "/modules"
 
   // Single discovery process - find and cat all module.json files
   Process {
     id: discoveryProc
     command: [
       "sh", "-c",
-      "for f in " + registry.modulesPath + "/*/module.json; do " +
+      "for f in " + registry.modulesPath + "/*/module.json " +
+        registry.configRoot + "/statusbar/module.json; do " +
         "[ -f \"$f\" ] && echo \"__PATH__:$f\" && cat \"$f\" && echo \"__END__\"; " +
       "done"
     ]
@@ -132,6 +134,17 @@ Singleton {
     return "file://" + module.path + "/" + file
   }
 
+  // Get path relative to config root for a module file
+  function getRelPath(module, file) {
+    if (!module || !file) return ""
+    // module.path is absolute; strip configRoot prefix to get relative path
+    var rel = module.path
+    if (rel.indexOf(registry.configRoot) === 0) {
+      rel = rel.substring(registry.configRoot.length + 1)
+    }
+    return rel + "/" + file
+  }
+
   // Get the relative path for a bar component (from shell root)
   // Used to avoid file:// singleton isolation with Loader.setSource()
   function getBarComponentRelPath(id) {
@@ -139,7 +152,14 @@ Singleton {
     if (!module || !module.components) return ""
     var file = module.components.button || module.components.segment
     if (!file) return ""
-    return "modules/" + module.dirName + "/" + file
+    return getRelPath(module, file)
+  }
+
+  // Get the relative path for a settings component (from shell root)
+  function getSettingsRelPath(id) {
+    var module = getModule(id)
+    if (!module || !module.components || !module.components.settings) return ""
+    return getRelPath(module, module.components.settings)
   }
 
   // Check if a module exists and has a bar component
@@ -171,7 +191,7 @@ Singleton {
   function getPopupRelPath(id) {
     var module = getModule(id)
     if (!module || !module.components || !module.components.popup) return ""
-    return "modules/" + module.dirName + "/" + module.components.popup
+    return getRelPath(module, module.components.popup)
   }
 
   // Get modules that have a popup component
@@ -196,7 +216,7 @@ Singleton {
       var m = modules[i]
       if (!m.rootComponents) continue
       for (var j = 0; j < m.rootComponents.length; j++) {
-        result.push({ dirName: m.dirName, file: m.rootComponents[j] })
+        result.push({ module: m, file: m.rootComponents[j] })
       }
     }
     return result

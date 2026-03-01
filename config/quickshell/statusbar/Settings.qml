@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
-import "../.."
-import "../../core/components"
+import ".."
+import "../core/components"
 
 Item {
   id: settingsRoot
