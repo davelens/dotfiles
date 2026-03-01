@@ -17,10 +17,26 @@ Scope {
   property var contentFocusables: []  // List of focusable items in current panel
   property int contentFocusIndex: -1  // Current focused item index in content
 
-  // Get categories from ModuleRegistry (modules with settings)
+  // Get categories from ModuleRegistry, sorted by GeneralSettings order.
+  // Modules listed in settingsCategoryOrder come first (in that order),
+  // unlisted modules follow sorted by their module.json order field.
   readonly property var categories: {
-    if (!ModuleRegistry.ready) return []
-    return ModuleRegistry.getSettingsModules()
+    if (!ModuleRegistry.ready || !GeneralSettings.ready) return []
+    var all = ModuleRegistry.getSettingsModules()
+    var order = GeneralSettings.settingsCategoryOrder
+    var sorted = []
+    for (var i = 0; i < order.length; i++) {
+      for (var j = 0; j < all.length; j++) {
+        if (all[j].id === order[i]) {
+          sorted.push(all[j])
+          break
+        }
+      }
+    }
+    for (var k = 0; k < all.length; k++) {
+      if (order.indexOf(all[k].id) === -1) sorted.push(all[k])
+    }
+    return sorted
   }
 
   // Set default category when registry is ready

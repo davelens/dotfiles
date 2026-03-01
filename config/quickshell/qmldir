@@ -1,6 +1,7 @@
 module Root
 singleton Colors 1.0 core/Colors.qml
 singleton DataManager 1.0 core/DataManager.qml
+singleton GeneralSettings 1.0 core/GeneralSettings.qml
 singleton ModuleRegistry 1.0 core/ModuleRegistry.qml
 singleton PopupManager 1.0 core/PopupManager.qml
 singleton ScreenManager 1.0 core/ScreenManager.qml
