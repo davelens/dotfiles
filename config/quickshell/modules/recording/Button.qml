@@ -8,20 +8,23 @@ BarButton {
   id: button
 
   property bool recording: false
+  property bool stopping: false
   property bool showInBar: recording
 
   icon: "󰑊"
   iconColor: Colors.red
 
   onClicked: {
-    stopProcess.command = ["pkill", "-SIGINT", RecordingManager.processName]
+    stopping = true
+    recording = false
+    stopProcess.command = ["pkill", "-f", "-SIGINT", RecordingManager.processName]
     stopProcess.running = true
   }
 
   // Poll for the configured recording process
   Timer {
     interval: 2000
-    running: true
+    running: !button.stopping
     repeat: true
     triggeredOnStart: true
     onTriggered: {
@@ -37,10 +40,21 @@ BarButton {
     }
   }
 
+  // Wait for the process to actually exit before resuming polling
   Process {
     id: stopProcess
     onExited: function(exitCode, exitStatus) {
+      waitProcess.command = ["bash", "-c", "while pidof " + RecordingManager.processName + " > /dev/null 2>&1; do sleep 0.2; done"]
+      waitProcess.running = true
+    }
+  }
+
+  // Once the process has fully exited, copy the path and resume polling
+  Process {
+    id: waitProcess
+    onExited: function(exitCode, exitStatus) {
       button.recording = false
+      button.stopping = false
       copyPathProcess.running = true
     }
   }
