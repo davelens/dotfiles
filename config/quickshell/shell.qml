@@ -9,24 +9,34 @@ Scope {
   id: root
 
   SettingsPanel {}
-  // Floating notifications top-right
-  NotificationPopups {}
-  // Notifications history panel slide-in
-  NotificationPanel {}
 
-  // Module popups (dynamically created from modules with a popup component)
+  // Dynamically load module popups and root components from manifests
   Connections {
     target: ModuleRegistry
     function onReadyChanged() {
       if (!ModuleRegistry.ready) return
+
+      // Module popups (e.g. volume, bluetooth, wireless popup windows)
       var popups = ModuleRegistry.getPopupModules()
       for (var i = 0; i < popups.length; i++) {
-        var path = "modules/" + popups[i].dirName + "/" + popups[i].components.popup
-        var comp = Qt.createComponent(path)
-        if (comp.status === Component.Ready) {
-          comp.createObject(root)
+        var popupPath = "modules/" + popups[i].dirName + "/" + popups[i].components.popup
+        var popupComp = Qt.createComponent(popupPath)
+        if (popupComp.status === Component.Ready) {
+          popupComp.createObject(root)
         } else {
-          console.error("[shell] Failed to load popup:", path, comp.errorString())
+          console.error("[shell] Failed to load popup:", popupPath, popupComp.errorString())
+        }
+      }
+
+      // Root components (e.g. notification panel, notification popups)
+      var rootComps = ModuleRegistry.getRootComponents()
+      for (var j = 0; j < rootComps.length; j++) {
+        var rootPath = "modules/" + rootComps[j].dirName + "/" + rootComps[j].file
+        var rootComp = Qt.createComponent(rootPath)
+        if (rootComp.status === Component.Ready) {
+          rootComp.createObject(root)
+        } else {
+          console.error("[shell] Failed to load root component:", rootPath, rootComp.errorString())
         }
       }
     }

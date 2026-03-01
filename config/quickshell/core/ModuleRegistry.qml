@@ -180,4 +180,18 @@ Singleton {
       return m.components && m.components.popup
     })
   }
+
+  // Get all root component entries across modules.
+  // Returns array of { dirName, file } for each declared root component.
+  function getRootComponents() {
+    var result = []
+    for (var i = 0; i < modules.length; i++) {
+      var m = modules[i]
+      if (!m.rootComponents) continue
+      for (var j = 0; j < m.rootComponents.length; j++) {
+        result.push({ dirName: m.dirName, file: m.rootComponents[j] })
+      }
+    }
+    return result
+  }
 }
