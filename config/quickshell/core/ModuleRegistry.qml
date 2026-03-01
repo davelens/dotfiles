@@ -15,7 +15,7 @@ Singleton {
   property bool ready: false
 
   // Paths to scan for module.json manifests
-  readonly property string configRoot: Quickshell.env("HOME") + "/.config/quickshell"
+  readonly property string configRoot: (Quickshell.env("XDG_CONFIG_HOME") || (Quickshell.env("HOME") + "/.config")) + "/quickshell"
   readonly property string modulesPath: configRoot + "/modules"
 
   // Single discovery process - find and cat all module.json files
