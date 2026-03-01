@@ -7,7 +7,6 @@ import ".."
 Singleton {
   id: popupManager
 
-  // Current active popup: "", "volume", "brightness", "display", "bluetooth", "wireless"
   property string activePopup: ""
 
   // Screen that opened the popup

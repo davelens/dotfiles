@@ -5,6 +5,7 @@
   "order": 60,
   "keywords": "audio sound volume speaker mute pipewire",
   "components": {
-    "button": "Button.qml"
+    "button": "Button.qml",
+    "popup": "Popup.qml"
   }
 }

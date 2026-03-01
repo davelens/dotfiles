@@ -14,13 +14,23 @@ Scope {
   // Notifications history panel slide-in
   NotificationPanel {}
 
-  // Module popups (PanelWindow-based, with click-outside and ESC support)
-  VolumePopup {}
-  BrightnessPopup {}
-  DisplayPopup {}
-  BluetoothPopup {}
-  WirelessPopup {}
-  UpdatesPopup {}
+  // Module popups (dynamically created from modules with a popup component)
+  Connections {
+    target: ModuleRegistry
+    function onReadyChanged() {
+      if (!ModuleRegistry.ready) return
+      var popups = ModuleRegistry.getPopupModules()
+      for (var i = 0; i < popups.length; i++) {
+        var path = "modules/" + popups[i].dirName + "/" + popups[i].components.popup
+        var comp = Qt.createComponent(path)
+        if (comp.status === Component.Ready) {
+          comp.createObject(root)
+        } else {
+          console.error("[shell] Failed to load popup:", path, comp.errorString())
+        }
+      }
+    }
+  }
 
   // Pipewire tracking
   PwObjectTracker {
@@ -51,8 +61,8 @@ Scope {
       WlrLayershell.keyboardFocus: barFocusActive
         ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-      // Modules that use PanelWindow popups (referenced by focus mode and prop builder)
-      property var popupModules: ["volume", "brightness", "display", "bluetooth", "wireless", "updates"]
+      // Modules that use PanelWindow popups (derived from ModuleRegistry)
+      property var popupModules: ModuleRegistry.ready ? ModuleRegistry.getPopupModuleIds() : []
 
       // Bar focus mode state
       // Index -1 = center section, 0+ = right section items

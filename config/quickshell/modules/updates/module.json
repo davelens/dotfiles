@@ -6,6 +6,7 @@
   "keywords": "packages pacman paru aur flatpak upgrade system",
   "components": {
     "manager": "Manager.qml",
-    "button": "Button.qml"
+    "button": "Button.qml",
+    "popup": "Popup.qml"
   }
 }

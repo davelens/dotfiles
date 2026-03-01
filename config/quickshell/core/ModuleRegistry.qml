@@ -153,4 +153,31 @@ Singleton {
     var module = getModule(id)
     return module && module.components && module.components.button
   }
+
+  // Check if a module has a popup component
+  function hasPopup(id) {
+    var module = getModule(id)
+    return module && module.components && module.components.popup
+  }
+
+  // Get IDs of all modules that have a popup component
+  function getPopupModuleIds() {
+    return modules.filter(function(m) {
+      return m.components && m.components.popup
+    }).map(function(m) { return m.id })
+  }
+
+  // Get the relative path for a popup component (from shell root)
+  function getPopupRelPath(id) {
+    var module = getModule(id)
+    if (!module || !module.components || !module.components.popup) return ""
+    return "modules/" + module.dirName + "/" + module.components.popup
+  }
+
+  // Get modules that have a popup component
+  function getPopupModules() {
+    return modules.filter(function(m) {
+      return m.components && m.components.popup
+    })
+  }
 }
