@@ -118,7 +118,7 @@ ScrollView {
 
         HelpText {
           width: parent.width
-          text: "This is both the process name checked by <b>pidof</b> to detect active recording, and the target for <b>pkill -SIGINT</b> when stopping. The name is matched as a prefix, so partial names work."
+          text: "This is both the process name checked by <b>pidof</b> to detect active recording, and the target for <b>pkill -SIGINT</b> when stopping."
           textFormat: Text.RichText
           wrapMode: Text.WordWrap
         }
