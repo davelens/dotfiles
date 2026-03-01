@@ -11,21 +11,6 @@ Variants {
   model: PopupManager.isOpen("volume") && DisplayConfig.primaryScreen
          ? [DisplayConfig.primaryScreen] : []
 
-  // Dropdown expansion state (local to this popup)
-  property bool outputDevicesExpanded: false
-  property bool inputDevicesExpanded: false
-
-  // Reset dropdown state when popup closes
-  Connections {
-    target: PopupManager
-    function onActivePopupChanged() {
-      if (PopupManager.activePopup !== "volume") {
-        volumePopup.outputDevicesExpanded = false
-        volumePopup.inputDevicesExpanded = false
-      }
-    }
-  }
-
   property var sink: Pipewire.defaultAudioSink
   property real volume: sink && sink.audio ? sink.audio.volume : 0
   property bool muted: sink && sink.audio ? sink.audio.muted : false
@@ -122,8 +107,6 @@ Variants {
       headerLabel: "Output"
       textRole: "description"
       valueRole: "id"
-      expanded: volumePopup.outputDevicesExpanded
-      onToggled: expanded => volumePopup.outputDevicesExpanded = expanded
       onItemSelected: item => Pipewire.preferredDefaultAudioSink = item
     }
 
@@ -142,8 +125,6 @@ Variants {
       headerLabel: "Input"
       textRole: "description"
       valueRole: "id"
-      expanded: volumePopup.inputDevicesExpanded
-      onToggled: expanded => volumePopup.inputDevicesExpanded = expanded
       onItemSelected: item => Pipewire.preferredDefaultAudioSource = item
     }
   }
