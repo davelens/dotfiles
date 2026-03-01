@@ -15,10 +15,6 @@ Singleton {
   // Anchor position for popup placement (screen-space X of the button's right edge)
   property real anchorRight: 0
 
-  // Volume popup expansion state
-  property bool outputDevicesExpanded: false
-  property bool inputDevicesExpanded: false
-
   // Registered button references per popup (for IPC toggle anchor computation)
   property var registeredButtons: ({})
 
@@ -51,16 +47,12 @@ Singleton {
       activePopup = name
       activePopupScreen = screen
       anchorRight = buttonRight
-      outputDevicesExpanded = false
-      inputDevicesExpanded = false
     }
   }
 
   function close(): void {
     activePopup = ""
     activePopupScreen = null
-    outputDevicesExpanded = false
-    inputDevicesExpanded = false
   }
 
   function isOpen(name: string): bool {
@@ -86,8 +78,6 @@ Singleton {
           popupManager.activePopupScreen = DisplayConfig.primaryScreen
           popupManager.anchorRight = DisplayConfig.primaryScreen.width - 10
         }
-        popupManager.outputDevicesExpanded = false
-        popupManager.inputDevicesExpanded = false
       }
     }
 
