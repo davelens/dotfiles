@@ -252,10 +252,6 @@ Scope {
     function toggle(): void { root.visible = !root.visible }
     function show(): void { root.visible = true }
     function hide(): void { root.visible = false }
-    function showNotifications(): void {
-      root.activeCategory = "notifications"
-      root.visible = true
-    }
     function showCategory(categoryId: string): void {
       root.activeCategory = categoryId
       root.visible = true

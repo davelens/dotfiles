@@ -459,7 +459,7 @@ Singleton {
 
   Process {
     id: settingsIpcProc
-    command: ["qs", "ipc", "call", "settings", "showNotifications"]
+    command: ["qs", "ipc", "call", "settings", "showCategory", "notifications"]
   }
 
   // IPC handler for external control (e.g. qs ipc call notifications toggle)
