@@ -1,10 +1,12 @@
 {
   "id": "recording",
   "name": "Screen Recording",
-  "icon": "",
+  "icon": "󰑊",
   "order": 5,
   "keywords": "record screen capture gpu-screen-recorder video",
   "components": {
-    "button": "Button.qml"
+    "manager": "Manager.qml",
+    "button": "Button.qml",
+    "settings": "Settings.qml"
   }
 }
