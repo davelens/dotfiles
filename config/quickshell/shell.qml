@@ -159,10 +159,11 @@ Scope {
         }
       }
 
+      // Exit bar focus when a slide-in overlay opens
       Connections {
-        target: NotificationManager
-        function onPanelOpenChanged() {
-          if (NotificationManager.panelOpen) {
+        target: SlideInOverlayManager
+        function onOverlayOpenChanged() {
+          if (SlideInOverlayManager.overlayOpen) {
             panel.barFocusActive = false
           }
         }

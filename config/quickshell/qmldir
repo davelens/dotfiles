@@ -4,6 +4,7 @@ singleton DataManager 1.0 core/DataManager.qml
 singleton ModuleRegistry 1.0 core/ModuleRegistry.qml
 singleton PopupManager 1.0 core/PopupManager.qml
 singleton ScreenManager 1.0 core/ScreenManager.qml
+singleton SlideInOverlayManager 1.0 core/SlideInOverlayManager.qml
 singleton Time 1.0 core/Time.qml
 singleton StatusbarManager 1.0 modules/statusbar/Manager.qml
 NotificationPanel 1.0 modules/notifications/Panel.qml

@@ -437,17 +437,22 @@ Singleton {
   function togglePanel() {
     panelOpen = !panelOpen
     if (panelOpen) {
+      SlideInOverlayManager.open()
       markAllAsRead()
+    } else {
+      SlideInOverlayManager.close()
     }
   }
 
   function closePanel() {
     panelOpen = false
+    SlideInOverlayManager.close()
   }
 
   function openSettingsNotifications() {
     // Close notification panel, open settings panel to Notifications category
     panelOpen = false
+    SlideInOverlayManager.close()
     // Use IPC to open settings panel
     settingsIpcProc.running = true
   }
@@ -464,6 +469,7 @@ Singleton {
     function toggle(): void { notificationManager.togglePanel() }
     function show(): void {
       notificationManager.panelOpen = true
+      SlideInOverlayManager.open()
       notificationManager.markAllAsRead()
     }
     function hide(): void { notificationManager.closePanel() }
