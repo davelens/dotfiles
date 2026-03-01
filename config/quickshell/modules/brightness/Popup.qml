@@ -22,10 +22,8 @@ Variants {
         width: parent.width
         spacing: 4
 
-        Text {
+        BodyText {
           text: (modelData.type === "ddc" ? "󰍹  " : "󰌢  ") + modelData.name
-          color: Colors.overlay0
-          font.pixelSize: 16
           font.family: "Symbols Nerd Font"
         }
 
