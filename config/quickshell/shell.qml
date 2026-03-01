@@ -39,7 +39,7 @@ Scope {
 
   // Makes the statusbar only appear on primary screen
   Variants {
-    model: DisplayConfig.primaryScreen && StatusbarManager.ready ? [DisplayConfig.primaryScreen] : []
+    model: ScreenManager.primaryScreen && StatusbarManager.ready ? [ScreenManager.primaryScreen] : []
 
     PanelWindow {
       required property var modelData

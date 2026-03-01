@@ -4,8 +4,8 @@ import "../.."
 import "../../core/components"
 
 Variants {
-  model: PopupManager.isOpen("display") && DisplayConfig.primaryScreen
-         ? [DisplayConfig.primaryScreen] : []
+  model: PopupManager.isOpen("display") && ScreenManager.primaryScreen
+         ? [ScreenManager.primaryScreen] : []
 
   PopupBase {
     popupWidth: 320
@@ -51,18 +51,18 @@ Variants {
           bodyRadius: 4
           icon: modelData.name.startsWith("eDP") ? "󰌢" : "󰍹"
           iconSize: 18
-          iconColor: DisplayConfig.isPrimary(modelData) ? Colors.blue : Colors.text
-          text: DisplayConfig.friendlyName(modelData)
+          iconColor: ScreenManager.isPrimary(modelData) ? Colors.blue : Colors.text
+          text: ScreenManager.friendlyName(modelData)
           fontSize: 14
           subtitle: modelData.name
           subtitleFontSize: 11
-          rightIcon: DisplayConfig.isPrimary(modelData) ? "󰄬" : ""
+          rightIcon: ScreenManager.isPrimary(modelData) ? "󰄬" : ""
           rightIconColor: Colors.blue
           rightIconHoverColor: Colors.blue
           backgroundColor: Colors.surface0
           hoverBackgroundColor: Colors.surface1
           onClicked: {
-            DisplayConfig.setPrimary(modelData)
+            ScreenManager.setPrimary(modelData)
             PopupManager.close()
           }
         }

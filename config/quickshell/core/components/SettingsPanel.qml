@@ -264,7 +264,7 @@ Scope {
 
   // Full-screen overlay with centered panel
   Variants {
-    model: root.visible && DisplayConfig.primaryScreen ? [DisplayConfig.primaryScreen] : []
+    model: root.visible && ScreenManager.primaryScreen ? [ScreenManager.primaryScreen] : []
 
     PanelWindow {
       required property var modelData

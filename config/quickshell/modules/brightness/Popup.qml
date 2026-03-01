@@ -5,8 +5,8 @@ import "../.."
 import "../../core/components"
 
 Variants {
-  model: PopupManager.isOpen("brightness") && DisplayConfig.primaryScreen
-         ? [DisplayConfig.primaryScreen] : []
+  model: PopupManager.isOpen("brightness") && ScreenManager.primaryScreen
+         ? [ScreenManager.primaryScreen] : []
 
   PopupBase {
     popupWidth: 320

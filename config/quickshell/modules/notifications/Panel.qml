@@ -8,7 +8,7 @@ import "../../core/components"
 
 // Notification history panel - slides in from right
 Variants {
-  model: DisplayConfig.primaryScreen ? [DisplayConfig.primaryScreen] : []
+  model: ScreenManager.primaryScreen ? [ScreenManager.primaryScreen] : []
 
   PanelWindow {
     required property var modelData

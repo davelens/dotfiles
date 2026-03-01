@@ -8,8 +8,8 @@ import "../../core/components"
 Variants {
   id: volumePopup
 
-  model: PopupManager.isOpen("volume") && DisplayConfig.primaryScreen
-         ? [DisplayConfig.primaryScreen] : []
+  model: PopupManager.isOpen("volume") && ScreenManager.primaryScreen
+         ? [ScreenManager.primaryScreen] : []
 
   property var sink: Pipewire.defaultAudioSink
   property real volume: sink && sink.audio ? sink.audio.volume : 0

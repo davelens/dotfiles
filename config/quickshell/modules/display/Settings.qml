@@ -641,17 +641,17 @@ ScrollView {
             bodyRadius: 4
             icon: modelData.name.startsWith("eDP") ? "󰌢" : "󰍹"
             iconSize: 16
-            iconColor: DisplayConfig.isPrimary(modelData) ? Colors.blue : Colors.text
-            text: DisplayConfig.friendlyName(modelData)
+            iconColor: ScreenManager.isPrimary(modelData) ? Colors.blue : Colors.text
+            text: ScreenManager.friendlyName(modelData)
             fontSize: 14
             subtitle: modelData.name
             subtitleFontSize: 11
-            rightIcon: DisplayConfig.isPrimary(modelData) ? "󰄬" : ""
+            rightIcon: ScreenManager.isPrimary(modelData) ? "󰄬" : ""
             rightIconColor: Colors.blue
             rightIconHoverColor: Colors.blue
             backgroundColor: Colors.surface1
             hoverBackgroundColor: Colors.surface2
-            onClicked: DisplayConfig.setPrimary(modelData)
+            onClicked: ScreenManager.setPrimary(modelData)
           }
         }
       }

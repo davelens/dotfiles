@@ -9,8 +9,8 @@ Variants {
 
   property bool isOpen: PopupManager.isOpen("updates")
 
-  model: isOpen && DisplayConfig.primaryScreen
-         ? [DisplayConfig.primaryScreen] : []
+  model: isOpen && ScreenManager.primaryScreen
+         ? [ScreenManager.primaryScreen] : []
 
   PopupBase {
     id: popup

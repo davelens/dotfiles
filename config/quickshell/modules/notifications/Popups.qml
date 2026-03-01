@@ -6,7 +6,7 @@ import "../.."
 
 // Notification popups window - displays in top-right corner
 Variants {
-  model: DisplayConfig.primaryScreen ? [DisplayConfig.primaryScreen] : []
+  model: ScreenManager.primaryScreen ? [ScreenManager.primaryScreen] : []
 
   PanelWindow {
     required property var modelData

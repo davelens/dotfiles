@@ -73,10 +73,10 @@ Singleton {
           popupManager.activePopup = name
           popupManager.activePopupScreen = anchor.screen
           popupManager.anchorRight = anchor.right
-        } else if (DisplayConfig.primaryScreen) {
+        } else if (ScreenManager.primaryScreen) {
           popupManager.activePopup = name
-          popupManager.activePopupScreen = DisplayConfig.primaryScreen
-          popupManager.anchorRight = DisplayConfig.primaryScreen.width - 10
+          popupManager.activePopupScreen = ScreenManager.primaryScreen
+          popupManager.anchorRight = ScreenManager.primaryScreen.width - 10
         }
       }
     }

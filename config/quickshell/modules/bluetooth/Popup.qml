@@ -18,8 +18,8 @@ Variants {
     }
   }
 
-  model: isOpen && DisplayConfig.primaryScreen
-         ? [DisplayConfig.primaryScreen] : []
+  model: isOpen && ScreenManager.primaryScreen
+         ? [ScreenManager.primaryScreen] : []
 
   PopupBase {
     popupWidth: 380
