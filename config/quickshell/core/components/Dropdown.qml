@@ -74,9 +74,10 @@ Item {
       color: headerAreaNormal.containsMouse ? Colors.surface0 : "transparent"
 
       Row {
-        anchors.fill: parent
+        id: headerLeft
+        anchors.left: parent.left
         anchors.leftMargin: 4
-        anchors.rightMargin: 4
+        anchors.verticalCenter: parent.verticalCenter
         spacing: 6
 
         Text {
@@ -100,16 +101,19 @@ Item {
           color: Colors.text
           font.pixelSize: 15
           elide: Text.ElideRight
-          width: parent.width - 90
+          width: Math.min(implicitWidth, dropdown.width - headerLeft.childrenRect.width - chevronNormal.width - 24)
         }
+      }
 
-        Text {
-          anchors.verticalCenter: parent.verticalCenter
-          text: dropdown.expanded ? "\uf106" : "\uf107"
-          color: Colors.overlay0
-          font.pixelSize: 16
-          font.family: "Symbols Nerd Font"
-        }
+      Text {
+        id: chevronNormal
+        anchors.right: parent.right
+        anchors.rightMargin: 8
+        anchors.verticalCenter: parent.verticalCenter
+        text: dropdown.expanded ? "\uf106" : "\uf107"
+        color: Colors.overlay0
+        font.pixelSize: 16
+        font.family: "Symbols Nerd Font"
       }
 
       MouseArea {
