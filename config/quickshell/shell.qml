@@ -258,10 +258,6 @@ Scope {
         if (moduleId === "notifications") {
           props.notificationManager = NotificationManager
         }
-        if (moduleId === "updates") {
-          props.updatesManager = UpdatesManager
-          props.updateCount = Qt.binding(function() { return UpdatesManager.totalCount })
-        }
         return props
       }
 
