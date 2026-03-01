@@ -8,7 +8,7 @@
     "center": 0,
     "right": 0
   },
-  "popupStem": false,
+  "popupStem": true,
   "left": [
     { "id": "power", "enabled": true, "marginLeft": 0, "marginRight": 20 },
     { "id": "idle-inhibitor", "enabled": true, "marginLeft": 0, "marginRight": 20 },
@@ -18,7 +18,6 @@
     { "id": "media", "enabled": true, "marginLeft": 0, "marginRight": 0 }
   ],
   "right": [
-    { "id": "updates", "enabled": true, "marginLeft": 0, "marginRight": 10 },
     { "id": "recording", "enabled": true, "marginLeft": 0, "marginRight": 10 },
     { "id": "wireless", "enabled": true, "marginLeft": 0, "marginRight": 10 },
     { "id": "bluetooth", "enabled": true, "marginLeft": 0, "marginRight": 10 },
@@ -27,6 +26,7 @@
     { "id": "volume", "enabled": true, "marginLeft": 0, "marginRight": 16 },
     { "id": "battery", "enabled": true, "marginLeft": 0, "marginRight": 16 },
     { "id": "clock", "enabled": true, "marginLeft": 0, "marginRight": 16 },
+    { "id": "updates", "enabled": true, "marginLeft": 0, "marginRight": 10 },
     { "id": "notifications", "enabled": true, "marginLeft": 0, "marginRight": 0 }
   ]
 }
