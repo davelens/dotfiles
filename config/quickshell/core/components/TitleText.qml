@@ -3,5 +3,5 @@ import "../.."
 
 Text {
   color: Colors.subtext0
-  font.pixelSize: 14
+  font.pixelSize: 15
 }
