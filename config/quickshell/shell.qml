@@ -255,9 +255,6 @@ Scope {
         if (popupModules.indexOf(moduleId) !== -1) {
           props.popupManager = PopupManager
         }
-        if (moduleId === "notifications") {
-          props.notificationManager = NotificationManager
-        }
         return props
       }
 

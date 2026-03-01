@@ -1,0 +1,2 @@
+singleton NotificationManager 1.0 Manager.qml
+NotificationCard 1.0 Card.qml
