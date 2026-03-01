@@ -26,22 +26,21 @@ Singleton {
   property var rightItems: []
 
   // Path to config file
-  readonly property string configPath: DataManager.statusbarPath
-  readonly property string defaultsPath: DataManager.defaultsDir + "/statusbar.json"
+  readonly property string statePath: DataManager.getStatePath("statusbar")
+  readonly property string defaultsPath: Quickshell.shellDir + "/statusbar/defaults.json"
+  property bool fileReady: false
+
+  // Copy defaults if state file doesn't exist
+  Process {
+    id: ensureDefaults
+    command: ["sh", "-c", "test -f '" + manager.statePath + "' || cp '" + manager.defaultsPath + "' '" + manager.statePath + "'"]
+    running: DataManager.ready
+    onExited: { manager.fileReady = true }
+  }
 
   // Track if we should reload when ModuleRegistry becomes ready
   property bool pendingReload: false
   property string pendingConfig: ""
-
-  // Load config when DataManager is ready
-  Connections {
-    target: DataManager
-    function onReadyChanged() {
-      if (DataManager.ready) {
-        configFile.blockLoading = false
-      }
-    }
-  }
 
   // Reload items when ModuleRegistry becomes ready
   Connections {
@@ -58,8 +57,7 @@ Singleton {
   // Config file watcher
   FileView {
     id: configFile
-    path: manager.configPath
-    blockLoading: !DataManager.ready
+    path: manager.fileReady ? manager.statePath : ""
     watchChanges: true
     onFileChanged: reload()
 
@@ -266,7 +264,7 @@ Singleton {
 
   Process {
     id: resetProc
-    command: ["cp", manager.defaultsPath, manager.configPath]
+    command: ["cp", manager.defaultsPath, manager.statePath]
     onExited: {
       // Reload config
       configFile.reload()
@@ -301,7 +299,7 @@ Singleton {
   Process {
     id: saveProc
     property string configJson: ""
-    command: ["sh", "-c", "cat > " + manager.configPath + " << 'STATUSBAR_EOF'\n" + configJson + "\nSTATUSBAR_EOF"]
+    command: ["sh", "-c", "cat > " + manager.statePath + " << 'STATUSBAR_EOF'\n" + configJson + "\nSTATUSBAR_EOF"]
     onExited: (code) => {
       if (code !== 0) {
         console.error("[StatusbarManager] Failed to save config")

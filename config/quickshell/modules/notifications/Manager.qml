@@ -24,10 +24,21 @@ Singleton {
   property alias criticalBypassDnd: settingsAdapter.criticalBypassDnd
 
   // File-based persistence
+  readonly property string statePath: DataManager.getStatePath("notifications")
+  readonly property string defaultsPath: Quickshell.shellDir + "/modules/notifications/defaults.json"
+  property bool fileReady: false
+
+  // Copy defaults if state file doesn't exist
+  Process {
+    id: ensureDefaults
+    command: ["sh", "-c", "test -f '" + notificationManager.statePath + "' || cp '" + notificationManager.defaultsPath + "' '" + notificationManager.statePath + "'"]
+    running: DataManager.ready
+    onExited: { notificationManager.fileReady = true }
+  }
+
   FileView {
     id: settingsFile
-    path: DataManager.notificationSettingsPath
-    blockLoading: !DataManager.ready
+    path: notificationManager.fileReady ? notificationManager.statePath : ""
 
     // Reload file when it changes on disk
     watchChanges: true

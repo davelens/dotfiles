@@ -8,10 +8,21 @@ import ".."
 Singleton {
   id: screenManager
 
+  readonly property string statePath: DataManager.getStatePath("display")
+  readonly property string defaultsPath: Quickshell.shellDir + "/modules/display/defaults.json"
+  property bool fileReady: false
+
+  // Copy defaults if state file doesn't exist
+  Process {
+    id: ensureDefaults
+    command: ["sh", "-c", "test -f '" + screenManager.statePath + "' || cp '" + screenManager.defaultsPath + "' '" + screenManager.statePath + "'"]
+    running: DataManager.ready
+    onExited: { screenManager.fileReady = true }
+  }
+
   FileView {
     id: configFile
-    path: DataManager.displaysPath
-    blockLoading: !DataManager.ready
+    path: screenManager.fileReady ? screenManager.statePath : ""
 
     watchChanges: true
     onFileChanged: reload()
