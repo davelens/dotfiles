@@ -4,6 +4,7 @@
   "icon": "󰂚",
   "order": 30,
   "keywords": "alerts dnd do not disturb popup history timeout schedule settings",
+  "skipBarFocus": true,
   "components": {
     "manager": "Manager.qml",
     "button": "Button.qml",

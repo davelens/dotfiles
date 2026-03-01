@@ -86,8 +86,8 @@ Scope {
         return item && item.visible && item.hasOwnProperty("barFocused")
       }
 
-      // Modules to skip during keyboard navigation (they have their own keybinds)
-      property var skipModules: ["notifications"]
+      // Modules to skip during keyboard navigation (declared via skipBarFocus in module.json)
+      property var skipModules: ModuleRegistry.ready ? ModuleRegistry.getSkipBarFocusIds() : []
 
       function isFocusable(index) {
         // Center section (index -1)

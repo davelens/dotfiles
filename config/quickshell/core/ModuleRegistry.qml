@@ -181,6 +181,13 @@ Singleton {
     })
   }
 
+  // Get IDs of modules that should be skipped during bar keyboard navigation
+  function getSkipBarFocusIds() {
+    return modules.filter(function(m) {
+      return m.skipBarFocus === true
+    }).map(function(m) { return m.id })
+  }
+
   // Get all root component entries across modules.
   // Returns array of { dirName, file } for each declared root component.
   function getRootComponents() {
