@@ -5,10 +5,7 @@ singleton ModuleRegistry 1.0 core/ModuleRegistry.qml
 singleton PopupManager 1.0 core/PopupManager.qml
 singleton ScreenManager 1.0 core/ScreenManager.qml
 singleton Time 1.0 core/Time.qml
-singleton BluetoothManager 1.0 modules/bluetooth/Manager.qml
-singleton BrightnessManager 1.0 modules/brightness/Manager.qml
 singleton NotificationManager 1.0 modules/notifications/Manager.qml
-singleton WirelessManager 1.0 modules/wireless/Manager.qml
 singleton StatusbarManager 1.0 modules/statusbar/Manager.qml
 singleton UpdatesManager 1.0 modules/updates/Manager.qml
 NotificationCard 1.0 modules/notifications/Card.qml
