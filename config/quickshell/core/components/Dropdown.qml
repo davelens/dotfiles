@@ -81,6 +81,7 @@ Item {
         spacing: 6
 
         Text {
+          id: headerIcon
           anchors.verticalCenter: parent.verticalCenter
           text: dropdown.headerIcon
           color: Colors.blue
@@ -90,6 +91,7 @@ Item {
         }
 
         AnnotationText {
+          id: headerLabel
           anchors.verticalCenter: parent.verticalCenter
           text: dropdown.headerLabel
           visible: dropdown.headerLabel
@@ -101,7 +103,12 @@ Item {
           color: Colors.text
           font.pixelSize: 15
           elide: Text.ElideRight
-          width: Math.min(implicitWidth, dropdown.width - headerLeft.childrenRect.width - chevronNormal.width - 24)
+          width: {
+            var used = chevronNormal.width + 24
+            if (headerIcon.visible) used += headerIcon.width + headerLeft.spacing
+            if (headerLabel.visible) used += headerLabel.width + headerLeft.spacing
+            return Math.max(0, dropdown.width - used)
+          }
         }
       }
 
