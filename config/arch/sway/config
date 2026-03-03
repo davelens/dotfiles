@@ -165,7 +165,7 @@ bindsym $mod+v splitv
 ## Resize mode (see "Resizing" below)
 bindsym $mod+r mode "resize"
 ## Reload sway config
-bindsym $mod+Shift+r reload
+bindsym $mod+Shift+r reload; exec systemctl --user restart kanshi.service
 bindsym mod4+Shift+p exec ~/.local/bin/rofi-start --powermenu
 ## Exit sway (logs you out of your Wayland session)
 bindsym $mod+Shift+q exec \
