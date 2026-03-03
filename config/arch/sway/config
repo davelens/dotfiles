@@ -75,6 +75,7 @@ for_window [app_id="nm-connection-editor"] floating enable
 # Meant to isolate an extension's windows so they open as float.
 for_window [app_id="Firefox" title=".*Extension.*"] floating enable
 for_window [app_id="librewolf" title=".*Extension.*"] floating enable
+for_window [app_id="luakit" title=".*Extension.*"] floating enable
 
 # Press 'q' to close floating-term windows
 # NOTE: Conflicts with WezTerm/nvim so in comment for now.
