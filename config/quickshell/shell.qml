@@ -236,12 +236,20 @@ Scope {
           return
         }
 
-        // Segments with tooltips: toggle barFocused (tooltip shows reactively)
-        // Space on a segment that already shows its tooltip just dismisses focus mode
-        if (!ModuleRegistry.isButton(moduleId)) {
-          barFocusActive = false
+        // Buttons without popups: trigger their clicked signal directly
+        if (ModuleRegistry.isButton(moduleId)) {
+          if (delegate) {
+            var loader = delegate.children[1].children[0]
+            if (loader && loader.item && loader.item.clicked) {
+              loader.item.clicked()
+            }
+          }
           return
         }
+
+        // Segments with tooltips: toggle barFocused (tooltip shows reactively)
+        // Space on a segment that already shows its tooltip just dismisses focus mode
+        barFocusActive = false
       }
 
       // IPC handler for bar focus mode
