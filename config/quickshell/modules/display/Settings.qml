@@ -342,7 +342,7 @@ ScrollView {
       width: parent.width
       height: 320
       radius: 8
-      color: Colors.mantle
+      color: Colors.crust
       clip: true
 
       // Hit-test: find which monitor index is at a canvas position
