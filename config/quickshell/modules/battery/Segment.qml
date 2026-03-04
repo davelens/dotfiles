@@ -11,7 +11,7 @@ Item {
   anchors.verticalCenter: parent.verticalCenter
   width: batteryRow.width
   height: batteryRow.height
-  visible: UPower.displayDevice && UPower.displayDevice.ready
+  property bool showInBar: UPower.displayDevice && UPower.displayDevice.ready && Math.round(battery.percentage) < 100
 
   property real percentage: UPower.displayDevice ? UPower.displayDevice.percentage * 100 : 0
   property int batteryState: UPower.displayDevice ? UPower.displayDevice.state : 0
