@@ -32,7 +32,7 @@ Item {
 
     Text {
       anchors.verticalCenter: parent.verticalCenter
-      text: "󰍛"
+      text: "󰧑"
       color: Colors.text
       font.pixelSize: 16
       font.family: "Symbols Nerd Font"
