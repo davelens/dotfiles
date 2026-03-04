@@ -34,9 +34,7 @@
       glob: true
       path: config/*
       exclude: [
-        config/arch,
         config/macos,
-        config/wsl,
         config/bash_profile,
         config/bashrc
       ]
@@ -47,18 +45,6 @@
       glob: true
       path: config/macos/*
       exclude: [config/macos/defaults.sh]
-
-- link:
-    $XDG_CONFIG_HOME/:
-      if: '[ "$(bin/autoload/os)" = "arch" ]'
-      glob: true
-      path: config/arch/*
-
-- link:
-    $XDG_CONFIG_HOME/:
-      if: '[ "$(bin/autoload/os)" = "wsl" ]'
-      glob: true
-      path: config/wsl/*
 
 - link:
     $XDG_BIN_HOME/utility: bin/utility

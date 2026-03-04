@@ -44,7 +44,7 @@ get_session() {
   # to feed stdin from /dev/null (prevents inquirer from opening) and pass
   # the password via --passwordenv. We prompt with `read` ourselves.
   if [[ "$bw_status" == "unauthenticated" ]]; then
-    cat > "$prompt_script" << 'SCRIPT'
+    cat >"$prompt_script" <<'SCRIPT'
 #!/usr/bin/env bash
 err_file=$(mktemp)
 read -rp "Email: " email
@@ -70,7 +70,7 @@ rm -f "$err_file"
 SCRIPT
     sed -i "s|TOKEN_FILE|$token_file|g" "$prompt_script"
   else
-    cat > "$prompt_script" << 'SCRIPT'
+    cat >"$prompt_script" <<'SCRIPT'
 #!/usr/bin/env bash
 err_file=$(mktemp)
 read -rsp "Master password: " password
@@ -107,7 +107,7 @@ SCRIPT
       exit 1
     fi
 
-    echo "$token" > "$session_file"
+    echo "$token" >"$session_file"
     chmod 600 "$session_file"
     echo "$token"
   else
@@ -138,7 +138,7 @@ else
   # Build a display list: "username (name)" for each match.
   options=$(echo "$result" | jq -r \
     'to_entries[] | "\(.key)) \(.value.login.username // "no username") — \(.value.name // "untitled")"')
-  selected=$(echo "$options" | rofi -dmenu -i -p "Bitwarden ($domain)" -no-custom)
+  selected=$(echo "$options" | ~/.local/bin/rofi-start -dmenu -i -p "Bitwarden ($domain)" -no-custom)
   if [[ -z "$selected" ]]; then
     exit 1
   fi
