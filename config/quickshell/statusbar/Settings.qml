@@ -171,25 +171,11 @@ Item {
       spacing: 24
 
       // Header
-      Row {
-        spacing: 16
-
-        Text {
-          text: "Status Bar"
-          color: Colors.text
-          font.pixelSize: 24
-          font.bold: true
-        }
-
-        FocusButton {
-          anchors.verticalCenter: parent.verticalCenter
-          text: "Reset to Defaults"
-          width: 140
-          height: 32
-          backgroundColor: Colors.surface1
-          hoverColor: Colors.surface2
-          onClicked: StatusbarManager.resetToDefaults()
-        }
+      Text {
+        text: "Status Bar"
+        color: Colors.text
+        font.pixelSize: 24
+        font.bold: true
       }
 
       // Bar margins
@@ -477,6 +463,29 @@ Item {
         }
 
         EmptyDropZone { sectionName: "right"; sectionItems: StatusbarManager.rightItems }
+      }
+
+      // Separator line
+      Rectangle {
+        width: parent.width
+        height: 1
+        color: Colors.surface2
+      }
+
+      // Reset button (with margin for focus ring visibility)
+      Item {
+        width: parent.width
+        height: 36
+
+        FocusButton {
+          x: 2
+          text: "Reset to Defaults"
+          width: 140
+          height: 32
+          backgroundColor: Colors.surface1
+          hoverColor: Colors.surface2
+          onClicked: StatusbarManager.resetToDefaults()
+        }
       }
     }
   }
