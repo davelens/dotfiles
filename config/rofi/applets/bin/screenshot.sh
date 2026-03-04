@@ -47,15 +47,15 @@ countdown() {
 setup_repo_env() {
   local real_script
   real_script="$(readlink -f "${BASH_SOURCE[0]}")"
-  REPO_ROOT="$(cd "$(dirname "$real_script")/../../../../.." && pwd)"
-  export DOTFILES_REPO_HOME="$REPO_ROOT"
-  export XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
+  DOTFILES_REPO_HOME="$(cd "$(dirname "$real_script")/../../../.." && pwd)"
+  XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
+  export DOTFILES_REPO_HOME XDG_BIN_HOME
 }
 
 record_screen_delay() {
   countdown "${1:-5}"
   setup_repo_env
-  "$REPO_ROOT/bin/utilities/misc/screencast" &
+  "$DOTFILES_REPO_HOME/bin/utilities/misc/screencast" &
 }
 
 take_screenshot_full() {
@@ -76,7 +76,7 @@ take_screenshot_window() {
 
 take_screenshot_area() {
   setup_repo_env
-  "$REPO_ROOT/bin/utilities/misc/screenshot" &
+  "$DOTFILES_REPO_HOME/bin/utilities/misc/screenshot" &
 }
 
 main() {
