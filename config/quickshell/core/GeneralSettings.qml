@@ -95,19 +95,18 @@ Singleton {
 
   // First-run: auto-create "Default" profile and migrate existing flat state files
   function initDefaultProfile() {
-    var dir = "default-" + generateId()
-    activeProfile = dir
+    activeProfile = "defaults"
     activeProfileName = "Default"
-    profiles = [{ name: "Default", dir: dir }]
+    profiles = [{ name: "Default", dir: "defaults" }]
 
-    // Migrate existing flat state files into the new profile dir, then save config
-    var profilePath = DataManager.dataDir + "/" + dir
+    // Migrate existing flat state files into defaults/ dir, then save config
+    var profilePath = DataManager.dataDir + "/defaults"
     var moduleIds = ["statusbar", "notifications", "display", "recording"]
     var cmds = ["mkdir -p '" + profilePath + "'"]
     for (var i = 0; i < moduleIds.length; i++) {
       var flatFile = DataManager.dataDir + "/" + moduleIds[i] + ".json"
       var profileFile = profilePath + "/" + moduleIds[i] + ".json"
-      // Move existing flat file into profile dir if it exists
+      // Move existing flat file into defaults dir if it exists
       cmds.push("[ -f '" + flatFile + "' ] && mv '" + flatFile + "' '" + profileFile + "'")
     }
     migrationProc.command = ["sh", "-c", cmds.join(" ; ") + " ; true"]

@@ -263,43 +263,8 @@ Scope {
     return ""
   }
 
-  property bool defaultsLoaded: false
-
   // Which overlay is showing: "", "profileSwitcher", or "newProfile"
   property string activeOverlay: ""
-
-  // Reset active profile's state files from immutable defaults
-  function loadAllDefaults() {
-    var cmds = []
-    var modules = ModuleRegistry.modules
-    for (var i = 0; i < modules.length; i++) {
-      var m = modules[i]
-      var defaultsFile = DataManager.getDefaultsPath(m.id)
-      var stateFile = DataManager.getStatePath(m.id)
-      cmds.push("[ -f '" + defaultsFile + "' ] && cp '" + defaultsFile + "' '" + stateFile + "'")
-    }
-    loadDefaultsProc.command = ["sh", "-c", cmds.join(" ; ") + " ; true"]
-    loadDefaultsProc.running = true
-  }
-
-  Process {
-    id: loadDefaultsProc
-    onExited: function(exitCode, exitStatus) {
-      if (exitCode === 0) {
-        var current = root.activeCategory
-        root.activeCategory = ""
-        Qt.callLater(function() { root.activeCategory = current })
-        root.defaultsLoaded = true
-        defaultsHideTimer.restart()
-      }
-    }
-  }
-
-  Timer {
-    id: defaultsHideTimer
-    interval: 5000
-    onTriggered: root.defaultsLoaded = false
-  }
 
   // IPC handler to toggle visibility
   IpcHandler {
@@ -586,7 +551,7 @@ Scope {
                 }
               }
 
-              // Profile and defaults buttons
+              // Profile buttons
               Column {
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
@@ -601,12 +566,6 @@ Scope {
                   color: Colors.subtext0
                   font.pixelSize: 11
                   visible: GeneralSettings.activeProfileName !== ""
-                }
-
-                SuccessText {
-                  anchors.horizontalCenter: parent.horizontalCenter
-                  text: "  Defaults loaded"
-                  visible: root.defaultsLoaded
                 }
 
                 FocusButton {
@@ -631,32 +590,6 @@ Scope {
                   visible: GeneralSettings.profiles.length > 1
                   onClicked: root.activeOverlay = "profileSwitcher"
                 }
-
-                FocusButton {
-                  anchors.left: parent.left
-                  anchors.right: parent.right
-                  height: 32
-                  text: "Load Defaults"
-                  fontSize: 12
-                  backgroundColor: Colors.surface0
-                  hoverColor: Colors.surface1
-                  onClicked: root.loadAllDefaults()
-                }
-              }
-
-              FocusButton {
-                id: loadDefaultsButton
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.margins: 12
-                width: parent.width - 24
-                height: 32
-                text: "Load Defaults"
-                fontSize: 12
-                backgroundColor: Colors.surface0
-                hoverColor: Colors.surface1
-                onClicked: root.loadAllDefaults()
               }
 
               Rectangle {

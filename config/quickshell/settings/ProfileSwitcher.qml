@@ -1,3 +1,5 @@
+import Quickshell
+import Quickshell.Io
 import QtQuick
 import ".."
 import "../core/components"
@@ -13,8 +15,14 @@ Rectangle {
   // Confirmation state for deletion
   property string confirmDeleteDir: ""
 
+  // Confirmation state for reset
+  property bool confirmReset: false
+
   // Reset confirmation when this component is shown
-  Component.onCompleted: confirmDeleteDir = ""
+  Component.onCompleted: {
+    confirmDeleteDir = ""
+    confirmReset = false
+  }
 
   MouseArea {
     anchors.fill: parent
@@ -74,12 +82,11 @@ Rectangle {
             // Active indicator
             Text {
               anchors.verticalCenter: parent.verticalCenter
-              text: "󰕄"
+              text: ""
               color: Colors.blue
               font.pixelSize: 14
               font.family: "Symbols Nerd Font"
               visible: modelData.dir === GeneralSettings.activeProfile
-              width: visible ? implicitWidth : 0
             }
 
             Text {
@@ -150,6 +157,29 @@ Rectangle {
       }
     }
 
+    // Reset to defaults button
+    FocusButton {
+      anchors.left: parent.left
+      anchors.right: parent.right
+      height: 32
+      text: switcher.confirmReset ? "Are you sure?" : "Reset to defaults"
+      fontSize: 12
+      backgroundColor: Colors.red
+      hoverColor: Qt.darker(Colors.red, 1.1)
+      textColor: Colors.crust
+      textHoverColor: Colors.crust
+      onClicked: {
+        if (switcher.confirmReset) {
+          // Confirmed: reset active profile from repo defaults
+          resetProc.running = true
+        } else {
+          // First click: ask for confirmation
+          switcher.confirmReset = true
+          resetTimer.restart()
+        }
+      }
+    }
+
     // Close hint
     Text {
       text: "Click outside to close"
@@ -164,5 +194,32 @@ Rectangle {
     id: confirmTimer
     interval: 3000
     onTriggered: switcher.confirmDeleteDir = ""
+  }
+
+  // Reset button confirmation timer
+  Timer {
+    id: resetTimer
+    interval: 3000
+    onTriggered: switcher.confirmReset = false
+  }
+
+  // Process to copy repo defaults into active profile
+  Process {
+    id: resetProc
+    command: {
+      var cmds = []
+      var modules = ModuleRegistry.modules
+      for (var i = 0; i < modules.length; i++) {
+        var m = modules[i]
+        var repoDefaults = m.path + "/defaults.json"
+        var stateFile = DataManager.getStatePath(m.id)
+        cmds.push("[ -f '" + repoDefaults + "' ] && cp '" + repoDefaults + "' '" + stateFile + "'")
+      }
+      return ["sh", "-c", cmds.join(" ; ") + " ; true"]
+    }
+    onExited: {
+      switcher.confirmReset = false
+      switcher.closeRequested()
+    }
   }
 }
