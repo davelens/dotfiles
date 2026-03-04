@@ -495,7 +495,8 @@ Scope {
               id: sidebar
               width: 200
               height: parent.height
-              color: Colors.mantle
+              color: root.focusMode === "categories" ? Colors.base : Colors.mantle
+              Behavior on color { ColorAnimation { duration: 150 } }
 
               // Cover bottom-left corner
               Rectangle {
@@ -503,7 +504,7 @@ Scope {
                 anchors.left: parent.left
                 width: 8
                 height: 8
-                color: Colors.mantle
+                color: sidebar.color
                 radius: 8
 
                 Rectangle {
@@ -511,7 +512,7 @@ Scope {
                   anchors.right: parent.right
                   width: 8
                   height: 8
-                  color: Colors.mantle
+                  color: sidebar.color
                 }
               }
 
@@ -613,9 +614,11 @@ Scope {
 
             // Main content
             Rectangle {
+              id: contentArea
               width: parent.width - sidebar.width
               height: parent.height
-              color: Colors.base
+              color: root.focusMode === "content" ? Colors.base : Colors.mantle
+              Behavior on color { ColorAnimation { duration: 150 } }
               radius: 8
 
               // Only round bottom-right
@@ -623,13 +626,13 @@ Scope {
                 anchors.top: parent.top
                 width: parent.width
                 height: parent.radius
-                color: Colors.base
+                color: contentArea.color
               }
               Rectangle {
                 anchors.left: parent.left
                 width: parent.radius
                 height: parent.height
-                color: Colors.base
+                color: contentArea.color
               }
 
               // Dynamic content loader
