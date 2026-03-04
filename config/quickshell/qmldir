@@ -8,4 +8,4 @@ singleton ScreenManager 1.0 core/ScreenManager.qml
 singleton SlideInOverlayManager 1.0 core/SlideInOverlayManager.qml
 singleton Time 1.0 core/Time.qml
 singleton StatusbarManager 1.0 statusbar/Manager.qml
-SettingsPanel 1.0 core/components/SettingsPanel.qml
+SettingsPanel 1.0 settings/Panel.qml

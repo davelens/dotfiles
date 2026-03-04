@@ -25,7 +25,7 @@ Singleton {
 
   // File-based persistence
   readonly property string statePath: DataManager.getStatePath("notifications")
-  readonly property string defaultsPath: Quickshell.shellDir + "/modules/notifications/defaults.json"
+  readonly property string defaultsPath: DataManager.getDefaultsPath("notifications")
   property bool fileReady: false
 
   // Copy defaults if state file doesn't exist

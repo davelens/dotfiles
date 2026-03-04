@@ -27,7 +27,7 @@ Singleton {
 
   // Path to config file
   readonly property string statePath: DataManager.getStatePath("statusbar")
-  readonly property string defaultsPath: Quickshell.shellDir + "/statusbar/defaults.json"
+  readonly property string defaultsPath: DataManager.getDefaultsPath("statusbar")
   property bool fileReady: false
 
   // Copy defaults if state file doesn't exist

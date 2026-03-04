@@ -13,7 +13,7 @@ Singleton {
 
   // File-based persistence
   readonly property string statePath: DataManager.getStatePath("recording")
-  readonly property string defaultsPath: Quickshell.shellDir + "/modules/recording/defaults.json"
+  readonly property string defaultsPath: DataManager.getDefaultsPath("recording")
   property bool fileReady: false
 
   // Copy defaults if state file doesn't exist

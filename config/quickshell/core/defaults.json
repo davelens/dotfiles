@@ -6,5 +6,8 @@
     "bluetooth",
     "notifications",
     "recording"
-  ]
+  ],
+  "activeProfile": "",
+  "activeProfileName": "",
+  "profiles": []
 }

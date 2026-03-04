@@ -9,7 +9,7 @@ Singleton {
   id: screenManager
 
   readonly property string statePath: DataManager.getStatePath("display")
-  readonly property string defaultsPath: Quickshell.shellDir + "/modules/display/defaults.json"
+  readonly property string defaultsPath: DataManager.getDefaultsPath("display")
   property bool fileReady: false
 
   // Copy defaults if state file doesn't exist

@@ -3,7 +3,8 @@ import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Controls
-import "../.."
+import ".."
+import "../core/components"
 
 Scope {
   id: root
@@ -52,6 +53,7 @@ Scope {
       searchQuery = ""
       focusMode = "categories"
       contentFocusIndex = -1
+      activeOverlay = ""
     }
   }
 
@@ -256,24 +258,27 @@ Scope {
   function getSettingsUrl(categoryId) {
     var module = ModuleRegistry.getModule(categoryId)
     if (module && module.components && module.components.settings) {
-      return "../../" + ModuleRegistry.getSettingsRelPath(categoryId)
+      return "../" + ModuleRegistry.getSettingsRelPath(categoryId)
     }
     return ""
   }
 
   property bool defaultsLoaded: false
 
+  // Which overlay is showing: "", "profileSwitcher", or "newProfile"
+  property string activeOverlay: ""
+
+  // Reset active profile's state files from immutable defaults
   function loadAllDefaults() {
     var cmds = []
     var modules = ModuleRegistry.modules
     for (var i = 0; i < modules.length; i++) {
       var m = modules[i]
-      var defaultsFile = m.path + "/defaults.json"
+      var defaultsFile = DataManager.getDefaultsPath(m.id)
       var stateFile = DataManager.getStatePath(m.id)
       cmds.push("[ -f '" + defaultsFile + "' ] && cp '" + defaultsFile + "' '" + stateFile + "'")
     }
-    cmds.push("cp '" + GeneralSettings.defaultsPath + "' '" + GeneralSettings.statePath + "'")
-    loadDefaultsProc.command = ["sh", "-c", cmds.join(" ; ")]
+    loadDefaultsProc.command = ["sh", "-c", cmds.join(" ; ") + " ; true"]
     loadDefaultsProc.running = true
   }
 
@@ -581,12 +586,62 @@ Scope {
                 }
               }
 
-              SuccessText {
-                anchors.bottom: loadDefaultsButton.top
-                anchors.bottomMargin: 8
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: "  Defaults loaded"
-                visible: root.defaultsLoaded
+              // Profile and defaults buttons
+              Column {
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: 12
+                spacing: 6
+
+                // Active profile indicator
+                Text {
+                  anchors.horizontalCenter: parent.horizontalCenter
+                  text: "Profile: " + GeneralSettings.activeProfileName
+                  color: Colors.subtext0
+                  font.pixelSize: 11
+                  visible: GeneralSettings.activeProfileName !== ""
+                }
+
+                SuccessText {
+                  anchors.horizontalCenter: parent.horizontalCenter
+                  text: "  Defaults loaded"
+                  visible: root.defaultsLoaded
+                }
+
+                FocusButton {
+                  anchors.left: parent.left
+                  anchors.right: parent.right
+                  height: 32
+                  text: "New Profile"
+                  fontSize: 12
+                  backgroundColor: Colors.surface0
+                  hoverColor: Colors.surface1
+                  onClicked: root.activeOverlay = "newProfile"
+                }
+
+                FocusButton {
+                  anchors.left: parent.left
+                  anchors.right: parent.right
+                  height: 32
+                  text: "Switch Profile"
+                  fontSize: 12
+                  backgroundColor: Colors.surface0
+                  hoverColor: Colors.surface1
+                  visible: GeneralSettings.profiles.length > 1
+                  onClicked: root.activeOverlay = "profileSwitcher"
+                }
+
+                FocusButton {
+                  anchors.left: parent.left
+                  anchors.right: parent.right
+                  height: 32
+                  text: "Load Defaults"
+                  fontSize: 12
+                  backgroundColor: Colors.surface0
+                  hoverColor: Colors.surface1
+                  onClicked: root.loadAllDefaults()
+                }
               }
 
               FocusButton {
@@ -657,6 +712,37 @@ Scope {
                 color: Colors.overlay0
                 font.pixelSize: 14
                 visible: !contentLoader.source || contentLoader.status !== Loader.Ready
+              }
+            }
+          }
+        }
+
+        // Profile overlay (scrim + content, fills the panel)
+        Rectangle {
+          anchors.fill: parent
+          color: "#80000000"
+          radius: parent.radius
+          visible: root.activeOverlay !== ""
+          z: 200
+
+          MouseArea {
+            anchors.fill: parent
+            onClicked: root.activeOverlay = ""
+          }
+
+          Loader {
+            id: overlayLoader
+            anchors.centerIn: parent
+            width: parent.width * 0.5
+            height: parent.height * 0.5
+            source: {
+              if (root.activeOverlay === "profileSwitcher") return "ProfileSwitcher.qml"
+              if (root.activeOverlay === "newProfile") return "NewProfileDialog.qml"
+              return ""
+            }
+            onLoaded: {
+              if (item && item.closeRequested) {
+                item.closeRequested.connect(function() { root.activeOverlay = "" })
               }
             }
           }
