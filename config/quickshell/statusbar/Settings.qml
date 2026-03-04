@@ -84,13 +84,13 @@ Item {
 
         // Find which row we're over.
         // children[1] is the items Column (children[0] is the section label text).
-        // Inside that Column, children[0] is the Repeater, so delegates start at [1].
+        // Inside that Column, Repeater delegates are at children[0..N-1].
         var itemsCol = sec.col.children[1]
         if (!itemsCol) continue
 
         for (var i = 0; i < sec.items.length; i++) {
-          var rowWrapper = itemsCol.children[i + 1]
-          if (!rowWrapper) continue
+          var rowWrapper = itemsCol.children[i]
+          if (!rowWrapper || rowWrapper.height === 0) continue
 
           var rowPos = rowWrapper.mapToItem(scrollContent, 0, 0)
           var rowMid = rowPos.y + rowWrapper.height / 2
