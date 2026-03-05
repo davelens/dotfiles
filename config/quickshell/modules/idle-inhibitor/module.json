@@ -5,6 +5,7 @@
   "order": 210,
   "keywords": "idle inhibit caffeine sleep prevent",
   "components": {
+    "manager": "Manager.qml",
     "button": "Button.qml"
   }
 }
