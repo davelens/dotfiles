@@ -9,10 +9,7 @@ Item {
   // Required: screen reference for width calculation
   required property var screen
 
-  // Bar focus mode support
-  property bool barFocused: false
-
-  // Toggle playback (called by focus mode activation)
+  // Toggle playback (called by bar focus mode activation)
   function activate() {
     if (activePlayer && activePlayer.canTogglePlaying) {
       activePlayer.togglePlaying()
@@ -89,16 +86,6 @@ Item {
       elide: Text.ElideRight
       width: Math.min(implicitWidth, root.screen.width * 0.3)
     }
-  }
-
-  // Focus indicator
-  Rectangle {
-    anchors.bottom: parent.bottom
-    anchors.horizontalCenter: parent.horizontalCenter
-    width: content.width
-    height: 2
-    color: Colors.blue
-    visible: root.barFocused
   }
 
   MouseArea {

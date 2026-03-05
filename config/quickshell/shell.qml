@@ -163,14 +163,6 @@ Scope {
           }
         }
 
-        // Update barFocused on center section segments
-        for (var i = 0; i < centerEnabledItems.length; i++) {
-          var item = centerSection.itemAt(i)
-          if (item && item.hasOwnProperty("barFocused")) {
-            item.barFocused = barFocusActive && barFocusIndex === (i + centerOffset)
-          }
-        }
-
         // Update barFocused on right section segments
         for (var i = 0; i < rightEnabledItems.length; i++) {
           var delegate = rightRepeater.itemAt(i)
@@ -274,7 +266,16 @@ Scope {
           return
         }
 
-        // Segments: dismiss focus mode (tooltip already showing via barFocused)
+        // Segments with activate (e.g. media play/pause)
+        if (wrapper) {
+          var loader = wrapper.children[0]
+          if (loader && loader.item && typeof loader.item.activate === "function") {
+            loader.item.activate()
+            return
+          }
+        }
+
+        // Segments without activate: dismiss focus mode
         barFocusActive = false
       }
 
