@@ -1,5 +1,6 @@
 AnnotationText 1.0 AnnotationText.qml
 BarButton 1.0 BarButton.qml
+DialogOverlay 1.0 DialogOverlay.qml
 BarSection 1.0 BarSection.qml
 BodyText 1.0 BodyText.qml
 Dropdown 1.0 Dropdown.qml
