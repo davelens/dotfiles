@@ -44,11 +44,36 @@ Rectangle {
     anchors.margins: 24
     spacing: 16
 
-    Text {
-      text: "Switch Profile"
-      color: Colors.text
-      font.pixelSize: 20
-      font.bold: true
+    // Header row with title and close button
+    Item {
+      width: parent.width
+      height: 24
+
+      Text {
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        text: "Switch Profile"
+        color: Colors.text
+        font.pixelSize: 20
+        font.bold: true
+      }
+
+      Text {
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        text: "✕"
+        color: closeHover.containsMouse ? Colors.text : Colors.overlay0
+        font.pixelSize: 16
+
+        MouseArea {
+          id: closeHover
+          anchors.fill: parent
+          anchors.margins: -6
+          hoverEnabled: true
+          cursorShape: Qt.PointingHandCursor
+          onClicked: switcher.closeRequested()
+        }
+      }
     }
 
     // Profile list
@@ -108,7 +133,6 @@ Rectangle {
             onClicked: {
               if (modelData.dir !== GeneralSettings.activeProfile) {
                 GeneralSettings.switchProfile(modelData.dir)
-                switcher.closeRequested()
               }
             }
           }
@@ -180,13 +204,7 @@ Rectangle {
       }
     }
 
-    // Close hint
-    Text {
-      text: "Click outside to close"
-      color: Colors.overlay0
-      font.pixelSize: 11
-      anchors.horizontalCenter: parent.horizontalCenter
-    }
+
   }
 
   // Reset confirmation after 3 seconds
@@ -219,7 +237,6 @@ Rectangle {
     }
     onExited: {
       switcher.confirmReset = false
-      switcher.closeRequested()
     }
   }
 }
