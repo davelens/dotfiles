@@ -18,6 +18,10 @@ Scope {
   property var contentFocusables: []  // List of focusable items in current panel
   property int contentFocusIndex: -1  // Current focused item index in content
 
+  // Sidebar profile button focus (-1 = none, 0 = New Profile, 1 = Switch Profile)
+  property int sidebarProfileFocus: -1
+  readonly property int profileButtonCount: GeneralSettings.profiles.length > 1 ? 2 : 1
+
   // Get categories from ModuleRegistry, sorted by GeneralSettings order.
   // Modules listed in settingsCategoryOrder come first (in that order),
   // unlisted modules follow sorted by their module.json order field.
@@ -53,6 +57,7 @@ Scope {
       searchQuery = ""
       focusMode = "categories"
       contentFocusIndex = -1
+      sidebarProfileFocus = -1
       activeOverlay = ""
     }
   }
@@ -89,22 +94,73 @@ Scope {
     return categories.filter(function(cat) { return matchesSearch(cat) })
   }
 
-  // Select next category
+  // Select next category (cycles into profile buttons after last category)
   function selectNextCategory() {
     var visible = getVisibleCategories()
-    if (visible.length === 0) return
+
+    // Currently on a profile button: advance or wrap to first category
+    if (sidebarProfileFocus >= 0) {
+      if (sidebarProfileFocus + 1 < profileButtonCount) {
+        sidebarProfileFocus++
+      } else {
+        sidebarProfileFocus = -1
+        if (visible.length > 0) activeCategory = visible[0].id
+      }
+      return
+    }
+
+    // On a category: advance or enter profile buttons
+    if (visible.length === 0) {
+      sidebarProfileFocus = 0
+      return
+    }
     var currentIndex = visible.findIndex(function(cat) { return cat.id === activeCategory })
-    var nextIndex = (currentIndex + 1) % visible.length
-    activeCategory = visible[nextIndex].id
+    if (currentIndex === visible.length - 1) {
+      sidebarProfileFocus = 0
+    } else {
+      var nextIndex = (currentIndex + 1) % visible.length
+      activeCategory = visible[nextIndex].id
+    }
   }
 
-  // Select previous category
+  // Select previous category (cycles into profile buttons before first category)
   function selectPreviousCategory() {
     var visible = getVisibleCategories()
-    if (visible.length === 0) return
+
+    // Currently on a profile button: go back or return to last category
+    if (sidebarProfileFocus >= 0) {
+      if (sidebarProfileFocus > 0) {
+        sidebarProfileFocus--
+      } else {
+        sidebarProfileFocus = -1
+        if (visible.length > 0) activeCategory = visible[visible.length - 1].id
+      }
+      return
+    }
+
+    // On a category: go back or enter profile buttons from below
+    if (visible.length === 0) {
+      sidebarProfileFocus = profileButtonCount - 1
+      return
+    }
     var currentIndex = visible.findIndex(function(cat) { return cat.id === activeCategory })
-    var prevIndex = (currentIndex - 1 + visible.length) % visible.length
-    activeCategory = visible[prevIndex].id
+    if (currentIndex === 0) {
+      sidebarProfileFocus = profileButtonCount - 1
+    } else {
+      var prevIndex = (currentIndex - 1 + visible.length) % visible.length
+      activeCategory = visible[prevIndex].id
+    }
+  }
+
+  // Activate the focused profile button
+  function activateProfileButton() {
+    if (sidebarProfileFocus === 0) {
+      sidebarProfileFocus = -1
+      root.activeOverlay = "newProfile"
+    } else if (sidebarProfileFocus === 1) {
+      sidebarProfileFocus = -1
+      root.activeOverlay = "switchProfile"
+    }
   }
 
   // Reference to current content loader
@@ -210,6 +266,7 @@ Scope {
   // Enter content focus mode
   function enterContentMode() {
     focusMode = "content"
+    sidebarProfileFocus = -1
     refreshFocusables()
     // Re-enable focus rings on all content items
     for (var i = 0; i < contentFocusables.length; i++) {
@@ -229,6 +286,7 @@ Scope {
   // Return to category focus mode
   function enterCategoryMode() {
     focusMode = "categories"
+    sidebarProfileFocus = -1
     // Hide focus rings on all content items
     for (var i = 0; i < contentFocusables.length; i++) {
       var item = contentFocusables[i]
@@ -263,7 +321,7 @@ Scope {
     return ""
   }
 
-  // Which overlay is showing: "", "profileSwitcher", or "newProfile"
+  // Which overlay is showing: "", "switchProfile", or "newProfile"
   property string activeOverlay: ""
 
   // IPC handler to toggle visibility
@@ -306,9 +364,11 @@ Scope {
         focus: true
         Component.onCompleted: root.panelRoot = panelRootItem
         Keys.onPressed: event => {
-          // Ctrl+[: blur search if focused, otherwise close panel
+          // Ctrl+[: close overlay, blur search, or close panel (in that order)
           if (event.key === Qt.Key_BracketLeft && (event.modifiers & Qt.ControlModifier)) {
-            if (root.searchInputRef && root.searchInputRef.activeFocus) {
+            if (root.activeOverlay !== "") {
+              root.activeOverlay = ""
+            } else if (root.searchInputRef && root.searchInputRef.activeFocus) {
               panelRootItem.forceActiveFocus()
             } else {
               root.visible = false
@@ -355,6 +415,12 @@ Scope {
           // Ctrl+F: focus search input
           else if (event.key === Qt.Key_F && (event.modifiers & Qt.ControlModifier)) {
             root.focusSearch()
+            event.accepted = true
+          }
+          // Enter/Space: activate focused profile button (category mode only)
+          else if ((event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space)
+                    && root.focusMode === "categories" && root.sidebarProfileFocus >= 0) {
+            root.activateProfileButton()
             event.accepted = true
           }
         }
@@ -549,7 +615,10 @@ Scope {
                       anchors.fill: parent
                       hoverEnabled: true
                       cursorShape: Qt.PointingHandCursor
-                      onClicked: root.activeCategory = modelData.id
+                      onClicked: {
+                        root.sidebarProfileFocus = -1
+                        root.activeCategory = modelData.id
+                      }
                     }
                   }
                 }
@@ -572,27 +641,61 @@ Scope {
                   visible: GeneralSettings.activeProfileName !== ""
                 }
 
-                FocusButton {
+                Item {
                   anchors.left: parent.left
                   anchors.right: parent.right
-                  height: 32
-                  text: "New Profile"
-                  fontSize: 12
-                  backgroundColor: Colors.surface0
-                  hoverColor: Colors.surface1
-                  onClicked: root.activeOverlay = "newProfile"
+                  height: 36
+
+                  FocusButton {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: 32
+                    text: "New Profile"
+                    fontSize: 12
+                    backgroundColor: Colors.surface0
+                    hoverColor: Colors.surface1
+                    onClicked: root.activeOverlay = "newProfile"
+                  }
+
+                  Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: -2
+                    radius: 6
+                    color: "transparent"
+                    border.width: 2
+                    border.color: Colors.peach
+                    visible: root.sidebarProfileFocus === 0
+                  }
                 }
 
-                FocusButton {
+                Item {
                   anchors.left: parent.left
                   anchors.right: parent.right
-                  height: 32
-                  text: "Switch Profile"
-                  fontSize: 12
-                  backgroundColor: Colors.surface0
-                  hoverColor: Colors.surface1
+                  height: 36
                   visible: GeneralSettings.profiles.length > 1
-                  onClicked: root.activeOverlay = "profileSwitcher"
+
+                  FocusButton {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: 32
+                    text: "Switch Profile"
+                    fontSize: 12
+                    backgroundColor: Colors.surface0
+                    hoverColor: Colors.surface1
+                    onClicked: root.activeOverlay = "switchProfile"
+                  }
+
+                  Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: -2
+                    radius: 6
+                    color: "transparent"
+                    border.width: 2
+                    border.color: Colors.peach
+                    visible: root.sidebarProfileFocus === 1
+                  }
                 }
               }
 
@@ -673,7 +776,7 @@ Scope {
             width: parent.width * 0.5
             height: parent.height * 0.5
             source: {
-              if (root.activeOverlay === "profileSwitcher") return "ProfileSwitcher.qml"
+              if (root.activeOverlay === "switchProfile") return "SwitchProfileDialog.qml"
               if (root.activeOverlay === "newProfile") return "NewProfileDialog.qml"
               return ""
             }

@@ -1,15 +1,28 @@
 import QtQuick
 import "../.."
 
-Rectangle {
+FocusScope {
   id: overlay
   anchors.fill: parent
-  color: Colors.base
-  radius: 8
 
   required property string title
   signal closeRequested()
   default property alias content: contentColumn.data
+
+  // Handle Ctrl+[ and Escape to close the dialog
+  Keys.onPressed: event => {
+    if (event.key === Qt.Key_Escape
+        || (event.key === Qt.Key_BracketLeft && (event.modifiers & Qt.ControlModifier))) {
+      overlay.closeRequested()
+      event.accepted = true
+    }
+  }
+
+  Rectangle {
+    anchors.fill: parent
+    color: Colors.base
+    radius: 8
+  }
 
   // Absorb clicks so they don't pass through to the backdrop
   MouseArea {
@@ -23,7 +36,7 @@ Rectangle {
     color: "transparent"
     border.width: 1
     border.color: Colors.surface2
-    radius: parent.radius
+    radius: 8
     z: 100
   }
 
