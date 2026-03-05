@@ -21,8 +21,20 @@ Item {
   property string itemIcon: ""          // Icon to show for each item (empty = use headerIcon)
   property string selectedIcon: "\uf00c" // Icon to show for selected item
 
+  // Keyboard focus support (settings panel focus cycling)
+  property bool showFocusRing: true
+  property bool keyboardFocus: false
+  property bool focused: activeFocus && showFocusRing && keyboardFocus
+  focus: true
+  activeFocusOnTab: true
+
+  onActiveFocusChanged: {
+    if (!activeFocus) keyboardFocus = false
+  }
+
   // State
   property bool expanded: false
+  property int highlightIndex: -1
 
   // Size: in compact mode, fixed to header size only; otherwise grows with content
   implicitWidth: compact ? width : contentColumn.width
@@ -60,6 +72,39 @@ Item {
     return item === currentItem
   }
 
+  // Keyboard navigation
+  Keys.onPressed: function(event) {
+    if (event.key === Qt.Key_Space || event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+      if (expanded && highlightIndex >= 0 && highlightIndex < items.length) {
+        // Select the highlighted item
+        itemSelected(items[highlightIndex])
+      } else {
+        // Toggle expand/collapse
+        expanded = !expanded
+        highlightIndex = -1
+        toggled(expanded)
+      }
+      event.accepted = true
+    } else if (event.key === Qt.Key_Escape) {
+      if (expanded) {
+        expanded = false
+        highlightIndex = -1
+        toggled(false)
+        event.accepted = true
+      }
+    } else if (event.key === Qt.Key_Down || event.key === Qt.Key_J) {
+      if (expanded) {
+        highlightIndex = (highlightIndex + 1) % items.length
+        event.accepted = true
+      }
+    } else if (event.key === Qt.Key_Up || event.key === Qt.Key_K) {
+      if (expanded) {
+        highlightIndex = (highlightIndex - 1 + items.length) % items.length
+        event.accepted = true
+      }
+    }
+  }
+
   // Non-compact mode: Column layout where items flow below header
   Column {
     id: contentColumn
@@ -67,11 +112,25 @@ Item {
     visible: !dropdown.compact
 
     // Header (non-compact)
-    Rectangle {
+    Item {
       width: dropdown.width
       height: 28
-      radius: 4
-      color: headerAreaNormal.containsMouse ? Colors.surface0 : "transparent"
+
+      // Focus ring
+      Rectangle {
+        anchors.fill: parent
+        anchors.margins: -3
+        radius: 7
+        color: "transparent"
+        border.width: 2
+        border.color: Colors.peach
+        visible: dropdown.focused && !dropdown.compact
+      }
+
+      Rectangle {
+        anchors.fill: parent
+        radius: 4
+        color: headerAreaNormal.containsMouse ? Colors.surface0 : "transparent"
 
       Row {
         id: headerLeft
@@ -129,9 +188,12 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
+          dropdown.forceActiveFocus()
           dropdown.expanded = !dropdown.expanded
+          dropdown.highlightIndex = -1
           dropdown.toggled(dropdown.expanded)
         }
+      }
       }
     }
 
@@ -146,12 +208,19 @@ Item {
 
         Rectangle {
           required property var modelData
+          required property int index
           property bool isSelected: dropdown.isItemSelected(modelData)
+          property bool isHighlighted: dropdown.highlightIndex === index
 
           width: dropdown.width
           height: 32
           radius: 4
-          color: isSelected ? Colors.surface1 : (itemAreaNormal.containsMouse ? Colors.surface0 : "transparent")
+          color: {
+            if (isHighlighted) return Colors.surface1
+            if (isSelected) return Colors.surface1
+            if (itemAreaNormal.containsMouse) return Colors.surface0
+            return "transparent"
+          }
 
           Row {
             anchors.fill: parent
@@ -162,7 +231,7 @@ Item {
             Text {
               anchors.verticalCenter: parent.verticalCenter
               text: isSelected ? dropdown.selectedIcon : (dropdown.itemIcon || dropdown.headerIcon)
-              color: isSelected ? Colors.green : Colors.overlay0
+              color: isSelected ? Colors.green : (isHighlighted ? Colors.blue : Colors.overlay0)
               font.pixelSize: 16
               font.family: "Symbols Nerd Font"
             }
@@ -170,7 +239,7 @@ Item {
             Text {
               anchors.verticalCenter: parent.verticalCenter
               text: dropdown.getItemText(modelData, false)
-              color: isSelected ? Colors.text : Colors.subtext0
+              color: (isSelected || isHighlighted) ? Colors.text : Colors.subtext0
               font.pixelSize: 15
               elide: Text.ElideRight
               width: parent.width - 40
@@ -190,15 +259,29 @@ Item {
   }
 
   // Compact mode: Header is the main element, items overlay below
-  Rectangle {
-    id: compactHeader
+  Item {
     visible: dropdown.compact
     width: dropdown.width
     height: 28
-    radius: 4
-    color: headerAreaCompact.containsMouse ? Colors.surface1 : Colors.surface0
-    border.width: 1
-    border.color: Colors.surface2
+
+    // Focus ring (compact)
+    Rectangle {
+      anchors.fill: parent
+      anchors.margins: -3
+      radius: 7
+      color: "transparent"
+      border.width: 2
+      border.color: Colors.peach
+      visible: dropdown.focused && dropdown.compact
+    }
+
+    Rectangle {
+      id: compactHeader
+      anchors.fill: parent
+      radius: 4
+      color: headerAreaCompact.containsMouse ? Colors.surface1 : Colors.surface0
+      border.width: 1
+      border.color: Colors.surface2
 
     Row {
       anchors.fill: parent
@@ -230,9 +313,12 @@ Item {
       hoverEnabled: true
       cursorShape: Qt.PointingHandCursor
       onClicked: {
+        dropdown.forceActiveFocus()
         dropdown.expanded = !dropdown.expanded
+        dropdown.highlightIndex = -1
         dropdown.toggled(dropdown.expanded)
       }
+    }
     }
   }
 
