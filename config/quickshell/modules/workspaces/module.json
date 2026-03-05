@@ -3,9 +3,11 @@
   "name": "Workspaces",
   "icon": "󰍹",
   "order": 100,
-  "keywords": "workspace desktop virtual switch",
+  "keywords": "workspace desktop virtual switch icons dots numbers count",
   "skipBarFocus": true,
   "components": {
-    "segment": "Segment.qml"
+    "manager": "Manager.qml",
+    "segment": "Segment.qml",
+    "settings": "Settings.qml"
   }
 }

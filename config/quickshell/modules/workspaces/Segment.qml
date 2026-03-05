@@ -8,16 +8,15 @@ Row {
   anchors.verticalCenter: parent.verticalCenter
   spacing: 2
 
-  readonly property var icons: ({
-    "1": "",
-    "2": "󰈹",
-    "3": "󰙯",
-    "4": "󰎇",
-    "5": ""
-  })
+  // Build model array from configured count
+  readonly property var workspaceModel: {
+    var arr = []
+    for (var i = 1; i <= WorkspacesManager.count; i++) arr.push(String(i))
+    return arr
+  }
 
   Repeater {
-    model: ["1", "2", "3", "4", "5"]
+    model: workspaceModel
 
     Rectangle {
       id: workspaceRect
@@ -43,9 +42,17 @@ Row {
 
       Text {
         anchors.centerIn: parent
-        text: icons[workspaceRect.modelData] || workspaceRect.modelData
+        text: {
+          var mode = WorkspacesManager.displayMode
+          if (mode === "dots") {
+            return (workspaceRect.isFocused || workspaceRect.hasWindows) ? "" : ""
+          }
+          if (mode === "numbers") return workspaceRect.modelData
+          // icons mode
+          return WorkspacesManager.icons[workspaceRect.modelData] || workspaceRect.modelData
+        }
         color: workspaceRect.isFocused ? Colors.blue : (workspaceRect.hasWindows ? Colors.text : Colors.overlay0)
-        font.pixelSize: 18
+        font.pixelSize: WorkspacesManager.displayMode === "dots" ? 12 : 18
         font.family: "Symbols Nerd Font"
       }
 
