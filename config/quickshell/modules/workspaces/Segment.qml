@@ -45,7 +45,7 @@ Row {
         text: {
           var mode = WorkspacesManager.displayMode
           if (mode === "dots") {
-            return (workspaceRect.isFocused || workspaceRect.hasWindows) ? "" : ""
+            return (workspaceRect.isFocused || workspaceRect.hasWindows) ? "" : ""
           }
           if (mode === "numbers") return workspaceRect.modelData
           // icons mode
