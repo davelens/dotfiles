@@ -68,6 +68,13 @@ Scope {
     contentFocusables = []
   }
 
+  // Return to category mode when overlay closes
+  onActiveOverlayChanged: {
+    if (activeOverlay === "") {
+      enterCategoryMode()
+    }
+  }
+
   // Filter categories based on search (matches name or keywords)
   function matchesSearch(category) {
     if (!searchQuery) return true
@@ -189,7 +196,9 @@ Scope {
   // Refresh the list of focusable items
   function refreshFocusables() {
     contentFocusables = []
-    if (currentContentLoader && currentContentLoader.item) {
+    if (root.activeOverlay !== "" && overlayLoader.item) {
+      findFocusables(overlayLoader.item, contentFocusables)
+    } else if (currentContentLoader && currentContentLoader.item) {
       findFocusables(currentContentLoader.item, contentFocusables)
     }
   }
@@ -390,9 +399,13 @@ Scope {
             root.enterContentMode()
             event.accepted = true
           }
-          // Ctrl+H: return to category mode
+          // Ctrl+H: close overlay if open, otherwise return to category mode
           else if (event.key === Qt.Key_H && (event.modifiers & Qt.ControlModifier)) {
-            root.enterCategoryMode()
+            if (root.activeOverlay !== "") {
+              root.activeOverlay = ""
+            } else {
+              root.enterCategoryMode()
+            }
             event.accepted = true
           }
           // Ctrl+N: next (category or content item depending on mode)
@@ -785,6 +798,7 @@ Scope {
               if (item && item.closeRequested) {
                 item.closeRequested.connect(function() { root.activeOverlay = "" })
               }
+              root.enterContentMode()
             }
           }
         }

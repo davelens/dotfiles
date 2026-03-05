@@ -41,6 +41,7 @@ DialogOverlay {
         font.pixelSize: 14
         clip: true
         focus: true
+        activeFocusOnTab: true
         Component.onCompleted: forceActiveFocus()
 
         Text {
