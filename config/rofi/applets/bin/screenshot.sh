@@ -41,7 +41,7 @@ countdown() {
     notify-send -t 1000 -i image-x-generic "Screenshot" "Recording in ${sec}s"
     sleep 1
   done
-  qs ipc call notifications clearAll
+  qs -p ~/.config/dotshell ipc call notifications clearAll
 }
 
 setup_repo_env() {

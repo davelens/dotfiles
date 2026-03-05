@@ -17,6 +17,7 @@ set $right      l
 set $term       foot
 set $browser    firefox
 set $launcher   '~/.local/bin/rofi-start'
+set $qs         qs -p ~/.config/dotshell
 
 # Catppuccin Macchiato color scheme
 set $rosewater  #f4dbd6
@@ -147,10 +148,10 @@ bindsym $mod+Space exec $launcher
 # bindsym $mod+u exec $browser
 bindsym $mod+c exec cliphist list | ~/.local/bin/rofi-start --dmenu --theme style-5-no-indent | cliphist decode | wl-copy
 bindsym $mod+m exec cliphist list | ~/.local/bin/rofi-start --mode calc -modi calc -no-show-match -no-sort
-bindsym $mod+n exec qs ipc call notifications toggle
-bindsym $mod+Shift+s exec qs ipc call bar toggle
-bindsym $mod+s exec qs ipc call settings toggle
-bindsym $mod+u exec qs ipc call popup toggle updates
+bindsym $mod+n exec $qs ipc call notifications toggle
+bindsym $mod+Shift+s exec $qs ipc call bar toggle
+bindsym $mod+s exec $qs ipc call settings toggle
+bindsym $mod+u exec $qs ipc call popup toggle updates
 
 ### Actions ###################################################################
 
