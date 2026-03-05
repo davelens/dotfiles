@@ -169,8 +169,9 @@ Scope {
   // Find all focusable items in the current content
   function findFocusables(item, result) {
     if (!item) return
-    // Only include items that have showFocusRing property (our custom focusable components)
     if (item.showFocusRing !== undefined) {
+      result.push(item)
+    } else if (item.activeFocusOnTab === true) {
       result.push(item)
     }
     // Recurse into children

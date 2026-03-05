@@ -46,10 +46,13 @@ PanelWindow {
   property var focusables: []
   property int focusIndex: -1
 
-  // Recursively find visible, enabled items with showFocusRing
+  // Recursively find visible, enabled focusable items
   function findFocusables(item, result) {
     if (!item || !item.visible) return
-    if (item.showFocusRing !== undefined && item.enabled !== false) {
+    if (item.enabled === false) return
+    if (item.showFocusRing !== undefined) {
+      result.push(item)
+    } else if (item.activeFocusOnTab === true) {
       result.push(item)
     }
     if (item.children) {
