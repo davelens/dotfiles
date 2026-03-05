@@ -29,21 +29,22 @@ DialogOverlay {
       model: GeneralSettings.profiles
 
       Row {
+        id: rowItem
+        required property var modelData
+        required property int index
         width: parent.width
         spacing: 0
 
         // Profile row (focusable)
         Rectangle {
           id: profileRow
-          required property var modelData
-          required property int index
 
           width: parent.width - (deleteBtn.visible ? deleteBtn.width : 0)
           height: 44
           radius: 6
           activeFocusOnTab: true
           color: {
-            if (modelData.dir === GeneralSettings.activeProfile) return Colors.surface0
+            if (rowItem.modelData.dir === GeneralSettings.activeProfile) return Colors.surface0
             if (activeFocus || profileHover.containsMouse) return Colors.surface0
             return "transparent"
           }
@@ -73,13 +74,13 @@ DialogOverlay {
               color: Colors.blue
               font.pixelSize: 14
               font.family: "Symbols Nerd Font"
-              visible: profileRow.modelData.dir === GeneralSettings.activeProfile
+              visible: rowItem.modelData.dir === GeneralSettings.activeProfile
             }
 
             Text {
               anchors.verticalCenter: parent.verticalCenter
-              text: profileRow.modelData.name
-              color: profileRow.modelData.dir === GeneralSettings.activeProfile ? Colors.text : Colors.subtext0
+              text: rowItem.modelData.name
+              color: rowItem.modelData.dir === GeneralSettings.activeProfile ? Colors.text : Colors.subtext0
               font.pixelSize: 14
             }
           }
@@ -90,20 +91,20 @@ DialogOverlay {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: {
-              if (profileRow.modelData.dir !== GeneralSettings.activeProfile) {
-                GeneralSettings.switchProfile(profileRow.modelData.dir)
+              if (rowItem.modelData.dir !== GeneralSettings.activeProfile) {
+                GeneralSettings.switchProfile(rowItem.modelData.dir)
               }
             }
           }
 
           Keys.onReturnPressed: {
-            if (modelData.dir !== GeneralSettings.activeProfile) {
-              GeneralSettings.switchProfile(modelData.dir)
+            if (rowItem.modelData.dir !== GeneralSettings.activeProfile) {
+              GeneralSettings.switchProfile(rowItem.modelData.dir)
             }
           }
           Keys.onSpacePressed: {
-            if (modelData.dir !== GeneralSettings.activeProfile) {
-              GeneralSettings.switchProfile(modelData.dir)
+            if (rowItem.modelData.dir !== GeneralSettings.activeProfile) {
+              GeneralSettings.switchProfile(rowItem.modelData.dir)
             }
           }
         }
@@ -113,7 +114,7 @@ DialogOverlay {
           id: deleteBtn
           width: visible ? 44 : 0
           height: 44
-          visible: profileRow.index > 0 && profileRow.modelData.dir !== GeneralSettings.activeProfile
+          visible: rowItem.index > 0 && rowItem.modelData.dir !== GeneralSettings.activeProfile
           activeFocusOnTab: visible
 
           // Focus ring
@@ -130,15 +131,15 @@ DialogOverlay {
 
           Text {
             anchors.centerIn: parent
-            text: switcher.confirmDeleteDir === profileRow.modelData.dir ? "?" : "󰩺"
+            text: switcher.confirmDeleteDir === rowItem.modelData.dir ? "?" : "󰩺"
             color: {
-              if (switcher.confirmDeleteDir === profileRow.modelData.dir) return Colors.red
+              if (switcher.confirmDeleteDir === rowItem.modelData.dir) return Colors.red
               if (deleteBtn.activeFocus || deleteHover.containsMouse) return Colors.red
               return Colors.overlay0
             }
-            font.pixelSize: switcher.confirmDeleteDir === profileRow.modelData.dir ? 16 : 14
-            font.family: switcher.confirmDeleteDir === profileRow.modelData.dir ? undefined : "Symbols Nerd Font"
-            font.bold: switcher.confirmDeleteDir === profileRow.modelData.dir
+            font.pixelSize: switcher.confirmDeleteDir === rowItem.modelData.dir ? 16 : 14
+            font.family: switcher.confirmDeleteDir === rowItem.modelData.dir ? undefined : "Symbols Nerd Font"
+            font.bold: switcher.confirmDeleteDir === rowItem.modelData.dir
           }
 
           MouseArea {
@@ -147,11 +148,11 @@ DialogOverlay {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: {
-              if (switcher.confirmDeleteDir === profileRow.modelData.dir) {
-                GeneralSettings.deleteProfile(profileRow.modelData.dir)
+              if (switcher.confirmDeleteDir === rowItem.modelData.dir) {
+                GeneralSettings.deleteProfile(rowItem.modelData.dir)
                 switcher.confirmDeleteDir = ""
               } else {
-                switcher.confirmDeleteDir = profileRow.modelData.dir
+                switcher.confirmDeleteDir = rowItem.modelData.dir
                 confirmTimer.restart()
               }
             }

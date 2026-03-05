@@ -172,6 +172,7 @@ Scope {
 
   // Reference to current content loader
   property var currentContentLoader: null
+  property var overlayLoaderRef: null
 
   // Find all focusable items in the current content
   function findFocusables(item, result) {
@@ -196,8 +197,8 @@ Scope {
   // Refresh the list of focusable items
   function refreshFocusables() {
     contentFocusables = []
-    if (root.activeOverlay !== "" && overlayLoader.item) {
-      findFocusables(overlayLoader.item, contentFocusables)
+    if (root.activeOverlay !== "" && overlayLoaderRef && overlayLoaderRef.item) {
+      findFocusables(overlayLoaderRef.item, contentFocusables)
     } else if (currentContentLoader && currentContentLoader.item) {
       findFocusables(currentContentLoader.item, contentFocusables)
     }
@@ -786,6 +787,7 @@ Scope {
 
           Loader {
             id: overlayLoader
+            Component.onCompleted: root.overlayLoaderRef = overlayLoader
             anchors.centerIn: parent
             width: parent.width * 0.5
             height: parent.height * 0.5
