@@ -35,6 +35,51 @@ ScrollView {
       font.bold: true
     }
 
+    // Detection
+    TitleText {
+      text: settingsRoot.highlightText("Detection", settingsRoot.searchQuery)
+      textFormat: Text.RichText
+    }
+
+    Rectangle {
+      width: parent.width
+      height: detectionColumn.height + 24
+      radius: 8
+      color: Colors.surface0
+
+      Column {
+        id: detectionColumn
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 12
+        spacing: 12
+
+        HelpText {
+          width: parent.width
+          text: "Automatically show only workspaces that currently exist in the compositor. When disabled, a fixed number of workspace slots are shown."
+          wrapMode: Text.WordWrap
+        }
+
+        Row {
+          spacing: 12
+
+          SwitchToggle {
+            anchors.verticalCenter: parent.verticalCenter
+            checked: WorkspacesManager.autoDetect
+            onClicked: WorkspacesManager.setAutoDetect(!WorkspacesManager.autoDetect)
+          }
+
+          Text {
+            anchors.verticalCenter: parent.verticalCenter
+            text: "Detect active workspaces"
+            color: Colors.text
+            font.pixelSize: 14
+          }
+        }
+      }
+    }
+
     // Display mode
     TitleText {
       text: settingsRoot.highlightText("Display Mode", settingsRoot.searchQuery)
@@ -78,6 +123,7 @@ ScrollView {
     TitleText {
       text: settingsRoot.highlightText("Workspace Count", settingsRoot.searchQuery)
       textFormat: Text.RichText
+      opacity: WorkspacesManager.autoDetect ? 0.4 : 1.0
     }
 
     Rectangle {
@@ -85,6 +131,7 @@ ScrollView {
       height: countColumn.height + 24
       radius: 8
       color: Colors.surface0
+      opacity: WorkspacesManager.autoDetect ? 0.4 : 1.0
 
       Column {
         id: countColumn
@@ -96,7 +143,9 @@ ScrollView {
 
         HelpText {
           width: parent.width
-          text: "Number of workspace slots shown in the bar."
+          text: WorkspacesManager.autoDetect
+            ? "Workspace count is determined automatically by the compositor."
+            : "Number of workspace slots shown in the bar."
           wrapMode: Text.WordWrap
         }
 
@@ -115,7 +164,8 @@ ScrollView {
             from: 1
             to: 10
             value: WorkspacesManager.count
-            editable: true
+            editable: !WorkspacesManager.autoDetect
+            enabled: !WorkspacesManager.autoDetect
             width: 80
 
             onValueModified: {

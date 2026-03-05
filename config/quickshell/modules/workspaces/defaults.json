@@ -1,4 +1,5 @@
 {
+  "autoDetect": false,
   "displayMode": "icons",
   "count": 5,
   "icons": {

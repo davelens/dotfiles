@@ -9,6 +9,7 @@ Singleton {
   id: manager
 
   // Persisted settings
+  property bool autoDetect: false
   property string displayMode: "icons"
   property int count: 5
   property var icons: ({})
@@ -47,12 +48,18 @@ Singleton {
 
     try {
       var config = JSON.parse(text)
+      autoDetect = config.autoDetect || false
       displayMode = config.displayMode || "icons"
       count = config.count || 5
       icons = config.icons || {}
     } catch (e) {
       console.error("[WorkspacesManager] Failed to parse config:", e)
     }
+  }
+
+  function setAutoDetect(enabled) {
+    autoDetect = enabled
+    saveConfig()
   }
 
   function setDisplayMode(mode) {
@@ -74,6 +81,7 @@ Singleton {
 
   function saveConfig() {
     var config = {
+      autoDetect: autoDetect,
       displayMode: displayMode,
       count: count,
       icons: icons

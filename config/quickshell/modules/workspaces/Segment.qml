@@ -8,11 +8,20 @@ Row {
   anchors.verticalCenter: parent.verticalCenter
   spacing: 2
 
-  // Build model array from configured count
+  // Build model array: auto-detect reads from compositor, manual uses fixed count
   readonly property var workspaceModel: {
-    var arr = []
-    for (var i = 1; i <= WorkspacesManager.count; i++) arr.push(String(i))
-    return arr
+    if (WorkspacesManager.autoDetect) {
+      var wsValues = I3.workspaces.values
+      var arr = []
+      for (var i = 0; i < wsValues.length; i++) arr.push(wsValues[i])
+      arr.sort(function(a, b) { return a.number - b.number })
+      var names = []
+      for (var j = 0; j < arr.length; j++) names.push(arr[j].name)
+      return names
+    }
+    var fixed = []
+    for (var k = 1; k <= WorkspacesManager.count; k++) fixed.push(String(k))
+    return fixed
   }
 
   Repeater {
