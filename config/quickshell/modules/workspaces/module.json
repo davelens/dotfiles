@@ -4,6 +4,7 @@
   "icon": "󰍹",
   "order": 100,
   "keywords": "workspace desktop virtual switch",
+  "skipBarFocus": true,
   "components": {
     "segment": "Segment.qml"
   }

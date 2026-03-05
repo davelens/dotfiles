@@ -74,75 +74,104 @@ Scope {
       // Modules that use PanelWindow popups (derived from ModuleRegistry)
       property var popupModules: ModuleRegistry.ready ? ModuleRegistry.getPopupModuleIds() : []
 
-      // Bar focus mode state
-      // Index -1 = center section, 0+ = right section items
+      // Bar focus mode state (unified index across left, center, right sections)
       property bool barFocusActive: false
       property int barFocusIndex: 0
+
+      // Enabled items per section
+      property var leftEnabledItems: StatusbarManager.leftItems.filter(function(i) { return i.enabled })
+      property var centerEnabledItems: StatusbarManager.centerItems.filter(function(i) { return i.enabled })
       property var rightEnabledItems: StatusbarManager.rightItems.filter(function(i) { return i.enabled })
 
-      // Check if center section has a visible, focusable item
-      property bool centerFocusAvailable: {
-        var item = centerSection.itemAt(0)
-        return item && item.visible && item.hasOwnProperty("barFocused")
-      }
+      // Unified index offsets: [left 0..L-1] [center L..L+C-1] [right L+C..L+C+R-1]
+      property int centerOffset: leftEnabledItems.length
+      property int rightOffset: leftEnabledItems.length + centerEnabledItems.length
+      property int totalFocusItems: leftEnabledItems.length + centerEnabledItems.length + rightEnabledItems.length
 
       // Modules to skip during keyboard navigation (declared via skipBarFocus in module.json)
       property var skipModules: ModuleRegistry.ready ? ModuleRegistry.getSkipBarFocusIds() : []
 
-      function isFocusable(index) {
-        // Center section (index -1)
-        if (index === -1) return centerFocusAvailable
-        if (index < 0 || index >= rightEnabledItems.length) return false
-        if (skipModules.indexOf(rightEnabledItems[index].id) !== -1) return false
-        var delegate = rightRepeater.itemAt(index)
-        return delegate && delegate.visible
+      // Resolve a unified index to its section and local index
+      function resolveSection(idx) {
+        if (idx < centerOffset) return { section: "left", localIndex: idx, items: leftEnabledItems }
+        if (idx < rightOffset) return { section: "center", localIndex: idx - centerOffset, items: centerEnabledItems }
+        return { section: "right", localIndex: idx - rightOffset, items: rightEnabledItems }
+      }
+
+      function isFocusable(idx) {
+        if (idx < 0 || idx >= totalFocusItems) return false
+        var resolved = resolveSection(idx)
+        if (skipModules.indexOf(resolved.items[resolved.localIndex].id) !== -1) return false
+
+        // Check delegate visibility
+        if (resolved.section === "left") {
+          var d = leftSection.repeater.itemAt(resolved.localIndex)
+          return d && d.visible
+        } else if (resolved.section === "center") {
+          var d = centerSection.repeater.itemAt(resolved.localIndex)
+          return d && d.visible
+        } else {
+          var d = rightRepeater.itemAt(resolved.localIndex)
+          return d && d.visible
+        }
       }
 
       function nextFocusIndex(from) {
-        // From center section, go to first right item
-        if (from === -1) {
-          for (var i = 0; i < rightEnabledItems.length; i++) {
-            if (isFocusable(i)) return i
-          }
-          return -1
-        }
-        // From right items, continue through right
-        for (var i = from + 1; i < rightEnabledItems.length; i++) {
+        for (var i = from + 1; i < totalFocusItems; i++) {
           if (isFocusable(i)) return i
         }
         return from
       }
 
       function prevFocusIndex(from) {
-        // From right items, go backwards to find previous focusable
         for (var i = from - 1; i >= 0; i--) {
           if (isFocusable(i)) return i
         }
-        // No more focusable right items, try center section
-        if (centerFocusAvailable) return -1
-        // Can't go further left
         return from
       }
 
+      // Start at center, fall back to right, then left
       function firstFocusIndex() {
-        for (var i = 0; i < rightEnabledItems.length; i++) {
+        for (var i = centerOffset; i < rightOffset; i++) {
+          if (isFocusable(i)) return i
+        }
+        for (var i = rightOffset; i < totalFocusItems; i++) {
+          if (isFocusable(i)) return i
+        }
+        for (var i = 0; i < centerOffset; i++) {
           if (isFocusable(i)) return i
         }
         return 0
       }
 
-      // Clear barFocused on the previously focused segment when index changes
+      // Update barFocused property on segments and focusLocalIndex on BarSections
       onBarFocusIndexChanged: updateSegmentFocus()
       onBarFocusActiveChanged: updateSegmentFocus()
 
       function updateSegmentFocus() {
-        // Update center section focus (index -1)
-        var centerItem = centerSection.itemAt(0)
-        if (centerItem && centerItem.hasOwnProperty("barFocused")) {
-          centerItem.barFocused = barFocusActive && barFocusIndex === -1
+        // Compute local focus indices for each BarSection
+        var resolved = barFocusActive ? resolveSection(barFocusIndex) : null
+
+        leftSection.focusLocalIndex = (resolved && resolved.section === "left") ? resolved.localIndex : -1
+        centerSection.focusLocalIndex = (resolved && resolved.section === "center") ? resolved.localIndex : -1
+
+        // Update barFocused on left section segments
+        for (var i = 0; i < leftEnabledItems.length; i++) {
+          var item = leftSection.itemAt(i)
+          if (item && item.hasOwnProperty("barFocused")) {
+            item.barFocused = barFocusActive && barFocusIndex === i
+          }
         }
 
-        // Update right section focus
+        // Update barFocused on center section segments
+        for (var i = 0; i < centerEnabledItems.length; i++) {
+          var item = centerSection.itemAt(i)
+          if (item && item.hasOwnProperty("barFocused")) {
+            item.barFocused = barFocusActive && barFocusIndex === (i + centerOffset)
+          }
+        }
+
+        // Update barFocused on right section segments
         for (var i = 0; i < rightEnabledItems.length; i++) {
           var delegate = rightRepeater.itemAt(i)
           if (!delegate) continue
@@ -151,10 +180,8 @@ Scope {
           var loader = wrapper.children[0]
           if (!loader || !loader.item) continue
 
-          // Only set barFocused on segments (they have the property, buttons don't)
-          if (!ModuleRegistry.isButton(rightEnabledItems[i].id)
-              && loader.item.hasOwnProperty("barFocused")) {
-            loader.item.barFocused = barFocusActive && i === barFocusIndex
+          if (loader.item.hasOwnProperty("barFocused")) {
+            loader.item.barFocused = barFocusActive && barFocusIndex === (i + rightOffset)
           }
         }
       }
@@ -206,29 +233,29 @@ Scope {
 
       // Activate the currently focused bar item
       function activateFocusedItem() {
-        // Handle center section activation (index -1)
-        if (barFocusIndex === -1) {
-          var centerItem = centerSection.itemAt(0)
-          if (centerItem && centerItem.activate) {
-            centerItem.activate()
-          }
-          return
+        if (barFocusIndex < 0 || barFocusIndex >= totalFocusItems) return
+
+        var resolved = resolveSection(barFocusIndex)
+        var moduleId = resolved.items[resolved.localIndex].id
+
+        // Get the delegate and wrapper for anchor computation
+        var wrapper = null
+        if (resolved.section === "left") {
+          var d = leftSection.repeater.itemAt(resolved.localIndex)
+          if (d) wrapper = d.children[1]
+        } else if (resolved.section === "center") {
+          var d = centerSection.repeater.itemAt(resolved.localIndex)
+          if (d) wrapper = d.children[1]
+        } else {
+          var d = rightRepeater.itemAt(resolved.localIndex)
+          if (d) wrapper = d.children[1]
         }
 
-        if (barFocusIndex < 0 || barFocusIndex >= rightEnabledItems.length) return
-
-        var item = rightEnabledItems[barFocusIndex]
-        var moduleId = item.id
-
-        // Compute anchor position from the Loader
-        var delegate = rightRepeater.itemAt(barFocusIndex)
+        // Compute anchor position for popups
         var anchorRight = panel.width - 10
-        if (delegate) {
-          var wrapper = delegate.children[1]
-          if (wrapper) {
-            var mapped = wrapper.mapToItem(null, wrapper.width, 0)
-            anchorRight = mapped.x
-          }
+        if (wrapper) {
+          var mapped = wrapper.mapToItem(null, wrapper.width, 0)
+          anchorRight = mapped.x
         }
 
         if (panel.popupModules.indexOf(moduleId) !== -1) {
@@ -238,8 +265,8 @@ Scope {
 
         // Buttons without popups: trigger their clicked signal directly
         if (ModuleRegistry.isButton(moduleId)) {
-          if (delegate) {
-            var loader = delegate.children[1].children[0]
+          if (wrapper) {
+            var loader = wrapper.children[0]
             if (loader && loader.item && loader.item.clicked) {
               loader.item.clicked()
             }
@@ -247,8 +274,7 @@ Scope {
           return
         }
 
-        // Segments with tooltips: toggle barFocused (tooltip shows reactively)
-        // Space on a segment that already shows its tooltip just dismisses focus mode
+        // Segments: dismiss focus mode (tooltip already showing via barFocused)
         barFocusActive = false
       }
 
@@ -279,6 +305,7 @@ Scope {
 
       // Left section
       BarSection {
+        id: leftSection
         anchors.left: parent.left
         anchors.leftMargin: StatusbarManager.barMargins.left
         spacing: StatusbarManager.sectionSpacing.left
@@ -341,7 +368,7 @@ Scope {
                 color: "transparent"
                 border.width: 2
                 border.color: Colors.peach
-                visible: panel.barFocusActive && index === panel.barFocusIndex
+                visible: panel.barFocusActive && (index + panel.rightOffset) === panel.barFocusIndex
               }
             }
 

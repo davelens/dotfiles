@@ -10,6 +10,9 @@ Row {
   required property var items
   required property var buildProps
 
+  // Keyboard focus: which local delegate index has the focus ring (-1 = none)
+  property int focusLocalIndex: -1
+
   // Expose repeater for external access (e.g., focus management)
   property alias repeater: sectionRepeater
 
@@ -18,8 +21,10 @@ Row {
     if (index < 0 || index >= sectionRepeater.count) return null
     var delegate = sectionRepeater.itemAt(index)
     if (!delegate) return null
-    // delegate children: [marginLeft Item, Loader, marginRight Item]
-    var loader = delegate.children[1]
+    // delegate children: [marginLeft Item, wrapper Item, marginRight Item]
+    var wrapper = delegate.children[1]
+    if (!wrapper) return null
+    var loader = wrapper.children[0]
     return loader && loader.item ? loader.item : null
   }
 
@@ -31,19 +36,40 @@ Row {
 
     Row {
       required property var modelData
+      required property int index
+      visible: !sectionLoader.item || (sectionLoader.item.showInBar !== undefined ? sectionLoader.item.showInBar : true)
       anchors.verticalCenter: parent.verticalCenter
       spacing: 0
 
       Item { width: modelData.marginLeft; height: 1 }
 
-      Loader {
+      // Wrapper for Loader + focus highlight ring
+      Item {
+        width: sectionLoader.width
+        height: sectionLoader.height
         anchors.verticalCenter: parent.verticalCenter
 
-        Component.onCompleted: {
-          var relPath = ModuleRegistry.getBarComponentRelPath(modelData.id)
-          if (relPath) {
-            setSource("../../" + relPath, section.buildProps(modelData.id))
+        Loader {
+          id: sectionLoader
+          anchors.verticalCenter: parent.verticalCenter
+
+          Component.onCompleted: {
+            var relPath = ModuleRegistry.getBarComponentRelPath(modelData.id)
+            if (relPath) {
+              setSource("../../" + relPath, section.buildProps(modelData.id))
+            }
           }
+        }
+
+        // Focus highlight ring
+        Rectangle {
+          anchors.fill: parent
+          anchors.margins: -3
+          radius: 6
+          color: "transparent"
+          border.width: 2
+          border.color: Colors.peach
+          visible: section.focusLocalIndex === index
         }
       }
 
