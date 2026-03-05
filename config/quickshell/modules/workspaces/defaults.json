@@ -1,6 +1,6 @@
 {
-  "autoDetect": false,
-  "displayMode": "icons",
+  "autoDetect": true,
+  "displayMode": "numbers",
   "count": 5,
   "icons": {
     "1": "",

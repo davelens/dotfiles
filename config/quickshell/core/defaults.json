@@ -7,7 +7,12 @@
     "notifications",
     "recording"
   ],
-  "activeProfile": "",
-  "activeProfileName": "",
-  "profiles": []
+  "activeProfile": "defaults",
+  "activeProfileName": "Default",
+  "profiles": [
+    {
+      "name": "Default",
+      "dir": "defaults"
+    }
+  ]
 }
