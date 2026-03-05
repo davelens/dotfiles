@@ -138,6 +138,32 @@ Singleton {
     id: saveProc
   }
 
+  // Profile IPC: qs ipc call profile {list,current,enable}
+  IpcHandler {
+    target: "profile"
+
+    function list(): string {
+      var names = []
+      for (var i = 0; i < settings.profiles.length; i++) {
+        names.push(settings.profiles[i].name)
+      }
+      return names.join("\n")
+    }
+
+    function current(): string {
+      return settings.activeProfileName
+    }
+
+    function enable(displayName: string): void {
+      for (var i = 0; i < settings.profiles.length; i++) {
+        if (settings.profiles[i].name === displayName) {
+          settings.switchProfile(settings.profiles[i].dir)
+          return
+        }
+      }
+    }
+  }
+
   // Create a new profile by copying the current profile's state
   function createProfile(displayName) {
     var dir = sanitizeName(displayName)
