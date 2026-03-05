@@ -9,10 +9,28 @@ Singleton {
   id: manager
 
   // Persisted settings
+  property string backend: "auto"
   property bool autoDetect: false
   property string displayMode: "icons"
   property int count: 5
   property var icons: ({})
+
+  // Resolved backend name ("sway" or "niri") based on auto-detection or explicit setting
+  readonly property string resolvedBackend: {
+    if (backend !== "auto") return backend
+    return detectedCompositor
+  }
+
+  // Auto-detect compositor from environment
+  readonly property string detectedCompositor: {
+    var swaysock = Quickshell.env("SWAYSOCK")
+    if (swaysock) return "sway"
+    var i3sock = Quickshell.env("I3SOCK")
+    if (i3sock) return "sway"
+    var niriSocket = Quickshell.env("NIRI_SOCKET")
+    if (niriSocket) return "niri"
+    return "sway"
+  }
 
   // File-based persistence
   readonly property string statePath: DataManager.getStatePath("workspaces")
@@ -48,6 +66,7 @@ Singleton {
 
     try {
       var config = JSON.parse(text)
+      backend = config.backend || "auto"
       autoDetect = config.autoDetect || false
       displayMode = config.displayMode || "icons"
       count = config.count || 5
@@ -55,6 +74,11 @@ Singleton {
     } catch (e) {
       console.error("[WorkspacesManager] Failed to parse config:", e)
     }
+  }
+
+  function setBackend(value) {
+    backend = value
+    saveConfig()
   }
 
   function setAutoDetect(enabled) {
@@ -81,6 +105,7 @@ Singleton {
 
   function saveConfig() {
     var config = {
+      backend: backend,
       autoDetect: autoDetect,
       displayMode: displayMode,
       count: count,

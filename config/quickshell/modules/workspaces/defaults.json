@@ -1,4 +1,5 @@
 {
+  "backend": "auto",
   "autoDetect": true,
   "displayMode": "numbers",
   "count": 5,

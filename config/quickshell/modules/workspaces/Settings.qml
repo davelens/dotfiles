@@ -35,6 +35,49 @@ ScrollView {
       font.bold: true
     }
 
+    // Backend
+    TitleText {
+      text: settingsRoot.highlightText("Backend", settingsRoot.searchQuery)
+      textFormat: Text.RichText
+    }
+
+    Rectangle {
+      width: parent.width
+      height: backendColumn.height + 24
+      radius: 8
+      color: Colors.surface0
+
+      Column {
+        id: backendColumn
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 12
+        spacing: 12
+
+        HelpText {
+          width: parent.width
+          text: "Which compositor backend to use for reading workspace state. Auto-detect checks for Sway/i3 first, then Niri."
+            + (WorkspacesManager.backend === "auto"
+              ? " Currently detected: <b>" + WorkspacesManager.resolvedBackend + "</b>."
+              : "")
+          textFormat: Text.RichText
+          wrapMode: Text.WordWrap
+        }
+
+        Dropdown {
+          width: parent.width
+          headerLabel: "Compositor"
+          items: ["auto", "sway", "niri"]
+          currentItem: WorkspacesManager.backend
+          onItemSelected: function(item) {
+            WorkspacesManager.setBackend(item)
+            expanded = false
+          }
+        }
+      }
+    }
+
     // Detection
     TitleText {
       text: settingsRoot.highlightText("Detection", settingsRoot.searchQuery)

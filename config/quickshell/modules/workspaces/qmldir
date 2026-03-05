@@ -1,1 +1,3 @@
 singleton WorkspacesManager 1.0 Manager.qml
+I3Backend 1.0 I3Backend.qml
+NiriBackend 1.0 NiriBackend.qml

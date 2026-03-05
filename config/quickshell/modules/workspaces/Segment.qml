@@ -1,5 +1,4 @@
 import QtQuick
-import Quickshell.I3
 import "../.."
 
 Row {
@@ -8,15 +7,24 @@ Row {
   anchors.verticalCenter: parent.verticalCenter
   spacing: 2
 
-  // Build model array: auto-detect reads from compositor, manual uses fixed count
+  // Backend adapter loaded based on resolved compositor
+  Loader {
+    id: backendLoader
+    visible: false
+    source: WorkspacesManager.resolvedBackend === "niri"
+      ? "NiriBackend.qml"
+      : "I3Backend.qml"
+  }
+
+  readonly property var backend: backendLoader.item
+
+  // Build model array: auto-detect reads from backend, manual uses fixed count
   readonly property var workspaceModel: {
+    if (!backend) return []
     if (WorkspacesManager.autoDetect) {
-      var wsValues = I3.workspaces.values
-      var arr = []
-      for (var i = 0; i < wsValues.length; i++) arr.push(wsValues[i])
-      arr.sort(function(a, b) { return a.number - b.number })
+      var ws = backend.workspaces
       var names = []
-      for (var j = 0; j < arr.length; j++) names.push(arr[j].name)
+      for (var i = 0; i < ws.length; i++) names.push(ws[i].name)
       return names
     }
     var fixed = []
@@ -31,18 +39,14 @@ Row {
       id: workspaceRect
       required property string modelData
 
+      // Depend on backend.workspaces to re-evaluate when workspace state changes
       property var workspace: {
-        var _ = I3.workspaces.values.length
-        return I3.findWorkspaceByName(modelData)
+        if (!backend) return null
+        var _ = backend.workspaces
+        return backend.findWorkspace(modelData)
       }
       property bool isFocused: workspace ? workspace.focused : false
-      property bool hasWindows: {
-        if (!workspace) return false
-        var ipc = workspace.lastIpcObject
-        if (!ipc || !ipc.representation) return false
-        var match = ipc.representation.match(/\[(.+)\]/)
-        return match !== null && match[1].length > 0
-      }
+      property bool hasWindows: workspace ? workspace.hasWindows : false
 
       width: 28
       height: 24
@@ -54,7 +58,7 @@ Row {
         text: {
           var mode = WorkspacesManager.displayMode
           if (mode === "dots") {
-            return (workspaceRect.isFocused || workspaceRect.hasWindows) ? "" : ""
+            return (workspaceRect.isFocused || workspaceRect.hasWindows) ? "\uf4c3" : "\uf4c2"
           }
           if (mode === "numbers") return workspaceRect.modelData
           // icons mode
@@ -70,7 +74,9 @@ Row {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: I3.dispatch("workspace " + workspaceRect.modelData)
+        onClicked: {
+          if (backend) backend.focusWorkspace(workspaceRect.modelData)
+        }
       }
     }
   }
