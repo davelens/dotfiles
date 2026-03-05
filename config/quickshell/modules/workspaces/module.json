@@ -1,7 +1,7 @@
 {
   "id": "workspaces",
   "name": "Workspaces",
-  "icon": "󰍹",
+  "icon": "󰨇",
   "order": 100,
   "keywords": "workspace desktop virtual switch icons dots numbers count",
   "skipBarFocus": true,
