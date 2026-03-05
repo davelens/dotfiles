@@ -188,6 +188,7 @@ DialogOverlay {
       }
     }
   }
+  }
 
   // Reset to defaults button
   FocusButton {
