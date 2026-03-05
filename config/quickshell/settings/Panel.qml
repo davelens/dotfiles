@@ -315,9 +315,13 @@ Scope {
             }
             event.accepted = true
           }
-          // Q or Escape: close settings
+          // Q or Escape: close overlay first, then settings
           else if (event.key === Qt.Key_Escape || event.key === Qt.Key_Q) {
-            root.visible = false
+            if (root.activeOverlay !== "") {
+              root.activeOverlay = ""
+            } else {
+              root.visible = false
+            }
             event.accepted = true
           }
           // Ctrl+L: enter content mode (focus panel content)
