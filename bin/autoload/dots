@@ -20,6 +20,7 @@ usage() {
   echo "               Use --dotbot to also update dotbot to latest master."
   echo "  setup        Sets up additional dotfile repositories."
   echo "               Use --dotsys <arch|macos|wsl> to setup davelens/dotsys."
+  echo "               Use --dotshell to setup davelens/dotshell."
   echo "               Use --dotvim to setup davelens/dotvim."
   echo
   echo "Options:"
@@ -68,6 +69,7 @@ update_dotbot() {
 
 setup() {
   local dotsys=""
+  local dotshell=0
   local dotvim=0
 
   # Parse flags
@@ -91,6 +93,10 @@ setup() {
       esac
       shift
       ;;
+    --dotshell)
+      dotshell=1
+      shift
+      ;;
     --dotvim)
       dotvim=1
       shift
@@ -102,8 +108,8 @@ setup() {
     esac
   done
 
-  if [[ -z "$dotsys" && $dotvim -eq 0 ]]; then
-    $print_status -i error "At least one of --dotsys or --dotvim is required"
+  if [[ -z "$dotsys" && $dotshell -eq 0 && $dotvim -eq 0 ]]; then
+    $print_status -i error "At least one of --dotsys, --dotshell, or --dotvim is required"
     exit 1
   fi
 
@@ -133,6 +139,35 @@ setup() {
         $print_status -i ok "$dotsys setup complete"
       else
         $print_status -i error "$dotsys setup failed"
+        error_occurred=1
+      fi
+    fi
+  fi
+
+  # Setup dotshell configs if requested
+  if [[ $dotshell -eq 1 ]]; then
+    local dotshell_path="$REPO_NAMESPACE/davelens/dotshell"
+
+    $print_status -nc "Cloning dotshell repository ..."
+
+    if [[ -d "$dotshell_path" ]]; then
+      $print_status -i ok "dotshell already exists at $dotshell_path"
+    else
+      mkdir -p "$(dirname "$dotshell_path")"
+      if git clone https://github.com/davelens/dotshell.git "$dotshell_path" &>>"$log_file"; then
+        $print_status -i ok "dotshell cloned successfully"
+      else
+        $print_status -i error "Failed to clone dotshell"
+        error_occurred=1
+      fi
+    fi
+
+    if [[ $error_occurred -eq 0 ]]; then
+      $print_status -nc "Running dotshell init script ..."
+      if "$dotshell_path/setup/init.sh" &>>"$log_file"; then
+        $print_status -i ok "dotshell setup complete"
+      else
+        $print_status -i error "dotshell setup failed"
         error_occurred=1
       fi
     fi

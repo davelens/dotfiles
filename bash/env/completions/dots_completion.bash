@@ -7,7 +7,7 @@ _dots_completions() {
   prev="${COMP_WORDS[COMP_CWORD - 1]}"
 
   # Define available commands
-  opts="logs update install"
+  opts="logs update install setup"
 
   # Provide command completions if we're on the first argument
   if [[ ${COMP_CWORD} -eq 1 ]]; then
@@ -15,18 +15,38 @@ _dots_completions() {
     return 0
   fi
 
-  # Handle specific subcommands (e.g., file paths for 'logs')
-  case "$prev" in
+  # Determine the subcommand (first argument after "dots")
+  local subcmd="${COMP_WORDS[1]}"
+
+  case "$subcmd" in
   logs)
-    # Suggest log file path as completion
     COMPREPLY=($(compgen -f "$DOTFILES_STATE_HOME/dots.log"))
     ;;
   update)
     COMPREPLY=($(compgen -W "--dotbot" -- "$cur"))
     ;;
   install)
-    # No additional arguments for "install"
     COMPREPLY=()
+    ;;
+  setup)
+    if [[ "$prev" == "--dotsys" ]]; then
+      COMPREPLY=($(compgen -W "arch macos wsl" -- "$cur"))
+    else
+      # Collect already-used flags to avoid suggesting them again
+      local used_flags=""
+      for word in "${COMP_WORDS[@]}"; do
+        case "$word" in
+        --dotsys | --dotshell | --dotvim) used_flags+="$word " ;;
+        esac
+      done
+
+      local available=""
+      for flag in --dotsys --dotshell --dotvim; do
+        [[ "$used_flags" != *"$flag"* ]] && available+="$flag "
+      done
+
+      COMPREPLY=($(compgen -W "$available" -- "$cur"))
+    fi
     ;;
   *)
     COMPREPLY=()
