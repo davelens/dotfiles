@@ -21,7 +21,7 @@ Singleton {
     repeat: true
     triggeredOnStart: true
     onTriggered: {
-      pollProc.command = ["sh", "-c", "head -1 /proc/stat && grep -E '^(MemTotal|MemAvailable):' /proc/meminfo"]
+      pollProc.command = ["sh", "-c", "head -1 /proc/stat && grep -E '^(MemTotal|MemFree|Buffers|Cached|SReclaimable):' /proc/meminfo"]
       pollProc.running = true
     }
   }
@@ -35,7 +35,7 @@ Singleton {
     }
     onExited: {
       var lines = pollProc.output.trim().split("\n")
-      if (lines.length < 3) return
+      if (lines.length < 6) return
 
       // Parse CPU from /proc/stat (first line: cpu user nice system idle iowait irq softirq steal)
       var cpuParts = lines[0].split(/\s+/)
@@ -65,15 +65,21 @@ Singleton {
 
       // Parse memory from /proc/meminfo
       var memTotal = 0
-      var memAvailable = 0
+      var memFree = 0
+      var buffers = 0
+      var cached = 0
+      var sreclaimable = 0
       for (var i = 1; i < lines.length; i++) {
         var parts = lines[i].split(/\s+/)
         if (parts[0] === "MemTotal:") memTotal = parseInt(parts[1]) || 0
-        else if (parts[0] === "MemAvailable:") memAvailable = parseInt(parts[1]) || 0
+        else if (parts[0] === "MemFree:") memFree = parseInt(parts[1]) || 0
+        else if (parts[0] === "Buffers:") buffers = parseInt(parts[1]) || 0
+        else if (parts[0] === "Cached:") cached = parseInt(parts[1]) || 0
+        else if (parts[0] === "SReclaimable:") sreclaimable = parseInt(parts[1]) || 0
       }
 
       if (memTotal > 0) {
-        var used = memTotal - memAvailable
+        var used = memTotal - memFree - buffers - cached - sreclaimable
         manager.ramPercent = Math.round(used / memTotal * 100)
         manager.ramUsedGb = parseFloat((used / 1048576).toFixed(1))
         manager.ramTotalGb = parseFloat((memTotal / 1048576).toFixed(1))
