@@ -23,10 +23,33 @@ DialogOverlay {
   // Profile list
   Column {
     width: parent.width
-    spacing: 4
+    spacing: 8
 
-    Repeater {
-      model: GeneralSettings.profiles
+    Text {
+      text: "Available profiles"
+      color: Colors.subtext1
+      font.pixelSize: 12
+      font.bold: true
+    }
+
+    Rectangle {
+      width: parent.width
+      height: profileListColumn.height + 12
+      radius: 8
+      color: Colors.mantle
+      border.width: 1
+      border.color: Colors.surface2
+
+      Column {
+        id: profileListColumn
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 6
+        spacing: 4
+
+        Repeater {
+          model: GeneralSettings.profiles
 
       Row {
         id: rowItem
@@ -160,6 +183,7 @@ DialogOverlay {
 
           Keys.onReturnPressed: deleteHover.clicked(null)
           Keys.onSpacePressed: deleteHover.clicked(null)
+        }
         }
       }
     }
