@@ -5,6 +5,7 @@
 
 SSH_CONFIG="$HOME"/.ssh/config
 INCLUDE_LINE="Include ${DOTFILES_REPO_HOME/$HOME/\~}/config/ssh/*"
+[[ -f $SSH_CONFIG ]] && exit
 
 # Ensure ~/.ssh directory exists with proper permissions
 if [ ! -d "$HOME"/.ssh/sockets ]; then
