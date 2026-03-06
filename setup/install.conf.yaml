@@ -14,6 +14,7 @@
     - $XDG_DATA_HOME/irb
     - $XDG_DATA_HOME/mycli
     - $XDG_STATE_HOME/bash # HISTFILE is set to live in this target folder.
+    - $XDG_CONFIG_HOME/systemd/user
     - $GNUPGHOME
 
 # NOTE: "XDG dir support instead of $HOME" is currently a patch waiting to be
@@ -34,10 +35,16 @@
       glob: true
       path: config/*
       exclude: [
-        config/macos,
         config/bash_profile,
-        config/bashrc
+        config/bashrc,
+        config/macos,
+        config/systemd
       ]
+
+- link:
+    $XDG_CONFIG_HOME/systemd/user/sway-session.target:
+      if: '[ "$(bin/autoload/os)" = "arch" ]'
+      path: config/systemd/user/sway-session.target
 
 - link:
     $XDG_CONFIG_HOME/:
