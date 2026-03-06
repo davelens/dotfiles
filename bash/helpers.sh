@@ -169,6 +169,28 @@ yellow() {
   colorize 3 "$1"
 }
 
+# The Rust lolcat emits a color reset (\033[39m) at the start of every line
+# after the first. Neovim's terminal buffer renders these as extra blank lines.
+# This wrapper strips those leading resets from lolcat's output. The -F flag
+# forces color output since piping through sed disables TTY detection.
+lolcat() {
+  local args=() file=""
+
+  for arg in "$@"; do
+    if [[ -f "$arg" ]]; then
+      file="$arg"
+    else
+      args+=("$arg")
+    fi
+  done
+
+  if [[ -n "$file" ]]; then
+    command lolcat -F "${args[@]}" "$file" | sed $'s/^\033\\[39m//'
+  else
+    command lolcat -F "${args[@]}" | sed $'s/^\033\\[39m//'
+  fi
+}
+
 # This is an easy way to expose my bash scripting utilities without having to
 # prefix the full utility command.
 export cursor="utility bash cursor"
