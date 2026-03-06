@@ -4,6 +4,8 @@
 
 [[ "$OSTYPE" == darwin* ]] && return
 
+"$DOTFILES_REPO_HOME"/setup/ssh/init.sh
+
 if ! command -v keychain >/dev/null; then
   echo "${CUN}NOTE${CNUN}: Installing \`keychain\` will bootstrap + keep alive your SSH agent across sessions."
   echo "      Right now you still need to manually \`eval \$(ssh-agent); ssh-add\` in each term session."
