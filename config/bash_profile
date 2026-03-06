@@ -45,5 +45,4 @@ esac
 # User-specific settings and/or overrides + setting prompt as the final step.
 ###############################################################################
 [ -f "$DOTFILES_CONFIG_HOME/env" ] && source "$DOTFILES_CONFIG_HOME/env"
-[ -d "$NIX_STATE_DIR" ] && source "$NIX_STATE_DIR/etc/profile.d/nix.sh"
 source "$DOTFILES_REPO_HOME/bash/prompt.sh"

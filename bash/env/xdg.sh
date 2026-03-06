@@ -75,8 +75,3 @@ export XCOMPOSECACHE="$XDG_CACHE_HOME/X11/xcompose"
 export XCOMPOSEFILE="$XDG_CONFIG_HOME/X11/xcompose"
 export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
 export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
-
-# NixOS-specific XDG settings
-if [ -d "$XDG_STATE_HOME/nix" ]; then
-  export NIX_STATE_DIR="$XDG_STATE_HOME/nix/profiles/profile"
-fi
