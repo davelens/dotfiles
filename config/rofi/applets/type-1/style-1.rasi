@@ -64,9 +64,10 @@ inputbar {
 textbox-prompt-colon {
     enabled:                     true;
     expand:                      false;
-    str:                         "";
-    padding:                     10px 13px;
-    border-radius:               0px;
+    str:                         "󰋫";
+    font:                        "Hack Nerd Font Mono 16";
+    padding:                     10px 14px;
+    border-radius:               10px;
     background-color:            @urgent;
     text-color:                  @background;
 }
@@ -76,6 +77,7 @@ prompt {
     border-radius:               0px;
     background-color:            @active;
     text-color:                  @background;
+    vertical-align:              0.5;
 }
 
 /*****----- Message -----*****/
