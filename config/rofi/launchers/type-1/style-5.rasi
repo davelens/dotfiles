@@ -11,10 +11,10 @@
 configuration {
   modi:                       "drun,run,filebrowser,window";
   show-icons:                 true;
-  display-drun:               "";
-  display-run:                "";
-  display-filebrowser:        "";
-  display-window:             "";
+  display-drun:               "󰀻";
+  display-run:                "󰆍";
+  display-filebrowser:        "󰉋";
+  display-window:             "󰝒";
   drun-display-format:        "{name}";
   window-format:              "{w} · {c} · {t}";
 }
@@ -114,9 +114,10 @@ prompt {
 }
 textbox-prompt-colon {
     enabled:                     true;
+    font:                        "Hack Nerd Font Mono 12";
     padding:                     5px 0px;
     expand:                      false;
-    str:                         "";
+    str:                         "󰍉";
     background-color:            inherit;
     text-color:                  inherit;
 }
@@ -261,6 +262,7 @@ mode-switcher{
     text-color:                  @foreground-colour;
 }
 button {
+    font:                        "Hack Nerd Font Mono 12";
     padding:                     5px 10px;
     border:                      0px solid;
     border-radius:               10px;
