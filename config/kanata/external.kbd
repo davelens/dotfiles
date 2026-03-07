@@ -13,11 +13,33 @@
 (defsrc
   caps a s d f j k l ;
   1 2 3 4 5 6 7 8 9
-  grv nubs
+  grv nubs ralt spc
 )
 
-(deflayer base
+;; Default layer: homerow mods enabled
+(deflayer homerow
   @escctrl @a @s @d @f @j @k @l @;
   @1 @2 @3 @4 @5 @6 @7 @8 @9
-  nubs grv
+  nubs grv @ra-hm spc
+)
+
+;; Plain keys, no tap-hold. Toggle back with right alt + space.
+(deflayer base
+  @escctrl a s d f j k l ;
+  1 2 3 4 5 6 7 8 9
+  nubs grv @ra-base spc
+)
+
+;; Transient layer: right alt held from homerow, space toggles off
+(deflayer ralt-held-hm
+  _ _ _ _ _ _ _ _ _
+  _ _ _ _ _ _ _ _ _
+  _ _ _ @hmoff
+)
+
+;; Transient layer: right alt held from base, space toggles on
+(deflayer ralt-held-base
+  _ _ _ _ _ _ _ _ _
+  _ _ _ _ _ _ _ _ _
+  _ _ _ @hmon
 )

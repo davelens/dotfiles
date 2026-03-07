@@ -1,5 +1,5 @@
 ;; Shared kanata configuration
-;; Home row mods with caps->ctrl/esc
+;; Home row mods with caps->ctrl/esc, toggleable via right alt + space
 
 (defvar
   tap-time 150
@@ -29,4 +29,12 @@
   7 (tap-hold $tap-time $hold-time 7 A-7)
   8 (tap-hold $tap-time $hold-time 8 A-8)
   9 (tap-hold $tap-time $hold-time 9 A-9)
+
+  ;; Right alt: tap sends ralt, hold activates transient toggle layer
+  ra-hm (tap-hold 200 200 ralt (layer-while-held ralt-held-hm))
+  ra-base (tap-hold 200 200 ralt (layer-while-held ralt-held-base))
+
+  ;; Layer switches triggered by space in the transient layers
+  hmoff (layer-switch base)
+  hmon (layer-switch homerow)
 )
