@@ -5,20 +5,20 @@
     `modules-{left,center,right}.css`.
   */
 
-	"custom/left_div_hl":      { "format": "", "tooltip": false },
-	"custom/left_inv_hl":      { "format": "", "tooltip": false },
-	"custom/right_div_hl":     { "format": "", "tooltip": false },
-	"custom/right_inv_hl":     { "format": "", "tooltip": false },
+  "custom/left_div_hl":      { "format": "", "tooltip": false },
+  "custom/left_inv_hl":      { "format": "", "tooltip": false },
+  "custom/right_div_hl":     { "format": "", "tooltip": false },
+  "custom/right_inv_hl":     { "format": "", "tooltip": false },
 
-	"custom/left_div_bl":      { "format": "", "tooltip": false },
-	"custom/left_inv_bl":      { "format": "", "tooltip": false },
-	"custom/right_div_bl":     { "format": "", "tooltip": false },
-	"custom/right_inv_bl":     { "format": "", "tooltip": false },
+  "custom/left_div_bl":      { "format": "", "tooltip": false },
+  "custom/left_inv_bl":      { "format": "", "tooltip": false },
+  "custom/right_div_bl":     { "format": "", "tooltip": false },
+  "custom/right_inv_bl":     { "format": "", "tooltip": false },
 
-	"custom/left_div_accent":  { "format": "", "tooltip": false },
-	"custom/left_inv_accent":  { "format": "", "tooltip": false },
-	"custom/right_div_accent": { "format": "", "tooltip": false },
-	"custom/right_inv_accent": { "format": "", "tooltip": false },
+  "custom/left_div_accent":  { "format": "", "tooltip": false },
+  "custom/left_inv_accent":  { "format": "", "tooltip": false },
+  "custom/right_div_accent": { "format": "", "tooltip": false },
+  "custom/right_inv_accent": { "format": "", "tooltip": false },
 
-	"custom/left_inv_inverse": { "format": "", "tooltip": false },
+  "custom/left_inv_inverse": { "format": "", "tooltip": false },
 }

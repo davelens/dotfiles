@@ -12,7 +12,7 @@
   insteadOf = git://
 
 [color]
-	status = always
+  status = always
 
 [alias]
   aa = add --all
@@ -95,10 +95,10 @@
   diffFilter = delta --color-only
 
 [credential "https://github.com"]
-	helper =
-	helper = !gh auth git-credential
+  helper =
+  helper = !gh auth git-credential
 
 [credential "https://gist.github.com"]
-	helper =
-	helper = !gh auth git-credential
+  helper =
+  helper = !gh auth git-credential
 

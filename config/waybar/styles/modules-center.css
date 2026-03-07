@@ -1,13 +1,13 @@
 #cpu {
-	background-color: @highlight;
+  background-color: @highlight;
 }
 
 #custom-distro {
-	padding: 0 10px 0 5px;
-	background-color: @accent;
-	color: @main-bg;
+  padding: 0 10px 0 5px;
+  background-color: @accent;
+  color: @main-bg;
 }
 
 #memory {
-	background-color: @highlight;
+  background-color: @highlight;
 }

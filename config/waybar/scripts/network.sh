@@ -3,9 +3,9 @@
 # Scan, select, and connect to Wi-Fi networks
 #
 # Requirements:
-# 	nmcli (networkmanager)
-# 	fzf
-# 	notify-send (libnotify)
+#   nmcli (networkmanager)
+#   fzf
+#   notify-send (libnotify)
 #
 # Author:  Jesse Mirabel <sejjymvm@gmail.com>
 # Date:    August 11, 2025

@@ -1,22 +1,22 @@
 * {
-	font-family: "CommitMono Nerd Font", "Hack Nerd Font";
-	font-weight: bold;
-	font-size: 16px;
+  font-family: "CommitMono Nerd Font", "Hack Nerd Font";
+  font-weight: bold;
+  font-size: 16px;
 }
 
 #custom-user,
 #window label,
 #mpris,
 tooltip label {
-	font-weight: normal;
+  font-weight: normal;
 }
 
 #custom-distro {
-	font-size: 20px;
+  font-size: 20px;
 }
 
 #custom-power_menu {
-	font-size: 18px;
+  font-size: 18px;
 }
 
 #custom-left_div_hl,
@@ -32,5 +32,5 @@ tooltip label {
 #custom-right_div_accent,
 #custom-right_inv_accent,
 #custom-left_inv_inverse {
-	font-size: 22px;
+  font-size: 22px;
 }

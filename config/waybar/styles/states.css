@@ -5,7 +5,7 @@
 #custom-system_update:hover,
 #mpris:hover,
 #pulseaudio:hover {
-	color: @hover-fg;
+  color: @hover-fg;
 }
 
 /* inactive state */
@@ -13,22 +13,22 @@
 #mpris.paused,
 #pulseaudio.output.muted,
 #pulseaudio.input.source-muted {
-	color: @hover-fg;
+  color: @hover-fg;
 }
 
 #memory.warning,
 #cpu.warning,
 #battery.warning {
-	color: @warning;
+  color: @warning;
 }
 
 #temperature.critical,
 #memory.critical,
 #cpu.critical,
 #battery.critical {
-	color: @critical;
+  color: @critical;
 }
 
 #battery.charging {
-	color: @charging;
+  color: @charging;
 }

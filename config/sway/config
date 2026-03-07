@@ -311,6 +311,10 @@ bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
 #     }
 # }
 
+# Propagate environment variables to D-Bus and systemd --user so that
+# Flatpak apps (e.g. Steam) and systemd user services can access them.
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
+
 # Start sway-session.target for systemd user services that depend on Sway
 exec systemctl --user start sway-session.target
 

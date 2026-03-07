@@ -1,27 +1,27 @@
 #custom-power_menu {
   padding: 0 10px;
   background-color: @backlight;
-	color: @accent;
+  color: @accent;
 }
 #custom-power_menu:hover {
-	background-color: @selection;
+  background-color: @selection;
 }
 
 #idle_inhibitor {
-	padding-right: 6px;
+  padding-right: 6px;
 }
 
 #workspaces {
-	padding: 0 1px;
-	background-color: @backlight;
+  padding: 0 1px;
+  background-color: @backlight;
 }
 #workspaces button:hover,
 #workspaces button.active,
 #workspaces button.focused {
-	background-color: @selection;
-	border-radius: 0;
+  background-color: @selection;
+  border-radius: 0;
 }
 
 #window {
-	margin-left: 12px;
+  margin-left: 12px;
 }

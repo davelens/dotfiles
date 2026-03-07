@@ -1,6 +1,6 @@
 /* ignore GTK theme */
 * {
-	all: initial;
+  all: initial;
 }
 
 @import "current-theme.css";

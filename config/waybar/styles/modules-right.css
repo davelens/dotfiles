@@ -1,37 +1,37 @@
 #mpris {
-	padding: 0 12px;
+  padding: 0 12px;
 }
 
 #pulseaudio {
-	background-color: @backlight;
+  background-color: @backlight;
 }
 
 #backlight {
-	background-color: @backlight;
+  background-color: @backlight;
 }
 
 #network {
-	background-color: @backlight;
-	padding: 0 6px 0 4px;
+  background-color: @backlight;
+  padding: 0 6px 0 4px;
 }
 #bluetooth {
-	background-color: @backlight;
-	padding: 0 5px;
+  background-color: @backlight;
+  padding: 0 5px;
 }
 
 #temperature {
-	background-color: @highlight;
+  background-color: @highlight;
 }
 
 #battery {
-	background-color: @highlight;
+  background-color: @highlight;
 }
 
 #custom-system_update {
-	padding: 0 8px 0 2px;
+  padding: 0 8px 0 2px;
 }
 
 #clock.time {
-	padding-left: 6px;
-	padding-right: 6px;
+  padding-left: 6px;
+  padding-right: 6px;
 }

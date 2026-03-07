@@ -1,26 +1,26 @@
 {
-	"sway/workspaces": {
-		"format": "{icon}",
-		"format-icons": {
-			"1": "",
-			"2": "󰈹",
-			"3": "󰙯",
-			"4": "󰎇",
-			"5": "",
-			// "6": "6",
-			// "7":"7",
-			// "8": "8",
-			// "9": "9",
-			"default": ""
-		},
-		"persistent-workspaces": {
-			"1": [],
-			"2": [],
-			"3": [],
-			"4": [],
-			"5": []
-		},
-		"on-scroll-up": "swaymsg workspace next_on_output",
-		"on-scroll-down": "swaymsg workspace prev_on_output"
-	}
+  "sway/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+      "1": "",
+      "2": "󰈹",
+      "3": "󰙯",
+      "4": "󰎇",
+      "5": "",
+      // "6": "6",
+      // "7":"7",
+      // "8": "8",
+      // "9": "9",
+      "default": ""
+    },
+    "persistent-workspaces": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    },
+    "on-scroll-up": "swaymsg workspace next_on_output",
+    "on-scroll-down": "swaymsg workspace prev_on_output"
+  }
 }

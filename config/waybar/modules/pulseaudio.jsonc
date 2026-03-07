@@ -1,96 +1,96 @@
 {
-	"group/pulseaudio": {
-		"orientation": "horizontal",
-		"modules": [
-			"pulseaudio#output",
-			"pulseaudio#input"
-		],
-		"drawer": {
-			// "transition-duration":
-			"transition-left-to-right": false
-			// "children-class":
-			// "click-to-reveal":
-		}
-	},
+  "group/pulseaudio": {
+    "orientation": "horizontal",
+    "modules": [
+      "pulseaudio#output",
+      "pulseaudio#input"
+    ],
+    "drawer": {
+      // "transition-duration":
+      "transition-left-to-right": false
+      // "children-class":
+      // "click-to-reveal":
+    }
+  },
 
-	/*-------------------
-	    output device
-	-------------------*/
+  /*-------------------
+      output device
+  -------------------*/
 
-	"pulseaudio#output": {
-		"format": "{icon} {volume}%",
-		// "format-bluetooth":
-		"format-muted": "{icon} {volume}%",
-		// "format-source":
-		// "format-source-muted":
-		"format-icons": {
-			"default": [ "󰕿", "󰖀", "󰕾" ],
-			"default-muted": "󰝟",
-			"headphone": "󰋋",
-			"headphone-muted": "󰟎",
-			"headset": "󰋎",
-			"headset-muted": "󰋐"
-		},
-		// "rotate":
-		// "states":
-		"min-length": 7,
-		"max-length": 7,
-		// "align":
-		// "justify":
-		// "scroll-step":
-		"on-click": "~/.config/waybar/scripts/volume.sh output mute",
-		// "on-click-middle":
-		// "on-click-right":
-		// "on-update":
-		"on-scroll-up": "~/.config/waybar/scripts/volume.sh output raise",
-		"on-scroll-down": "~/.config/waybar/scripts/volume.sh output lower",
-		// "smooth-scrolling-threshold":
-		// "tooltip":
-		"tooltip-format": "<b>Output Device</b>: {desc}"
-		// "max-volume":
-		// "ignored-sinks":
-		// "reverse-scrolling":
-		// "reverse-mouse-scrolling":
-		// "menu":
-		// "menu-file":
-		// "menu-actions":
-		// "expand":
-	},
+  "pulseaudio#output": {
+    "format": "{icon} {volume}%",
+    // "format-bluetooth":
+    "format-muted": "{icon} {volume}%",
+    // "format-source":
+    // "format-source-muted":
+    "format-icons": {
+      "default": [ "󰕿", "󰖀", "󰕾" ],
+      "default-muted": "󰝟",
+      "headphone": "󰋋",
+      "headphone-muted": "󰟎",
+      "headset": "󰋎",
+      "headset-muted": "󰋐"
+    },
+    // "rotate":
+    // "states":
+    "min-length": 7,
+    "max-length": 7,
+    // "align":
+    // "justify":
+    // "scroll-step":
+    "on-click": "~/.config/waybar/scripts/volume.sh output mute",
+    // "on-click-middle":
+    // "on-click-right":
+    // "on-update":
+    "on-scroll-up": "~/.config/waybar/scripts/volume.sh output raise",
+    "on-scroll-down": "~/.config/waybar/scripts/volume.sh output lower",
+    // "smooth-scrolling-threshold":
+    // "tooltip":
+    "tooltip-format": "<b>Output Device</b>: {desc}"
+    // "max-volume":
+    // "ignored-sinks":
+    // "reverse-scrolling":
+    // "reverse-mouse-scrolling":
+    // "menu":
+    // "menu-file":
+    // "menu-actions":
+    // "expand":
+  },
 
-	/*----------------
-	    microphone
-	----------------*/
+  /*----------------
+      microphone
+  ----------------*/
 
-	"pulseaudio#input": {
-		"format": "{format_source}",
-		// "format-bluetooth":
-		// "format-muted":
-		"format-source": "󰍬 {volume}%",
-		"format-source-muted": "󰍭 {volume}%",
-		// "format-icons":
-		// "rotate":
-		// "states":
-		"min-length": 7,
-		"max-length": 7,
-		// "align":
-		// "justify":
-		// "scroll-step":
-		"on-click": "~/.config/waybar/scripts/volume.sh input mute",
-		// "on-click-middle":
-		// "on-click-right":
-		// "on-update":
-		"on-scroll-up": "~/.config/waybar/scripts/volume.sh input raise",
-		"on-scroll-down": "~/.config/waybar/scripts/volume.sh input lower",
-		// "smooth-scrolling-threshold":
-		// "tooltip":
-		"tooltip-format": "<b>Input Device</b>: {desc}"
-		// "max-volume":
-		// "ignored-sinks":
-		// "reverse-scrolling":
-		// "reverse-mouse-scrolling":
-		// "menu":
-		// "menu-file":
-		// "menu-actions":
-		// "expand":
-	}
+  "pulseaudio#input": {
+    "format": "{format_source}",
+    // "format-bluetooth":
+    // "format-muted":
+    "format-source": "󰍬 {volume}%",
+    "format-source-muted": "󰍭 {volume}%",
+    // "format-icons":
+    // "rotate":
+    // "states":
+    "min-length": 7,
+    "max-length": 7,
+    // "align":
+    // "justify":
+    // "scroll-step":
+    "on-click": "~/.config/waybar/scripts/volume.sh input mute",
+    // "on-click-middle":
+    // "on-click-right":
+    // "on-update":
+    "on-scroll-up": "~/.config/waybar/scripts/volume.sh input raise",
+    "on-scroll-down": "~/.config/waybar/scripts/volume.sh input lower",
+    // "smooth-scrolling-threshold":
+    // "tooltip":
+    "tooltip-format": "<b>Input Device</b>: {desc}"
+    // "max-volume":
+    // "ignored-sinks":
+    // "reverse-scrolling":
+    // "reverse-mouse-scrolling":
+    // "menu":
+    // "menu-file":
+    // "menu-actions":
+    // "expand":
+  }
 }
