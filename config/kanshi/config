@@ -10,8 +10,8 @@ profile home {
 }
 
 profile desktop {
-    output DP-5 enable position 0,0 scale 1.0
-    output HDMI-A-3 disable
+    output DP-3 enable position 0,0 scale 1.0
+    output HDMI-A-1 disable
     exec systemctl --user restart quickshell.service
 }
 
