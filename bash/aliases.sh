@@ -36,6 +36,7 @@ alias dotfiles='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/da
 alias dotshell='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotshell\"" --'
 alias dotsys='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotsys\"" --'
 alias dotvim='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotvim\"" --'
+alias dotsai="cd \$REPO_NAMESPACE/davelens/dotfiles.ai && opencode"
 alias notes='utility misc notes'
 
 # Generic helpers and custom commands
