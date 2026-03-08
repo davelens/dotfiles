@@ -307,6 +307,10 @@ bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
 #     }
 # }
 
+# Force sushi (GNOME file previewer) to use non-GL GTK sink.
+# The GL sink has swapped color channels on nouveau.
+exec systemctl --user set-environment SUSHI_USE_GST_GTKSINK=1
+
 # Start sway-session.target for systemd user services that depend on Sway
 exec systemctl --user start sway-session.target
 
