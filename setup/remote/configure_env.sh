@@ -8,37 +8,27 @@ ask_questions() {
 }
 
 bw_search() {
-  session="$BW_SESSION"
-  [ -z "$session" ] && session="$(bw_session)"
-  bw list items --search "$1" --session "$session"
+  bw list items --search "$1" --session "$BW_SESSION"
 }
 
-bw_session() {
-  if [ "$(bw status | jq '.status')" == '"unauthenticated"' ]; then
+bw_unlock() {
+  local status
+  status="$(bw status | jq -r '.status')"
+
+  if [ "$status" = "unauthenticated" ]; then
     echo "Bitwarden requires authentication. Please enter your master password." >&2
     BW_SESSION=$(bw login --raw </dev/tty)
-    export BW_SESSION
-  elif [ -z "$BW_SESSION" ]; then
+  elif [ "$status" = "locked" ]; then
     echo "Bitwarden vault is locked. Please enter your master password." >&2
     BW_SESSION=$(bw unlock --raw </dev/tty)
-    export BW_SESSION
   fi
 
-  echo "$BW_SESSION"
+  export BW_SESSION
 }
 
 use_bitwarden() {
-  if command -v bw >/dev/null; then
-    if [ -n "$(brew outdated bitwarden-cli)" ]; then
-      brew upgrade bitwarden-cli
-    fi
-  else
-    brew install bitwarden-cli
-  fi
-
   # Establish session once upfront
-  BW_SESSION=$(bw_session)
-  export BW_SESSION
+  bw_unlock
 
   github_data="$(bw_search "GitHub")"
   GITHUB_PERSONAL_ACCESS_TOKEN=$(echo "$github_data" | jq -r '.[].fields | map(select(.name == "Personal access token"))[0].value')
