@@ -7,5 +7,6 @@
 # which causes system hangs due to SMU firmware/driver version mismatch.
 # Games can still use dGPU via DRI_PRIME=1 (Steam does this automatically).
 # Resolve the stable PCI path to the actual cardN node (wlroots won't follow symlinks).
-export WLR_DRM_DEVICES=$(readlink -f /dev/dri/by-path/pci-0000:c4:00.0-card)
+WLR_DRM_DEVICES=$(readlink -f /dev/dri/by-path/pci-0000:c4:00.0-card)
+export WLR_DRM_DEVICES
 exec sway "$@"
