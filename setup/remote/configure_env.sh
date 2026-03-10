@@ -27,6 +27,8 @@ bw_unlock() {
 }
 
 use_bitwarden() {
+  export NODE_OPTIONS="--no-deprecation"
+
   # Establish session once upfront
   bw_unlock
 
