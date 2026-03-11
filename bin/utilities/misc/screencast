@@ -3,11 +3,15 @@
 # TODO: Make this accept some params to control fps, codec, input device, and output file.
 
 output=~/Videos/screencasts/"$(date +%Y-%m-%d_%H-%M-%S)".mp4
+mkdir -p "$(dirname "$output")"
+
+# Capture desktop audio via the default sink's monitor source.
+audio_monitor="$(pactl get-default-sink).monitor"
 
 # gpu-screen-recorder is incompatible with nouveau (requires CUDA/NVENC).
 # Fall back to wf-recorder when an NVIDIA GPU is present.
 if lspci | grep -qi 'vga.*nvidia\|3d.*nvidia'; then
-  wf-recorder -r 60 -a -f "$output"
+  wf-recorder -r 60 --audio="$audio_monitor" -f "$output"
 else
   gpu-screen-recorder -w screen -f 60 -c mp4 -a default_input -o "$output"
 fi
