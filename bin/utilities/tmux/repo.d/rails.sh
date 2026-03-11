@@ -6,7 +6,6 @@
 # shellcheck disable=SC2034
 
 # TODO: Imagemagick is necessary before building rmagick
-# TODO: Bootstrap database if it doesn't exist yet.
 
 FRAMEWORK_NAME="Rails"
 FRAMEWORK_PRIORITY=10
@@ -44,7 +43,7 @@ bootstrap() {
 
   # Fallback: basic setup
   pushd "$path" >/dev/null || return 1
-  [[ -f "Gemfile" ]] && bundle install --quiet
+  [[ -f "Gemfile" ]] && mise exec -- bundle install --quiet
   popd >/dev/null || return 1
 }
 

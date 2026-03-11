@@ -179,19 +179,81 @@ install_bundler() {
   # error in install_ruby above.
   if ! mise exec ruby@"$required_ruby" -- gem list -i bundler -v "$required_bundler" >/dev/null; then
     if [[ ! $required_bundler =~ ^[a-zA-Z]+$ ]]; then
-      if ! gem install bundler -v "$required_bundler"; then
+      if ! mise exec ruby@"$required_ruby" -- gem install bundler -v "$required_bundler"; then
         echo "[$me] ERROR: Bundler installation failed, please review:"
-        fail '\n\tcd %s && gem install bundler -v %s' "$project_root" "$required_bundler"
+        fail '\n\tcd %s && mise exec ruby@%s -- gem install bundler -v %s' "$project_root" "$required_ruby" "$required_bundler"
       fi
     fi
   fi
 }
 
 install_gems() {
+  local required_ruby
+  required_ruby=$(grep -E '^ruby ' "$project_root/.tool-versions" | awk '{print $2}')
+
   echo "[$me] Installing gems"
-  if ! cd "$project_root" || ! bundle install --quiet || ! cd - >/dev/null; then
+  if ! mise exec ruby@"$required_ruby" -- bundle install --quiet --gemfile="$project_root/Gemfile"; then
     echo "[$me] ERROR: bundle install failed, please review:"
-    fail '\n\tcd %s && bundle install --quiet && cd - >/dev/null' "$project_root"
+    fail '\n\tmise exec ruby@%s -- bundle install --quiet --gemfile=%s/Gemfile' "$required_ruby" "$project_root"
+  fi
+}
+
+setup_database() {
+  local adapter db_name required_ruby db_file
+  db_file="$project_root/config/database.yml"
+
+  [[ ! -f "$db_file" ]] && return 0
+
+  required_ruby=$(grep -E '^ruby ' "$project_root/.tool-versions" | awk '{print $2}')
+
+  # Parse adapter and database name from database.yml using Ruby (handles ERB + YAML anchors)
+  adapter=$(ruby -r yaml -r erb -e "
+    config = YAML.load(ERB.new(File.read('$db_file')).result, aliases: true)
+    puts config.dig('development', 'adapter') || ''
+  " 2>/dev/null) || true
+
+  db_name=$(ruby -r yaml -r erb -e "
+    config = YAML.load(ERB.new(File.read('$db_file')).result, aliases: true)
+    puts config.dig('development', 'database') || ''
+  " 2>/dev/null) || true
+
+  [[ -z "$adapter" || -z "$db_name" ]] && return 0
+
+  # Check if the database already exists
+  local db_exists=false
+  case "$adapter" in
+  mysql2 | mysql)
+    if mysql -e "USE \`$db_name\`" 2>/dev/null; then
+      db_exists=true
+    fi
+    ;;
+  postgresql | postgres)
+    if psql -lqt 2>/dev/null | cut -d \| -f 1 | grep -qw "$db_name"; then
+      db_exists=true
+    fi
+    ;;
+  *)
+    echo "[$me] WARNING: Unknown database adapter '$adapter', skipping database setup."
+    return 0
+    ;;
+  esac
+
+  if $db_exists; then
+    echo "[$me] Database '$db_name' already exists, skipping setup."
+    return 0
+  fi
+
+  echo "[$me] Database '$db_name' does not exist."
+
+  # Prefer project-local bin/import-db if available
+  if [[ -x "$project_root/bin/import-db" ]]; then
+    echo "[$me] Running bin/import-db..."
+    pushd "$project_root" >/dev/null || return 1
+    mise exec ruby@"$required_ruby" -- "$project_root/bin/import-db"
+    popd >/dev/null || return 1
+  else
+    echo "[$me] Running utility rails db-import..."
+    utility rails db-import --app "$project_root"
   fi
 }
 
@@ -215,6 +277,7 @@ main() {
   install_ruby
   install_bundler
   install_gems
+  setup_database
 
   echo "[$me] All done!"
 }
