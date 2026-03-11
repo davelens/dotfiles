@@ -106,8 +106,8 @@ echo "4. $(underline "CONFIGURE ENVIRONMENT")"
 echo
 
 if main "$@"; then
-  report_step "✓ $(fgreen "Environment configured")\n\n"
-  report_step "$(fgreen "Remember to use $(black "dots update")$(fgreen " once in a while.")")\n\n"
+  report_step "✓ $(fgreen "Environment configured")\n"
+  report_step "$(fgreen "Remember to use $(black "dots update")$(fgreen " once in a while.")")\n"
   report_step "$(fgreen "You can now $(black "source ~/.bashrc")")\n"
   show_progress
 else
