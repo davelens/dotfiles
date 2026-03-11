@@ -54,13 +54,12 @@ main() {
     "$XDG_CONFIG_HOME/rofi/powermenu/type-1/powermenu.sh"
   else
     if [ $dmenu -eq 1 ]; then
-      cmd="rofi -dmenu show"
+      cmd=(rofi -dmenu show)
     else
-      cmd="rofi -show $mode"
+      cmd=(rofi -show "$mode" -run-command "uwsm app -- {cmd}")
     fi
 
-    # shellcheck disable=SC2086
-    $cmd -theme $XDG_CONFIG_HOME/rofi/launchers/${launcher}/${theme}.rasi "${extra_args[@]}"
+    "${cmd[@]}" -theme "$XDG_CONFIG_HOME/rofi/launchers/${launcher}/${theme}.rasi" "${extra_args[@]}"
   fi
 }
 

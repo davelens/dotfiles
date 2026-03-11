@@ -1,0 +1,14 @@
+# Graphical session environment (sourced by uwsm at session start).
+# Changes require a logout/login to take effect.
+
+# Make mise-managed binaries available to graphical session services.
+# Uses --shims mode (PATH-only, no hooks) since this runs once at login.
+# Interactive shells get full activation via bash_profile.
+export MISE_DATA_DIR="${MISE_DATA_DIR:-$HOME/.local/share/mise}"
+if [ -d "$MISE_DATA_DIR" ] && command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash --shims)"
+fi
+
+# Force sushi (GNOME file previewer) to use non-GL GTK sink.
+# Workaround for swapped color channels on nouveau.
+export SUSHI_USE_GST_GTKSINK=1

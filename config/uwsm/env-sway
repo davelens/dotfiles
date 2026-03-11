@@ -1,12 +1,8 @@
-#!/usr/bin/env bash
-# Wrapper script to start Sway with appropriate GPU settings.
-# Games can still use the discrete GPU via DRI_PRIME=1.
-# Steam should autodetect hybrid setups.
+# Sway-specific session environment (sourced by uwsm for sway sessions only).
+# Changes require a logout/login to take effect.
 
 # Always use iGPU for compositing to prevent dGPU suspend/resume cycling
 # which causes system hangs due to SMU firmware/driver version mismatch.
 # Games can still use dGPU via DRI_PRIME=1 (Steam does this automatically).
 # Resolve the stable PCI path to the actual cardN node (wlroots won't follow symlinks).
-WLR_DRM_DEVICES=$(readlink -f /dev/dri/by-path/pci-0000:c4:00.0-card)
-export WLR_DRM_DEVICES
-exec sway "$@"
+export WLR_DRM_DEVICES=$(readlink -f /dev/dri/by-path/pci-0000:c4:00.0-card)

@@ -42,11 +42,6 @@
       ]
 
 - link:
-    $XDG_CONFIG_HOME/systemd/user/sway-session.target:
-      if: '[ "$(bin/autoload/os)" = "arch" ]'
-      path: config/systemd/user/sway-session.target
-
-- link:
     $XDG_CONFIG_HOME/:
       if: '[ "$(bin/autoload/os)" = "macos" ]'
       glob: true

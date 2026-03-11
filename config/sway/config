@@ -85,7 +85,7 @@ for_window [app_id="luakit" title=".*Extension.*"] floating enable
 ### Displays and window output ################################################
 
 # Display configuration is handled by kanshi (~/.config/kanshi/config).
-# kanshi runs as a systemd service (kanshi.service) under sway-session.target.
+# kanshi runs as a systemd service (kanshi.service) under graphical-session.target.
 output * bg ~/Pictures/wallpapers/dune-catppuccin.jpg fill
 
 # Borders & gaps
@@ -139,7 +139,7 @@ input type:pointer {
 
 ### Launchers #################################################################
 
-bindsym $mod+Return exec $term
+bindsym $mod+Return exec uwsm app -- $term
 bindsym $mod+Space exec $launcher
 # bindsym $mod+u exec $browser
 bindsym $mod+c exec cliphist list | ~/.local/bin/rofi-start --dmenu --theme style-5-no-indent | cliphist decode | wl-copy
@@ -170,7 +170,7 @@ bindsym $mod+Shift+q exec \
   -t warning \
   -m 'You pressed the exit shortcut. Do you really want to exit sway? \
       This will end your Wayland session.' \
-  -B 'Yes, exit sway' 'swaymsg exit'
+  -B 'Yes, exit sway' 'uwsm stop'
 
 # Focus windows
 bindsym $mod+$left focus left
@@ -307,12 +307,7 @@ bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
 #     }
 # }
 
-# Force sushi (GNOME file previewer) to use non-GL GTK sink.
-# The GL sink has swapped color channels on nouveau.
-exec systemctl --user set-environment SUSHI_USE_GST_GTKSINK=1
-
-# Start sway-session.target for systemd user services that depend on Sway
-exec systemctl --user start sway-session.target
-
-# I'm on Arch, so this includes additional systemd configuration. Don't remove.
-include /etc/sway/config.d/*
+# Signal to uwsm that Sway is ready and propagate essential session variables
+# (WAYLAND_DISPLAY, SWAYSOCK, I3SOCK, XCURSOR_SIZE, XCURSOR_THEME) to systemd
+# and D-Bus activation environments. The sway plugin handles the var list.
+exec exec uwsm finalize
