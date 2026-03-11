@@ -24,3 +24,15 @@ while IFS= read -r line; do
     echo "File not found: $expanded_path"
   fi
 done <<<"$files"
+
+# Restore dotbot backups of .bashrc and .bash_profile if they exist.
+# Dotbot appends a timestamp to the original file when backup: true is set.
+for target in "$HOME/.bashrc" "$HOME/.bash_profile"; do
+  # Find the most recent backup (highest timestamp suffix)
+  backup=$(ls -1 "${target}".* 2>/dev/null | sort -r | head -n 1)
+
+  if [ -n "$backup" ]; then
+    echo "Restoring backup: $backup -> $target"
+    mv "$backup" "$target"
+  fi
+done

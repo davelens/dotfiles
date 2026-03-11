@@ -67,9 +67,31 @@ write_gitconfig_env_file() {
   echo "$content" >>"$env_file"
 }
 
+try_bitwarden() {
+  local bw_failed=0
+
+  # Temporarily swap the interrupt handler so ctrl+c during bitwarden
+  # just marks it as failed instead of tearing down the entire installer.
+  trap 'bw_failed=1' SIGINT
+
+  if ! use_bitwarden; then
+    bw_failed=1
+  fi
+
+  # Restore the original interrupt handler
+  trap 'interrupt_handler' SIGINT
+
+  if [ "$bw_failed" = "1" ]; then
+    echo
+    echo -e "$(fyellow "Bitwarden failed. Falling back to manual input.")"
+    echo
+    ask_questions
+  fi
+}
+
 main() {
   if command -v bw >/dev/null; then
-    use_bitwarden
+    try_bitwarden
   else
     ask_questions
   fi
@@ -86,18 +108,12 @@ main() {
   write_gitconfig_env_file
 }
 
-echo
 echo "4. $(underline "CONFIGURE ENVIRONMENT")"
 echo
 
-save_cursor
-
-main "$@"
-
-# shellcheck disable=SC2181
-if [ $? -eq 0 ]; then
-  reset_prompt
-  echo "✓ $(fgreen "Environment configured! Remember to use $(black "dots update")")$(fgreen " once in a while")"
+if main "$@"; then
+  report_step "✓ $(fgreen "Environment configured! Remember to use $(black "dots update")")$(fgreen " once in a while")"
+  show_progress
 else
   fail "x $(fred "Something went wrong during step 4.")"
 fi

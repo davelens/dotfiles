@@ -32,11 +32,8 @@ download() {
   fi
 }
 
-echo
 echo "2. $(underline "CLONING REPOSITORY")"
 echo
-
-save_cursor
 
 if [ -d "$DOTFILES_REPO_HOME" ]; then
   if [ ! -d "$DOTFILES_REPO_HOME/.git" ]; then
@@ -64,8 +61,8 @@ fi
 
 # shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
-  reset_prompt
-  echo "✓ $(fgreen "Dotfiles are in place at $(black "$(repo_home)")")"
+  report_step "✓ $(fgreen "Dotfiles are in place at $(black "$(repo_home)")")"
+  show_progress
 else
   fail "x $(fred "Something went wrong during step 2.")"
 fi

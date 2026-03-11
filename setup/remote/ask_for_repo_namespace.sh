@@ -42,7 +42,8 @@ validate_path() {
     else
       if [ -n "$(ls -A "$path")" ]; then
         if [ -f "$path/.git/config" ]; then
-          repo="$(git -C "$path" origin)"
+          repo="$(git -C "$path" config --get remote.origin.url 2>/dev/null |
+            sed -E 's#(git@|https://)github.com[:/](.+)(\.git)?#\2#')"
 
           if [ "$repo" == "$REPO_URI" ]; then
             echo -e "✓ $(fgreen "That folder already contains my dotfiles, so I'll update them instead.")\n"
@@ -62,6 +63,9 @@ validate_path() {
 ask_for_repo_namespace() {
   reset_prompt
 
+  echo
+  echo "1. $(underline "REPO DOWNLOAD LOCATION")"
+  echo
   echo "I keep my GitHub repositories in $(black "${REPO_NAMESPACE/$HOME/\~}")."
   echo "It has subfolders by GitHub username, which contain subfolders per repository."
   echo
@@ -93,12 +97,7 @@ ask_for_repo_namespace() {
   DOTFILES_REPO_HOME="$choice"
 }
 
-reset_prompt
-
-echo
-echo "1. $(underline "REPO DOWNLOAD LOCATION")"
-echo
-
+clear
 save_cursor
 
 ask_for_repo_namespace "$DEFAULT_DOTFILES_HOME"
@@ -108,8 +107,8 @@ unset DEFAULT_REPO_NAMESPACE
 
 # shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
-  reset_prompt
-  echo "✓ $(fgreen "Repository will live in $(black "$(repo_home)")")"
+  report_step "✓ $(fgreen "Repository will live in $(black "$(repo_home)")")"
+  show_progress
 else
   fail "x $(fred "Something went wrong during step 1.")"
 fi

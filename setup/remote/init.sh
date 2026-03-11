@@ -64,9 +64,38 @@ get_cursor_pos() {
 }
 
 interrupt_handler() {
+  # Temporarily disable the trap so teardown prompts aren't interrupted
+  trap '' SIGINT
+
+  echo
+  teardown
   cleanup
-  reset_prompt
-  fail "Aborted."
+  echo -e "\nAborted."
+  exit 1
+}
+
+teardown() {
+  if [ -n "$PROGRESS_REPORT" ]; then
+    echo
+    echo "Progress so far:"
+    echo -e "$PROGRESS_REPORT"
+    echo
+  fi
+
+  if [ "$DOTBOT_RAN" = "1" ] && [ -n "$DOTFILES_REPO_HOME" ]; then
+    echo "Undoing symlinks created by dotbot..."
+    "$DOTFILES_REPO_HOME/setup/uninstall"
+    echo
+  fi
+
+  if [ -n "$DOTFILES_REPO_HOME" ] && [ -d "$DOTFILES_REPO_HOME/.git" ]; then
+    read -n 1 -r -p "Do you want to remove the cloned repo at $(repo_home)? [y/n]: " yn </dev/tty
+    echo
+    case $yn in
+    [Yy]*) rm -rf "$DOTFILES_REPO_HOME" && echo "Removed $(repo_home)." ;;
+    *) echo "Kept $(repo_home)." ;;
+    esac
+  fi
 }
 
 load_remote_file() {
@@ -96,6 +125,9 @@ save_cursor() {
 
 ###############################################################################
 
+PROGRESS_REPORT=""
+DOTBOT_RAN=0
+
 black() { echo "$BGK$FGW$1$CNONE"; }
 blue() { echo "$BGB$FGK$1$CNONE"; }
 cleanup() { rm -rf "$INSTALLER_TMP_HOME"; }
@@ -107,6 +139,19 @@ green() { echo "$BGG$FGK$1$CNONE"; }
 repo_home() { echo "~${DOTFILES_REPO_HOME/$HOME/}"; }
 reset_prompt() { restore_cursor && clear_down; }
 underline() { echo "$CUN$1$CNONE"; }
+
+report_step() {
+  if [ -n "$PROGRESS_REPORT" ]; then
+    PROGRESS_REPORT="$PROGRESS_REPORT\n"
+  fi
+  PROGRESS_REPORT="${PROGRESS_REPORT}$1"
+}
+
+show_progress() {
+  clear
+  echo -e "$PROGRESS_REPORT"
+  echo
+}
 
 ###############################################################################
 
@@ -136,7 +181,7 @@ preface() {
 
   echo
   echo "You can stop the installation at any time by pressing $(black Ctrl+c)."
-  echo "You might need to run the uninstall script if you do."
+  echo "Any changes made so far will be rolled back if you do."
   echo
   echo "You can review what the remote install does on GitHub:"
   echo
