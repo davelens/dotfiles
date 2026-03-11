@@ -112,11 +112,9 @@ echo "4. $(underline "CONFIGURE ENVIRONMENT")"
 echo
 
 if main "$@"; then
-  report_step "✓ $(fgreen "Environment configured")"
-  echo
-  report_step "$(fgreen "Remember to use $(black "dots update")$(fgreen " once in a while.")")"
-  echo
-  report_step "$(fgreen "You can now $(black "source ~/.bashrc")")"
+  report_step "✓ $(fgreen "Environment configured")\n\n"
+  report_step "$(fgreen "Remember to use $(black "dots update")$(fgreen " once in a while.")")\n\n"
+  report_step "$(fgreen "You can now $(black "source ~/.bashrc")")\n"
   show_progress
 else
   fail "x $(fred "Something went wrong during step 4.")"

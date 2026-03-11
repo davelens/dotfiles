@@ -149,6 +149,8 @@ report_step() {
 
 show_progress() {
   clear
+  underline "INSTALLING https://github.com/$REPO_URI"
+  echo
   echo -e "$PROGRESS_REPORT"
   echo
 }
