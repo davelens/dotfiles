@@ -12,7 +12,7 @@ As for context: I've been (mostly) a backend developer for web apps in my career
 
 ## Installation
 ```bash
-bash <(https://davelens.be/setup-dots)
+bash <(curl -fsSL https://davelens.be/setup-dots)
 ```
 
 ### A note on my user-specific configuration and Bitwarden
