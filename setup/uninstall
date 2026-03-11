@@ -36,3 +36,8 @@ for target in "$HOME/.bashrc" "$HOME/.bash_profile"; do
     mv "$backup" "$target"
   fi
 done
+
+# Remove any lingering state and config files.
+rm -rf "$XDG_CONFIG_HOME/dots" \
+  "$XDG_DATA_HOME/dots" \
+  "$XDG_STATE_HOME/dots"
