@@ -19,6 +19,7 @@ usage() {
   echo "  update       Updates dotfiles to the most recent version."
   echo "               Use --dotbot to also update dotbot to latest master."
   echo "  setup        Sets up additional dotfile repositories."
+  echo "               Use --arch to setup dotsys (arch), dotvim, and dotshell."
   echo "               Use --dotsys <arch|macos|wsl> to setup davelens/dotsys."
   echo "               Use --dotshell to setup davelens/dotshell."
   echo "               Use --dotvim to setup davelens/dotvim."
@@ -84,6 +85,12 @@ setup() {
   # Parse flags
   while [[ $# -gt 0 ]]; do
     case "$1" in
+    --arch)
+      dotsys="arch"
+      dotvim=1
+      dotshell=1
+      shift
+      ;;
     --dotsys)
       shift
       if [[ $# -eq 0 ]]; then

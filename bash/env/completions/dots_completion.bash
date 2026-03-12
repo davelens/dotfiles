@@ -36,14 +36,22 @@ _dots_completions() {
       local used_flags=""
       for word in "${COMP_WORDS[@]}"; do
         case "$word" in
-        --dotsys | --dotshell | --dotvim) used_flags+="$word " ;;
+        --arch | --dotsys | --dotshell | --dotvim) used_flags+="$word " ;;
         esac
       done
 
       local available=""
-      for flag in --dotsys --dotshell --dotvim; do
-        [[ "$used_flags" != *"$flag"* ]] && available+="$flag "
-      done
+
+      # --arch is exclusive: don't suggest it alongside individual flags
+      if [[ "$used_flags" == *"--arch"* ]]; then
+        available=""
+      elif [[ -n "$used_flags" ]]; then
+        for flag in --dotsys --dotshell --dotvim; do
+          [[ "$used_flags" != *"$flag"* ]] && available+="$flag "
+        done
+      else
+        available="--arch --dotsys --dotshell --dotvim"
+      fi
 
       COMPREPLY=($(compgen -W "$available" -- "$cur"))
     fi
