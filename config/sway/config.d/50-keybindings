@@ -24,7 +24,8 @@ bindsym $mod+v splitv
 bindsym $mod+r mode "resize"
 ## Reload sway config
 bindsym $mod+Shift+r reload; exec systemctl --user restart kanshi.service
-bindsym mod4+Shift+p exec ~/.local/bin/rofi-start --powermenu
+# bindsym mod4+Shift+p exec ~/.local/bin/rofi-start --powermenu
+bindsym mod4+Shift+p exec ~/.local/bin/dshell power toggle
 ## Exit sway (logs you out of your Wayland session)
 bindsym $mod+Shift+q exec \
   swaynag \
@@ -126,8 +127,9 @@ bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
 
 # Status Bar
 # Read `man 5 sway-bar` for more info.
-# I use waybar, so no need for the default status bar. I'll leave an example
-# below though.
+# I use either quickshell or waybar, so no need for the default status bar.
+# I'll leave an example below for reference later on.
+#
 # bar {
 #     position top
 #
