@@ -1,0 +1,6 @@
+### Finalize ##################################################################
+
+# Signal to uwsm that Sway is ready and propagate essential session variables
+# (WAYLAND_DISPLAY, SWAYSOCK, I3SOCK, XCURSOR_SIZE, XCURSOR_THEME) to systemd
+# and D-Bus activation environments. The sway plugin handles the var list.
+exec exec uwsm finalize

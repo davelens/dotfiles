@@ -1,0 +1,24 @@
+### Displays and window output ################################################
+
+# Display configuration is handled by kanshi (~/.config/kanshi/config).
+# kanshi runs as a systemd service (kanshi.service) under graphical-session.target.
+output * bg ~/Pictures/wallpapers/dune-catppuccin.jpg fill
+
+# Borders & gaps
+smart_borders off
+default_border pixel 2
+gaps inner 8
+
+# Drag windows by holding down $mod and lmb.
+# Resize them with rmb + $mod.
+# Works for all windows, despite the name.
+# Change normal to inverse to use lmb for resizing and rmb for dragging.
+floating_modifier $mod normal
+
+# Window colors           border     bg     text       indicator   child_border
+client.focused            $lavender  $base  $text      $lavender   $lavender
+client.focused_inactive   $surface1  $base  $subtext1  $surface1   $surface1
+client.unfocused          $grey      $base  $overlay0  $grey       $grey
+client.urgent             $red       $base  $text      $red        $red
+client.placeholder        $base      $base  $text      $base       $base
+client.background         $base

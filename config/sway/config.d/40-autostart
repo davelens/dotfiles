@@ -1,0 +1,12 @@
+### Autostart #################################################################
+
+# Idle configuration
+# 1. Lock screen after 300 seconds of inactivity.
+# 2. Lock screen before the computer sleeps.
+exec swayidle -w \
+  timeout 300 'swaylock -f -c 000000' \
+  before-sleep 'swaylock -f -c 000000'
+
+# Clipboard manager (supports text and images)
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist store
