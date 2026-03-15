@@ -26,6 +26,7 @@ bindsym $mod+r mode "resize"
 bindsym $mod+Shift+r reload; exec systemctl --user restart kanshi.service
 # bindsym mod4+Shift+p exec ~/.local/bin/rofi-start --powermenu
 bindsym mod4+Shift+p exec ~/.local/bin/dshell power toggle
+bindsym mod4+Shift+s exec ~/.local/bin/dshell screen-recording files
 ## Exit sway (logs you out of your Wayland session)
 bindsym $mod+Shift+q exec \
   swaynag \
