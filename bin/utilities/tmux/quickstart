@@ -58,7 +58,7 @@ SESSION_NAME="$(basename "$TARGET_PATH" | sed 's/^\.//;s:/$::' | sed 's/[. ]/_/g
 [[ ! -d "$TARGET_PATH" ]] && fail "Error: '$TARGET_PATH' is not a valid directory."
 
 # Check if the session already exists
-if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+if ! tmux has-session -t "=$SESSION_NAME" 2>/dev/null; then
   # A little trick: If we get errors we can simulate how tmux itself would
   # respond by failing silently, and calling tmux with the options at hand.
   if ! tmux "${TMUX_OPTIONS[@]}" new-session -s "$SESSION_NAME" -n "editor" -d 2>/dev/null; then
@@ -73,4 +73,4 @@ if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
   tmux select-window -t "$SESSION_NAME:1"
 fi
 
-tmux attach -t $SESSION_NAME
+tmux attach -t "=$SESSION_NAME"
