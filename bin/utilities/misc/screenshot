@@ -55,8 +55,9 @@ clipboard_image() {
 
 notify() {
   local title="$1" body="$2"
+  shift 2
   if command -v notify-send &>/dev/null; then
-    notify-send "$title" "$body"
+    notify-send "$@" "$title" "$body"
   elif [[ "$platform" == "macos" ]]; then
     osascript -e "display notification \"$body\" with title \"$title\""
   fi
@@ -91,28 +92,25 @@ clipboard_image "$filepath"
 clipboard_text() {
   local text="$1"
   case "$("$XDG_BIN_HOME/os")" in
-    macos) echo -n "$text" | pbcopy ;;
-    wsl) echo -n "$text" | clip.exe ;;
-    *)
-      if command -v wl-copy &>/dev/null; then
-        echo -n "$text" | wl-copy
-      elif command -v xclip &>/dev/null; then
-        echo -n "$text" | xclip -selection clipboard
-      fi
-      ;;
+  macos) echo -n "$text" | pbcopy ;;
+  wsl) echo -n "$text" | clip.exe ;;
+  *)
+    if command -v wl-copy &>/dev/null; then
+      echo -n "$text" | wl-copy
+    elif command -v xclip &>/dev/null; then
+      echo -n "$text" | xclip -selection clipboard
+    fi
+    ;;
   esac
 }
 
-if command -v notify-send &>/dev/null; then
-  action=$(notify-send -a "General" "Screenshot copied to clipboard" "$filename" \
-    -h "string:image-path:$filepath" \
-    --action="copy-path=Copy path" \
-    --action="open=Open image" \
-    --wait) || true
-  case "$action" in
-    copy-path) clipboard_text "$filepath" ;;
-    open) open_file "$filepath" & ;;
-  esac
-elif [[ "$platform" == "macos" ]]; then
-  osascript -e "display notification \"$filename\" with title \"Screenshot copied to clipboard\""
-fi
+action=$(notify "Screenshot copied to clipboard" "$filename" \
+  -a "General" \
+  -h "string:image-path:$filepath" \
+  --action="copy-path=Copy path" \
+  --action="open=Open image" \
+  --wait) || true
+case "$action" in
+copy-path) clipboard_text "$filepath" ;;
+open) open_file "$filepath" & ;;
+esac
