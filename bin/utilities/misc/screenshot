@@ -78,11 +78,11 @@ geometry="$(screen_geometry)"
 filename="$(date +%Y-%m-%d-%H-%M-%S)_${geometry}.png"
 filepath="${dir}/${filename}"
 
-flameshot gui --raw 2>/dev/null >"$filepath"
+flameshot gui --raw 2>/dev/null >"$filepath" || true
 
 if [[ ! -s "$filepath" ]]; then
   rm -f "$filepath"
-  notify-send -a "General" "Screenshot" "Cancelled or empty capture"
+  notify "Screenshot" "Cancelled or empty capture"
   exit 1
 fi
 
