@@ -32,6 +32,7 @@ alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
 alias u='utility'
 
 # Jumpstart aliases for specific projects.
+alias dotai='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotfiles.ai\"" --'
 alias dotfiles='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotfiles\"" --'
 alias dotshell='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotshell\"" --'
 alias dotsys='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotsys\"" --'
