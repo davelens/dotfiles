@@ -7,8 +7,9 @@ assign [app_id="Firefox"] workspace number 2
 assign [app_id="librewolf"] workspace number 2
 assign [app_id="luakit"] workspace number 2
 assign [app_id="^Spotify$"] workspace number 4
-assign [app_id="com.discordapp.Discord"] workspace number 3
 assign [class="steam"] workspace number 5
+assign [app_id="com.discordapp.Discord"] workspace number 3
+assign [class="discord"] workspace number 3
 
 # Floating windows
 # Get a list of app IDs with `swaymsg -t get_tree`.
