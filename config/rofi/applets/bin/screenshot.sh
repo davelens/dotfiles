@@ -20,12 +20,12 @@ pipe_options_to_rofi() {
 
 send_notification_and_open_preview() {
   if [[ "$notify" != "false" ]]; then
-    notify-send -i edit-copy "Screenshot" "Copied to clipboard"
+    notify-send -a "General" -i edit-copy "Screenshot" "Copied to clipboard"
 
     if [[ -e "$dir/$file" ]]; then
-      notify-send -i document-save "Screenshot saved" "$file"
+      notify-send -a "General" -i document-save "Screenshot saved" "$file"
     else
-      notify-send -i user-trash "Screenshot deleted"
+      notify-send -a "General" -i user-trash "Screenshot deleted"
     fi
   fi
 
@@ -38,7 +38,7 @@ screenshot_to_clipboard() {
 
 countdown() {
   for sec in $(seq "$1" -1 1); do
-    notify-send -t 1000 -i image-x-generic "Screenshot" "Recording in ${sec}s"
+    notify-send -t 1000 -a "General" -i image-x-generic "Screenshot" "Recording in ${sec}s"
     sleep 1
   done
   qs -p ~/.config/dotshell ipc call notifications clearAll
