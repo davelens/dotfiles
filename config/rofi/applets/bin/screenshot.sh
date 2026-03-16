@@ -37,12 +37,13 @@ screenshot_to_clipboard() {
 }
 
 countdown() {
+  local title="${2:-Screenshot}"
   local notification_id=""
   for sec in $(seq "$1" -1 1); do
     if [[ -z "$notification_id" ]]; then
-      notification_id=$(notify-send -p -t 1000 -a "General" -i image-x-generic "Screenshot" "Recording in ${sec}s")
+      notification_id=$(notify-send -p -t 1000 -a "General" -i image-x-generic "$title" "Recording in ${sec}s")
     else
-      notify-send -r "$notification_id" -t 1000 -a "General" -i image-x-generic "Screenshot" "Recording in ${sec}s"
+      notify-send -r "$notification_id" -t 1000 -a "General" -i image-x-generic "$title" "Recording in ${sec}s"
     fi
     sleep 1
   done
@@ -58,7 +59,7 @@ setup_repo_env() {
 }
 
 record_screen_delay() {
-  countdown "${1:-5}"
+  countdown "${1:-5}" "Screen Recording"
   setup_repo_env
   "$DOTFILES_REPO_HOME/bin/utilities/misc/screencast" &
 }
