@@ -1,5 +1,8 @@
 ### Autostart #################################################################
 
+# Automatic H/V split tiling.
+exec autotiling-rs
+
 # Idle configuration
 # 1. Lock screen after 300 seconds of inactivity.
 # 2. Lock screen before the computer sleeps.
