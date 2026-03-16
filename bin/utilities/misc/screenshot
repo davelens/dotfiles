@@ -83,7 +83,7 @@ flameshot gui --raw 2>/dev/null >"$filepath" || true
 
 if [[ ! -s "$filepath" ]]; then
   rm -f "$filepath"
-  notify "Screenshot" "Cancelled or empty capture"
+  notify -a "General" "Screenshot" "Cancelled or empty capture"
   exit 1
 fi
 
