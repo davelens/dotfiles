@@ -116,8 +116,8 @@ bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
 
 # Screenshots
-bindsym $mod+p exec ~/.config/rofi/applets/bin/screenshot.sh
-bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
+bindsym $mod+p exec bash -c "pidof rofi && pkill rofi || ~/.config/rofi/applets/bin/screenshot.sh"
+# bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
 
 ## Alt+Tab window switching (swtchr)
 # Uses a Sway mode to prevent key consumption while swtchr is open.
