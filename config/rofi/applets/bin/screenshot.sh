@@ -8,14 +8,14 @@ rofi_cmd() {
     -theme-str "listview {columns: $list_col; lines: $list_row;}" \
     -theme-str 'textbox-prompt-colon {str: "󰋫";}' \
     -dmenu \
-    -p "Screenshot" \
+    -p "Screen recording" \
     -msg "$msg" \
     -markup-rows \
     -theme "$theme"
 }
 
 pipe_options_to_rofi() {
-  echo -e "$option_1\n$option_2\n$option_3\n$option_4\n$option_5\n$option_6" | rofi_cmd
+  echo -e "$option_1\n$option_2\n$option_3\n$option_4\n$option_5" | rofi_cmd
 }
 
 send_notification_and_open_preview() {
@@ -97,47 +97,44 @@ main() {
 
   if [[ "$theme" == *'type-1'* ]]; then
     list_col='1'
-    list_row='6'
+    list_row='5'
     win_width='400px'
   elif [[ "$theme" == *'type-3'* ]]; then
     list_col='1'
-    list_row='6'
+    list_row='5'
     win_width='120px'
   elif [[ "$theme" == *'type-5'* ]]; then
     list_col='1'
-    list_row='6'
+    list_row='5'
     win_width='520px'
   elif [[ ("$theme" == *'type-2'*) || ("$theme" == *'type-4'*) ]]; then
-    list_col='6'
+    list_col='5'
     list_row='1'
-    win_width='670px'
+    win_width='560px'
   fi
 
   if [ "$layout" == 'NO' ]; then
-    option_1="󰍹 Capture Desktop"
-    option_2="󰹑 Capture Area"
-    option_3="󰘔 Capture Window"
-    option_4="󰚭 Capture in 5s"
-    option_5="󰚭 Capture in 10s"
-    option_6="󰕧 Record screen in 5s"
+    option_1="󰹑 Screenshot Area"
+    option_2="󰘔 Screenshot Window"
+    option_3="󰍹 Screenshot Desktop"
+    option_4="󰚭 Screenshot in 5s"
+    option_5="󰕧 Record screen in 5s"
   else
-    option_1="󰍹"
-    option_2="󰹑"
-    option_3="󰘔"
+    option_1="󰹑"
+    option_2="󰘔"
+    option_3="󰍹"
     option_4="󰚭"
-    option_5="󰚭"
-    option_6="󰕧"
+    option_5="󰕧"
   fi
 
   [ ! -d "$dir" ] && mkdir -p "$dir"
 
   case $(pipe_options_to_rofi) in
-  "$option_1") take_screenshot_full ;;
-  "$option_2") take_screenshot_area ;;
-  "$option_3") take_screenshot_window ;;
+  "$option_1") take_screenshot_area ;;
+  "$option_2") take_screenshot_window ;;
+  "$option_3") take_screenshot_full ;;
   "$option_4") take_screenshot_delay 5 ;;
-  "$option_5") take_screenshot_delay 10 ;;
-  "$option_6") record_screen_delay 5 ;;
+  "$option_5") record_screen_delay 5 ;;
   esac
 }
 
