@@ -37,11 +37,16 @@ screenshot_to_clipboard() {
 }
 
 countdown() {
+  local notification_id=""
   for sec in $(seq "$1" -1 1); do
-    notify-send -t 1000 -a "General" -i image-x-generic "Screenshot" "Recording in ${sec}s"
+    if [[ -z "$notification_id" ]]; then
+      notification_id=$(notify-send -p -t 1000 -a "General" -i image-x-generic "Screenshot" "Recording in ${sec}s")
+    else
+      notify-send -r "$notification_id" -t 1000 -a "General" -i image-x-generic "Screenshot" "Recording in ${sec}s"
+    fi
     sleep 1
   done
-  qs -p ~/.config/dotshell ipc call notifications clearAll
+  qs -p ~/.config/dotshell ipc call notifications dismiss "$notification_id"
 }
 
 setup_repo_env() {
