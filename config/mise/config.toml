@@ -18,3 +18,8 @@ shfmt = "3.12.0"
 stylua = "2.1.0"
 usage = "latest"
 yarn = "4.12.0"
+
+[settings]
+
+[settings.ruby]
+compile = false
