@@ -264,9 +264,9 @@ update() {
   if [[ $dotfiles_updated -eq 1 ]]; then
     $print_status -nc "Running dotfiles installer ..."
     if "$DOTFILES_REPO_HOME/setup/install" &>>"$log_file"; then
-      $print_status -i ok "Dotfiles installer complete"
+      $print_status -i ok "dotfiles installer complete"
     else
-      $print_status -i error "Dotfiles installer failed"
+      $print_status -i error "dotfiles installer failed"
     fi
   fi
 
