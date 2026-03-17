@@ -23,7 +23,7 @@ _dots_completions() {
     COMPREPLY=($(compgen -f "$DOTFILES_STATE_HOME/dots.log"))
     ;;
   update)
-    COMPREPLY=($(compgen -W "--dotbot" -- "$cur"))
+    COMPREPLY=()
     ;;
   install)
     COMPREPLY=()

@@ -16,8 +16,7 @@ usage() {
   echo "Commands:"
   echo "  logs         Opens the logfile in $EDITOR (read-only if applicable)."
   echo "  install      Attempts a (re)install through dotbot."
-  echo "  update       Updates dotfiles to the most recent version."
-  echo "               Use --dotbot to also update dotbot to latest master."
+  echo "  update       Updates dotbot and all local dot-repos."
   echo "  setup        Sets up additional dotfile repositories."
   echo "               Use --arch to setup dotsys (arch), dotvim, and dotshell."
   echo "               Use --dotsys <arch|macos|wsl> to setup davelens/dotsys."
@@ -60,12 +59,39 @@ update_dotbot() {
 
   if git -C "$dotbot_path" fetch origin >/dev/null 2>&1 &&
     git -C "$dotbot_path" checkout origin/master >/dev/null 2>&1; then
-    $print_status -i ok "Dotbot updated"
-    echo "    Remember to commit the submodule change if you want to keep it."
+    if git -C "$DOTFILES_REPO_HOME" diff --quiet dotbot; then
+      $print_status -i ok "dotbot already up to date"
+    else
+      git -C "$DOTFILES_REPO_HOME" add dotbot
+      git -C "$DOTFILES_REPO_HOME" commit -m "Update dotbot submodule to latest master" &>>"$log_file"
+      $print_status -i ok "dotbot updated and committed"
+    fi
   else
     $print_status -i error "Failed to update dotbot"
     return 1
   fi
+}
+
+update_repo() {
+  local repo_path="$1"
+  local repo_name
+  repo_name=$(basename "$repo_path")
+
+  $print_status -nc "Updating $repo_name ..."
+
+  # Check for uncommitted changes (unstaged and staged)
+  if ! git -C "$repo_path" diff-files --quiet 2>/dev/null ||
+    ! git -C "$repo_path" diff-index --cached --quiet HEAD 2>/dev/null; then
+    $print_status -i error "$repo_name has uncommitted changes, skipping"
+    return 1
+  fi
+
+  if ! git -C "$repo_path" pull --rebase &>>"$log_file"; then
+    $print_status -i error "Failed to update $repo_name"
+    return 1
+  fi
+
+  $print_status -i ok "$repo_name updated"
 }
 
 run_with_headers() {
@@ -222,60 +248,27 @@ setup() {
 }
 
 update() {
-  local update_dotbot_flag=0
+  update_dotbot
 
-  # Parse flags
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-    --dotbot)
-      update_dotbot_flag=1
-      shift
-      ;;
-    *) shift ;;
-    esac
+  # Update all locally installed dot-repos
+  for repo_path in "$REPO_NAMESPACE"/davelens/dot*; do
+    [[ -d "$repo_path/.git" ]] || continue
+
+    if update_repo "$repo_path"; then
+      # Run the dotfiles installer after a successful pull
+      if [[ "$repo_path" == "$DOTFILES_REPO_HOME" ]]; then
+        $print_status -nc "Running dotfiles installer ..."
+        if "$DOTFILES_REPO_HOME/setup/install" &>>"$log_file"; then
+          $print_status -i ok "Dotfiles installer complete"
+        else
+          $print_status -i error "Dotfiles installer failed"
+        fi
+      fi
+    fi
   done
 
-  error_occurred=0
-
-  # Check for uncommitted changes and exit gracefully if so.
-  if ! git -C "$DOTFILES_REPO_HOME" diff-files --quiet; then
-    $print_status -i error "There are uncommitted changes in your dotfiles. Please commit or stash them before updating:"
-    echo
-    git -C "$DOTFILES_REPO_HOME" st
-    exit 1
-  fi
-
-  # Update dotbot if requested
-  if [ $update_dotbot_flag -eq 1 ]; then
-    update_dotbot || error_occurred=1
-  fi
-
-  # Pull the latest changes
-  $print_status -nc "Pulling in changes ..."
-
-  if git -C "$DOTFILES_REPO_HOME" fetch origin >/dev/null; then
-    if ! git -C "$DOTFILES_REPO_HOME" merge --no-commit origin/"$(git -C "$DOTFILES_REPO_HOME" b)" &>>"$log_file"; then
-      error_occurred=1
-    fi
-  else
-    error_occurred=1
-  fi
-
-  # Run the installer if no errors occurred
-  if [ $error_occurred -eq 0 ]; then
-    $print_status -i ok "Files updated to latest version"
-    $print_status -nc "Running installer ..."
-    "$DOTFILES_REPO_HOME/setup/install" &>>"$log_file" || error_occurred=1
-  fi
-
-  # Handle final status
-  if [ $error_occurred -eq 0 ]; then
-    $print_status -i ok "Update complete"
-  else
-    $print_status -i error "Update failed"
-    echo "    Logs available at $log_file"
-    exit 1
-  fi
+  echo
+  echo "Logs available at $log_file"
 }
 
 ###############################################################################
@@ -294,8 +287,7 @@ main() {
     install
     ;;
   update)
-    shift
-    update "$@"
+    update
     ;;
   setup)
     shift
