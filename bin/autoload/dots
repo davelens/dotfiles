@@ -251,21 +251,24 @@ update() {
   update_dotbot
 
   # Update all locally installed dot-repos
+  local dotfiles_updated=0
   for repo_path in "$REPO_NAMESPACE"/davelens/dot*; do
     [[ -d "$repo_path/.git" ]] || continue
 
     if update_repo "$repo_path"; then
-      # Run the dotfiles installer after a successful pull
-      if [[ "$repo_path" == "$DOTFILES_REPO_HOME" ]]; then
-        $print_status -nc "Running dotfiles installer ..."
-        if "$DOTFILES_REPO_HOME/setup/install" &>>"$log_file"; then
-          $print_status -i ok "Dotfiles installer complete"
-        else
-          $print_status -i error "Dotfiles installer failed"
-        fi
-      fi
+      [[ "$repo_path" == "$DOTFILES_REPO_HOME" ]] && dotfiles_updated=1
     fi
   done
+
+  # Run the dotfiles installer after all repos are updated
+  if [[ $dotfiles_updated -eq 1 ]]; then
+    $print_status -nc "Running dotfiles installer ..."
+    if "$DOTFILES_REPO_HOME/setup/install" &>>"$log_file"; then
+      $print_status -i ok "Dotfiles installer complete"
+    else
+      $print_status -i error "Dotfiles installer failed"
+    fi
+  fi
 
   echo
   echo "Logs available at $log_file"
