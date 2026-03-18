@@ -2,7 +2,7 @@
 
 # Display configuration is handled by kanshi (~/.config/kanshi/config).
 # kanshi runs as a systemd service (kanshi.service) under graphical-session.target.
-output * bg ~/Pictures/wallpapers/dune-catppuccin.jpg fill
+exec_always ~/.local/bin/dshell wallpaper restore ~/Pictures/wallpapers/dune-catppuccin.jpg
 
 # Borders & gaps
 smart_borders off
