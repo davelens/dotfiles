@@ -44,6 +44,10 @@ configuration {
     parse-user:   true;
     /* Parse system desktop files. */
     parse-system: true;
+    /* Disable D-Bus activation — on Sway (non-GNOME), D-Bus activation of
+       apps like Nautilus races with the uwsm run-command fallback, causing
+       double windows. Let uwsm handle all launches. */
+    DBusActivatable: false;
   }
 
   /*---------- Run settings ----------*/
