@@ -5,10 +5,6 @@ bindsym $mod+Space exec $launcher
 # bindsym $mod+u exec $browser
 bindsym $mod+c exec cliphist list | ~/.local/bin/rofi-start --dmenu --theme style-5-no-indent | cliphist decode | wl-copy
 bindsym $mod+m exec ~/.local/bin/rofi-start --mode calc -modi calc -no-show-match -no-sort
-bindsym $mod+Shift+n exec $qs ipc call notifications toggle
-bindsym $mod+Shift+b exec $qs ipc call bar toggle
-bindsym $mod+Shift+s exec $qs ipc call settings toggle
-bindsym $mod+Shift+u exec $qs ipc call popup toggle updates
 
 ### Actions ###################################################################
 
@@ -25,8 +21,13 @@ bindsym $mod+r mode "resize"
 ## Reload sway config
 bindsym $mod+Shift+r reload; exec systemctl --user restart kanshi.service
 # bindsym mod4+Shift+p exec ~/.local/bin/rofi-start --powermenu
+bindsym $mod+Shift+s exec ~/.local/bin/dshell settings toggle
+bindsym $mod+Shift+n exec ~/.local/bin/dshell notifications toggle
+bindsym $mod+Shift+u exec ~/.local/bin/dshell popup toggle updates
+bindsym $mod+Shift+b exec ~/.local/bin/dshell bar focus
 bindsym mod4+Shift+p exec ~/.local/bin/dshell power toggle
 bindsym mod4+Shift+s exec ~/.local/bin/dshell screen-recording files
+bindsym mod4+Shift+w exec ~/.local/bin/dshell wallpaper browse
 ## Exit sway (logs you out of your Wayland session)
 bindsym $mod+Shift+q exec \
   swaynag \
