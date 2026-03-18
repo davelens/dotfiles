@@ -69,7 +69,7 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+Shift+f focus mode_toggle
 # Move focus to the parent container. I'm not entirely sure what the use case
 # is for this yet; you can select multiple floating area.
-bindsym $mod+a focus parent
+# bindsym $mod+a focus parent
 
 ### Workspaces ################################################################
 
