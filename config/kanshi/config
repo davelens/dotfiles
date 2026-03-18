@@ -9,8 +9,14 @@ profile home {
     exec systemctl --user restart quickshell.service
 }
 
-profile desktop {
+profile desktop-1 {
     output HDMI-A-1 disable
+    output "ASUSTek COMPUTER INC VG27A L9LMQS163748" enable mode 2560x1440@119.998Hz position 0,0 scale 1.0
+    exec systemctl --user restart quickshell.service
+}
+
+profile desktop-2 {
+    output HDMI-A-3 disable
     output "ASUSTek COMPUTER INC VG27A L9LMQS163748" enable mode 2560x1440@119.998Hz position 0,0 scale 1.0
     exec systemctl --user restart quickshell.service
 }
