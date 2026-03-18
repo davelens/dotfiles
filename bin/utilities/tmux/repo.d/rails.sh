@@ -29,7 +29,7 @@ repl_command() {
 }
 
 server_command() {
-  echo "{ bin/spring server & } && bin/rails s"
+  echo "{ bin/spring server & } && bin/rails s && bin/spring stop"
 }
 
 bootstrap() {
