@@ -1,14 +1,50 @@
 #!/usr/bin/env bash
 
-# Rofi applet: fuzzy-find an ActiveCollab task and copy its ID to clipboard.
+# Rofi applet: fuzzy-find an ActiveCollab task and perform one of two actions.
 # Two-step flow: pick a project, then pick a task.
-# Reads from the ac-cli JSON cache at $XDG_CACHE_HOME/ac-cli/.
+# Enter opens the task URL; Ctrl+y copies the internal task ID.
+# Reads task/project cache from $XDG_CACHE_HOME/ac-cli/ and AC_ACCOUNT_ID from
+# env or ac-cli's env file at $XDG_CONFIG_HOME/ac-cli/env.
 
 set -e
 
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 CACHE_DIR="$XDG_CACHE_HOME/ac-cli"
 ROFI="$HOME/.local/bin/rofi-start --dmenu --theme style-5-no-indent -i"
+AC_ENV_FILE="$XDG_CONFIG_HOME/ac-cli/env"
+
+get_ac_account_id() {
+  if [[ -n "$AC_ACCOUNT_ID" ]]; then
+    printf '%s\n' "$AC_ACCOUNT_ID"
+    return 0
+  fi
+
+  if [[ ! -f "$AC_ENV_FILE" ]]; then
+    return 1
+  fi
+
+  local line value
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line="${line#${line%%[![:space:]]*}}"
+
+    [[ -z "$line" || "$line" == \#* ]] && continue
+    line="${line#export }"
+
+    if [[ "$line" == AC_ACCOUNT_ID=* ]]; then
+      value="${line#AC_ACCOUNT_ID=}"
+      value="${value%\"}"
+      value="${value#\"}"
+      value="${value%\'}"
+      value="${value#\'}"
+
+      [[ -n "$value" ]] && printf '%s\n' "$value"
+      return 0
+    fi
+  done <"$AC_ENV_FILE"
+
+  return 1
+}
 
 # -- Step 1: Project selection -----------------------------------------------
 
@@ -57,7 +93,21 @@ fi
 # Show only the display part (after the tab) in rofi
 task_display=$(echo "$task_lines" | cut -f2)
 
-selected_task=$(echo "$task_display" | $ROFI -p "Task") || exit 0
+set +e
+selected_task=$(echo "$task_display" | $ROFI -p "Task (Enter=open, Ctrl+y=copy)" -kb-custom-1 "Control+y")
+rofi_status=$?
+set -e
+
+case "$rofi_status" in
+0 | 10) ;;
+1)
+  exit 0
+  ;;
+*)
+  notify-send -a "ActiveCollab" -u critical "Task selection failed (rofi exit: $rofi_status)"
+  exit 1
+  ;;
+esac
 
 # Extract the id from the matching line
 task_id=$(echo "$task_lines" | awk -F'\t' -v disp="$selected_task" '$2 == disp { print $1; exit }')
@@ -67,7 +117,30 @@ if [[ -z "$task_id" ]]; then
   exit 1
 fi
 
-# -- Step 3: Copy to clipboard ----------------------------------------------
+# -- Step 3: Action -----------------------------------------------------------
 
-echo -n "$task_id" | wl-copy
-notify-send -a "ActiveCollab" "Copied task ID $task_id"
+if [[ "$rofi_status" -eq 10 ]]; then
+  echo -n "$task_id" | wl-copy
+  notify-send -a "ActiveCollab" "Copied task ID $task_id"
+  exit 0
+fi
+
+if ! account_id="$(get_ac_account_id)"; then
+  account_id=""
+fi
+
+if [[ -z "$account_id" ]]; then
+  notify-send -a "ActiveCollab" -u critical "Missing AC_ACCOUNT_ID (env or $AC_ENV_FILE)"
+  exit 1
+fi
+
+if ! command -v xdg-open >/dev/null 2>&1; then
+  notify-send -a "ActiveCollab" -u critical "xdg-open is not available"
+  exit 1
+fi
+
+task_url="https://next-app.activecollab.com/${account_id}/projects/${project_id}/tasks/${task_id}"
+if ! xdg-open "$task_url" >/dev/null 2>&1; then
+  notify-send -a "ActiveCollab" -u critical "Failed to open task URL"
+  exit 1
+fi
