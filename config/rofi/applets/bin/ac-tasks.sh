@@ -26,7 +26,7 @@ get_ac_account_id() {
 
   local line value
   while IFS= read -r line || [[ -n "$line" ]]; do
-    line="${line#${line%%[![:space:]]*}}"
+    line="${line#"${line%%[![:space:]]*}"}"
 
     [[ -z "$line" || "$line" == \#* ]] && continue
     line="${line#export }"
@@ -94,7 +94,7 @@ fi
 task_display=$(echo "$task_lines" | cut -f2)
 
 set +e
-selected_task=$(echo "$task_display" | $ROFI -p "Task (Enter=open, Ctrl+y=copy)" -kb-custom-1 "Control+y")
+selected_task=$(echo "$task_display" | $ROFI -p "Task" -window-title "ActiveCollab Tasks" -mesg "Enter: open task   Ctrl+y: copy task ID" -kb-custom-1 "Control+y")
 rofi_status=$?
 set -e
 
