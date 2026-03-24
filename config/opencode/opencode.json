@@ -7,6 +7,6 @@
     }
   },
   "plugin": [
-    "opencode-anthropic-auth@latest"
+    "opencode-claude-auth"
   ]
 }
