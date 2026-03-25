@@ -14,7 +14,7 @@ innodb_flush_method = O_DIRECT
 sync_binlog = 0
 
 # Disable binary logging
-skip-log-bin
+skip_log_bin = 1
 
 # Disable performance schema
 performance_schema = OFF
