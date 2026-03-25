@@ -3,7 +3,7 @@
 .docs
 *.env
 dotbot
-bash/env/autocompletions/iterm2_shell_integration.bash
+bash/env/completions/*.untracked.bash
 bash/private
 vim/.netrwhist
 vim/bundle/**
