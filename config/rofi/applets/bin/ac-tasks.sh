@@ -71,7 +71,11 @@ fi
 
 # -- Step 2: Task selection --------------------------------------------------
 
-tasks_json="$CACHE_DIR/projects/${project_id}.json"
+tasks_json="$CACHE_DIR/projects/${project_id}/tasks.json"
+
+if [[ ! -f "$tasks_json" ]]; then
+  tasks_json="$CACHE_DIR/projects/${project_id}.json"
+fi
 
 if [[ ! -f "$tasks_json" ]]; then
   notify-send -a "ActiveCollab" -u critical "No task cache for project $selected_project ($tasks_json)"
@@ -80,7 +84,14 @@ fi
 
 # Filter active tasks only, format as "id<TAB>#task_number  name"
 task_lines=$(jq -r '
-  .tasks.tasks[]
+  if (.tasks? | type) == "array" then
+    .tasks
+  elif type == "array" then
+    .
+  else
+    []
+  end
+  | .[]
   | select(.is_completed == false)
   | "\(.id)\t#\(.task_number)  \(.name)"
 ' "$tasks_json")
