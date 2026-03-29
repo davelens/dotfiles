@@ -3,7 +3,8 @@
   "permission": {
     "external_directory": {
       "~/.config/**": "allow",
-      "~/Repositories/**": "allow"
+      "~/Repositories/**": "allow",
+      "/tmp/**": "allow"
     }
   },
   "plugin": [
