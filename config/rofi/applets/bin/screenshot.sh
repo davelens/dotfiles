@@ -19,16 +19,7 @@ pipe_options_to_rofi() {
 }
 
 send_notification_and_open_preview() {
-  if [[ "$notify" != "false" ]]; then
-    notify-send -a "General" -i edit-copy "Screenshot" "Copied to clipboard"
-
-    if [[ -e "$dir/$file" ]]; then
-      notify-send -a "General" -i document-save "Screenshot saved" "$file"
-    else
-      notify-send -a "General" -i user-trash "Screenshot deleted"
-    fi
-  fi
-
+  notify-send -a "General" -i edit-copy "Screenshot" "Copied to clipboard"
   sushi "$dir"/"$file"
 }
 
