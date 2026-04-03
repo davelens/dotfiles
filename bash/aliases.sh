@@ -14,6 +14,7 @@ command -v mycli &>/dev/null && alias mycli='mycli --myclirc "$MYCLIRC"'
 # Spelling corrections
 # NOTE: `timesused <alias>` to find out how many times you made a mistake.
 alias gti='git'
+alias xit='exit'
 alias sl='ls'
 alias docker-compose='docker compose' # They changed it. -.-
 
