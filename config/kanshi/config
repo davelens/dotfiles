@@ -3,9 +3,15 @@ profile laptop {
     exec systemctl --user restart quickshell.service
 }
 
-profile home {
+profile home-1 {
     output eDP-2 disable
     output DP-3 enable position 0,0 scale 1.0
+    exec systemctl --user restart quickshell.service
+}
+
+profile home-2 {
+    output eDP-2 disable
+    output DP-4 enable position 0,0 scale 1.0
     exec systemctl --user restart quickshell.service
 }
 
