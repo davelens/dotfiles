@@ -1,8 +1,9 @@
 {
+  "permissions": {
+    "defaultMode": "auto"
+  },
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true
   },
-  "permissions": {
-    "defaultMode": "auto"
-  }
+  "skipAutoPermissionPrompt": true
 }
