@@ -1,5 +1,23 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "llama.cpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:11434/v1"
+      },
+      "models": {
+        "gemma4": {
+          "name": "Gemma4 26B (local)",
+          "limit": {
+            "context": 131072,
+            "output": 65536
+          }
+        }
+      }
+    }
+  },
   "permission": {
     "external_directory": {
       "~/.config/**": "allow",
@@ -8,7 +26,7 @@
     }
   },
   "plugin": [
-    "opencode-claude-auth",
+    "opencode-claude-auth@latest",
     "superpowers@git+https://github.com/obra/superpowers.git"
   ]
 }
