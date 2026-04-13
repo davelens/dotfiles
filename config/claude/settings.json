@@ -1,11 +1,68 @@
 {
   "permissions": {
-    "defaultMode": "bypassPermissions"
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(cp:*)",
+      "Bash(curl:*)",
+      "Bash(dir:*)",
+      "Bash(echo:*)",
+      "Bash(find:*)",
+      "Bash(gh:*)",
+      "Bash(git:*)",
+      "Bash(go:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(node:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(pwd:*)",
+      "Bash(tree:*)",
+      "Bash(type:*)",
+      "Bash(where:*)",
+      "Bash(which:*)",
+      "WebFetch",
+      "WebSearch"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(drop table:*)"
+    ]
+  },
+  "hooks": {
+    "PreCompact": [
+      {
+        "matcher": "auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo CONTEXT_SAVE_TRIGGERED"
+          }
+        ]
+      }
+    ]
   },
   "model": "opus",
   "enabledPlugins": {
-    "superpowers@claude-plugins-official": true
+    "superpowers@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "caveman@caveman": true
   },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    }
+  },
+  "skipDangerousModePermissionPrompt": true,
   "skipAutoPermissionPrompt": true,
-  "skipDangerousModePermissionPrompt": true
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$DOTFILES_REPO_HOME/config/claude/plugins/cache/caveman/caveman/63e797cd753b/hooks/caveman-statusline.sh\""
+  }
 }
