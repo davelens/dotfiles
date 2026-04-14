@@ -14,7 +14,7 @@ Do not use for feature design or durable memory-maintenance decisions.
 
 ## Quick Reference
 
-- Run `/caveman` if available.
+- Load `caveman` skill if available (`/caveman` in Claude).
 - Read startup guidance first.
 - Follow its checklist items and first-step rules.
 

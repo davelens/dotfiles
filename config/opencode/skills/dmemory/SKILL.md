@@ -16,6 +16,7 @@ Do not use for feature-specific documentation or temporary working notes.
 ## Quick Reference
 
 - Read `./MEMORY.md`.
+- If repo docs or startup guidance specify a different memory file, use that instead.
 - If missing, create it with project overview and core conventions.
 - Add only durable, project-wide facts.
 - Put feature and subsystem behavior in docs or wiki.
@@ -45,5 +46,6 @@ Do not store:
 
 - Putting feature-specific behavior in memory
 - Recording temporary context in memory
+- Ignoring repo-specific memory-location overrides
 - Letting stale rules pile up without superseding them
 - Treating memory as optional in a project that relies on it
