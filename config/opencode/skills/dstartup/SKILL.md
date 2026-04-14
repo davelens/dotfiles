@@ -14,13 +14,14 @@ Do not use for feature design or durable memory-maintenance decisions.
 
 ## Quick Reference
 
-- Load `caveman` skill if available (`/caveman` in Claude).
+- Load `caveman` first. Do this before any other response, including startup, superpowers, or meta responses.
 - Read startup guidance first.
 - Follow its checklist items and first-step rules.
 
 ## Common Mistakes
 
 - Acting before reading startup guidance
+- Loading startup guidance before `caveman`
 - Skipping `/caveman` in environments that use it for startup behavior
 - Skipping startup docs because generic habits seem sufficient
 - Applying generic habits when project guidance says otherwise
