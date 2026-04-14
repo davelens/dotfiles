@@ -1,76 +1,49 @@
 ---
 name: dmemory
-description: >-
-  Use before starting any session — This is my generic AGENTS.md.
-  Maintains readable project memory in MEMORY.md.
-  Contains my desired formatting rules.
+description: Use when working in a project that stores durable, project-wide context in `./MEMORY.md`
 ---
 
-# Generic agentic guidelines for any project
+# Durable Memory
 
-## Memory
-Maintain durable project knowledge in `./MEMORY.md`.
+## When to Use
 
-Only record high-signal, long-lived information such as:
-- Architectural decisions and rationale
-- Hard constraints (compliance, platforms, invariants)
-- Naming/versioning conventions
-- Operational assumptions
-- Repeated user/team preferences
+- Project stores durable context in `./MEMORY.md`
+- Need project-wide constraints or conventions from memory
+- Need to decide whether new information belongs in memory or docs
 
-Do NOT include:
-- Temporary debugging details, logs, or TODOs
-- Speculation or uncertain notes
-- Secrets or credentials
+Do not use for feature-specific documentation or temporary working notes.
 
-**Rule of thumb:** MEMORY.md is for project-wide conventions and constraints
-that apply everywhere. If the information describes how a specific feature or
-system works, it belongs in the wiki instead.
+## Quick Reference
 
-Keep entries concise, factual, and organized under stable headings.
-When decisions change, update or mark prior notes as superseded rather than
-accumulating noise.
-After completing work, consider whether new durable knowledge should be added
-to MEMORY.md or whether a wiki entry is more appropriate.
+- Read `./MEMORY.md`.
+- If missing, create it with project overview and core conventions.
+- Add only durable, project-wide facts.
+- Put feature and subsystem behavior in docs or wiki.
 
-### Startup
-At the start of any task:
-- If the caveman skill is installed, run `/caveman` to init caveman mode.
-- read `./MEMORY.md` to understand persistent constraints, decisions, and
-conventions before making changes or recommendations.
-- If no `./MEMORY.md` file exists; create one with the basic overview and architecture. An example:
-```
-# MEMORY.md
+## What Belongs In Memory
 
-## Project Overview
+- Architecture decisions
+- Hard constraints and invariants
+- Naming and versioning conventions
+- Project-wide operational assumptions
+- Repeated user or team preferences
 
-This is a Rails project that tracks time spent on tasks.
+Do not store:
+- Debugging notes
+- Logs
+- TODOs
+- Speculation
+- Secrets
 
-## Architecture
+## Memory Rules
 
-- Bootstrap 5.3.5 for UI components
-- **Database**: MySQL 8.x with UTF8MB4 encoding
-- **Caching/Sessions**: Redis
-- **Selective Rails component loading**: ActiveStorage, ActionMailbox, and ActiveJob are excluded
-- **Custom autoloading**: Business logic loaded from `lib/` directory
-- **Plok Engine**: Provides CMS/admin functionality including `QueuedTask` for delayed tasks and `Plok::Search::Backend` for indexable search
-- **Design documents**: `documents/design/*.md` are the single source of truth for their respective features
-```
+- Keep entries concise and factual.
+- Use stable headings.
+- Update or supersede stale notes.
 
-## General Formatting Rules
+## Common Mistakes
 
-- **Blank lines** - Must contain only the newline character, no trailing spaces or tabs
-- **Indentation** - Go files follow `gofmt` (tabs). All other files use spaces only (1 tab = 2 spaces)
-- **Comments** - No all-caps. Just `// Description here`
-- **Section headers in bash** - Decorative borders are allowed (e.g. `# -- section ---`)
-
-## Operational Assumptions
-
-- Do not save files in `.claude` or `.opencode`.
-- **Git commits**: Make proper commits per finished todo item
-
-### Superpowers
-If the superpowers skill is installed:
-- brainstorms go in `docs/superpowers/brainstorms`
-- specs go in `docs/superpowers/specs`
-- plans / design docs go in `docs/superpowers/plans`
+- Putting feature-specific behavior in memory
+- Recording temporary context in memory
+- Letting stale rules pile up without superseding them
+- Treating memory as optional in a project that relies on it
