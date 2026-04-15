@@ -18,8 +18,9 @@ for_window [window_role="pop-up"] floating enable
 for_window [window_role="dialog"] floating enable
 # see ./bin/autoload/float
 for_window [app_id="floating-term"] floating enable
-# All Gnome apps can open floating (Nautilus/Files, Calendar, Text Editor,...)
+# All Gnome or KDE apps can open floating (Nautilus, Calendar, kcharselect,...)
 for_window [app_id="org.gnome.*"] floating enable
+for_window [app_id="org.kde.*"] floating enable
 # App-specific overrides
 for_window [app_id="annotator"] floating enable
 for_window [app_id="pavucontrol"] floating enable
