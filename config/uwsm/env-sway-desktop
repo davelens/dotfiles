@@ -1,0 +1,7 @@
+# Sway-specific session environment (sourced by uwsm for sway sessions only).
+# Changes require a logout/login to take effect.
+#
+# Monitors are connected to the NVIDIA dGPU, so do not pin wlroots to the AMD iGPU.
+# Sway should choose the NVIDIA DRM device directly.
+# NVIDIA + wlroots can fail cursor plane format negotiation; force software cursors.
+export WLR_NO_HARDWARE_CURSORS=1

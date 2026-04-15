@@ -1,0 +1,12 @@
+# Sway-specific session environment (sourced by uwsm for sway sessions only).
+# Changes require a logout/login to take effect.
+
+# Always use iGPU for compositing to prevent dGPU suspend/resume cycling
+# which causes system hangs due to SMU firmware/driver version mismatch.
+# Games can still use dGPU via DRI_PRIME=1 (Steam does this automatically).
+# Resolve the stable PCI path to the actual cardN node (wlroots won't follow symlinks).
+# Only set when the PCI path exists (skipped in VMs or on different hardware).
+igpu_path="${WLR_DRM_DEVICES_PATH:-/dev/dri/by-path/pci-0000:c4:00.0-card}"
+if [ -e "$igpu_path" ]; then
+  export WLR_DRM_DEVICES=$(readlink -f "$igpu_path")
+fi
