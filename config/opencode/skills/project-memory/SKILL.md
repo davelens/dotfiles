@@ -1,5 +1,5 @@
 ---
-name: dmemory
+name: project-memory
 description: Use when working in a project that stores durable, project-wide context in `./MEMORY.md`
 ---
 
@@ -16,7 +16,7 @@ Do not use for feature-specific documentation or temporary working notes.
 ## Quick Reference
 
 - Read `./MEMORY.md`.
-- If repo docs or startup guidance specify a different memory file, use that instead.
+- If repo docs or `./AGENTS.md` specify a different memory file, use that instead.
 - If missing, create it with project overview and core conventions.
 - Add only durable, project-wide facts.
 - Put feature and subsystem behavior in docs or wiki.

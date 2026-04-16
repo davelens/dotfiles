@@ -1,5 +1,5 @@
 ---
-name: dconventions
+name: project-conventions
 description: Use when working in a project with shared formatting rules, operational assumptions, or superpowers file-placement conventions
 ---
 
@@ -10,8 +10,6 @@ description: Use when working in a project with shared formatting rules, operati
 - Project defines shared formatting rules
 - Project defines repo-wide operational assumptions
 - Project uses superpowers document-location conventions
-
-Do not use for startup flow or durable memory policy.
 
 ## Quick Reference
 
