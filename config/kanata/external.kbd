@@ -10,36 +10,42 @@
 
 (include common.kbd)
 
+(defalias
+  ;; Physical right command: tap for right option, press another key to use toggle layer immediately.
+  ra-hm-ext (tap-hold-press 200 200 ralt (layer-while-held ralt-held-hm))
+  ra-base-ext (tap-hold-press 200 200 ralt (layer-while-held ralt-held-base))
+)
+
 (defsrc
   caps a s d f j k l ;
   1 2 3 4 5 6 7 8 9
-  grv nubs ralt spc
+  grv nubs lalt lmet spc ralt rmet
 )
 
 ;; Default layer: homerow mods enabled
 (deflayer homerow
   @escctrl @a @s @d @f @j @k @l @;
   @1 @2 @3 @4 @5 @6 @7 @8 @9
-  nubs grv @ra-hm spc
+  nubs grv lmet lalt spc rmet @ra-hm-ext
 )
 
 ;; Plain keys, no tap-hold. Toggle back with right alt + space.
 (deflayer base
   @escctrl a s d f j k l ;
   1 2 3 4 5 6 7 8 9
-  nubs grv @ra-base spc
+  nubs grv lmet lalt spc rmet @ra-base-ext
 )
 
 ;; Transient layer: right alt held from homerow, space toggles off
 (deflayer ralt-held-hm
   _ _ _ _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _
-  _ _ _ @hmoff
+  _ _ _ _ @hmoff _ _
 )
 
 ;; Transient layer: right alt held from base, space toggles on
 (deflayer ralt-held-base
   _ _ _ _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _
-  _ _ _ @hmon
+  _ _ _ _ @hmon _ _
 )
