@@ -1,5 +1,5 @@
 [core]
-  editor =
+  editor = dvim
   pager = delta --side-by-side
 
 [include]
