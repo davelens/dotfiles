@@ -32,6 +32,7 @@
       "Bash(drop table:*)"
     ]
   },
+  "model": "opus",
   "hooks": {
     "PreCompact": [
       {
@@ -45,7 +46,10 @@
       }
     ]
   },
-  "model": "opus",
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$DOTFILES_REPO_HOME/config/claude/plugins/cache/caveman/caveman/63e797cd753b/hooks/caveman-statusline.sh\""
+  },
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
@@ -60,9 +64,5 @@
     }
   },
   "skipDangerousModePermissionPrompt": true,
-  "skipAutoPermissionPrompt": true,
-  "statusLine": {
-    "type": "command",
-    "command": "bash \"$DOTFILES_REPO_HOME/config/claude/plugins/cache/caveman/caveman/63e797cd753b/hooks/caveman-statusline.sh\""
-  }
+  "skipAutoPermissionPrompt": true
 }
