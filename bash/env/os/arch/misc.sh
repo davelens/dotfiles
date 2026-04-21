@@ -24,3 +24,5 @@ elif [ "$XDG_SESSION_TYPE" == "x11" ]; then
     echo "${CUN}NOTE${CNUN}: setxkbmap is not available, so I could not remap ctrl to capslock."
   fi
 fi
+
+export WAYLAND_DISPLAY="$(basename "$(ls "$XDG_RUNTIME_DIR"/wayland-* 2>/dev/null | head -n1)")"
