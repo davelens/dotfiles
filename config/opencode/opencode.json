@@ -3,17 +3,14 @@
   "provider": {
     "llama.cpp": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "llama.cpp (local)",
+      "name": "llama.cpp",
       "options": {
-        "baseURL": "http://127.0.0.1:11434/v1"
+        "baseURL": "http://127.0.0.1:8080/v1"
       },
       "models": {
-        "gemma4": {
-          "name": "Gemma4 26B (local)",
-          "limit": {
-            "context": 131072,
-            "output": 65536
-          }
+        "qwen3": {
+          "id": "qwen",
+          "name": "Qwen 3.6 35B UD Q4_K_M"
         }
       }
     }
