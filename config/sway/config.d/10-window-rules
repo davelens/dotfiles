@@ -2,15 +2,17 @@
 
 # Workspace assignments (auto-move to workspace on open)
 # Get a list of app IDs with `swaymsg -t get_tree`.
-assign [app_id="org.wezfurlong.wezterm"] workspace number 1
 assign [app_id="foot"] workspace number 1
-assign [app_id="Firefox"] workspace number 2
-assign [app_id="librewolf"] workspace number 2
-assign [app_id="luakit"] workspace number 2
-assign [app_id="^Spotify$"] workspace number 4
-assign [class="steam"] workspace number 5
-assign [app_id="com.discordapp.Discord"] workspace number 3
-assign [class="discord"] workspace number 3
+assign [app_id="org.wezfurlong.wezterm"] workspace number 1
+assign [app_id="com.mitchellh.ghostty"] workspace number 1
+assign [app_id="librewolf"] workspace number 3
+assign [app_id="firefox"] workspace number 3
+assign [app_id="Firefox"] workspace number 3
+assign [app_id="luakit"] workspace number 3
+assign [class="discord"] workspace number 4
+assign [app_id="com.discordapp.Discord"] workspace number 4
+assign [app_id="^Spotify$"] workspace number 5
+assign [class="steam"] workspace number 6
 
 # Floating windows
 # Get a list of app IDs with `swaymsg -t get_tree`.
