@@ -14,6 +14,9 @@ vim/swp
 node_modules
 config/claude/*
 !config/claude/settings.json
+config/pi/*
+!config/pi/settings.json
+!config/pi/extensions/
 config/macos/karabiner/automatic_backups
 config/opencode/package-lock.json
 config/tmux/plugins
