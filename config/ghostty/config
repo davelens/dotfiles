@@ -1,22 +1,21 @@
 # Ghostty configuration
 # Mirrors the wezterm config at config/wezterm/wezterm.lua
 
-# Font
 font-family = Hack Nerd Font
 font-size = 14
 
-# Line height (wezterm: line_height = 1.08 on Linux)
+# (wezterm: line_height = 1.08 on Linux)
 adjust-cell-height = 8%
 
-# Theme
 theme = Catppuccin Mocha
 
-# Window
 window-padding-x = 10
 window-padding-y = 0
 confirm-close-surface = false
 gtk-titlebar = false
 
-# Clipboard: auto-copy on select, Ctrl+C always sends SIGINT
 copy-on-select = clipboard
 
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor
