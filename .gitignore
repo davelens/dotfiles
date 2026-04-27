@@ -25,6 +25,7 @@ config/tmux/plugins
 bin/utilities/ac
 bin/utilities/arch
 bin/utilities/opencode
+bin/utilities/skills
 bin/utilities/wsl
 
 # Exclude all markdown files in the project root except README.md and LICENSE.md
