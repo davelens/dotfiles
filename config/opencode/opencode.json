@@ -22,8 +22,12 @@
       "/tmp/**": "allow"
     }
   },
+  "skills": {
+    "paths": [
+      "~/.config/agents/skills"
+    ]
+  },
   "plugin": [
     "@ex-machina/opencode-anthropic-auth@1.7.5",
-    "superpowers@git+https://github.com/obra/superpowers.git"
   ]
 }
