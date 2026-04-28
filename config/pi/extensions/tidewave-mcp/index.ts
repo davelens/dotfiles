@@ -100,13 +100,24 @@ export default function (pi: ExtensionAPI) {
     description: "Show configured Tidewave MCP endpoints and active connections for Rails/Phoenix projects.",
     promptSnippet: "Show Tidewave MCP endpoint status for local Rails and Phoenix apps.",
     parameters: Type.Object({}),
-    async execute() {
+    async execute(_toolCallId: string, _params: unknown, signal?: AbortSignal) {
       const endpoints = configuredEndpoints();
-      const status = endpoints.map((endpoint) => ({
-        ...endpoint,
-        connected: connections.has(endpoint.name),
-        transport: connections.get(endpoint.name)?.transportKind,
-        connectedAt: connections.get(endpoint.name)?.connectedAt,
+      const status = await Promise.all(endpoints.map(async (endpoint) => {
+        try {
+          const connection = await connectEndpoint(endpoint, signal);
+          return {
+            ...endpoint,
+            connected: true,
+            transport: connection.transportKind,
+            connectedAt: connection.connectedAt,
+          };
+        } catch (error) {
+          return {
+            ...endpoint,
+            connected: false,
+            error: error instanceof Error ? error.message : String(error),
+          };
+        }
       }));
       return { content: [{ type: "text", text: JSON.stringify(status, null, 2) }], details: { endpoints: status } };
     },
