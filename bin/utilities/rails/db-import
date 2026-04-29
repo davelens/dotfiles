@@ -171,7 +171,7 @@ test_database=$(get_db_credential "$app" "test" "database")
 [[ -z "$local_db" ]] && fail "[$me] ERROR: No local database found in config/database.yml."
 
 if [[ -z "$remote_db" ]]; then
-  printf "[%s] WARNING: No production database found in config/database.yml.\n" "$me"
+  printf "[%s] WARNING: No $env database found in config/database.yml.\n" "$me"
   read -r -p "[$me] Enter remote database name (default: website_prod): " remote_db
   [[ -z "$remote_db" ]] && remote_db="website_prod"
 fi
