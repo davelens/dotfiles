@@ -4,8 +4,9 @@
 font-family = Hack Nerd Font
 font-size = 14
 
-# (wezterm: line_height = 1.08 on Linux)
-adjust-cell-height = 8%
+# We use 12% in ghostty; the 8% scaling I have on wezterm produces artifacting
+# in ghostty.
+adjust-cell-height = 12%
 
 theme = Catppuccin Mocha
 
