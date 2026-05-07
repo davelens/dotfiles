@@ -13,7 +13,7 @@ set -e
 deploy_to_staging() {
   [[ ! -f config/deploy/staging.rb ]] && fail "No capistrano staging environment is configured\!"
   sed -i -e "s/set :branch, 'develop'/set :branch, ENV['BRANCH'] || 'develop'/g" config/deploy/staging.rb
-  utility rails deploy -s
+  utility rails deploy --staging
 }
 
 ask_to_push_to_temp() {
@@ -21,9 +21,12 @@ ask_to_push_to_temp() {
     read -n1 -p "Do you want to push to the remote temp branch? " yn
     printf "\n"
     case $yn in
-      [Yy]* ) git push origin temp; break;;
-      [Nn]* ) break;;
-      * ) echo "Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o.";;
+    [Yy]*)
+      git push origin temp
+      break
+      ;;
+    [Nn]*) break ;;
+    *) echo "Please answer $(tput smul)Y$(tput rmul)es or $(tput smul)N$(tput rmul)o." ;;
     esac
   done
 }
