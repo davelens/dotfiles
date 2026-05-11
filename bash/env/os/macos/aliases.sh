@@ -10,3 +10,6 @@ alias rm='$(which trash) &>/dev/null && trash'
 # Flush the Directory Service cache on macos. Useful for forcing
 # hostname/user/groups changes to update.
 alias clearcache='sudo dscacheutil -flushcache'
+
+# MySQL 5.6 "global-transaction-error on dump"-fix
+alias mysqldump='mysqldump --set-gtid-purged=OFF'
