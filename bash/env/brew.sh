@@ -1,6 +1,7 @@
 ###############################################################################
 # Env settings and exports related to [Homebrew](https://brew.sh/).
 # Primarily used to bootstrap BREW_PATH and HOMEBREW_REPOSITORY.
+# Intended to work on both macos and linux.
 ###############################################################################
 
 # On macos w/ Apple silicon chips (on Intel chips it used to be in /usr/local).
