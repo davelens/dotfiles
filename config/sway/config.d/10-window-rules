@@ -10,6 +10,7 @@ assign [app_id="firefox"] workspace number 2
 assign [app_id="Firefox"] workspace number 2
 assign [app_id="luakit"] workspace number 2
 assign [app_id="libreoffice-*"] workspace number 3
+assign [app_id="discord"] workspace number 4
 assign [class="discord"] workspace number 4
 assign [app_id="com.discordapp.Discord"] workspace number 4
 assign [app_id="^Spotify$"] workspace number 5
