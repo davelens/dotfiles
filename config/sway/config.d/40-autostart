@@ -1,5 +1,7 @@
 ### Autostart #################################################################
 
+xwayland enable
+
 # Automatic H/V split tiling.
 exec autotiling-rs
 
