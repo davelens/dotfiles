@@ -1,0 +1,31 @@
+[Default Applications]
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+text/html=userapp-Firefox-ORULP3.desktop
+x-scheme-handler/http=userapp-Firefox-ORULP3.desktop
+x-scheme-handler/https=userapp-Firefox-ORULP3.desktop
+x-scheme-handler/about=firefox.desktop
+x-scheme-handler/unknown=firefox.desktop
+application/pdf=firefox.desktop
+image/jpeg=com.github.phase1geo.annotator.desktop
+image/png=com.github.phase1geo.annotator.desktop
+image/gif=com.github.phase1geo.annotator.desktop
+image/webp=com.github.phase1geo.annotator.desktop
+x-scheme-handler/chrome=userapp-Firefox-ORULP3.desktop
+application/x-extension-htm=userapp-Firefox-ORULP3.desktop
+application/x-extension-html=userapp-Firefox-ORULP3.desktop
+application/x-extension-shtml=userapp-Firefox-ORULP3.desktop
+application/xhtml+xml=userapp-Firefox-ORULP3.desktop
+application/x-extension-xhtml=userapp-Firefox-ORULP3.desktop
+application/x-extension-xht=userapp-Firefox-ORULP3.desktop
+
+[Added Associations]
+x-scheme-handler/http=userapp-Firefox-ORULP3.desktop;
+x-scheme-handler/https=userapp-Firefox-ORULP3.desktop;
+x-scheme-handler/chrome=userapp-Firefox-ORULP3.desktop;
+text/html=userapp-Firefox-ORULP3.desktop;
+application/x-extension-htm=userapp-Firefox-ORULP3.desktop;
+application/x-extension-html=userapp-Firefox-ORULP3.desktop;
+application/x-extension-shtml=userapp-Firefox-ORULP3.desktop;
+application/xhtml+xml=userapp-Firefox-ORULP3.desktop;
+application/x-extension-xhtml=userapp-Firefox-ORULP3.desktop;
+application/x-extension-xht=userapp-Firefox-ORULP3.desktop;
