@@ -11,9 +11,10 @@ input type:pointer {
   pointer_accel -0.5
 }
 
-# To configure keyboard layouts e.a.
+# Disable Caps Lock entirely. kanata remaps `caps` to escape/ctrl, leaving no
+# key that can emit a real Caps Lock, so a stray toggle would otherwise get
+# stuck on with no way to turn it off.
 # Read `man 5 sway-input` for more info.
-#
-#   input type:keyboard {
-#       xkb_layout "eu"
-#   }
+input type:keyboard {
+  xkb_options caps:none
+}
