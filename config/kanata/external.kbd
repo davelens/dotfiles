@@ -3,8 +3,28 @@
 
 (defcfg
   process-unmapped-keys yes
-  linux-dev-names-exclude (
-    "Framework Laptop 16 Keyboard Module - ISO"
+  ;; Don't exit if no allowed keyboard is connected at startup (common for a
+  ;; Bluetooth keyboard that pairs after boot); wait and pick it up via the
+  ;; device watch loop instead of crash-looping under Restart=on-failure.
+  linux-continue-if-no-devs-found yes
+  ;; Allow-list ONLY the real external keyboards. Using an exclude list here
+  ;; caused kanata to grab every pseudo-keyboard device (e.g. the WH-1000XM4
+  ;; AVRCP control endpoint), churning grab/ungrab on every Bluetooth connect
+  ;; and desyncing tap-hold state (the "jkl stop working" bug).
+  ;;
+  ;; Names are matched EXACTLY (string ==, not substring) against what kanata
+  ;; logs at startup ("registering /dev/input/eventN: <name>"). The kernel name
+  ;; field caps at 32 BYTES; note the curly apostrophe (U+2019, 3 bytes), not a
+  ;; straight '. The home name is cut mid-word at that 32-byte limit.
+  ;;
+  ;; Both work-keyboard candidates fit within 32 bytes, so their closing ")" is
+  ;; present. Both are whitelisted until the actual one is confirmed; trim the
+  ;; unused entry once you've seen the real "registering" line at the office:
+  ;;   journalctl -u kanata-external.service | grep registering
+  linux-dev-names-include (
+    "Dave Lens’s keyboard (home, to"
+    "Dave Lens’s keyboard (kantoor)"
+    "Dave Lens’s keyboard (bureau)"
   )
 )
 

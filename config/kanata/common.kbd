@@ -1,5 +1,6 @@
 ;; Shared kanata configuration
-;; Home row mods with caps->ctrl/esc, toggleable via right alt + space
+;; Home row mods (a s d f / j k l ;) plus caps->ctrl,
+;; toggleable on/off via right alt + space.
 
 (defvar
   tap-time 150
@@ -7,6 +8,8 @@
 )
 
 (defalias
+  ;; Caps Lock acts as a plain Left Ctrl (kept as an alias so the deflayers
+  ;; read uniformly; name is historical).
   escctrl lctl
   a (tap-hold $tap-time $hold-time a lctl)
   s (tap-hold $tap-time $hold-time s lalt)
