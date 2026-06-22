@@ -7,7 +7,7 @@
 #   FRAMEWORK_PRIORITY   - Integer for detection order (lower = higher priority)
 #   detect()             - Returns 0 if project matches this framework
 #   db_adapter()         - Returns the database adapter name (or empty)
-#   db_connection_url()  - Command to get database connection URL for lazysql (or empty)
+#   db_connection_url()  - Command to get database connection URL for dotsql (or empty)
 #   bootstrap()          - Sets up a freshly cloned project
 #   repl_command()       - Command to start the REPL (or empty)
 #   server_command()     - Command to start the server (or empty)
@@ -34,7 +34,7 @@ setup_cli_window() {
   tmux send-keys -t "$session:cli" "clear" C-m
 }
 
-# Creates database client window using lazysql
+# Creates database client window using dotsql
 setup_db_window() {
   local session="$1"
   local path="$2"
@@ -46,8 +46,8 @@ setup_db_window() {
   sleep 0.3
 
   if [[ -n "$db_url_cmd" ]]; then
-    # Unset PGSERVICEFILE as lib/pq (used by lazysql) doesn't support it
-    tmux send-keys -t "$session:db" "clear && unset PGSERVICEFILE && lazysql \$($db_url_cmd)" C-m
+    # Unset PGSERVICEFILE as lib/pq (used by dotsql) doesn't support it
+    tmux send-keys -t "$session:db" "clear && unset PGSERVICEFILE && dotsql \$($db_url_cmd)" C-m
   else
     tmux send-keys -t "$session:db" "clear" C-m
   fi

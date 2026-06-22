@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Generate a database connection URL for use with lazysql.
+# Generate a database connection URL for use with dotsql.
 #
 # Usage:
 #   utility phoenix db-connection-url                  # URL for dev
@@ -100,8 +100,8 @@ username="${username:-postgres}"
 hostname="${hostname:-localhost}"
 if [[ -z "$port" ]]; then
   case "$adapter" in
-    postgresql) port="5432" ;;
-    mysql) port="3306" ;;
+  postgresql) port="5432" ;;
+  mysql) port="3306" ;;
   esac
 fi
 

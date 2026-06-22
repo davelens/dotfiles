@@ -24,7 +24,7 @@ alias cdir='cd "${_%/*}"' # Fix accidentally cd'ing into a filename
 alias d="utility tmux repo"
 alias dc='docker compose'
 alias ds='du -sh */' # Short for "directory sizes"
-alias kodi='lazysql mysql://kodi:${KODI_DB_PASSWORD}@192.168.0.184:3307/kodi_video131'
+alias kodi='dotsql mysql://kodi:${KODI_DB_PASSWORD}@192.168.0.184:3307/kodi_video131'
 alias lsa='gls -ahl --group-directories-first --color=auto'
 alias s="exec \$SHELL"
 alias ta='tmux attach'
