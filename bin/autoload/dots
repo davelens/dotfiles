@@ -18,8 +18,9 @@ usage() {
   echo "  install      Attempts a (re)install through dotbot."
   echo "  update       Updates dotbot and all local dot-repos."
   echo "  setup        Sets up additional dotfile repositories."
-  echo "               Use --arch to setup dotsys (arch), dotvim, and dotshell."
-  echo "               Use --dotsys <arch|macos|wsl> to setup davelens/dotsys."
+  echo "               Use --arch to setup dotsys for Arch Linux, dotvim, and dotshell."
+  echo "               Use --void to setup dotsys for Void Linux, dotvim, and dotshell."
+  echo "               Use --dotsys <arch|void|macos|wsl> to setup davelens/dotsys."
   echo "               Use --dotshell to setup davelens/dotshell."
   echo "               Use --dotvim to setup davelens/dotvim."
   echo
@@ -117,19 +118,25 @@ setup() {
       dotshell=1
       shift
       ;;
+    --void)
+      dotsys="void"
+      dotvim=1
+      dotshell=1
+      shift
+      ;;
     --dotsys)
       shift
       if [[ $# -eq 0 ]]; then
-        $print_status -i error "--dotsys requires a value (arch, macos, or wsl)"
+        $print_status -i error "--dotsys requires a value (arch, void, macos, or wsl)"
         exit 1
       fi
 
       case "$1" in
-      arch | macos | wsl)
+      arch | void | macos | wsl)
         dotsys="$1"
         ;;
       *)
-        $print_status -i error "Invalid dotsys value: $1 (must be arch, macos, or wsl)"
+        $print_status -i error "Invalid dotsys value: $1 (must be arch, void, macos, or wsl)"
         exit 1
         ;;
       esac
