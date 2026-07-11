@@ -13,3 +13,6 @@ alias clearcache='sudo dscacheutil -flushcache'
 
 # MySQL 5.6 "global-transaction-error on dump"-fix
 alias mysqldump='mysqldump --set-gtid-purged=OFF'
+
+# We use GNU ls on macos
+alias lsa='gls -ahl --group-directories-first --color=auto'

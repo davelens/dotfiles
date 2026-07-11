@@ -25,7 +25,7 @@ alias d="utility tmux repo"
 alias dc='docker compose'
 alias ds='du -sh */' # Short for "directory sizes"
 alias kodi='dotsql mysql://kodi:${KODI_DB_PASSWORD}@192.168.0.184:3307/kodi_video131'
-alias lsa='gls -ahl --group-directories-first --color=auto'
+alias lsa='ls -ahl --group-directories-first --color=auto'
 alias s="exec \$SHELL"
 alias ta='tmux attach'
 alias trim="awk '{\$1=\$1;print}'" # Strip leading/trailing whitespace
