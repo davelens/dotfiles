@@ -27,9 +27,15 @@ profile desktop-2 {
     exec systemctl --user restart quickshell.service
 }
 
-profile work {
+profile work-1 {
     output eDP-2 disable
     output DP-6 disable
     output DP-7 enable position 0,0 scale 1.4
+    exec systemctl --user restart quickshell.service
+}
+
+profile work-2 {
+    output eDP-2 disable
+    output "Apple Computer Inc StudioDisplay Unknown" enable position 0,0 scale 2.0
     exec systemctl --user restart quickshell.service
 }
