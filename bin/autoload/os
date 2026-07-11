@@ -7,6 +7,7 @@ detect_linux_distro() {
     . /etc/os-release
     case "$ID" in
       arch) echo 'arch' ;;
+      void) echo 'void' ;;
       nixos) echo 'nixos' ;;
       debian|ubuntu|linuxmint|pop) echo 'debian' ;;
       fedora|rhel|centos|rocky|alma) echo 'fedora' ;;
