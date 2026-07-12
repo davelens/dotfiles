@@ -8,7 +8,7 @@ font-size = 14
 # in ghostty.
 adjust-cell-height = 12%
 
-theme = Catppuccin Mocha
+theme = catppuccin-mocha
 
 window-padding-x = 10
 window-padding-y = 0
