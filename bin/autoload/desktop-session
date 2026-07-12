@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -e
+
+usage() {
+  echo "Usage: $(basename "$0") <launch|stop|finalize> [COMMAND...]" >&2
+  exit 2
+}
+
+[[ $# -gt 0 ]] || usage
+action="$1"
+shift
+
+case "$action" in
+launch)
+  [[ $# -gt 0 ]] || usage
+  if command -v uwsm >/dev/null; then
+    exec uwsm app -- "$@"
+  fi
+  exec "$@"
+  ;;
+stop)
+  if command -v uwsm >/dev/null; then
+    exec uwsm stop
+  fi
+  if command -v swaymsg >/dev/null; then
+    exec swaymsg exit
+  fi
+  echo "error: no supported desktop session manager found" >&2
+  exit 1
+  ;;
+finalize)
+  if command -v uwsm >/dev/null; then
+    exec uwsm finalize
+  fi
+
+  session_variables=(
+    DISPLAY
+    I3SOCK
+    SWAYSOCK
+    WAYLAND_DISPLAY
+    XCURSOR_SIZE
+    XCURSOR_THEME
+    XDG_CURRENT_DESKTOP
+  )
+
+  if command -v turnstile-update-runit-env >/dev/null; then
+    turnstile-update-runit-env "${session_variables[@]}"
+  fi
+  if command -v dbus-update-activation-environment >/dev/null; then
+    dbus-update-activation-environment "${session_variables[@]}"
+  fi
+  ;;
+*)
+  usage
+  ;;
+esac

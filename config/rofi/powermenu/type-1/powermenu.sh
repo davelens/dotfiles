@@ -79,7 +79,7 @@ run_cmd() {
       elif [[ "$DESKTOP_SESSION" == 'plasma' ]]; then
         qdbus org.kde.ksmserver /KSMServer logout 0 0 0
       elif [[ "$DESKTOP_SESSION" == 'sway' ]]; then
-        uwsm stop
+        "${XDG_BIN_HOME:-$HOME/.local/bin}/desktop-session" stop
       fi
     fi
   else

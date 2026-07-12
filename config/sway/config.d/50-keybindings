@@ -1,6 +1,6 @@
 ### Launchers #################################################################
 
-bindsym $mod+Return exec uwsm app -- $term
+bindsym $mod+Return exec ~/.local/bin/desktop-session launch $term
 bindsym $mod+Space exec $launcher
 # bindsym $mod+u exec $browser
 bindsym $mod+c exec cliphist list | ~/.local/bin/rofi-start --dmenu --theme style-5-no-indent | cliphist decode | wl-copy
@@ -35,7 +35,7 @@ bindsym $mod+Shift+q exec \
   -t warning \
   -m 'You pressed the exit shortcut. Do you really want to exit sway? \
       This will end your Wayland session.' \
-  -B 'Yes, exit sway' 'uwsm stop'
+  -B 'Yes, exit sway' '~/.local/bin/desktop-session stop'
 
 # Focus windows
 bindsym $mod+$left focus left

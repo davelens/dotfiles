@@ -4,6 +4,7 @@
 set -e
 
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
 
 launcher="type-1"
 # Available styles are 1 to 15.
@@ -56,7 +57,7 @@ main() {
     if [ $dmenu -eq 1 ]; then
       cmd=(rofi -dmenu show)
     else
-      cmd=(rofi -show "$mode" -run-command "uwsm app -- {cmd}")
+      cmd=(rofi -show "$mode" -run-command "$XDG_BIN_HOME/desktop-session launch {cmd}")
     fi
 
     "${cmd[@]}" -theme "$XDG_CONFIG_HOME/rofi/launchers/${launcher}/${theme}.rasi" "${extra_args[@]}"
