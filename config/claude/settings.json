@@ -1,4 +1,9 @@
 {
+  "disableBundledSkills": true,
+  "disableWorkflows": true,
+  "disableRemoteControl": true,
+  "disableClaudeAiConnectors": true,
+  "disableArtifact": true,
   "permissions": {
     "allow": [
       "Bash(cat:*)",
@@ -26,10 +31,23 @@
       "WebSearch"
     ],
     "deny": [
-      "Bash(rm -rf:*)",
+      "AskUserQuestion",
+      "Bash(drop table:*)",
       "Bash(git push --force:*)",
       "Bash(git reset --hard:*)",
-      "Bash(drop table:*)"
+      "Bash(rm -rf:*)",
+      "CronCreate",
+      "CronDelete",
+      "CronList",
+      "DesignSync",
+      "EnterPlanMode",
+      "ExitPlanMode",
+      "NotebookEdit",
+      "PushNotification",
+      "RemoteTrigger",
+      "ReportFindings",
+      "ScheduleWakeup",
+      "SendMessage"
     ]
   },
   "hooks": {
