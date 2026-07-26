@@ -1,9 +1,4 @@
 {
-  "disableBundledSkills": true,
-  "disableWorkflows": true,
-  "disableRemoteControl": true,
-  "disableClaudeAiConnectors": true,
-  "disableArtifact": true,
   "permissions": {
     "allow": [
       "Bash(cat:*)",
@@ -50,6 +45,8 @@
       "SendMessage"
     ]
   },
+  "disableClaudeAiConnectors": true,
+  "disableBundledSkills": true,
   "hooks": {
     "PreCompact": [
       {
@@ -74,6 +71,9 @@
       }
     ]
   },
+  "disableRemoteControl": true,
+  "disableWorkflows": true,
+  "disableArtifact": true,
   "statusLine": {
     "type": "command",
     "command": "bash \"$DOTFILES_REPO_HOME/config/claude/plugins/cache/caveman/caveman/63e797cd753b/hooks/caveman-statusline.sh\""
@@ -92,5 +92,6 @@
     }
   },
   "skipDangerousModePermissionPrompt": true,
-  "theme": "dark"
+  "theme": "dark",
+  "model": "opus"
 }
