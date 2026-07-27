@@ -25,13 +25,20 @@
     "Dave Lens’s keyboard (home, to"
     "Dave Lens’s keyboard (kantoor)"
     "Dave Lens’s keyboard (bureau)"
+    ;; REQUIRES kanata >= 1.12: this keyboard exposes a second endpoint under
+    ;; the SAME name (Touch ID interface) whose only key, BTN_0, is reported by
+    ;; firmware as permanently pressed. kanata <= 1.11 busy-spins at 100% CPU
+    ;; waiting for it to release (jtroo/kanata#1954), deadening ALL keyboards on
+    ;; this instance. 1.12 warns "timed out waiting ... to release its keys"
+    ;; after ~5s and proceeds; that warning in the journal is expected.
+    "Apple Inc. Magic Keyboard with Touch ID"
   )
 )
 
 (include common.kbd)
 
 (defalias
-  ;; Physical right command: tap for right option, press another key to use toggle layer immediately.
+  ;; Physical right option: tap for right option, press another key to use toggle layer immediately.
   ra-hm-ext (tap-hold-press 200 200 ralt (layer-while-held ralt-held-hm))
   ra-base-ext (tap-hold-press 200 200 ralt (layer-while-held ralt-held-base))
 )
@@ -46,14 +53,14 @@
 (deflayer homerow
   @escctrl @a @s @d @f @j @k @l @;
   @1 @2 @3 @4 @5 @6 @7 @8 @9
-  nubs grv lmet lalt spc rmet @ra-hm-ext
+  nubs grv lalt lmet spc @ra-hm-ext rmet
 )
 
 ;; Plain keys, no tap-hold. Toggle back with right alt + space.
 (deflayer base
   @escctrl a s d f j k l ;
   1 2 3 4 5 6 7 8 9
-  nubs grv lmet lalt spc rmet @ra-base-ext
+  nubs grv lalt lmet spc @ra-base-ext rmet
 )
 
 ;; Transient layer: right alt held from homerow, space toggles off
