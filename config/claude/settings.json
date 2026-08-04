@@ -1,84 +1,8 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(cat:*)",
-      "Bash(cp:*)",
-      "Bash(curl:*)",
-      "Bash(dir:*)",
-      "Bash(echo:*)",
-      "Bash(find:*)",
-      "Bash(gh:*)",
-      "Bash(git:*)",
-      "Bash(go:*)",
-      "Bash(grep:*)",
-      "Bash(ls:*)",
-      "Bash(mkdir:*)",
-      "Bash(mv:*)",
-      "Bash(node:*)",
-      "Bash(npm:*)",
-      "Bash(npx:*)",
-      "Bash(pwd:*)",
-      "Bash(tree:*)",
-      "Bash(type:*)",
-      "Bash(where:*)",
-      "Bash(which:*)",
-      "WebFetch",
-      "WebSearch"
-    ],
-    "deny": [
-      "AskUserQuestion",
-      "Bash(drop table:*)",
-      "Bash(git push --force:*)",
-      "Bash(git reset --hard:*)",
-      "Bash(rm -rf:*)",
-      "CronCreate",
-      "CronDelete",
-      "CronList",
-      "DesignSync",
-      "EnterPlanMode",
-      "ExitPlanMode",
-      "NotebookEdit",
-      "PushNotification",
-      "RemoteTrigger",
-      "ReportFindings",
-      "ScheduleWakeup",
-      "SendMessage"
-    ]
-  },
   "disableClaudeAiConnectors": true,
   "disableBundledSkills": true,
-  "hooks": {
-    "PreCompact": [
-      {
-        "matcher": "auto",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo CONTEXT_SAVE_TRIGGERED"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "rtk hook claude"
-          }
-        ]
-      }
-    ]
-  },
   "disableRemoteControl": true,
   "disableWorkflows": true,
   "disableArtifact": true,
-  "enabledPlugins": {
-    "superpowers@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true
-  },
-  "skipDangerousModePermissionPrompt": true,
-  "theme": "dark",
-  "model": "opus"
+  "skipDangerousModePermissionPrompt": true
 }
