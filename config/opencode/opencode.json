@@ -13,8 +13,15 @@
           "name": "Qwen 3.6 35B UD Q4_K_M"
         }
       }
+    },
+    "anthropic": {
+      "options": {
+        "baseURL": "http://127.0.0.1:3456",
+        "apiKey": "dummy"
+      }
     }
   },
+  "model": "anthropic/claude-opus-5",
   "permission": {
     "external_directory": {
       "~/.config/**": "allow",
@@ -28,6 +35,6 @@
     ]
   },
   "plugin": [
-    "@ex-machina/opencode-anthropic-auth@1.8.1",
+    "opencode-with-claude@1.8.0"
   ]
 }
