@@ -13,5 +13,6 @@ exec swayidle -w \
   before-sleep 'swaylock -f -c 000000'
 
 # Clipboard manager (supports text and images)
+exec wl-clip-persist --clipboard regular
 exec wl-paste --type text --watch cliphist store
 exec wl-paste --type image --watch cliphist store
