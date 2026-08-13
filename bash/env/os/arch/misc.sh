@@ -25,4 +25,4 @@ elif [ "$XDG_SESSION_TYPE" == "x11" ]; then
   fi
 fi
 
-export WAYLAND_DISPLAY="$(basename "$(ls "$XDG_RUNTIME_DIR"/wayland-* 2>/dev/null | head -n1)")"
+export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-$(basename "$(ls "$XDG_RUNTIME_DIR"/wayland-* 2>/dev/null | head -n1)")}"
