@@ -7,6 +7,7 @@ alias rofi-test='for i in $(seq 8); do for j in $(seq 15); do echo "$i - $j"; ro
 if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
   alias pbcopy="wl-copy"
   alias pbpaste="wl-paste"
+  alias wssh="waypipe --no-gpu ssh"
 elif command -v xclip; then
   alias pbcopy="xclip -selection clipboard"
   alias pbpaste="xclip -selection clipboard -o"
