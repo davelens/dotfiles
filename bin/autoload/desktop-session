@@ -30,7 +30,9 @@ stop)
   ;;
 finalize)
   if command -v uwsm >/dev/null; then
-    exec uwsm finalize
+    uwsm finalize
+    systemctl --user restart xdg-desktop-portal.service
+    exit
   fi
 
   session_variables=(
