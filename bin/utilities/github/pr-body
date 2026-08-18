@@ -39,10 +39,11 @@ if [ ! $pr_id ]; then
 fi
 
 # Prefill our buffer with the existing PR body.
-if [ ! -f ".git/$branch_name.md" ]; then
-  echo "Creating .git/$branch_name.md"
+if [ ! -f "$body_file" ]; then
+  echo "Creating $body_file"
+  mkdir -p "$(dirname "$body_file")"
   [ -f output.json ] && rm output.json
-  gh pr view $pr_id --json body --jq '.body' | tr -d '\r' >.git/$branch_name.md
+  gh pr view $pr_id --json body --jq '.body' | tr -d '\r' >"$body_file"
   #cat output.json
   #ruby -rjson -e 'j = JSON.parse(File.read("output.json"));puts j["body"]' > .git/$branch_name.md
   #rm output.json
@@ -50,14 +51,14 @@ fi
 
 # Storing the PR body locally, using the name of the branch. Commit it or add it
 # to your .gitignore.
-$EDITOR ".git/$branch_name.md"
+$EDITOR "$body_file"
 
 # If for some reason you end up removing the file at this point, we just exit.
-[ ! -f ".git/$branch_name.md" ] && exit
+[ ! -f "$body_file" ] && exit
 
 echo
 echo "*********************************<BODY CONTENT>**********************************"
-cat .git/$branch_name.md
+cat "$body_file"
 echo "*********************************</BODY CONTENT>*********************************"
 echo
 
@@ -65,7 +66,7 @@ while true; do
   read -n1 -p "Push to GitHub? (y/n) " yn
   case $yn in
   [Yy]*)
-    echo && gh pr edit "$pr_id" --body "$(cat .git/$branch_name.md)"
+    echo && gh pr edit "$pr_id" --body "$(cat "$body_file")"
     break
     ;;
   [Nn]*) echo && exit ;;
