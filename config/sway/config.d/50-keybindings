@@ -24,8 +24,8 @@ bindsym $mod+Shift+r reload; exec systemctl --user restart kanshi.service
 # bindsym mod4+Shift+p exec ~/.local/bin/rofi-start --powermenu
 bindsym $mod+Shift+s exec ~/.local/bin/dshell settings toggle
 bindsym $mod+Shift+n exec ~/.local/bin/dshell notifications toggle
-bindsym $mod+Shift+u exec ~/.local/bin/dshell popup toggle updates
-bindsym $mod+Shift+b exec ~/.local/bin/dshell bar focus toggle
+bindsym $mod+Shift+u exec ~/.local/bin/dshell system-updates toggle
+bindsym $mod+Shift+b exec ~/.local/bin/dshell status-bar focus toggle
 bindsym mod4+Shift+p exec ~/.local/bin/dshell power toggle
 bindsym mod4+Shift+s exec ~/.local/bin/dshell screen-recording files toggle
 bindsym mod4+Shift+w exec ~/.local/bin/dshell wallpaper browser toggle
