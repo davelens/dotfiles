@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
+tmp="$(mktemp -d "$repo/.screenshot-test.XXXXXX")"
+trap 'rm -rf "$tmp"' EXIT
+mkdir -p "$tmp/bin" "$tmp/home"
+
+cat >"$tmp/bin/stub" <<'STUB'
+#!/usr/bin/env bash
+case "${0##*/}" in
+os) echo linux ;;
+xdg-user-dir) echo "$TEST_ROOT/Pictures" ;;
+swaymsg)
+  if [[ "$1" == "-t" ]]; then
+    echo '[{"name":"eDP-2","active":true,"focused":true,"scale":1.333333,"rect":{"x":0,"y":1540},"current_mode":{"width":2560,"height":1600}}]'
+  else
+    printf '%s\n' "$*" >"$TEST_ROOT/swaymsg-command"
+  fi
+  ;;
+flameshot) printf PNG ;;
+wl-copy) cat >/dev/null ;;
+notify-send) ;;
+date) echo 2026-01-01-00-00-00 ;;
+esac
+STUB
+chmod +x "$tmp/bin/stub"
+for command in os xdg-user-dir swaymsg flameshot wl-copy notify-send date; do
+  ln -s stub "$tmp/bin/$command"
+done
+
+TEST_ROOT="$tmp" HOME="$tmp/home" XDG_BIN_HOME="$tmp/bin" PATH="$tmp/bin:$PATH" \
+  "$repo/bin/utilities/misc/screenshot"
+
+grep -Fxq 'output eDP-2 pos 0 0' "$tmp/swaymsg-command"

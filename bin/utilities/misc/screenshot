@@ -79,6 +79,12 @@ geometry="$(screen_geometry)"
 filename="$(date +%Y-%m-%d-%H-%M-%S)_${geometry}.png"
 filepath="${dir}/${filename}"
 
+# Flameshot crops its canvas when a lone Sway output keeps a stale non-zero origin.
+if command -v swaymsg &>/dev/null; then
+  displaced_output="$(swaymsg -t get_outputs | jq -r 'map(select(.active)) | if length == 1 and (.[0].rect.x != 0 or .[0].rect.y != 0) then .[0].name else empty end')"
+  [[ -z "$displaced_output" ]] || swaymsg output "$displaced_output" pos 0 0 >/dev/null
+fi
+
 flameshot gui --raw 2>/dev/null >"$filepath" || true
 
 if [[ ! -s "$filepath" ]]; then
