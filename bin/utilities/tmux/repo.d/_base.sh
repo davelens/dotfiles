@@ -20,9 +20,10 @@
 setup_editor_window() {
   local session="$1"
   local path="$2"
+  local file="${3:-}"
 
   tmux new-session -s "$session" -n editor -c "$path" -d
-  tmux send-keys -t "$session:editor" "clear && $EDITOR" C-m
+  tmux send-keys -t "$session:editor" "clear && $EDITOR${file:+ $file}" C-m
 }
 
 # Creates a CLI window for general shell use
@@ -113,8 +114,9 @@ setup_standard_windows() {
 setup_minimal_windows() {
   local session="$1"
   local path="$2"
+  local file="${3:-}"
 
-  setup_editor_window "$session" "$path"
+  setup_editor_window "$session" "$path" "$file"
   setup_cli_window "$session" "$path"
 }
 
