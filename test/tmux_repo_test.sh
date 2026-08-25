@@ -9,6 +9,15 @@ export print_status=true
 # shellcheck source=../bin/utilities/tmux/repo
 source "$project_root/bin/utilities/tmux/repo"
 
+printf '#!/usr/bin/env bash\nprintf y\n' >"$test_root/prompt"
+chmod +x "$test_root/prompt"
+export prompt_user="$test_root/prompt"
+confirm_repo_creation "acme/example"
+printf '#!/usr/bin/env bash\nprintf n\n' >"$test_root/prompt"
+if confirm_repo_creation "acme/example"; then
+  exit 1
+fi
+
 create_repo "acme/example" "$test_root/acme/example"
 
 test "$(cat "$test_root/acme/example/README.md")" = "# example"

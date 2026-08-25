@@ -80,6 +80,14 @@ create_repo() {
   $print_status -i ok "Created $namespace"
 }
 
+confirm_repo_creation() {
+  local namespace="$1"
+  local answer
+
+  answer=$($prompt_user -yn "[$me] No GitHub repository found for $namespace. Create it locally?")
+  [[ "$answer" =~ [Yy] ]]
+}
+
 ###############################################################################
 # Framework detection
 ###############################################################################
@@ -182,6 +190,7 @@ main() {
     else
       clone_status=$?
       [ "$clone_status" -eq 2 ] || exit 1
+      confirm_repo_creation "$target" || exit 0
       create_repo "$target" "$destination"
     fi
   fi
