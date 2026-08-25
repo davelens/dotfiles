@@ -5,7 +5,7 @@
 #
 # Usage:
 #   repo                         Fuzzy find a project in $REPO_NAMESPACE
-#   repo <user>/<repo>           Open or clone a specific namespace
+#   repo <user>/<repo>           Open, clone, or create a specific namespace
 #   repo -n                      Search GitHub API for repos to clone
 #   repo -x                      Kill a tmux session via fuzzy selection
 #
@@ -35,7 +35,7 @@ usage() {
   echo "  -h|--help      Show this help message and exit."
   echo "  -x             Kill a tmux session via fuzzy selection."
   echo "  -n             Search GitHub for repos (uses GITHUB_PERSONAL_ACCESS_TOKEN)."
-  echo "  <namespace>    A github namespace (e.g. 'davelens/dotfiles')."
+  echo "  <namespace>    A GitHub namespace to open, clone, or create (e.g. 'davelens/dotfiles')."
   echo
   echo "Environment:"
   echo "  REPO_NAMESPACE   Base directory for projects (default: ~/Repositories)"
@@ -52,15 +52,32 @@ session_name_from_path() {
 clone_repo() {
   local namespace="$1"
   local destination="$2"
+  local output
 
+  mkdir -p "$(dirname "$destination")"
   $print_status -i pending "Cloning $namespace..."
-  if git clone "git@github.com:$namespace.git" "$destination" 2>/dev/null; then
+  if output=$(git clone "git@github.com:$namespace.git" "$destination" 2>&1); then
     $print_status -i ok "Cloned $namespace"
     return 0
-  else
-    $print_status -i error "Failed to clone $namespace"
-    return 1
   fi
+
+  if [[ "$output" == *"Repository not found."* ]]; then
+    return 2
+  fi
+
+  $print_status -i error "Failed to clone $namespace"
+  printf '%s\n' "$output" >&2
+  return 1
+}
+
+create_repo() {
+  local namespace="$1"
+  local destination="$2"
+
+  mkdir -p "$destination"
+  git init -q "$destination"
+  printf '# %s\n' "${namespace##*/}" >"$destination/README.md"
+  $print_status -i ok "Created $namespace"
 }
 
 ###############################################################################
@@ -116,7 +133,7 @@ detect_framework() {
 ###############################################################################
 
 main() {
-  local target destination session bootstrap=0 start_server
+  local target destination session bootstrap=0 start_server clone_status
 
   while [ $# -gt 0 ]; do
     case "$1" in
@@ -157,10 +174,16 @@ main() {
 
   destination="$NAMESPACE/$target"
 
-  # Clone if directory doesn't exist
+  # Clone or create if directory doesn't exist
   if [ ! -d "$destination" ]; then
     bootstrap=1
-    clone_repo "$target" "$destination" || exit 1
+    if clone_repo "$target" "$destination"; then
+      :
+    else
+      clone_status=$?
+      [ "$clone_status" -eq 2 ] || exit 1
+      create_repo "$target" "$destination"
+    fi
   fi
 
   session=$(session_name_from_path "$target")
@@ -206,4 +229,6 @@ main() {
   tmux attach -t "$session"
 }
 
-main "$@"
+if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
+  main "$@"
+fi
