@@ -1,5 +1,5 @@
 ;; External keyboard configuration (e.g., Magic Keyboard)
-;; Swaps grv/nubs to match the Apple keyboard layout on macOS
+;; Maps the key left of Z to ~ and the key left of 1 to `.
 
 (defcfg
   process-unmapped-keys yes
@@ -33,6 +33,7 @@
     ;; this instance. 1.12 warns "timed out waiting ... to release its keys"
     ;; after ~5s and proceeds; that warning in the journal is expected.
     "Apple Inc. Magic Keyboard with Touch ID"
+    "Apple Inc. Magic Keyboard"
   )
 )
 
