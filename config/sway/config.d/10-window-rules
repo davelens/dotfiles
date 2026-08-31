@@ -27,6 +27,9 @@ for_window [app_id="org.gnome.*"] floating enable
 for_window [app_id="org.kde.*"] floating enable
 # App-specific overrides
 for_window [app_id="annotator"] floating enable
+for_window [app_id="dotkeys"] floating enable
+# Portal file dialogs (used by dotkeys and other portal-based apps)
+for_window [app_id="xdg-desktop-portal-gtk"] floating enable
 for_window [app_id="pavucontrol"] floating enable
 for_window [app_id="virt-manager"] floating enable
 for_window [app_id="nm-connection-editor"] floating enable
