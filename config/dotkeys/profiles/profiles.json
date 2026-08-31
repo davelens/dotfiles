@@ -1,0 +1,332 @@
+{
+  "schema_version": 1,
+  "timings": {
+    "default": {
+      "tap_ms": 150,
+      "hold_ms": 200
+    },
+    "right_alt": {
+      "tap_ms": 200,
+      "hold_ms": 200
+    }
+  },
+  "default": {
+    "initial_layer": "homerow",
+    "layers": {
+      "base": {
+        "caps": {
+          "type": "key",
+          "key": "lctl"
+        },
+        "grv": {
+          "type": "key",
+          "key": "nubs"
+        },
+        "nubs": {
+          "type": "key",
+          "key": "grv"
+        },
+        "ralt": {
+          "type": "tap_hold",
+          "timing": "right_alt",
+          "tap": {
+            "type": "key",
+            "key": "ralt"
+          },
+          "hold": {
+            "type": "layer_while_held",
+            "layer": "ralt-held-base"
+          }
+        }
+      },
+      "homerow": {
+        "1": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "1"
+          },
+          "hold": {
+            "type": "shortcut",
+            "modifiers": [
+              "alt"
+            ],
+            "key": "1"
+          }
+        },
+        "2": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "2"
+          },
+          "hold": {
+            "type": "shortcut",
+            "modifiers": [
+              "alt"
+            ],
+            "key": "2"
+          }
+        },
+        "3": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "3"
+          },
+          "hold": {
+            "type": "shortcut",
+            "modifiers": [
+              "alt"
+            ],
+            "key": "3"
+          }
+        },
+        "4": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "4"
+          },
+          "hold": {
+            "type": "shortcut",
+            "modifiers": [
+              "alt"
+            ],
+            "key": "4"
+          }
+        },
+        "5": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "5"
+          },
+          "hold": {
+            "type": "shortcut",
+            "modifiers": [
+              "alt"
+            ],
+            "key": "5"
+          }
+        },
+        "6": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "6"
+          },
+          "hold": {
+            "type": "shortcut",
+            "modifiers": [
+              "alt"
+            ],
+            "key": "6"
+          }
+        },
+        "7": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "7"
+          },
+          "hold": {
+            "type": "shortcut",
+            "modifiers": [
+              "alt"
+            ],
+            "key": "7"
+          }
+        },
+        "8": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "8"
+          },
+          "hold": {
+            "type": "shortcut",
+            "modifiers": [
+              "alt"
+            ],
+            "key": "8"
+          }
+        },
+        "9": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "9"
+          },
+          "hold": {
+            "type": "shortcut",
+            "modifiers": [
+              "alt"
+            ],
+            "key": "9"
+          }
+        },
+        ";": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": ";"
+          },
+          "hold": {
+            "type": "key",
+            "key": "rctl"
+          }
+        },
+        "a": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "a"
+          },
+          "hold": {
+            "type": "key",
+            "key": "lctl"
+          }
+        },
+        "caps": {
+          "type": "key",
+          "key": "lctl"
+        },
+        "d": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "d"
+          },
+          "hold": {
+            "type": "key",
+            "key": "lmet"
+          }
+        },
+        "f": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "f"
+          },
+          "hold": {
+            "type": "key",
+            "key": "lsft"
+          }
+        },
+        "grv": {
+          "type": "key",
+          "key": "nubs"
+        },
+        "j": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "j"
+          },
+          "hold": {
+            "type": "key",
+            "key": "rsft"
+          }
+        },
+        "k": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "k"
+          },
+          "hold": {
+            "type": "key",
+            "key": "rmet"
+          }
+        },
+        "l": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "l"
+          },
+          "hold": {
+            "type": "key",
+            "key": "ralt"
+          }
+        },
+        "nubs": {
+          "type": "key",
+          "key": "grv"
+        },
+        "ralt": {
+          "type": "tap_hold",
+          "timing": "right_alt",
+          "tap": {
+            "type": "key",
+            "key": "ralt"
+          },
+          "hold": {
+            "type": "layer_while_held",
+            "layer": "ralt-held-hm"
+          }
+        },
+        "s": {
+          "type": "tap_hold",
+          "timing": "default",
+          "tap": {
+            "type": "key",
+            "key": "s"
+          },
+          "hold": {
+            "type": "key",
+            "key": "lalt"
+          }
+        }
+      },
+      "ralt-held-base": {
+        "spc": {
+          "type": "layer_switch",
+          "layer": "homerow"
+        }
+      },
+      "ralt-held-hm": {
+        "spc": {
+          "type": "layer_switch",
+          "layer": "base"
+        }
+      }
+    }
+  },
+  "profiles": [
+    {
+      "id": "framework-laptop",
+      "name": "Framework Laptop 16",
+      "passthrough": false,
+      "attachments": [
+        {
+          "kind": "usb",
+          "identity": "hid:32ac:0018:frakdken0100000000"
+        }
+      ],
+      "layout": {
+        "template": "iso",
+        "confirmed": true,
+        "calibration": {}
+      },
+      "overrides": {}
+    }
+  ]
+}
