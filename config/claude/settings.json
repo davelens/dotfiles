@@ -4,5 +4,6 @@
   "disableRemoteControl": true,
   "disableWorkflows": true,
   "disableArtifact": true,
+  "outputStyle": "Concise",
   "skipDangerousModePermissionPrompt": true
 }
