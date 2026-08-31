@@ -327,6 +327,23 @@
         "calibration": {}
       },
       "overrides": {}
+    },
+    {
+      "id": "mx-mechanical",
+      "name": "MX Mechanical",
+      "passthrough": false,
+      "attachments": [
+        {
+          "kind": "usb",
+          "identity": "logitech-bolt:f6eb8604"
+        }
+      ],
+      "layout": {
+        "template": "iso_full",
+        "confirmed": true,
+        "calibration": {}
+      },
+      "overrides": {}
     }
   ]
 }
