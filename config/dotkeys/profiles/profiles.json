@@ -344,6 +344,40 @@
         "calibration": {}
       },
       "overrides": {}
+    },
+    {
+      "id": "apple-magic-keyboard-touch",
+      "name": "Apple Magic Keyboard - touch",
+      "passthrough": false,
+      "attachments": [
+        {
+          "kind": "usb",
+          "identity": "hid:004c:029a:9c:58:3c:ec:ed:18"
+        }
+      ],
+      "layout": {
+        "template": "iso",
+        "confirmed": true,
+        "calibration": {}
+      },
+      "overrides": {
+        "homerow": {
+          "lalt": {
+            "state": "action",
+            "action": {
+              "type": "key",
+              "key": "lmet"
+            }
+          },
+          "lmet": {
+            "state": "action",
+            "action": {
+              "type": "key",
+              "key": "lalt"
+            }
+          }
+        }
+      }
     }
   ]
 }
