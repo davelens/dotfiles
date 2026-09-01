@@ -2,7 +2,7 @@
   "schema_version": 1,
   "timings": {
     "default": {
-      "tap_ms": 150,
+      "tap_ms": 200,
       "hold_ms": 200
     },
     "right_alt": {
@@ -361,6 +361,44 @@
         "calibration": {}
       },
       "overrides": {
+        "base": {
+          "lalt": {
+            "state": "action",
+            "action": {
+              "type": "key",
+              "key": "lmet"
+            }
+          },
+          "lmet": {
+            "state": "action",
+            "action": {
+              "type": "key",
+              "key": "lalt"
+            }
+          },
+          "ralt": {
+            "state": "action",
+            "action": {
+              "type": "key",
+              "key": "rmet"
+            }
+          },
+          "rmet": {
+            "state": "action",
+            "action": {
+              "type": "tap_hold",
+              "timing": "right_alt",
+              "tap": {
+                "type": "key",
+                "key": "ralt"
+              },
+              "hold": {
+                "type": "layer_while_held",
+                "layer": "ralt-held-base"
+              }
+            }
+          }
+        },
         "homerow": {
           "lalt": {
             "state": "action",
@@ -374,6 +412,28 @@
             "action": {
               "type": "key",
               "key": "lalt"
+            }
+          },
+          "ralt": {
+            "state": "action",
+            "action": {
+              "type": "key",
+              "key": "rmet"
+            }
+          },
+          "rmet": {
+            "state": "action",
+            "action": {
+              "type": "tap_hold",
+              "timing": "right_alt",
+              "tap": {
+                "type": "key",
+                "key": "ralt"
+              },
+              "hold": {
+                "type": "layer_while_held",
+                "layer": "ralt-held-hm"
+              }
             }
           }
         }
