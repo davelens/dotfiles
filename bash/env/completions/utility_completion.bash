@@ -1,15 +1,20 @@
-# Cache the current OS (only runs once when this file is sourced)
-_UTILITY_CURRENT_OS="$("$XDG_BIN_HOME/os")"
+# Cache the current distro and platform when this file is sourced.
+_UTILITY_CURRENT_DISTRO="$("$XDG_BIN_HOME/os")"
+_UTILITY_CURRENT_PLATFORM="$("$XDG_BIN_HOME/os" --platform)"
 
-# Filter out OS-specific folders that don't match the current OS
+# Keep category gating consistent with bin/utility.
 _utility_filter_by_os() {
-  local folder os_folders="macos linux wsl freebsd"
+  local folder
   while IFS= read -r folder; do
-    if [[ " $os_folders " == *" $folder "* ]]; then
-      [[ "$folder" == "$_UTILITY_CURRENT_OS" ]] && echo "$folder"
-    else
-      echo "$folder"
-    fi
+    case "$folder" in
+      macos | linux | freebsd | windows)
+        [[ "$folder" == "$_UTILITY_CURRENT_PLATFORM" ]] || continue
+        ;;
+      arch | debian | nixos | fedora | wsl)
+        [[ "$folder" == "$_UTILITY_CURRENT_DISTRO" ]] || continue
+        ;;
+    esac
+    echo "$folder"
   done
 }
 
@@ -43,7 +48,7 @@ _utility_completions() {
   local folder_path="$utilities_root/$subcommand"
   if [[ -d "$folder_path" ]] && [[ $COMP_CWORD -eq 2 ]]; then
     local scripts
-    scripts=$(find -L "$folder_path" -type f ! -name "_*" ! -name "*.sh" -exec basename {} \;)
+    scripts=$(find -L "$folder_path" -maxdepth 1 -type f ! -name "_*" ! -name "*.sh" -exec test -x {} \; -exec basename {} \;)
     mapfile -t COMPREPLY < <(compgen -W "$scripts" -- "$input")
     return 0
   fi
