@@ -2,6 +2,7 @@
 .notes
 .docs
 *.env
+.scratch
 dotbot
 bash/env/completions/*.untracked.bash
 bash/private
