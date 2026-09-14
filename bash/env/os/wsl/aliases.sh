@@ -1,7 +1,5 @@
-###############################################################################
-# Some commands need an override to maintain behaviour between my machines.
-###############################################################################
-
-alias gls='ls' # We already use GNU ls in bash/aliases.sh
-alias pbcopy="clip.exe"
-alias pbpaste="powershell.exe -command 'Get-Clipboard' | head -n -1"
+# PORT-DESKTOP supplies the path-safe Windows bridge entry points.
+if dots_selected wsl-integration && [[ -z ${SSH_CONNECTION:-}${SSH_CLIENT:-}${SSH_TTY:-} ]]; then
+  alias pbcopy >/dev/null 2>&1 || declare -F pbcopy >/dev/null || alias pbcopy='clip.exe'
+  alias pbpaste >/dev/null 2>&1 || declare -F pbpaste >/dev/null || alias pbpaste="powershell.exe -NoProfile -Command Get-Clipboard"
+fi

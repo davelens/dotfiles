@@ -17,10 +17,3 @@ toggle_default() {
 quicklook() {
   qlmanage -p "$1" >&/dev/null
 }
-
-# I prefer GNU coreutils over the BSD ones on macos, so I'm trying this out
-# to keep my scripts consistent between macos/arch.
-cp() { gcp "$@"; }
-ls() { gls "$@"; }
-sed() { gsed "$@"; }
-export -f cp ls sed

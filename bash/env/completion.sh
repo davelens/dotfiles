@@ -1,3 +1,5 @@
+[[ $- == *i* ]] || return 0
+
 ###############################################################################
 # Env settings and configuration related to bash's completion.
 ###############################################################################
@@ -27,4 +29,4 @@ unset file
 # Set up fzf key bindings and fuzzy completion for existing commands.
 # NOTE: This needs to be called AFTER other bash completions are loaded.
 # fzf actually picks up on them and preserves original bindings.
-command -v fzf >/dev/null && eval "$(fzf --bash)"
+dots_optional_hook fzf --bash || :

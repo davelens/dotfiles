@@ -1,24 +1,26 @@
-###############################################################################
-# SSH agent management via keychain (Linux only; macOS handles this natively).
-###############################################################################
+# Reuse current/forwarded agents. Identity selection belongs to SSH/ssh-add.
+[[ $- == *i* ]] || return 0
+[[ -z ${SSH_CONNECTION:-}${SSH_CLIENT:-}${SSH_TTY:-} ]] || return 0
+[[ ${DOTS_OS:-} != macos && $OSTYPE == linux* ]] || return 0
 
-[[ "$OSTYPE" == darwin* ]] && return
-
-"$DOTFILES_REPO_HOME"/setup/ssh/init.sh
-
-if ! command -v keychain >/dev/null; then
-  echo "${CUN}NOTE${CNUN}: Installing \`keychain\` will bootstrap + keep alive your SSH agent across sessions."
-  echo "      Right now you still need to manually \`eval \$(ssh-agent); ssh-add\` in each term session."
-  return
+_dots_agent_status=2
+if [[ -n ${SSH_AUTH_SOCK:-} ]]; then
+  type -P ssh-add >/dev/null || { unset _dots_agent_status; return 0; }
+  ssh-add -l >/dev/null 2>&1 && _dots_agent_status=0 || _dots_agent_status=$?
 fi
-
-KEYCHAIN_DIR="$XDG_RUNTIME_DIR/keychain"
-
-if [[ ! -d "$KEYCHAIN_DIR" ]]; then
-  mkdir -p "$KEYCHAIN_DIR"
-  chmod 700 "$KEYCHAIN_DIR"
+if (( _dots_agent_status <= 1 )); then
+  unset _dots_agent_status
+  return 0
 fi
+unset _dots_agent_status
+type -P keychain >/dev/null || return 0
 
-eval "$(keychain --eval --quiet --ssh-allow-forwarded --absolute --dir "$KEYCHAIN_DIR" id_rsa)"
-
-unset KEYCHAIN_DIR
+# No runtime-dir requirement, key list, SSH-file rewrite, or unmanaged agent.
+_dots_keychain="$XDG_STATE_HOME/dots/keychain"
+if [[ ! -L $XDG_STATE_HOME/dots && ! -L $_dots_keychain ]] &&
+  (umask 077; mkdir -p -- "$_dots_keychain") 2>/dev/null &&
+  [[ -O $XDG_STATE_HOME/dots && -O $_dots_keychain ]] &&
+  chmod 700 -- "$XDG_STATE_HOME/dots" "$_dots_keychain" 2>/dev/null; then
+  dots_optional_hook keychain --eval --quiet --ssh-allow-forwarded --absolute --dir "$_dots_keychain" || :
+fi
+unset _dots_keychain

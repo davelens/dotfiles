@@ -12,7 +12,9 @@ for _dots_path in \
   "${BREW_PATH:+$BREW_PATH/opt/${_DOTS_MYSQL_VERSION:-mysql}/bin}" \
   "${BREW_PATH:+$BREW_PATH/opt/${_DOTS_POSTGRESQL_VERSION:-postgresql}/bin}" \
   "${CARGO_HOME:-$XDG_DATA_HOME/cargo}/bin" \
-  "${NPM_DATA_HOME:-$XDG_DATA_HOME/npm}/bin" "$XDG_BIN_HOME"; do
+  "${NPM_DATA_HOME:-$XDG_DATA_HOME/npm}/bin" \
+  "${DOTFILES_REPO_HOME:+$DOTFILES_REPO_HOME/bin}" \
+  "${DOTFILES_REPO_HOME:+$DOTFILES_REPO_HOME/bin/autoload}" "$XDG_BIN_HOME"; do
   [[ -n $_dots_path && -d $_dots_path ]] || continue
   _dots_prefix+="$_dots_path:"
 done

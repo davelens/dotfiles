@@ -9,6 +9,21 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
+# Optional hook output is evaluated only when the tool supports this interface.
+dots_optional_hook() {
+  local hook
+  if type -P "$1" >/dev/null && hook=$("$@" 2>/dev/null); then
+    eval "$hook"
+    return 0
+  fi
+  return 1
+}
+
+command_not_found_handle() {
+  printf 'dots: Missing command %s; prepare this capability with dotsys or install it before retrying.\n' "$1" >&2
+  return 127
+}
+
 block_unless_sourced() {
   if is_sourced; then
     echo "$(cross) This script is meant to be sourced, not executed directly." >&2

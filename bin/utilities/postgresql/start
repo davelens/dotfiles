@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-set -e
-
-pg_ctl -D "$(mise where postgres)/data" start

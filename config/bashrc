@@ -37,4 +37,18 @@
 # > ssh localhost 'echo "PS1: >$PS1<"'
 # >
 
-[ -n "$PS1" ] && source ~/.bash_profile
+# Interactivity is a shell flag, not an inherited prompt variable.
+[[ $- == *i* ]] || return 0
+# Resolve direct and installed symlink entries without inherited checkout exports.
+_dots_entry=${BASH_SOURCE[0]}
+[[ $_dots_entry == */* ]] || _dots_entry="./$_dots_entry"
+_dots_count=0
+while [[ -L $_dots_entry ]]; do
+  _dots_directory=$(cd -P -- "${_dots_entry%/*}" && pwd) || return 1
+  _dots_entry=$(readlink -- "$_dots_entry") || return 1
+  [[ $_dots_entry == /* ]] || _dots_entry="$_dots_directory/$_dots_entry"
+  ((_dots_count+=1))
+  ((_dots_count <= 40)) || return 1
+done
+_dots_directory=$(cd -P -- "${_dots_entry%/*}" && pwd) || return 1
+source "$_dots_directory/bash_profile"

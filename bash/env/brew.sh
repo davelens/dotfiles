@@ -18,12 +18,12 @@ if [ -n "${BREW_PATH:-}" ]; then
   export BREW_PATH
 
   # Don't force an update of all packages when target upgrading single packages.
-  export HOMEBREW_NO_AUTO_UPDATE=1
+  export HOMEBREW_NO_AUTO_UPDATE="${HOMEBREW_NO_AUTO_UPDATE-1}"
 
   # If HOMEBREW_REPOSITORY isn't set, brew's bash completion won't work properly
   # (see the GH issue [here](https://github.com/orgs/Homebrew/discussions/4227))
   export HOMEBREW_REPOSITORY="${HOMEBREW_REPOSITORY:-$BREW_PATH}"
-  export HOMEBREW_PREFIX="$BREW_PATH"
+  export HOMEBREW_PREFIX="${HOMEBREW_PREFIX-$BREW_PATH}"
 
   # Homebrew typically allows you to install specific major versions of a
   # database. At the time of writing this is mysql@8.4 or postgresql@18, but
@@ -40,12 +40,12 @@ if [ -n "${BREW_PATH:-}" ]; then
   export _DOTS_MYSQL_VERSION _DOTS_POSTGRESQL_VERSION
 
   # Ensure brew-installed bash versions as our active shell.
-  [ -f "$BREW_PATH"/bin/bash ] && export SHELL="$BREW_PATH/bin/bash"
+  [ -f "$BREW_PATH"/bin/bash ] && export SHELL="${SHELL-$BREW_PATH/bin/bash}"
 
   # mise uses kerl under the hood for Erlang; this makes sure that it uses
   # Homebrew's openssl version when compiling from source.
   if [ -d "$BREW_PATH/opt/openssl@3" ]; then
-    KERL_CONFIGURE_OPTIONS="--with-ssl=$BREW_PATH/opt/openssl@3"
+    KERL_CONFIGURE_OPTIONS="${KERL_CONFIGURE_OPTIONS---with-ssl=$BREW_PATH/opt/openssl@3}"
     export KERL_CONFIGURE_OPTIONS
   fi
 
