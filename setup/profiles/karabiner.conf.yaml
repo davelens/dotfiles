@@ -1,0 +1,6 @@
+# Explicit public files only. No glob, clean, relink, backup or shell directives.
+- link:
+    $XDG_CONFIG_HOME/karabiner/karabiner.json: config/macos/karabiner/karabiner.json
+    $XDG_CONFIG_HOME/karabiner/assets/complex_modifications/firefox_tab_navigation.json: config/macos/karabiner/assets/complex_modifications/firefox_tab_navigation.json
+    $XDG_CONFIG_HOME/karabiner/assets/complex_modifications/homerow_mods_cags.json: config/macos/karabiner/assets/complex_modifications/homerow_mods_cags.json
+    $XDG_CONFIG_HOME/karabiner/assets/complex_modifications/tmux_navigation.json: config/macos/karabiner/assets/complex_modifications/tmux_navigation.json

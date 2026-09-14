@@ -1,0 +1,16 @@
+# Explicit public files only. No glob, clean, relink, backup or shell directives.
+- link:
+    $XDG_CONFIG_HOME/aerospace/aerospace.toml: config/macos/aerospace/aerospace.toml
+    $XDG_CONFIG_HOME/borders/bordersrc: config/macos/borders/bordersrc
+    $XDG_CONFIG_HOME/sketchybar/sketchybarrc: config/macos/sketchybar/sketchybarrc
+    $XDG_CONFIG_HOME/sketchybar/sketchybarrc-desktop: config/macos/sketchybar/sketchybarrc-desktop
+    $XDG_CONFIG_HOME/sketchybar/sketchybarrc-laptop: config/macos/sketchybar/sketchybarrc-laptop
+    $XDG_CONFIG_HOME/sketchybar/plugins-laptop/battery.sh: config/macos/sketchybar/plugins-laptop/battery.sh
+    $XDG_CONFIG_HOME/sketchybar/plugins-laptop/spotify.sh: config/macos/sketchybar/plugins-laptop/spotify.sh
+    $XDG_CONFIG_HOME/sketchybar/plugins/aerospace.sh: config/macos/sketchybar/plugins/aerospace.sh
+    $XDG_CONFIG_HOME/sketchybar/plugins/clock.sh: config/macos/sketchybar/plugins/clock.sh
+    $XDG_CONFIG_HOME/sketchybar/plugins/current_space.sh: config/macos/sketchybar/plugins/current_space.sh
+    $XDG_CONFIG_HOME/sketchybar/plugins/front_app.sh: config/macos/sketchybar/plugins/front_app.sh
+    $XDG_CONFIG_HOME/sketchybar/plugins/space.sh: config/macos/sketchybar/plugins/space.sh
+    $XDG_CONFIG_HOME/sketchybar/plugins/volume.sh: config/macos/sketchybar/plugins/volume.sh
+    $XDG_CONFIG_HOME/sketchybar/plugins/weather.sh: config/macos/sketchybar/plugins/weather.sh

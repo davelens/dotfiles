@@ -1,0 +1,5 @@
+# Explicit public files only. No glob, clean, relink, backup or shell directives.
+- link:
+    $XDG_CONFIG_HOME/ghostty/config: config/ghostty/config
+    $XDG_CONFIG_HOME/ghostty/themes/catppuccin-mocha: config/ghostty/themes/catppuccin-mocha
+    $XDG_CONFIG_HOME/foot/foot.ini: config/foot/foot.ini

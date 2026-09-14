@@ -1,0 +1,3 @@
+# Explicit public files only. No glob, clean, relink, backup or shell directives.
+- link:
+    $XDG_CONFIG_HOME/alfred/take-screenshot.alfredworkflow: config/macos/alfred/take-screenshot.alfredworkflow

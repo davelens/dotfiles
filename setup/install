@@ -1,25 +1,44 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set +x
 set -e
+unset BASH_ENV ENV
 
-fail() {
-  printf "%s\n" "$1" >&2
-  exit "${2-1}"
-}
+entry=${BASH_SOURCE[0]}
+[[ $entry == */* ]] || entry="./$entry"
+count=0
+while [[ -L $entry ]]; do
+  directory=$(cd -P -- "${entry%/*}" && pwd)
+  entry=$(readlink -- "$entry")
+  [[ $entry == /* ]] || entry="$directory/$entry"
+  ((count+=1))
+  ((count <= 40)) || exit 1
+done
+directory=$(cd -P -- "${entry%/*}" && pwd)
+source "$directory/common.sh"
 
-source "$DOTFILES_REPO_HOME"/bash/env/xdg.sh
-source "$DOTFILES_REPO_HOME"/bash/helpers.sh
-
-# Get dotbot installed
-dotbot_path="$DOTFILES_REPO_HOME/dotbot"
-git -C "$dotbot_path" submodule sync --quiet --recursive
-git -C "$dotbot_path" submodule update --init --recursive
-
-# Activate dotbot with the install configuration
-"$dotbot_path/bin/dotbot" -d "$DOTFILES_REPO_HOME" -c "$DOTFILES_REPO_HOME/setup/install.conf.yaml" "$@"
-
-if [ ! -f "$DOTFILES_CONFIG_HOME/env" ]; then
-  touch "$DOTFILES_CONFIG_HOME/env"
-fi
-
-echo
-green "==> Apply changes by running \`source ${BASHRC/$HOME/~}\` to reload your shell."
+action=install
+bootstrap=()
+lifecycle=()
+while (($#)); do
+  case $1 in
+    --check|--uninstall|--restore)
+      [[ $action == install ]] || { dots_error 'Choose one lifecycle action.'; exit 2; }
+      action=${1#--}; shift ;;
+    --adopt|--replace|--backup)
+      (($# >= 2)) || { dots_error 'Lifecycle option requires a value.'; exit 2; }
+      lifecycle+=("$1" "$2"); shift 2 ;;
+    --select|--wezterm-destination)
+      (($# >= 2)) || { dots_error 'Choice requires a value.'; exit 2; }
+      bootstrap+=("$1" "$2"); shift 2 ;;
+    --save) bootstrap+=("$1"); shift ;;
+    *)
+      dots_error 'Usage: setup/install [--check] [--select LIST] [--save] [--adopt PATH | --replace PATH] [--wezterm-destination PATH]'
+      exit 2 ;;
+  esac
+done
+mode=prerequisites
+[[ $action != install ]] || mode=install
+dots_bootstrap "$mode" "$directory/install" "${bootstrap[@]}"
+source "$directory/requirements.sh"
+dots_prerequisites
+exec "$DOTS_PYTHON" -I -B "$directory/configuration.py" "$action" "${lifecycle[@]}"

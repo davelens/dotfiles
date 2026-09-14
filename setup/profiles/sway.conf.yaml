@@ -1,0 +1,35 @@
+# Explicit public files only. No glob, clean, relink, backup or shell directives.
+- link:
+    $XDG_BIN_HOME/rofi-start: bin/autoload/rofi-start
+    $XDG_BIN_HOME/desktop-session: bin/autoload/desktop-session
+    $XDG_CONFIG_HOME/sway/config: config/sway/config
+    $XDG_CONFIG_HOME/sway/config.d/00-variables: config/sway/config.d/00-variables
+    $XDG_CONFIG_HOME/sway/config.d/10-window-rules: config/sway/config.d/10-window-rules
+    $XDG_CONFIG_HOME/sway/config.d/20-appearance: config/sway/config.d/20-appearance
+    $XDG_CONFIG_HOME/sway/config.d/30-input: config/sway/config.d/30-input
+    $XDG_CONFIG_HOME/sway/config.d/40-autostart: config/sway/config.d/40-autostart
+    $XDG_CONFIG_HOME/sway/config.d/50-keybindings: config/sway/config.d/50-keybindings
+    $XDG_CONFIG_HOME/sway/config.d/60-resize: config/sway/config.d/60-resize
+    $XDG_CONFIG_HOME/sway/config.d/99-finalize: config/sway/config.d/99-finalize
+    $XDG_CONFIG_HOME/swaylock/config: config/swaylock/config
+    $XDG_CONFIG_HOME/kanshi/config: config/kanshi/config
+    $XDG_CONFIG_HOME/desktop-session/env: config/desktop-session/env
+    $XDG_CONFIG_HOME/uwsm/env: config/uwsm/env
+    $XDG_CONFIG_HOME/uwsm/default-id: config/uwsm/default-id
+    $XDG_CONFIG_HOME/uwsm/env-sway: config/uwsm/env-sway
+    $XDG_CONFIG_HOME/rofi/config.rasi: config/rofi/config.rasi
+    $XDG_CONFIG_HOME/rofi/colors/catppuccin.rasi: config/rofi/colors/catppuccin.rasi
+    $XDG_CONFIG_HOME/rofi/applets/bin/ac-tasks.sh: config/rofi/applets/bin/ac-tasks.sh
+    $XDG_CONFIG_HOME/rofi/applets/bin/screenshot.sh: config/rofi/applets/bin/screenshot.sh
+    $XDG_CONFIG_HOME/rofi/applets/shared/colors.rasi: config/rofi/applets/shared/colors.rasi
+    $XDG_CONFIG_HOME/rofi/applets/shared/fonts.rasi: config/rofi/applets/shared/fonts.rasi
+    $XDG_CONFIG_HOME/rofi/applets/shared/theme.bash: config/rofi/applets/shared/theme.bash
+    $XDG_CONFIG_HOME/rofi/applets/type-1/style-1.rasi: config/rofi/applets/type-1/style-1.rasi
+    $XDG_CONFIG_HOME/rofi/launchers/type-1/shared/colors.rasi: config/rofi/launchers/type-1/shared/colors.rasi
+    $XDG_CONFIG_HOME/rofi/launchers/type-1/shared/fonts.rasi: config/rofi/launchers/type-1/shared/fonts.rasi
+    $XDG_CONFIG_HOME/rofi/launchers/type-1/style-5-no-indent.rasi: config/rofi/launchers/type-1/style-5-no-indent.rasi
+    $XDG_CONFIG_HOME/rofi/launchers/type-1/style-5.rasi: config/rofi/launchers/type-1/style-5.rasi
+    $XDG_CONFIG_HOME/rofi/powermenu/type-1/powermenu.sh: config/rofi/powermenu/type-1/powermenu.sh
+    $XDG_CONFIG_HOME/rofi/powermenu/type-1/shared/colors.rasi: config/rofi/powermenu/type-1/shared/colors.rasi
+    $XDG_CONFIG_HOME/rofi/powermenu/type-1/shared/fonts.rasi: config/rofi/powermenu/type-1/shared/fonts.rasi
+    $XDG_CONFIG_HOME/rofi/powermenu/type-1/style-1.rasi: config/rofi/powermenu/type-1/style-1.rasi
