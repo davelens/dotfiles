@@ -153,8 +153,8 @@ dots_readiness() {
       dots_require_command "$tool" || failed=1
     done
     case $DOTS_OS in
-      arch) for tool in systemctl uwsm; do dots_require_command "$tool" || failed=1; done ;;
-      void) for tool in sv loginctl turnstile dbus-update-activation-environment; do dots_require_command "$tool" || failed=1; done ;;
+      arch) for tool in systemctl loginctl uwsm; do dots_require_command "$tool" || failed=1; done ;;
+      void) for tool in sv loginctl turnstile-update-runit-env dbus-update-activation-environment; do dots_require_command "$tool" || failed=1; done ;;
     esac
     for helper in desktop-session/launch desktop-session/stop desktop-session/finalize kanshi/restart quickshell/restart power/control; do
       [[ -x $DOTS_INSTALL_ROOT/bin/utilities/$helper ]] ||
@@ -167,7 +167,7 @@ dots_readiness() {
     for tool in borders sketchybar; do dots_require_command "$tool" || failed=1; done
   fi
   if dots_selected wsl-integration; then
-    for tool in powershell.exe clip.exe wslpath; do dots_require_command "$tool" || failed=1; done
+    for tool in powershell.exe wsl.exe wslpath python3 windows-open windows-clipboard; do dots_require_command "$tool" || failed=1; done
     dots_windows_wezterm || { dots_error 'Required Windows-host application missing: WezTerm.'; failed=1; }
   fi
   for tool in starship fzf keychain; do
@@ -182,8 +182,12 @@ dots_readiness() {
     dots_native_app firefox Firefox firefox || printf 'dots: Optional native app unavailable: Firefox\n' >&2
     dots_native_app discord Discord Discord || printf 'dots: Optional native app unavailable: Discord\n' >&2
   fi
-  if [[ $DOTS_OS == wsl && -z $DOTS_WEZTERM_DESTINATION ]]; then
-    printf 'dots: Windows WezTerm export skipped: no destination supplied.\n' >&2
+  if [[ $DOTS_OS == wsl ]]; then
+    if [[ -n $DOTS_WEZTERM_DESTINATION ]]; then
+      "$DOTS_PYTHON" -I -B "$DOTS_SOURCE_ROOT/setup/configuration.py" check || failed=1
+    else
+      printf 'dots: Windows WezTerm export skipped: no destination supplied.\n' >&2
+    fi
   fi
   ((failed == 0))
 }

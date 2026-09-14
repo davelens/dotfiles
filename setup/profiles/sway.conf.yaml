@@ -16,7 +16,6 @@
     $XDG_CONFIG_HOME/desktop-session/env: config/desktop-session/env
     $XDG_CONFIG_HOME/uwsm/env: config/uwsm/env
     $XDG_CONFIG_HOME/uwsm/default-id: config/uwsm/default-id
-    $XDG_CONFIG_HOME/uwsm/env-sway: config/uwsm/env-sway
     $XDG_CONFIG_HOME/rofi/config.rasi: config/rofi/config.rasi
     $XDG_CONFIG_HOME/rofi/colors/catppuccin.rasi: config/rofi/colors/catppuccin.rasi
     $XDG_CONFIG_HOME/rofi/applets/bin/ac-tasks.sh: config/rofi/applets/bin/ac-tasks.sh

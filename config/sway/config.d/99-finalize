@@ -2,4 +2,4 @@
 
 # Finalize through the active session adapter: uwsm on Arch, or turnstile and
 # the D-Bus activation environment on Void.
-exec ~/.local/bin/desktop-session finalize
+exec desktop-session finalize

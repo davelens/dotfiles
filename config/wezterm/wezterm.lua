@@ -105,10 +105,10 @@ end
 
 -- Load platform specific configurations
 if platforms.windows then
-  -- stylua: ignore
+  -- Export substitutes the current registered WSL distribution as a Lua string.
+  -- Omitting --user honors that distribution's configured default user.
   config.default_prog = {
-    'wsl.exe', '-d', 'Arch', '-u', 'davelens',
-    '--', 'bash', '-c', 'cd ~ && exec bash',
+    'wsl.exe', '--distribution', '@DOTS_WSL_DISTRIBUTION@', '--cd', '~',
   }
 end
 

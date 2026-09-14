@@ -13,9 +13,10 @@ fixture() {
   export XDG_STATE_HOME="$test_root/$name/state" XDG_BIN_HOME="$test_root/$name/bin"
   export XDG_RUNTIME_DIR="$test_root/$name/runtime" BREW_PATH="$test_root/$name/brew"
   export SOURCE="$test_root/$name/source" TEST_OS=arch
-  export PATH="$test_root/$name/fakes:$base_path"
+  export PATH="$test_root/$name/fakes:$base_path" TMPDIR="$test_root/$name/tmp"
+  export TMP="$TMPDIR" TEMP="$TMPDIR"
   unset DOTS_INSTALL_SELECTION DOTS_INSTALL_WEZTERM_DESTINATION
-  mkdir -p "$HOME" "$SOURCE" "$test_root/$name/fakes"
+  mkdir -p "$HOME" "$SOURCE" "$test_root/$name/fakes" "$TMPDIR"
   # Only explicit public manifest sources; never recursively copy config/state.
   python3 -I -B - <<'PY'
 import os, pathlib, shutil, sys
@@ -23,8 +24,8 @@ root, source = pathlib.Path(os.environ['PROJECT_ROOT']), pathlib.Path(os.environ
 sys.path[:0] = [str(root/'dotbot/src'), str(root/'dotbot/lib/pyyaml/lib')]
 from dotbot.config import ConfigReader
 manifests = ['setup/install.conf.yaml'] + ['setup/profiles/'+name+'.conf.yaml' for name in
-    ('native-linux', 'native-macos', 'sway', 'macos-desktop', 'karabiner', 'alfred')]
-files = manifests + ['setup/'+name for name in ('install', 'uninstall', 'restore', 'common.sh', 'requirements.sh', 'configuration.py', 'managed.py', 'ssh/init.sh')]
+    ('native-linux', 'native-macos', 'sway', 'macos-desktop', 'karabiner', 'alfred', 'wsl-integration')]
+files = ['config/wezterm/wezterm.lua'] + manifests + ['setup/'+name for name in ('install', 'uninstall', 'restore', 'common.sh', 'requirements.sh', 'configuration.py', 'managed.py', 'ssh/init.sh')]
 files += ['bash/env/'+name+'.sh' for name in ('xdg', 'path', 'brew')]
 for task in ConfigReader([str(root/p) for p in manifests]).get_config():
     files += list(task.get('link', {}).values())
@@ -103,9 +104,9 @@ if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
 
   fixture wsl
   export TEST_OS=wsl
-  fails install_config --select wsl-integration --save
-  assert test ! -e "$XDG_STATE_HOME"
-  assert test ! -e "$HOME/.bashrc"
+  install_config --select wsl-integration --save
+  assert test -L "$XDG_BIN_HOME/windows-open"
+  assert test -L "$XDG_BIN_HOME/windows-clipboard"
   install_config
   assert test ! -e "$XDG_CONFIG_HOME/wezterm"
   assert test ! -e "$XDG_CONFIG_HOME/ghostty"

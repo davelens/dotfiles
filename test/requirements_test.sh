@@ -35,8 +35,8 @@ done
 # Spies fail if a checker executes any provisioner, service, or ordinary app.
 for tool in tmux dvim nvim delta ghostty foot sway swaymsg swaynag rofi rofi-start autotiling-rs \
   swayidle swaylock wl-copy wl-paste wl-clip-persist cliphist kanshi qs dshell systemctl uwsm \
-  sv loginctl turnstile dbus-update-activation-environment borders sketchybar \
-  clip.exe wslpath wezterm brew sudo pacman xbps-install curl ssh-add; do
+  sv loginctl turnstile-update-runit-env dbus-update-activation-environment borders sketchybar \
+  wsl.exe windows-open windows-clipboard wslpath wezterm brew sudo pacman xbps-install curl ssh-add; do
   printf '#!/usr/bin/env bash\nprintf "%%s\\n" "$0 $*" >> %q\nexit 99\n' "$test_root/operations" > "$tools/$tool"
   chmod +x "$tools/$tool"
 done
