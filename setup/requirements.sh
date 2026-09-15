@@ -103,12 +103,12 @@ lines = [line for line in sys.stdin.read().splitlines() if line.strip()]
 if not lines:
     sys.exit(1)
 for line in lines:
-    m = re.fullmatch(r"([a-zA-Z0-9_-]+) = \"(latest|[0-9]+(?:\.[0-9]+){2})\"", line)
+    m = re.fullmatch(r"([a-zA-Z0-9_-]+) = \"(latest|[0-9]+(?:\.[0-9]+){1,2})\"", line)
     if not m:
         sys.exit(1)
     print(m[1] + "\t" + m[2])
 ' <<< "$declarations" 2>/dev/null); then
-    dots_error 'Unsupported mise declarations: checks currently accept simple string x.y.z pins or latest only.'
+    dots_error 'Unsupported mise declarations: checks currently accept simple string x.y or x.y.z pins or latest only.'
     return 1
   fi
   while IFS=$'\t' read -r tool version; do

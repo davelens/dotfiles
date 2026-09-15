@@ -47,9 +47,13 @@ cat > "$tools/mise" <<'SH'
 [[ $MISE_CACHE_DIR == /dev/null && $MISE_DATA_DIR == /dev/null && $MISE_STATE_DIR == /dev/null && $MISE_TMP_DIR == /dev/null && $MISE_LOG_FILE == /dev/null ]] || exit 92
 [[ -z ${PRIVATE_SENTINEL+x} && -z ${MISE_ENV_FILE+x} && -z ${MISE_TRUSTED_CONFIG_PATHS+x} && -z ${BASH_ENV+x} ]] || exit 93
 if [[ $3 == config && $4 == get && $5 == tools && $6 == --file && $7 == "$2/config.toml" ]]; then
-  printf 'nodejs = "22.0.0"\ngolang = "latest"\n'
+  printf 'nodejs = "22.0.0"\ngolang = "latest"\npostgres = "18.6"\n'
 elif [[ $3 == ls && $4 == --installed && $5 == --offline && $6 == --json ]]; then
-  printf '[{"version":"22.0.0","installed":true,"active":false}]\n'
+  if [[ $7 == postgres ]]; then
+    printf '[{"version":"18.6","installed":true,"active":false}]\n'
+  else
+    printf '[{"version":"22.0.0","installed":true,"active":false}]\n'
+  fi
 else
   exit 94
 fi
@@ -114,6 +118,8 @@ rm "$tools/sed"
 mv "$test_root/sed" "$tools/sed"
 # Missing or malformed runtime reports fail closed without exposing subprocess output.
 cp "$tools/mise" "$test_root/mise-stub"
+sed 's/"version":"18\.6"/"version":"18.5"/' "$test_root/mise-stub" > "$tools/mise"
+unchanged_check expect_failure check readiness
 for report in '[{"version":"22.0.0","installed":false}]' '[]' 'secret-requirements-sentinel'; do
   cat_script='#!/usr/bin/env bash
 if [[ $3 == config ]]; then
@@ -155,7 +161,13 @@ if [[ -n $real_mise ]]; then
   rm "$tools/mise"
   ln -s "$real_mise" "$tools/mise"
   export TEST_OS=arch
-  unchanged_check expect_failure check readiness
+  current_declarations() {
+    local output
+    if output=$(check readiness 2>&1); then return 1; fi
+    [[ $output == *'Missing or mismatched mise tool:'* || $output == *'Cannot query installed mise tool safely:'* ]] ||
+      { printf '%s\n' "$output" >&2; return 1; }
+  }
+  unchanged_check current_declarations
   printf '[tools]\nnode = "22.0.0"\n' > "$source_root/config/mise/config.toml"
   mkdir -p "$XDG_DATA_HOME/mise/installs/node/22.0.0/bin"
   printf 'legacy fixture\n' > "$XDG_DATA_HOME/mise/installs/node/.mise.backend"
@@ -172,7 +184,7 @@ if [[ -n $real_mise ]]; then
   printf 'incomplete\n' > "$XDG_DATA_HOME/mise/installs/node/22.0.0/incomplete"
   unchanged_check expect_failure check readiness
   rm "$XDG_DATA_HOME/mise/installs/node/22.0.0/incomplete"
-  for declaration in 'node = ["22.0.0"]' 'node = "22"' 'node = { version = "22.0.0" }'; do
+  for declaration in 'node = ["22.0.0"]' 'node = "22"' 'node = "22.0.0.1"' 'node = { version = "22.0.0" }'; do
     printf '[tools]\n%s\n' "$declaration" > "$source_root/config/mise/config.toml"
     unchanged_check expect_failure check readiness
   done
