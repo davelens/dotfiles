@@ -6,6 +6,8 @@ The bootstrap resolves inputs; this module never sources Bash or discovers env.
 """
 import argparse
 import base64
+import hashlib
+import json
 import os
 from pathlib import Path
 import shlex
@@ -152,9 +154,33 @@ def plan(env):
     return result
 
 
+def observe(env):
+    """Hash observations privately, never print plan content or machine values."""
+    artifacts = plan(env)
+    root = env['XDG_STATE_HOME'] + '/dots'
+    observations = managed.check(artifacts, 'dots', root)
+    inputs = {}
+    paths = [env['DOTS_ENV_FILE'], root + '/managed.json']
+    utilities = Path(env['DOTS_INSTALL_ROOT']) / 'bin/utilities'
+    # Registrations belong to the stable machine, not the candidate checkout.
+    if utilities.is_dir():
+        paths += [str(p) for p in sorted(utilities.iterdir()) if p.is_symlink()]
+    if 'sway' in env['DOTS_SELECTION'].split(','):
+        paths += [str(utilities / p) for p in (
+            'desktop-session/launch', 'desktop-session/stop', 'desktop-session/finalize',
+            'kanshi/restart', 'quickshell/restart', 'power/control')]
+    for p in paths:
+        inputs[p] = managed.snapshot(p)
+        resolved = str(Path(p).resolve())
+        inputs[resolved] = managed.snapshot(resolved)
+        inputs[p + '/parents'] = managed.parents(resolved)
+    payload = [artifacts, observations, inputs, dict(env)]
+    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('install', 'check', 'uninstall', 'restore'))
+    parser.add_argument('action', choices=('install', 'check', 'observe', 'uninstall', 'restore'))
     parser.add_argument('--adopt', action='append', default=[])
     parser.add_argument('--replace', action='append', default=[])
     parser.add_argument('--backup')
@@ -163,6 +189,9 @@ def main():
         parser.error('Lifecycle option is not applicable to this action.')
     root = os.environ['XDG_STATE_HOME'] + '/dots'
     try:
+        if args.action == 'observe':
+            print(observe(os.environ))
+            return 0
         if args.action in ('install', 'check'):
             artifacts = plan(os.environ)
             action = managed.apply if args.action == 'install' else managed.check

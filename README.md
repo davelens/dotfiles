@@ -51,8 +51,46 @@ The standalone script clones the public source and pinned submodules, then runs
 configuration installation directly. Git is required: no archive fallback,
 package installation, identity prompts, or implicit update. Nonempty non-repository
 destinations are refused. Existing checkouts are preserved: use their `setup/install`
-explicitly. The legacy `dots update` is not yet the checked-update implementation;
-do not use it for portability acceptance.
+explicitly; use the checked update route below for incoming revisions.
+
+### Checked updates
+
+`dots update` always includes the actual invoked checkout (including symlink/worktree
+entrypoints), plus repositories under `$REPO_NAMESPACE/davelens/dot*` when configured.
+`dots update --repo /absolute/other-repo` selects explicit additional repositories
+instead of that discovery. `--select CSV` and `--wezterm-destination PATH` are transient;
+ordinary updates retain saved choices. Update never saves choices or provisions.
+
+Only clean, attached, upstream-tracking repositories can fast-forward. Dirty/untracked
+work, divergent history and uninitialized/moved/dirty recursive submodules block their
+repository. Dotbot follows the superproject pin, never its own upstream. Submodule
+removal/type changes require explicit preparation. Git hooks are not run by update.
+
+Incoming source and pinned recursive submodules are checked in a private
+`$XDG_STATE_HOME/dots/update-*/source` clone. You can run the same read-only check:
+
+```bash
+bash /candidate/source/setup/check candidate --install-root /absolute/stable/dotfiles
+```
+
+Candidate code/manifests/requirements supply the source; expected live links and
+external helper registrations use the stable checkout. No live links point into the
+candidate. Checking creates no ownership locks, configuration, caches or saved choices.
+Trusted `dots/env` is read as Bash, not sandboxed against deliberately side-effecting code.
+
+Rejected checks retain their exact candidate and print its revision, config path,
+inspection command and an explicit preparation route, when mise requirements need it:
+`bash /absolute/dotsys/shared/mise/init.sh --config /retained/source/config/mise/config.toml`.
+Update does not execute that command. Only the exact recorded run area may be cleaned;
+the output gives its optional cleanup command. `latest` checks installed availability,
+not upstream freshness.
+
+After rechecking source/index/branch and machine/conflict observations, update performs
+a clean fast-forward, pinned submodule update, configuration reinstall and readiness
+check. Later failures report **partial advancement**, not rollback. Independent requested
+repositories continue; every summary includes old/new revisions and outcome, and any
+failure makes the batch nonzero. This is not an all-file/repository transaction or proof
+against runtime regressions; real-host portability acceptance is still pending.
 
 ### Provisioning and optional tools
 

@@ -51,7 +51,7 @@ dots_validate_choices() {
 dots_bootstrap() {
   set +x
   ((BASH_VERSINFO[0] >= 5)) || { dots_error 'Bash >=5 is required; prepare it with dotsys.'; return 1; }
-  local mode=$1 entry=$2 root env_file input_selection input_destination
+  local mode=$1 entry=$2 root env_file input_selection input_destination install_root_supplied=0
   local has_selection=${DOTS_INSTALL_SELECTION+x} has_destination=${DOTS_INSTALL_WEZTERM_DESTINATION+x}
   input_selection=${DOTS_INSTALL_SELECTION-}
   input_destination=${DOTS_INSTALL_WEZTERM_DESTINATION-}
@@ -97,7 +97,8 @@ dots_bootstrap() {
           --install-root)
             [[ $mode == candidate && $2 == /* && -d $2 ]] ||
               { dots_error '--install-root requires an existing absolute directory and candidate mode.'; return 1; }
-            DOTS_INSTALL_ROOT=$(cd -P -- "$2" && pwd) || return 1 ;;
+            DOTS_INSTALL_ROOT=$(cd -P -- "$2" && pwd) || return 1
+            install_root_supplied=1 ;;
         esac
         shift 2 ;;
       --save)
@@ -106,6 +107,8 @@ dots_bootstrap() {
       *) dots_error 'Unknown bootstrap option.'; return 1 ;;
     esac
   done
+  [[ $mode != candidate || $install_root_supplied == 1 ]] ||
+    { dots_error 'Candidate checks require --install-root.'; return 1; }
   source "$root/bash/env/brew.sh"
   source "$root/bash/env/path.sh"
   DOTS_OS=$(BASH_ENV= ENV= "$(type -P bash)" --noprofile --norc "$root/bin/autoload/os") ||

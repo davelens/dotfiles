@@ -20,14 +20,19 @@ case ${1:-} in
   prerequisites|readiness|candidate) mode=$1; shift ;;
   *)
     printf '%s\n' 'Usage: setup/check prerequisites|readiness [--select LIST] [--wezterm-destination PATH]' \
-      '       setup/check candidate --install-root PATH [choices] (not yet implemented)' >&2
+      '       setup/check candidate --install-root PATH [choices]' >&2
     exit 2 ;;
 esac
 dots_bootstrap "$mode" "$directory/check" "$@" || exit 1
-if [[ $mode == candidate ]]; then
-  dots_error 'Candidate artifact/ownership validation is not implemented; no candidate acceptance is available.'
-  exit 2
-fi
 source "$DOTS_SOURCE_ROOT/setup/requirements.sh" || exit 1
-"dots_$mode" || exit 1
+if [[ $mode == candidate ]]; then
+  dots_prerequisites || exit 1
+  before=$("$DOTS_PYTHON" -I -B "$DOTS_SOURCE_ROOT/setup/configuration.py" observe) || exit 1
+  dots_readiness || exit 1
+  after=$("$DOTS_PYTHON" -I -B "$DOTS_SOURCE_ROOT/setup/configuration.py" observe) || exit 1
+  [[ $before == "$after" ]] || { dots_error 'Machine/configuration inputs changed during candidate checking.'; exit 1; }
+  printf '%s\n' "$after"
+else
+  "dots_$mode" || exit 1
+fi
 printf 'dots: %s passed (installed capabilities, not live-session validation).\n' "$mode"

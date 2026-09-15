@@ -32,7 +32,8 @@ Usage: dots <command> [OPTIONS]
                HOME/user/XDG, checkout paths and approvals pass through to dotsys.
                Set DOTSYS_REPO_HOME to an absolute stable checkout (default: sibling dotsys).
   logs         Open the log in $EDITOR.
-  update       Legacy bulk update; checked updates are not implemented yet.
+  update       Checked fast-forward updates [--select CSV] [--repo ABSOLUTE_PATH ...].
+               Always includes this checkout; without --repo also discovers local dot-repos.
   -h, --help   Show help.
 Choices are transient unless install --save is explicit. Adoption enrolls matching
 artifacts; replacement needs a successful backup. Neither install nor check provisions.
@@ -63,48 +64,6 @@ install() {
   exec bash "$root/setup/install" "$@"
 }
 
-update_dotbot() {
-  $print_status -nc "Updating dotbot to latest master ..."
-
-  local dotbot_path="$DOTFILES_REPO_HOME/dotbot"
-
-  if git -C "$dotbot_path" fetch origin >/dev/null 2>&1 &&
-    git -C "$dotbot_path" checkout origin/master >/dev/null 2>&1; then
-    if git -C "$DOTFILES_REPO_HOME" diff --quiet dotbot; then
-      $print_status -i ok "dotbot already up to date"
-    else
-      git -C "$DOTFILES_REPO_HOME" add dotbot
-      git -C "$DOTFILES_REPO_HOME" commit -m "Update dotbot submodule to latest master" &>>"$log_file"
-      $print_status -i ok "dotbot updated and committed"
-    fi
-  else
-    $print_status -i error "Failed to update dotbot"
-    return 1
-  fi
-}
-
-update_repo() {
-  local repo_path="$1"
-  local repo_name
-  repo_name=$(basename "$repo_path")
-
-  $print_status -nc "Updating $repo_name ..."
-
-  # Check for uncommitted changes (unstaged and staged)
-  if ! git -C "$repo_path" diff-files --quiet 2>/dev/null ||
-    ! git -C "$repo_path" diff-index --cached --quiet HEAD 2>/dev/null; then
-    $print_status -i error "$repo_name has uncommitted changes, skipping"
-    return 1
-  fi
-
-  if ! git -C "$repo_path" pull --rebase &>>"$log_file"; then
-    $print_status -i error "Failed to update $repo_name"
-    return 1
-  fi
-
-  $print_status -i ok "$repo_name updated"
-}
-
 setup() {
   local delegate_root=${DOTSYS_REPO_HOME:-${root%/*}/dotsys}
   [[ $delegate_root == /* && -f $delegate_root/shared/install.sh ]] || {
@@ -112,33 +71,6 @@ setup() {
     return 1
   }
   exec bash "$delegate_root/shared/install.sh" setup --dotfiles-root "$root" "$@"
-}
-
-update() {
-  update_dotbot
-
-  # Update all locally installed dot-repos
-  local dotfiles_updated=0
-  for repo_path in "$REPO_NAMESPACE"/davelens/dot*; do
-    [[ -d "$repo_path/.git" ]] || continue
-
-    if update_repo "$repo_path"; then
-      [[ "$repo_path" == "$DOTFILES_REPO_HOME" ]] && dotfiles_updated=1
-    fi
-  done
-
-  # Run the dotfiles installer after all repos are updated
-  if [[ $dotfiles_updated -eq 1 ]]; then
-    $print_status -nc "Running dotfiles installer ..."
-    if "$DOTFILES_REPO_HOME/setup/install" &>>"$log_file"; then
-      $print_status -i ok "dotfiles installer complete"
-    else
-      $print_status -i error "dotfiles installer failed"
-    fi
-  fi
-
-  echo
-  echo "Logs available at $log_file"
 }
 
 ###############################################################################
@@ -149,8 +81,9 @@ main() {
     install) shift; install "$@" ;;
     check) shift; exec bash "$root/setup/check" "$@" ;;
     setup) shift; setup "$@" ;;
-    logs|update)
-      # Legacy operations only; install/check/setup do not initialize a shell or log.
+    update) shift; exec bash "$root/setup/update.sh" "$@" ;;
+    logs)
+      # Log viewing only; installation and updating never initialize a shell.
       source "$root/setup/common.sh"
       dots_bootstrap readiness "$root/setup/install"
       source "$root/bash/helpers.sh"
