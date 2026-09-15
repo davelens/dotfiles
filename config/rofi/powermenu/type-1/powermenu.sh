@@ -10,7 +10,7 @@
 ## style-1   style-2   style-3   style-4   style-5
 
 # Current Theme
-dir="$HOME/.config/rofi/powermenu/type-1"
+dir="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/powermenu/type-1"
 theme='style-1'
 
 # CMDs
@@ -31,7 +31,7 @@ rofi_cmd() {
   rofi -dmenu \
     -p "$host" \
     -mesg "Uptime: $uptime" \
-    -theme ${dir}/${theme}.rasi
+    -theme "${dir}/${theme}.rasi"
 }
 
 # Confirmation CMD
@@ -44,7 +44,7 @@ confirm_cmd() {
     -dmenu \
     -p 'Confirmation' \
     -mesg 'Are you Sure?' \
-    -theme ${dir}/${theme}.rasi
+    -theme "${dir}/${theme}.rasi"
 }
 
 # Ask for confirmation
@@ -61,27 +61,7 @@ run_rofi() {
 run_cmd() {
   selected="$(confirm_exit)"
   if [[ "$selected" == "$yes" ]]; then
-    if [[ $1 == '--shutdown' ]]; then
-      systemctl poweroff
-    elif [[ $1 == '--reboot' ]]; then
-      systemctl reboot
-    elif [[ $1 == '--suspend' ]]; then
-      mpc -q pause
-      amixer set Master mute
-      systemctl suspend
-    elif [[ $1 == '--logout' ]]; then
-      if [[ "$DESKTOP_SESSION" == 'openbox' ]]; then
-        openbox --exit
-      elif [[ "$DESKTOP_SESSION" == 'bspwm' ]]; then
-        bspc quit
-      elif [[ "$DESKTOP_SESSION" == 'i3' ]]; then
-        i3-msg exit
-      elif [[ "$DESKTOP_SESSION" == 'plasma' ]]; then
-        qdbus org.kde.ksmserver /KSMServer logout 0 0 0
-      elif [[ "$DESKTOP_SESSION" == 'sway' ]]; then
-        "${XDG_BIN_HOME:-$HOME/.local/bin}/desktop-session" stop
-      fi
-    fi
+    utility power control "${1#--}"
   else
     exit 0
   fi
@@ -97,13 +77,7 @@ $reboot)
   run_cmd --reboot
   ;;
 $lock)
-  if [[ -x '/usr/bin/swaylock' ]]; then
-    swaylock -f -c 000000
-  elif [[ -x '/usr/bin/betterlockscreen' ]]; then
-    betterlockscreen -l
-  elif [[ -x '/usr/bin/i3lock' ]]; then
-    i3lock
-  fi
+  utility power control lock
   ;;
 $suspend)
   run_cmd --suspend

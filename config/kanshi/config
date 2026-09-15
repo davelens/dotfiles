@@ -1,41 +1,41 @@
 profile laptop {
     output eDP-2 enable mode 2560x1600 position 0,0 scale 1.333333
-    exec systemctl --user restart quickshell.service
+    exec utility quickshell restart
 }
 
 profile home-1 {
     output eDP-2 disable
     output DP-3 enable position 0,0 scale 1.0
-    exec systemctl --user restart quickshell.service
+    exec utility quickshell restart
 }
 
 profile home-2 {
     output eDP-2 disable
     output DP-4 enable position 0,0 scale 1.0
-    exec systemctl --user restart quickshell.service
+    exec utility quickshell restart
 }
 
 profile desktop-1 {
     output HDMI-A-1 disable
     output "ASUSTek COMPUTER INC VG27A L9LMQS163748" enable mode 2560x1440@119.998Hz position 0,0 scale 1.0
-    exec systemctl --user restart quickshell.service
+    exec utility quickshell restart
 }
 
 profile desktop-2 {
     output HDMI-A-3 disable
     output "ASUSTek COMPUTER INC VG27A L9LMQS163748" enable mode 2560x1440@119.998Hz position 0,0 scale 1.0
-    exec systemctl --user restart quickshell.service
+    exec utility quickshell restart
 }
 
 profile work-1 {
     output eDP-2 disable
     output DP-6 disable
     output DP-7 enable position 0,0 scale 1.4
-    exec systemctl --user restart quickshell.service
+    exec utility quickshell restart
 }
 
 profile work-2 {
     output eDP-2 disable
     output "Apple Computer Inc StudioDisplay Unknown" enable position 0,0 scale 2.0
-    exec systemctl --user restart quickshell.service
+    exec utility quickshell restart
 }

@@ -1,9 +1,9 @@
 # Read `man 5 sway` for a complete reference.
-include ~/.config/sway/config.d/00-variables
-include ~/.config/sway/config.d/10-window-rules
-include ~/.config/sway/config.d/20-appearance
-include ~/.config/sway/config.d/30-input
-include ~/.config/sway/config.d/40-autostart
-include ~/.config/sway/config.d/50-keybindings
-include ~/.config/sway/config.d/60-resize
-include ~/.config/sway/config.d/99-finalize
+include config.d/00-variables
+include config.d/10-window-rules
+include config.d/20-appearance
+include config.d/30-input
+include config.d/40-autostart
+include config.d/50-keybindings
+include config.d/60-resize
+include config.d/99-finalize

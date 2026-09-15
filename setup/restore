@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set +x
+unset BASH_ENV ENV
+directory=$(cd -P -- "${BASH_SOURCE[0]%/*}" && pwd) || exit 1
+exec bash --noprofile --norc "$directory/install" --restore "$@"

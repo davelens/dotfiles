@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+"""Transfer UTF-8 text on stdin/stdout using fixed Windows clipboard operations."""
+import base64
+import subprocess
+import sys
+
+if len(sys.argv) != 2 or sys.argv[1] not in ('copy', 'paste'):
+    sys.exit('windows-clipboard: use copy (stdin) or paste (stdout).')
+code = "$ErrorActionPreference = 'Stop'; [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); "
+data = b''
+if sys.argv[1] == 'copy':
+    data = base64.b64encode(sys.stdin.buffer.read())
+    code += 'Set-Clipboard -Value ([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([Console]::In.ReadToEnd())))'
+else:
+    code += '[Console]::Write((Get-Clipboard -Raw))'
+try:
+    sys.exit(subprocess.run(['powershell.exe', '-NoLogo', '-NoProfile', '-NonInteractive',
+                             '-Command', code], input=data).returncode)
+except OSError:
+    sys.exit('windows-clipboard: Windows PowerShell unavailable.')

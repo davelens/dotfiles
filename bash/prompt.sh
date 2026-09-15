@@ -1,3 +1,6 @@
+[[ $- == *i* ]] || return 0
+[[ -z ${PROMPT_COMMAND:-} ]] || return 0
+
 # Git branch info for our prompt. Picks up on `git b` if that alias exists.
 prompt_branch() {
   # Only write branch info in actual git repos.
@@ -41,8 +44,8 @@ prompt_pwd() {
 }
 
 # Use starship when available, or fall back to my homebrew.
-if command -v starship >/dev/null; then
-  eval "$(starship init bash)"
+if dots_optional_hook starship init bash; then
+  :
 else
   # PROMPT_COMMAND comes with bash. It allows you to specify a command or
   # function that gets executed just before the prompt is displayed.

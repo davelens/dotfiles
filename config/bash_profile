@@ -5,45 +5,81 @@
 ###############################################################################
 # This is the main entry point for my interactive shells.
 ###############################################################################
-DOTFILES_REPO_HOME="$(dirname "$(dirname "$(readlink "${BASH_SOURCE[0]}")")")"
-export DOTFILES_REPO_HOME
+set +x
 
-# This file will autoload in every subshell, exposing our scripting helpers.
-# This means they are NOT explicitly present in interactive shells, by design.
-export BASH_ENV="$DOTFILES_REPO_HOME/bash/helpers.sh"
+# Find this checkout, whether sourced directly or through installed symlinks.
+_dots_entry=${BASH_SOURCE[0]}
+[[ $_dots_entry == */* ]] || _dots_entry="./$_dots_entry"
+_dots_count=0
+while [[ -L $_dots_entry ]]; do
+  _dots_directory=$(cd -P -- "${_dots_entry%/*}" && pwd) || return 1
+  _dots_entry=$(readlink -- "$_dots_entry") || return 1
+  [[ $_dots_entry == /* ]] || _dots_entry="$_dots_directory/$_dots_entry"
+  ((_dots_count+=1))
+  ((_dots_count <= 40)) || return 1
+done
+
+_dots_directory=$(cd -P -- "${_dots_entry%/*}" && pwd) || return 1
+source "$_dots_directory/../setup/common.sh" || return 1
+
+# Bootstrap loads private settings, XDG paths and Homebrew before shell defaults.
+_dots_initial_ps1=${PS1-}
+dots_bootstrap readiness "$_dots_directory/bash_profile" || return 1
+
+###############################################################################
+# Shared environment for interactive shells and noninteractive Bash.
+###############################################################################
+# Shared helpers also load in noninteractive Bash through BASH_ENV.
+export BASH_ENV="$DOTS_SOURCE_ROOT/bash/helpers.sh"
+source "$BASH_ENV"
+
+source "$DOTS_SOURCE_ROOT/bash/env/misc.sh" # General environment defaults
+source "$DOTS_SOURCE_ROOT/bash/env/ruby.sh" # Ruby-specific env config
+unset _dots_entry _dots_directory _dots_count
+
+# Scripts need the environment above, but not our interactive configuration.
+if [[ $- != *i* ]]; then
+  unset _dots_initial_ps1
+  return 0
+fi
 
 ###############################################################################
 # Configuration for how we interact with our shell (colors, aliases).
 ###############################################################################
-source "$DOTFILES_REPO_HOME/bash/env/brew.sh" # Homebrew pkg manager
-source "$DOTFILES_REPO_HOME/bash/env/xdg.sh"  # XDG base dir spec paths
-source "$DOTFILES_REPO_HOME/bash/colors.sh"   # ENV vars for colors
-source "$DOTFILES_REPO_HOME/bash/aliases.sh"  # Shorthands, overrides,...
+# Keep private aliases for later, before loading our defaults.
+mapfile -t _dots_local_aliases < <(alias -p)
+source "$DOTS_SOURCE_ROOT/bash/colors.sh"        # ENV vars for colors
+source "$DOTS_SOURCE_ROOT/bash/aliases.sh"       # Shorthands, overrides,...
 
 ###############################################################################
-# Configuration of how our shell behaves ($PATH, commands, completion,...).
+# Configuration of how our shell behaves (options, history, completion,...).
 ###############################################################################
-source "$DOTFILES_REPO_HOME/bash/env/options.sh"    # Shell options (shopt/set)
-source "$DOTFILES_REPO_HOME/bash/env/path.sh"       # $PATH
-source "$DOTFILES_REPO_HOME/bash/env/history.sh"    # Bash history config
-source "$DOTFILES_REPO_HOME/bash/env/locale.sh"     # Language config
-source "$DOTFILES_REPO_HOME/bash/env/completion.sh" # Bash cmd completion
-source "$DOTFILES_REPO_HOME/bash/env/ruby.sh"       # Ruby-specific env config
-source "$DOTFILES_REPO_HOME/bash/env/ssh.sh"        # SSH agent via keychain
-source "$DOTFILES_REPO_HOME/bash/env/misc.sh"       # The kitchen sink
+source "$DOTS_SOURCE_ROOT/bash/env/options.sh"    # Shell options (shopt/set)
+source "$DOTS_SOURCE_ROOT/bash/env/history.sh"    # Bash history config
+source "$DOTS_SOURCE_ROOT/bash/env/completion.sh" # Bash cmd completion
+dots_optional_hook mise activate bash || :        # Optional runtime activation
+source "$DOTS_SOURCE_ROOT/bash/env/ssh.sh"        # Optional local SSH agent
 
 ###############################################################################
 # OS specific configuration and/or overrides.
 ###############################################################################
-case $("$XDG_BIN_HOME/os") in
-wsl) source "$DOTFILES_REPO_HOME/bash/env/os/wsl/init.sh" ;;
-macos) source "$DOTFILES_REPO_HOME/bash/env/os/macos/init.sh" ;;
-arch) source "$DOTFILES_REPO_HOME/bash/env/os/arch/init.sh" ;;
-void) source "$DOTFILES_REPO_HOME/bash/env/os/void/init.sh" ;;
+case $DOTS_OS in
+  wsl)   source "$DOTS_SOURCE_ROOT/bash/env/os/wsl/init.sh" ;;
+  macos) source "$DOTS_SOURCE_ROOT/bash/env/os/macos/init.sh" ;;
+  arch)  source "$DOTS_SOURCE_ROOT/bash/env/os/arch/init.sh" ;;
+  void)  source "$DOTS_SOURCE_ROOT/bash/env/os/void/init.sh" ;;
 esac
 
 ###############################################################################
-# User-specific settings and/or overrides + setting prompt as the final step.
+# User-specific overrides + setting prompt as the final step.
 ###############################################################################
-[ -f "$DOTFILES_CONFIG_HOME/env" ] && source "$DOTFILES_CONFIG_HOME/env"
-source "$DOTFILES_REPO_HOME/bash/prompt.sh"
+for _dots_alias in "${_dots_local_aliases[@]}"; do
+  eval "$_dots_alias"
+done
+unset _dots_alias _dots_local_aliases
+
+# Keep an explicit private prompt; otherwise use our usual prompt setup.
+if [[ ${PS1-} == "$_dots_initial_ps1" ]]; then
+  source "$DOTS_SOURCE_ROOT/bash/prompt.sh"
+fi
+unset _dots_initial_ps1

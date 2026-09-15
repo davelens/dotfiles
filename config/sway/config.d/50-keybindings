@@ -1,11 +1,11 @@
 ### Launchers #################################################################
 
-bindsym $mod+Return exec ~/.local/bin/desktop-session launch $term
+bindsym $mod+Return exec desktop-session launch $term
 bindsym $mod+Space exec $launcher
 # bindsym $mod+u exec $browser
-bindsym $mod+c exec cliphist list | ~/.local/bin/rofi-start --dmenu --theme style-5-no-indent | cliphist decode | wl-copy
-bindsym $mod+m exec ~/.local/bin/rofi-start --mode calc -modi calc -no-show-match -no-sort
-bindsym mod4+Shift+a exec bash -c "pidof rofi && pkill rofi || ~/.config/rofi/applets/bin/ac-tasks.sh"
+bindsym $mod+c exec cliphist list | rofi-start --dmenu --theme style-5-no-indent | cliphist decode | wl-copy
+bindsym $mod+m exec rofi-start --mode calc -modi calc -no-show-match -no-sort
+bindsym mod4+Shift+a exec sh -c 'pidof rofi && pkill rofi || "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/applets/bin/ac-tasks.sh"'
 
 ### Actions ###################################################################
 
@@ -20,22 +20,22 @@ bindsym $mod+v splitv
 ## Resize mode (see 60-resize)
 bindsym $mod+r mode "resize"
 ## Reload sway config
-bindsym $mod+Shift+r reload; exec systemctl --user restart kanshi.service
-# bindsym mod4+Shift+p exec ~/.local/bin/rofi-start --powermenu
-bindsym $mod+Shift+s exec ~/.local/bin/dshell settings toggle
-bindsym $mod+Shift+n exec ~/.local/bin/dshell notifications toggle
-bindsym $mod+Shift+u exec ~/.local/bin/dshell system-updates toggle
-bindsym $mod+Shift+b exec ~/.local/bin/dshell status-bar focus toggle
-bindsym mod4+Shift+p exec ~/.local/bin/dshell power toggle
-bindsym mod4+Shift+s exec ~/.local/bin/dshell screen-recording files toggle
-bindsym mod4+Shift+w exec ~/.local/bin/dshell wallpaper browser toggle
+bindsym $mod+Shift+r reload; exec utility kanshi restart
+# bindsym mod4+Shift+p exec rofi-start --powermenu
+bindsym $mod+Shift+s exec dshell settings toggle
+bindsym $mod+Shift+n exec dshell notifications toggle
+bindsym $mod+Shift+u exec dshell system-updates toggle
+bindsym $mod+Shift+b exec dshell status-bar focus toggle
+bindsym mod4+Shift+p exec dshell power toggle
+bindsym mod4+Shift+s exec dshell screen-recording files toggle
+bindsym mod4+Shift+w exec dshell wallpaper browser toggle
 ## Exit sway (logs you out of your Wayland session)
 bindsym $mod+Shift+q exec \
   swaynag \
   -t warning \
   -m 'You pressed the exit shortcut. Do you really want to exit sway? \
       This will end your Wayland session.' \
-  -B 'Yes, exit sway' '~/.local/bin/desktop-session stop'
+  -B 'Yes, exit sway' 'desktop-session stop'
 
 # Focus windows
 bindsym $mod+$left focus left
@@ -118,7 +118,7 @@ bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
 
 # Screenshots
-bindsym $mod+p exec bash -c "pidof rofi && pkill rofi || ~/.config/rofi/applets/bin/screenshot.sh"
+bindsym $mod+p exec sh -c 'pidof rofi && pkill rofi || "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/applets/bin/screenshot.sh"'
 # bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
 
 ## Alt+Tab window switching (swtchr)

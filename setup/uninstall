@@ -1,43 +1,5 @@
 #!/usr/bin/env bash
-
-basedir="$(dirname "${BASH_SOURCE[0]}")"
-files=$(sed -n '/- link:/,/^-/p' "$basedir/install.conf.yaml" | sed -n '/^    /p')
-
-# Iterate over each line of the result
-while IFS= read -r line; do
-  # Skip lines starting with '#'
-  if [[ "$file_path" =~ ^# ]]; then
-    continue
-  fi
-
-  # Extract the file path before the ':'
-  file_path=$(echo "$line" | awk -F':' '{print $1}' | xargs) # Removes surrounding spaces
-
-  # Expand the '~' to the home directory
-  expanded_path="${file_path/#\~/$HOME}"
-
-  # Check if the file exists, then remove it
-  if [ -e "$expanded_path" ]; then
-    echo "Removing file: $expanded_path"
-    rm "$expanded_path"
-  else
-    echo "File not found: $expanded_path"
-  fi
-done <<<"$files"
-
-# Restore dotbot backups of .bashrc and .bash_profile if they exist.
-# dotbot appends a timestamp to the original file when backup: true is set.
-for target in "$HOME/.bashrc" "$HOME/.bash_profile"; do
-  # Find the most recent backup (highest timestamp suffix)
-  backup=$(ls -1 "${target}".* 2>/dev/null | sort -r | head -n 1)
-
-  if [ -n "$backup" ]; then
-    echo "Restoring backup: $backup -> $target"
-    mv "$backup" "$target"
-  fi
-done
-
-# Remove any lingering state and config files.
-rm -rf "$XDG_CONFIG_HOME/dots" \
-  "$XDG_DATA_HOME/dots" \
-  "$XDG_STATE_HOME/dots"
+set +x
+unset BASH_ENV ENV
+directory=$(cd -P -- "${BASH_SOURCE[0]%/*}" && pwd) || exit 1
+exec bash --noprofile --norc "$directory/install" --uninstall "$@"

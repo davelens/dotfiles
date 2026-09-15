@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set +x
+unset BASH_ENV ENV
+
+# Resolve an installed entry-point symlink before loading checkout code.
+entry=${BASH_SOURCE[0]}
+[[ $entry == */* ]] || entry="./$entry"
+count=0
+while [[ -L $entry ]]; do
+  directory=$(cd -P -- "${entry%/*}" && pwd) || exit 1
+  entry=$(readlink -- "$entry") || exit 1
+  [[ $entry == /* ]] || entry="$directory/$entry"
+  ((count+=1))
+  ((count <= 40)) || exit 1
+done
+directory=$(cd -P -- "${entry%/*}" && pwd) || exit 1
+source "$directory/common.sh" || exit 1
+
+case ${1:-} in
+  prerequisites|readiness|candidate) mode=$1; shift ;;
+  *)
+    printf '%s\n' 'Usage: setup/check prerequisites|readiness [--select LIST] [--wezterm-destination PATH]' \
+      '       setup/check candidate --install-root PATH [choices]' >&2
+    exit 2 ;;
+esac
+dots_bootstrap "$mode" "$directory/check" "$@" || exit 1
+source "$DOTS_SOURCE_ROOT/setup/requirements.sh" || exit 1
+if [[ $mode == candidate ]]; then
+  dots_prerequisites || exit 1
+  before=$("$DOTS_PYTHON" -I -B "$DOTS_SOURCE_ROOT/setup/configuration.py" observe) || exit 1
+  dots_readiness || exit 1
+  after=$("$DOTS_PYTHON" -I -B "$DOTS_SOURCE_ROOT/setup/configuration.py" observe) || exit 1
+  [[ $before == "$after" ]] || { dots_error 'Machine/configuration inputs changed during candidate checking.'; exit 1; }
+  printf '%s\n' "$after"
+else
+  "dots_$mode" || exit 1
+fi
+printf 'dots: %s passed (installed capabilities, not live-session validation).\n' "$mode"

@@ -32,13 +32,8 @@ main() {
   selected=$(printf "%s\n" "${list[@]}" | fzf "${options[@]}")
 
   case $selected in
-  "Lock") loginctl lock-session ;;
-  "Shutdown") systemctl poweroff ;;
-  "Reboot") systemctl reboot ;;
-  "Logout") loginctl terminate-session "$XDG_SESSION_ID" ;;
-  "Hibernate") systemctl hibernate ;;
-  "Suspend") systemctl suspend ;;
-  *) exit 1 ;;
+    Lock|Shutdown|Reboot|Logout|Hibernate|Suspend) utility power control "${selected,,}" ;;
+    *) return 1 ;;
   esac
 }
 

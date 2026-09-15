@@ -1,0 +1,4 @@
+# Windows bridges are selected explicitly; host configuration is a managed file.
+- link:
+    $XDG_BIN_HOME/windows-open: bin/autoload/windows-open
+    $XDG_BIN_HOME/windows-clipboard: bin/autoload/windows-clipboard

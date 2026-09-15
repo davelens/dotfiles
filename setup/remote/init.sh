@@ -1,237 +1,63 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2120 # Unreachable commands are fiiine
-set -e
+# Standalone so this can also be downloaded and reviewed before execution.
+set -euo pipefail
+set +x
+unset BASH_ENV ENV
 
-export REPO_URI="davelens/dotfiles"
-
-fail() {
-  printf %s "$CNONE"
-  cleanup
-  echo -e "\n$1" >&2
-  exit "${2-1}"
+fail() { printf 'dots remote: %s\n' "$*" >&2; exit 1; }
+usage() {
+  cat <<'EOF'
+Usage: bash setup/remote/init.sh [--destination ABS] [--source URL_OR_ABS] [-- INSTALL_OPTIONS...]
+Acquire public dotfiles and pinned submodules, then run setup/install directly.
+Requires a prepared machine (Bash 5, Git, Python and installer filesystem tools).
+Default source: https://github.com/davelens/dotfiles.git
+Default destination: $HOME/Repositories/davelens/dotfiles
+--source accepts that public origin or an explicit absolute local Git source.
+Install options pass through unchanged: --select CSV, --save, --adopt PATH,
+--replace PATH, --wezterm-destination PATH, --check.
+No packages, services, identity setup, implicit updates, or automatic rollback.
+EOF
 }
-
-arch() {
-  [ -f /etc/arch-release ]
-}
-
-debian() {
-  [ -f /etc/debian_version ]
-}
-
-macos() {
-  [ "$(uname)" == "Darwin" ]
-}
-
-macos_needs_newer_bash() {
-  macos &&
-    [ -n "$BASH_VERSION" ] &&
-    [ "${BASH_VERSINFO[0]}" -lt 4 ]
-}
-
-get_cursor_pos() {
-  # When piped from curl, stdin is not a terminal, so we need to use /dev/tty
-  if [ ! -t 0 ]; then
-    # If stdin is not a terminal, we can't reliably get cursor position
-    echo "1;1"
-    return
-  fi
-
-  # Save current terminal settings
-  local old_stty
-  old_stty=$(stty -g)
-
-  # Set terminal to raw mode, disable echo
-  stty raw -echo
-
-  # Request cursor position report
-  printf "\033[6n" >/dev/tty
-
-  # Read the response: it should look like ESC [ row ; col R
-  local response
-  IFS='R' read -d R -r response </dev/tty
-
-  # Restore terminal settings
-  stty "$old_stty"
-
-  # Strip the escape sequence prefix and split row and col
-  local row col
-  response=${response#*[}
-  row=${response%;*}
-  col=${response#*;}
-
-  echo "$row;$col"
-}
-
-interrupt_handler() {
-  # Temporarily disable the trap so teardown prompts aren't interrupted
-  trap '' SIGINT
-
-  echo
-  teardown
-  cleanup
-  echo -e "\nAborted."
-  exit 1
-}
-
-teardown() {
-  if [ -n "$PROGRESS_REPORT" ]; then
-    echo
-    echo "Progress so far:"
-    echo -e "$PROGRESS_REPORT"
-    echo
-  fi
-
-  if [ "$DOTBOT_RAN" = "1" ] && [ -n "$DOTFILES_REPO_HOME" ]; then
-    echo "Undoing symlinks created by dotbot..."
-    "$DOTFILES_REPO_HOME/setup/uninstall"
-    echo
-  fi
-
-  if [ -n "$DOTFILES_REPO_HOME" ] && [ -d "$DOTFILES_REPO_HOME/.git" ]; then
-    read -n 1 -r -p "Do you want to remove the cloned repo at $(repo_home)? [y/n]: " yn </dev/tty
-    echo
-    case $yn in
-    [Yy]*) rm -rf "$DOTFILES_REPO_HOME" && echo "Removed $(repo_home)." ;;
-    *) echo "Kept $(repo_home)." ;;
-    esac
-  fi
-}
-
-load_remote_file() {
-  local filename="${1##*/}"
-  local local_file="$INSTALLER_TMP_HOME/$filename"
-  local base_url="https://raw.githubusercontent.com/davelens/dotfiles/refs/heads/master"
-
-  if [ "$DOTS_DEBUG" = "1" ]; then
-    base_url="${DOTS_DEBUG_URL:-http://localhost:8000}"
-  fi
-
-  curl -so "$local_file" "$base_url/$1"
-  source "$local_file"
-}
-
-restore_cursor() {
-  printf "\033[%sH" "$CURSOR_POS"
-}
-
-save_cursor() {
-  IFS=';' read -r CURSOR_POS <<<"$(get_cursor_pos)"
-  if [ "$CURSOR_POS" == "$(tput lines);1" ]; then
-    CURSOR_POS="1;1"
-  fi
-  export CURSOR_POS
-}
-
-###############################################################################
-
-PROGRESS_REPORT=""
-DOTBOT_RAN=0
-
-black() { echo "$BGK$FGW$1$CNONE"; }
-blue() { echo "$BGB$FGK$1$CNONE"; }
-cleanup() { rm -rf "$INSTALLER_TMP_HOME"; }
-clear_down() { printf "\033[0J"; }
-fgreen() { echo "$FGG$1$CNONE"; }
-fred() { echo "$FGR$1$CNONE"; }
-fyellow() { echo "$FGY$1$CNONE"; }
-green() { echo "$BGG$FGK$1$CNONE"; }
-repo_home() { echo "~${DOTFILES_REPO_HOME/$HOME/}"; }
-reset_prompt() { restore_cursor && clear_down; }
-underline() { echo "$CUN$1$CNONE"; }
-
-report_step() {
-  if [ -n "$PROGRESS_REPORT" ]; then
-    PROGRESS_REPORT="$PROGRESS_REPORT\n"
-  fi
-  PROGRESS_REPORT="${PROGRESS_REPORT}$1"
-}
-
-show_progress() {
-  clear
-  underline "INSTALLING https://github.com/$REPO_URI"
-  echo
-  echo -e "$PROGRESS_REPORT"
-  echo
-}
-
-###############################################################################
-
-preface() {
-  reset_prompt
-  save_cursor
-
-  echo
-  underline "INSTALLING https://github.com/$REPO_URI"
-  echo
-  echo "This script will:"
-  echo "1. Clone the dotfiles repository somewhere on your system. You choose where."
-  echo "2. Symlink the necessary files and folders to their relevant paths."
-  echo -n "3. Configure $(black git) and $(black gh) "
-
-  if macos; then
-    echo -en "using data from my Bitwarden vault.\n"
-  else
-    echo -en "by asking for the required data.\n"
-  fi
-
-  if macos_needs_newer_bash; then
-    echo
-    echo -n "! ${FGY}This is a macos machine so it also installs $(black brew) "
-    echo -e -n "${FGY}and the latest version of Bash.$CNONE\n"
-  fi
-
-  echo
-  echo "You can stop the installation at any time by pressing $(black Ctrl+c)."
-  echo "Any changes made so far will be rolled back if you do."
-  echo
-  echo "You can review what the remote install does on GitHub:"
-  echo
-  echo "  $(black https://github.com/davelens/dotfiles/tree/master/setup/remote)"
-  echo
-
-  read -n 1 -r -p "Do you want to continue? [y/n]: " yn </dev/tty
-  case $yn in
-  [Yy]*) echo && return ;;
-  [Nn]*) interrupt_handler ;;
-  *) preface ;;
+source_repo=https://github.com/davelens/dotfiles.git
+destination=
+while (($#)); do
+  case $1 in
+    -h|--help) usage; exit 0 ;;
+    --destination|--source)
+      (($# >= 2)) || fail "Missing value for $1"
+      [[ -n $2 ]] || fail "Empty value for $1"
+      case $1 in --destination) destination=$2 ;; --source) source_repo=$2 ;; esac
+      shift 2 ;;
+    --) shift; break ;;
+    *) break ;;
   esac
-}
-
-# To make and test changes locally I run a simple http server on port 8000,
-# and then call this command:
-#
-# DOTS_DEBUG=1 bash <(curl -s http://localhost:8000/setup/remote/init.sh)
-
-main() {
-  preface
-  echo # Coming from a prompt, so we need an inline break.
-
-  INSTALLER_TMP_HOME="$HOME/.local/state/dots/tmp/remote_install"
-  mkdir -p "$INSTALLER_TMP_HOME"
-
-  REMOTE_FILES=()
-  REMOTE_FILES+=("bash/env/xdg.sh")
-  REMOTE_FILES+=("bash/colors.sh")
-  REMOTE_FILES+=("setup/remote/preflight.sh")
-  REMOTE_FILES+=("setup/remote/ask_for_repo_namespace.sh")
-  REMOTE_FILES+=("setup/remote/download_dotfiles.sh")
-  REMOTE_FILES+=("setup/remote/install_dotfiles.sh")
-  REMOTE_FILES+=("setup/remote/configure_env.sh")
-
-  for file in "${REMOTE_FILES[@]}"; do load_remote_file "$file"; done
-
-  cleanup
-}
-
-###############################################################################
-
-trap 'interrupt_handler' SIGINT
-
-[ -z "${BASH_VERSION:-}" ] && fail "Bash is required to run this script."
-
-if ! command -v curl >/dev/null; then
-  fail "curl is required to download the dotfiles."
+done
+((BASH_VERSINFO[0] >= 5)) || fail 'Bash >=5 is required; prepare the machine with dotsys first.'
+command -v git >/dev/null 2>&1 || fail 'Git is required; prepare it with dotsys first. No archive fallback.'
+[[ ${HOME:-} == /* ]] || fail 'Set an absolute HOME.'
+destination=${destination:-$HOME/Repositories/davelens/dotfiles}
+[[ $destination == /* && $destination != *$'\n'* && $destination != *$'\r'* ]] || fail 'Supply an absolute destination without line breaks.'
+# A symlink destination is never acquisition authority, including a trailing slash.
+while [[ $destination == */ && $destination != / ]]; do destination=${destination%/}; done
+[[ ! -L $destination ]] || fail 'Refusing a symlink destination; choose a new directory.'
+destination=$(realpath -m -- "$destination")
+[[ $destination != / && $destination != "$HOME" ]] || fail 'Refusing HOME or the filesystem root as a destination.'
+if [[ -e $destination/.git || -L $destination/.git ]]; then
+  printf 'dots remote: Existing checkout preserved; no pull or reset performed.\nInstall explicitly: bash %q [INSTALL_OPTIONS...]\nUpdate explicitly: review %q before using dots update from that checkout.\n' "$destination/setup/install" "$destination/README.md" >&2
+  exit 1
 fi
-
-main "$@"
+if [[ -e $destination ]]; then
+  [[ -d $destination ]] || fail 'Destination is not a directory; existing content preserved.'
+  [[ -z $(find "$destination" -mindepth 1 -maxdepth 1 -print -quit) ]] || fail 'Refusing nonempty non-repository destination; choose an empty/new directory. Existing content preserved.'
+fi
+case $source_repo in
+  https://github.com/davelens/dotfiles.git) ;;
+  /*) [[ -d $source_repo ]] && git -C "$source_repo" rev-parse --git-dir >/dev/null 2>&1 || fail 'Local source must be a Git repository.' ;;
+  *) fail 'Use the known public HTTPS origin or an absolute local Git source.' ;;
+esac
+trap 'status=$?; printf "dots remote: Failed; completed changes are preserved. No automatic rollback. Inspect %s and rerun its setup/install explicitly when prepared.\n" "$destination" >&2; exit "$status"' ERR
+mkdir -p -- "${destination%/*}"
+GIT_TERMINAL_PROMPT=0 git clone --recurse-submodules -- "$source_repo" "$destination"
+[[ -f $destination/setup/install ]] || fail 'Acquired source has no setup/install; checkout preserved.'
+bash "$destination/setup/install" "$@"
+printf 'dots remote: Configuration operation complete. Check runtime readiness separately with setup/check readiness.\n'

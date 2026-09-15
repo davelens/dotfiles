@@ -57,7 +57,7 @@ main() {
     if [ $dmenu -eq 1 ]; then
       cmd=(rofi -dmenu show)
     else
-      cmd=(rofi -show "$mode" -run-command "$XDG_BIN_HOME/desktop-session launch {cmd}")
+      cmd=(rofi -show "$mode" -run-command "desktop-session launch {cmd}")
     fi
 
     "${cmd[@]}" -theme "$XDG_CONFIG_HOME/rofi/launchers/${launcher}/${theme}.rasi" "${extra_args[@]}"

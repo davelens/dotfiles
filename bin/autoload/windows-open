@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+"""Open one URL or file through Windows; input is never executable code."""
+import base64
+import os
+import re
+import subprocess
+import sys
+
+if len(sys.argv) != 2 or not sys.argv[1] or '\x00' in sys.argv[1]:
+    sys.exit('windows-open: supply one URL or file path.')
+value = sys.argv[1]
+try:
+    # A drive prefix is a file, not a URL scheme. No URL goes through wslpath.
+    if re.match(r'^[A-Za-z]:[\\/]', value) or not re.match(r'^[A-Za-z][A-Za-z0-9+.-]*:', value):
+        if re.match(r'^[A-Za-z]:[\\/]', value):
+            value = subprocess.check_output(['wslpath', '-u', value], text=True).rstrip('\n')
+        value = subprocess.check_output(['wslpath', '-w', os.path.abspath(value)], text=True).rstrip('\n')
+    code = '''$ErrorActionPreference = 'Stop';
+$value = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([Console]::In.ReadToEnd()));
+Start-Process -FilePath $value'''
+    result = subprocess.run(['powershell.exe', '-NoLogo', '-NoProfile', '-NonInteractive',
+                             '-Command', code], input=base64.b64encode(value.encode('utf-8')))
+    sys.exit(result.returncode)
+except (OSError, subprocess.CalledProcessError):
+    sys.exit('windows-open: Windows opening/path conversion unavailable.')

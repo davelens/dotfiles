@@ -14,8 +14,7 @@ set $right      l
 # Applications
 set $term       foot
 set $browser    firefox
-set $launcher   '~/.local/bin/rofi-start'
-set $qs         qs -p ~/.config/dotshell
+set $launcher   rofi-start
 
 # Catppuccin Macchiato color scheme
 set $rosewater  #f4dbd6

@@ -135,10 +135,7 @@ ensure_db_running() {
       answer=$($prompt_user -yn "[$me] Start local MySQL/MariaDB server?")
       echo
       if [[ "$answer" =~ [Yy] ]]; then
-        case "$OSTYPE" in
-        darwin*) mysql.server start >/dev/null 2>&1 ;;
-        linux*) systemctl start mariadb >/dev/null 2>&1 ;;
-        esac
+        utility mariadb start
       fi
     fi
     ;;
@@ -147,7 +144,7 @@ ensure_db_running() {
       local answer
       answer=$($prompt_user -yn "[$me] Start local PostgreSQL server?")
       echo
-      [[ "$answer" =~ [Yy] ]] && utility postgresql start >/dev/null
+      [[ "$answer" =~ [Yy] ]] && utility postgresql start
     fi
     ;;
   esac

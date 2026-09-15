@@ -4,7 +4,7 @@
 after-startup-command = [
   'exec-and-forget borders',
   'exec-and-forget sketchybar',
-  'exec-and-forget open -a WezTerm',
+  'exec-and-forget open -a Ghostty',
   'exec-and-forget open -g -a Firefox',
   'exec-and-forget open -g -a Discord',
 ]
@@ -20,7 +20,7 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 # Move each window to where it belongs
 [[on-window-detected]]
-if.app-id = 'com.github.wez.wezterm'
+if.app-id = 'com.mitchellh.ghostty'
 run = 'move-node-to-workspace 1'
 
 [[on-window-detected]]

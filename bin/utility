@@ -1,47 +1,40 @@
 #!/usr/bin/env bash
-
-# Stops further execution after any error.
 set -e
-eval "$(source_env)"
+set +x
+# Resolve direct and installed symlink entries without inherited checkout exports.
+_dots_entry=${BASH_SOURCE[0]}
+[[ $_dots_entry == */* ]] || _dots_entry="./$_dots_entry"
+_dots_count=0
+while [[ -L $_dots_entry ]]; do
+  _dots_directory=$(cd -P -- "${_dots_entry%/*}" && pwd) || exit 1
+  _dots_entry=$(readlink -- "$_dots_entry") || exit 1
+  [[ $_dots_entry == /* ]] || _dots_entry="$_dots_directory/$_dots_entry"
+  ((_dots_count+=1))
+  ((_dots_count <= 40)) || exit 1
+done
+_dots_directory=$(cd -P -- "${_dots_entry%/*}" && pwd) || exit 1
+source "$_dots_directory/../setup/common.sh"
+dots_bootstrap readiness "$_dots_directory/utility"
+source "$DOTS_SOURCE_ROOT/bash/helpers.sh"
+source "$DOTS_SOURCE_ROOT/bash/env/misc.sh"
+export BASH_ENV="$DOTS_SOURCE_ROOT/bash/helpers.sh"
+source "$DOTS_SOURCE_ROOT/bash/utility-context.sh"
 
-main() {
-  # Ensure we have at least two arguments
-  [[ $# -lt 2 ]] && fail "Usage: $(basename "$0") <category> <command> [<args>...]"
-
-  local category command current_distro current_platform
-  category="$1"
-  command="$2"
-  current_distro="$("$XDG_BIN_HOME/os")"
-  current_platform="$("$XDG_BIN_HOME/os" --platform)"
-
-  # Define the base directory for scripts
-  BASE_DIR="$DOTFILES_REPO_HOME/bin/utilities"
-  SCRIPT_PATH="$BASE_DIR/$category/$command"
-
-  # Platform-specific categories (macos, linux, freebsd, windows)
-  case "$category" in
-  macos | linux | freebsd | windows)
-    [[ "$category" != "$current_platform" ]] && fail "$category utilities only available on $category"
-    ;;
-  esac
-
-  # Distro-specific categories (arch, debian, nixos, fedora, wsl)
-  case "$category" in
-  arch | debian | nixos | fedora | wsl)
-    [[ "$category" != "$current_distro" ]] && fail "$category utilities only available on $category"
-    ;;
-  esac
-
-  # Shift off category and command, leaving any remaining arguments
-  shift 2
-
-  # Check if the script exists and is executable
-  if [ -x "$SCRIPT_PATH" ]; then
-    "$SCRIPT_PATH" "$@" # Execute the script with remaining arguments
-  else
-    echo "Error: Script '$command' not found in '$BASE_DIR/$category' or not executable."
-    exit 1
-  fi
-}
-
-main "$@"
+if [[ $# == 0 || ${1:-} == --help || ${1:-} == -h ]]; then
+  printf 'Usage: utility <category> <command> [ARG ...]\nAvailable commands:\n'
+  utility_list
+  exit 0
+fi
+category=$1
+if [[ $# == 1 || ${2:-} == --help || ${2:-} == -h ]]; then
+  utility_category_allowed "$category" || fail "utility: Category '$category' is unavailable for platform/selection '$DOTS_OS/$DOTS_SELECTION'."
+  utility_commands "$category"
+  exit 0
+fi
+command=$2
+utility_allowed "$category" "$command" || fail "utility: '$category $command' is unavailable for platform/selection '$DOTS_OS/$DOTS_SELECTION'."
+script="$DOTS_SOURCE_ROOT/bin/utilities/$category/$command"
+[[ -f $script && -x $script ]] || fail "utility: Missing executable '$category $command'; register the dotsys helper category or provide this custom utility before retrying."
+utility_require "$category" "$command"
+shift 2
+exec "$script" "$@"
