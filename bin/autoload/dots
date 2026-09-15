@@ -2,31 +2,41 @@
 # shellcheck disable=SC2154,SC1091
 set -eo pipefail
 
-# TODO: Change the `dots` command to git init DOTFILES_REPO_HOME, if necessary.
+set +x
+unset BASH_ENV ENV
 
-source "$DOTFILES_CONFIG_HOME"/env
-
-log_file="$DOTFILES_STATE_HOME"/dots.log
-[ ! -f "$log_file" ] && touch "$log_file"
+# Resolve the invoked checkout, including installed symlinks; ignore stale exports.
+entry=${BASH_SOURCE[0]}
+[[ $entry == */* ]] || entry="./$entry"
+count=0
+while [[ -L $entry ]]; do
+  directory=$(cd -P -- "${entry%/*}" && pwd)
+  entry=$(readlink -- "$entry")
+  [[ $entry == /* ]] || entry="$directory/$entry"
+  ((count+=1))
+  ((count <= 40)) || exit 1
+done
+root=$(cd -P -- "${entry%/*}/../.." && pwd)
 
 usage() {
-  echo
-  echo "Usage: $(basename "$0") [-h|--help] <command>"
-  echo
-  echo "Commands:"
-  echo "  logs         Opens the logfile in $EDITOR (read-only if applicable)."
-  echo "  install      Attempts a (re)install through dotbot."
-  echo "  update       Updates dotbot and all local dot-repos."
-  echo "  setup        Sets up additional dotfile repositories."
-  echo "               Use --arch to setup dotsys for Arch Linux, dotvim, and dotshell."
-  echo "               Use --void to setup dotsys for Void Linux, dotvim, and dotshell."
-  echo "               Use --dotsys <arch|void|macos|wsl> to setup davelens/dotsys."
-  echo "               Use --dotshell to setup davelens/dotshell."
-  echo "               Use --dotvim to setup davelens/dotvim."
-  echo
-  echo "Options:"
-  echo "  -h|--help    Show this help message and exit."
-  exit
+  cat <<'EOF'
+Usage: dots <command> [OPTIONS]
+  install      Configuration only, on a prepared machine (setup/install).
+               --check, --select CSV, --wezterm-destination PATH, --save,
+               --adopt PATH, --replace PATH. All arguments pass through.
+  check        prerequisites | readiness [--select CSV] [--wezterm-destination PATH]
+  setup        Delegate to an existing dotsys checkout; no implicit clone.
+               --arch | --void | --dotsys arch|void|macos|wsl: staged provisioning.
+               --dotvim / --dotshell: acquire/register requested tools only.
+               --dotfiles: configuration only; --full-machine: explicit extras.
+               HOME/user/XDG, checkout paths and approvals pass through to dotsys.
+               Set DOTSYS_REPO_HOME to an absolute stable checkout (default: sibling dotsys).
+  logs         Open the log in $EDITOR.
+  update       Legacy bulk update; checked updates are not implemented yet.
+  -h, --help   Show help.
+Choices are transient unless install --save is explicit. Adoption enrolls matching
+artifacts; replacement needs a successful backup. Neither install nor check provisions.
+EOF
 }
 
 logs() {
@@ -50,7 +60,7 @@ logs() {
 }
 
 install() {
-  "$DOTFILES_REPO_HOME/setup/install"
+  exec bash "$root/setup/install" "$@"
 }
 
 update_dotbot() {
@@ -95,163 +105,13 @@ update_repo() {
   $print_status -i ok "$repo_name updated"
 }
 
-run_with_headers() {
-  while IFS= read -r line; do
-    echo "$line" >>"$log_file"
-    if [[ "$line" == *"==>"* ]]; then
-      $print_status -i pending "${line##*==> }"
-    fi
-  done
-}
-
 setup() {
-  local dotsys=""
-  local dotshell=0
-  local dotvim=0
-
-  # Parse flags
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-    --arch)
-      dotsys="arch"
-      dotvim=1
-      dotshell=1
-      shift
-      ;;
-    --void)
-      dotsys="void"
-      dotvim=1
-      dotshell=1
-      shift
-      ;;
-    --dotsys)
-      shift
-      if [[ $# -eq 0 ]]; then
-        $print_status -i error "--dotsys requires a value (arch, void, macos, or wsl)"
-        exit 1
-      fi
-
-      case "$1" in
-      arch | void | macos | wsl)
-        dotsys="$1"
-        ;;
-      *)
-        $print_status -i error "Invalid dotsys value: $1 (must be arch, void, macos, or wsl)"
-        exit 1
-        ;;
-      esac
-      shift
-      ;;
-    --dotshell)
-      dotshell=1
-      shift
-      ;;
-    --dotvim)
-      dotvim=1
-      shift
-      ;;
-    *)
-      $print_status -i error "Unknown option: $1"
-      exit 1
-      ;;
-    esac
-  done
-
-  if [[ -z "$dotsys" && $dotshell -eq 0 && $dotvim -eq 0 ]]; then
-    $print_status -i error "At least one of --dotsys, --dotshell, or --dotvim is required"
-    exit 1
-  fi
-
-  local error_occurred=0
-
-  # Setup dotsys configs if requested
-  if [[ -n "$dotsys" ]]; then
-    local dotsys_path="$REPO_NAMESPACE/davelens/dotsys"
-
-    $print_status -nc "Cloning dotsys repository ..."
-
-    if [[ -d "$dotsys_path" ]]; then
-      $print_status -i ok "dotsys already exists at $dotsys_path"
-    else
-      mkdir -p "$(dirname "$dotsys_path")"
-      if git clone https://github.com/davelens/dotsys.git "$dotsys_path" &>>"$log_file"; then
-        $print_status -i ok "dotsys cloned successfully"
-      else
-        $print_status -i error "Failed to clone dotsys"
-        error_occurred=1
-      fi
-    fi
-
-    if [[ $error_occurred -eq 0 ]]; then
-      $print_status -nc "Running $dotsys init script ..."
-      if "$dotsys_path/$dotsys/init.sh" 2>&1 | run_with_headers; then
-        $print_status -i ok "$dotsys setup complete"
-      else
-        $print_status -i error "$dotsys setup failed"
-        error_occurred=1
-      fi
-    fi
-  fi
-
-  # Setup dotshell configs if requested
-  if [[ $dotshell -eq 1 ]]; then
-    local dotshell_path="$REPO_NAMESPACE/davelens/dotshell"
-
-    $print_status -nc "Cloning dotshell repository ..."
-
-    if [[ -d "$dotshell_path" ]]; then
-      $print_status -i ok "dotshell already exists at $dotshell_path"
-    else
-      mkdir -p "$(dirname "$dotshell_path")"
-      if git clone https://github.com/davelens/dotshell.git "$dotshell_path" &>>"$log_file"; then
-        $print_status -i ok "dotshell cloned successfully"
-      else
-        $print_status -i error "Failed to clone dotshell"
-        error_occurred=1
-      fi
-    fi
-
-    if [[ $error_occurred -eq 0 ]]; then
-      $print_status -nc "Running dotshell init script ..."
-      if "$dotshell_path/setup/init.sh" 2>&1 | run_with_headers; then
-        $print_status -i ok "dotshell setup complete"
-      else
-        $print_status -i error "dotshell setup failed"
-        error_occurred=1
-      fi
-    fi
-  fi
-
-  # Setup dotvim configs if requested
-  if [[ $dotvim -eq 1 ]]; then
-    local dotvim_path="$REPO_NAMESPACE/davelens/dotvim"
-
-    $print_status -nc "Cloning dotvim repository ..."
-
-    if [[ -d "$dotvim_path" ]]; then
-      $print_status -i ok "dotvim already exists at $dotvim_path"
-    else
-      mkdir -p "$(dirname "$dotvim_path")"
-      if git clone https://github.com/davelens/dotvim.git "$dotvim_path" &>>"$log_file"; then
-        $print_status -i ok "dotvim cloned successfully"
-      else
-        $print_status -i error "Failed to clone dotvim"
-        error_occurred=1
-      fi
-    fi
-
-    if [[ $error_occurred -eq 0 ]]; then
-      $print_status -nc "Running dotvim install script ..."
-      if "$dotvim_path/setup/install" 2>&1 | tee -a "$log_file"; then
-        $print_status -i ok "dotvim setup complete"
-      else
-        $print_status -i error "dotvim setup failed"
-        error_occurred=1
-      fi
-    fi
-  fi
-
-  [[ $error_occurred -ne 0 ]] && exit 1
+  local delegate_root=${DOTSYS_REPO_HOME:-${root%/*}/dotsys}
+  [[ $delegate_root == /* && -f $delegate_root/shared/install.sh ]] || {
+    printf 'dots: Missing dotsys shared/install.sh; obtain a stable dotsys checkout and set DOTSYS_REPO_HOME to its absolute path. No provisioning was run.\n' >&2
+    return 1
+  }
+  exec bash "$delegate_root/shared/install.sh" setup --dotfiles-root "$root" "$@"
 }
 
 update() {
@@ -284,29 +144,21 @@ update() {
 ###############################################################################
 
 main() {
-  [ $# -eq 0 ] && usage
-
-  case "$1" in
-  -h | --help)
-    usage
-    ;;
-  logs)
-    logs
-    ;;
-  install)
-    install
-    ;;
-  update)
-    update
-    ;;
-  setup)
-    shift
-    setup "$@"
-    ;;
-  *)
-    echo "Unknown command: $1"
-    usage
-    ;;
+  case "${1:---help}" in
+    -h|--help) usage ;;
+    install) shift; install "$@" ;;
+    check) shift; exec bash "$root/setup/check" "$@" ;;
+    setup) shift; setup "$@" ;;
+    logs|update)
+      # Legacy operations only; install/check/setup do not initialize a shell or log.
+      source "$root/setup/common.sh"
+      dots_bootstrap readiness "$root/setup/install"
+      source "$root/bash/helpers.sh"
+      log_file="$DOTFILES_STATE_HOME/dots.log"
+      mkdir -p "$DOTFILES_STATE_HOME"
+      touch "$log_file"
+      "$1" ;;
+    *) printf 'dots: Unknown command: %s\n' "$1" >&2; usage >&2; return 2 ;;
   esac
 }
 

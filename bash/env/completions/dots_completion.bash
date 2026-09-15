@@ -1,66 +1,25 @@
-# Bash completion for the "dots" command
-
+# Completion is descriptive only; it never probes/provisions tools.
 _dots_completions() {
-  local cur prev opts
+  local cur=${COMP_WORDS[COMP_CWORD]} prev=${COMP_WORDS[COMP_CWORD-1]} options=
   COMPREPLY=()
-  cur="${COMP_WORDS[COMP_CWORD]}"
-  prev="${COMP_WORDS[COMP_CWORD - 1]}"
-
-  # Define available commands
-  opts="logs update install setup"
-
-  # Provide command completions if we're on the first argument
-  if [[ ${COMP_CWORD} -eq 1 ]]; then
-    COMPREPLY=($(compgen -W "$opts" -- "$cur"))
-    return 0
+  if ((COMP_CWORD == 1)); then
+    options='logs update install check setup -h --help'
+  else
+    case $prev in
+      --dotsys|--platform) options='arch void macos wsl' ;;
+      --select) options='sway macos-desktop wsl-integration karabiner alfred' ;;
+      --user|--wezterm-destination) return 0 ;;
+      --adopt|--replace|--helper-adopt|--helper-replace|--install-root|--dotfiles-root|--dotvim-root|--dotshell-root|--home|--xdg-*-home)
+        mapfile -t COMPREPLY < <(compgen -f -- "$cur"); return 0 ;;
+      *)
+        case ${COMP_WORDS[1]} in
+          install) options='--check --select --wezterm-destination --save --adopt --replace' ;;
+          check) options='prerequisites readiness --select --wezterm-destination' ;;
+          setup)
+            options='--arch --void --dotsys --dotfiles --dotvim --dotshell --platform --full-machine --dotfiles-root --dotvim-root --dotshell-root --home --user --xdg-config-home --xdg-data-home --xdg-state-home --xdg-cache-home --xdg-bin-home --select --wezterm-destination --save --adopt --replace --helper-adopt --helper-replace -h --help' ;;
+        esac ;;
+    esac
   fi
-
-  # Determine the subcommand (first argument after "dots")
-  local subcmd="${COMP_WORDS[1]}"
-
-  case "$subcmd" in
-  logs)
-    COMPREPLY=($(compgen -f "$DOTFILES_STATE_HOME/dots.log"))
-    ;;
-  update)
-    COMPREPLY=()
-    ;;
-  install)
-    COMPREPLY=()
-    ;;
-  setup)
-    if [[ "$prev" == "--dotsys" ]]; then
-      COMPREPLY=($(compgen -W "arch macos wsl" -- "$cur"))
-    else
-      # Collect already-used flags to avoid suggesting them again
-      local used_flags=""
-      for word in "${COMP_WORDS[@]}"; do
-        case "$word" in
-        --arch | --dotsys | --dotshell | --dotvim) used_flags+="$word " ;;
-        esac
-      done
-
-      local available=""
-
-      # --arch is exclusive: don't suggest it alongside individual flags
-      if [[ "$used_flags" == *"--arch"* ]]; then
-        available=""
-      elif [[ -n "$used_flags" ]]; then
-        for flag in --dotsys --dotshell --dotvim; do
-          [[ "$used_flags" != *"$flag"* ]] && available+="$flag "
-        done
-      else
-        available="--arch --dotsys --dotshell --dotvim"
-      fi
-
-      COMPREPLY=($(compgen -W "$available" -- "$cur"))
-    fi
-    ;;
-  *)
-    COMPREPLY=()
-    ;;
-  esac
+  mapfile -t COMPREPLY < <(compgen -W "$options" -- "$cur")
 }
-
-# Attach the completion function to "dots"
 complete -F _dots_completions dots

@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
+# Preserve utility brew init options without maintaining a package installer here.
 set -e
-
-# The installer primarily uses this command to bootstrap Homebrew, but I
-# decided I wanted to "alias" it here in case I want to re-run bundles.
-"$DOTFILES_REPO_HOME/setup/brew/init.sh" "$@"
+set +x
+unset BASH_ENV ENV
+entry=${BASH_SOURCE[0]}
+[[ $entry == */* ]] || entry="./$entry"
+count=0
+while [[ -L $entry ]]; do
+  directory=$(cd -P -- "${entry%/*}" && pwd)
+  entry=$(readlink -- "$entry")
+  [[ $entry == /* ]] || entry="$directory/$entry"
+  ((count+=1))
+  ((count <= 40)) || exit 1
+done
+root=$(cd -P -- "${entry%/*}/../../.." && pwd)
+exec bash "$root/setup/brew/init.sh" "$@"

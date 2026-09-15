@@ -116,8 +116,6 @@ clear-cache() {
 ###############################################################################
 
 main() {
-  ensure_brew_dependency "fzf"
-
   local ITEMS_CACHE_FILE=$(items_cache_file)
   local mp_file="$DOTFILES_CACHE_HOME/bw-mp.enc"
   local exact rest query prompt
@@ -161,6 +159,19 @@ main() {
       break
       ;;
     esac
+  done
+
+  local dependency
+  local -a dependencies=()
+  case $command in
+    unlock) dependencies=(bw) ;;
+    items|identities) dependencies=(bw jq fzf) ;;
+  esac
+  for dependency in "${dependencies[@]}"; do
+    command -v "$dependency" >/dev/null 2>&1 || {
+      printf 'bitwarden: Missing optional command %s; prepare it with dotsys before retrying.\n' "$dependency" >&2
+      return 127
+    }
   done
 
   export SCRIPT_PATH="$(dirname $(realpath $0))"
