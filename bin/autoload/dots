@@ -180,6 +180,11 @@ setup() {
 
   local error_occurred=0
 
+  # dotsys and dotshell init scripts need root for packages and services.
+  if [[ -n "$dotsys" || $dotshell -eq 1 ]]; then
+    sudo_keepalive
+  fi
+
   # Setup dotsys configs if requested
   if [[ -n "$dotsys" ]]; then
     local dotsys_path="$REPO_NAMESPACE/davelens/dotsys"
@@ -199,7 +204,6 @@ setup() {
     fi
 
     if [[ $error_occurred -eq 0 ]]; then
-      sudo_keepalive
       $print_status -nc "Running $dotsys init script ..."
       if "$dotsys_path/$dotsys/init.sh" 2>&1 | run_with_headers; then
         $print_status -i ok "$dotsys setup complete"
