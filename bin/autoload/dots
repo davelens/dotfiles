@@ -29,12 +29,28 @@ usage() {
   exit
 }
 
+# Prompt for sudo once, up front, and keep the ticket alive for the rest of
+# the run. Setup output is piped through run_with_headers, so a prompt from
+# inside an init script would otherwise hang invisibly behind a spinner.
+sudo_keepalive() {
+  sudo -v || fail "$($print_status -i error "sudo is required for setup")"
+  while true; do
+    sudo -n true
+    sleep 50
+    kill -0 "$$" || exit
+  done 2>/dev/null &
+  trap 'kill $! 2>/dev/null' EXIT
+}
+
 logs() {
   if [ ! -s "$log_file" ]; then
     fail "$($print_status -i error "The log file is currently empty.")"
   fi
 
-  if [[ "$EDITOR" == *vim* ]]; then
+  # A fresh base install may not have $EDITOR yet; never hide the log.
+  if [[ -z "$EDITOR" ]] || ! command -v "$EDITOR" >/dev/null; then
+    "${PAGER:-less}" "$log_file" 2>/dev/null || cat "$log_file"
+  elif [[ "$EDITOR" == *vim* ]]; then
     winbar='Press "q" to stop reading or "c" to clear the logs'
 
     $EDITOR \
@@ -183,6 +199,7 @@ setup() {
     fi
 
     if [[ $error_occurred -eq 0 ]]; then
+      sudo_keepalive
       $print_status -nc "Running $dotsys init script ..."
       if "$dotsys_path/$dotsys/init.sh" 2>&1 | run_with_headers; then
         $print_status -i ok "$dotsys setup complete"
