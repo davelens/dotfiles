@@ -14,7 +14,7 @@ rofi_cmd() {
   "$XDG_BIN_HOME/rofi-start" --dmenu --theme applet \
     -theme-str 'listview {lines: 5;}' \
     -p "Screenshot" \
-    -mesg "DIR: $dir"
+    -mesg "DIR: ${dir/#$HOME/\~}"
 }
 
 pipe_options_to_rofi() {
