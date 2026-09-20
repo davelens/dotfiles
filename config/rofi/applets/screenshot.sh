@@ -13,9 +13,7 @@ export DOTFILES_REPO_HOME
 rofi_cmd() {
   "$XDG_BIN_HOME/rofi-start" --dmenu --theme applet \
     -theme-str 'listview {lines: 5;}' \
-    -p "Screenshot" \
-    -mesg "Screenshots: ${dir/#$HOME/\~}
-Recordings:  ${videos_dir/#$HOME/\~}"
+    -p "Screenshot"
 }
 
 pipe_options_to_rofi() {
@@ -73,7 +71,6 @@ take_screenshot_area() {
 main() {
   geometry=$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | "\(.current_mode.width)x\(.current_mode.height)"')
   dir="$(xdg-user-dir PICTURES)/screenshots"
-  videos_dir="$(xdg-user-dir VIDEOS)/screencasts"
   file="$(date +%Y-%m-%d-%H-%M-%S)_${geometry}.png"
 
   option_1="󰹑 Screenshot Area"
