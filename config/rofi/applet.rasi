@@ -1,11 +1,5 @@
-/**
- *
- * Author : Aditya Shakya (adi1090x)
- * Github : @adi1090x
- * 
- * Rofi Theme File
- * Rofi Version: 1.7.3
- **/
+/* Menu theme for applets: prompt only, no search entry (adi1090x applet
+   type-1/style-1). */
 
 /*****----- Configuration -----*****/
 configuration {
@@ -13,12 +7,7 @@ configuration {
 }
 
 /*****----- Global Properties -----*****/
-@import                          "../shared/colors.rasi"
-@import                          "../shared/fonts.rasi"
-
-/*
-USE_ICON=NO
-*/
+@import                          "colors.rasi"
 
 /*****----- Main Window -----*****/
 window {

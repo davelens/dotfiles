@@ -3,9 +3,9 @@
 bindsym $mod+Return exec ~/.local/bin/desktop-session launch $term
 bindsym $mod+Space exec $launcher
 # bindsym $mod+u exec $browser
-bindsym $mod+c exec cliphist list | ~/.local/bin/rofi-start --dmenu --theme style-5-no-indent | cliphist decode | wl-copy
+bindsym $mod+c exec cliphist list | ~/.local/bin/rofi-start --dmenu | cliphist decode | wl-copy
 bindsym $mod+m exec ~/.local/bin/rofi-start --mode calc -modi calc -no-show-match -no-sort
-bindsym mod4+Shift+a exec bash -c "pidof rofi && pkill rofi || ~/.config/rofi/applets/bin/ac-tasks.sh"
+bindsym mod4+Shift+a exec bash -c "pidof rofi && pkill rofi || ~/.config/rofi/applets/ac-tasks.sh"
 
 ### Actions ###################################################################
 
@@ -21,7 +21,6 @@ bindsym $mod+v splitv
 bindsym $mod+r mode "resize"
 ## Reload sway config
 bindsym $mod+Shift+r reload; exec systemctl --user restart kanshi.service
-# bindsym mod4+Shift+p exec ~/.local/bin/rofi-start --powermenu
 bindsym $mod+Shift+s exec ~/.local/bin/dshell settings toggle
 bindsym $mod+Shift+n exec ~/.local/bin/dshell notifications toggle
 bindsym $mod+Shift+u exec ~/.local/bin/dshell system-updates toggle
@@ -118,7 +117,7 @@ bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
 
 # Screenshots
-bindsym $mod+p exec bash -c "pidof rofi && pkill rofi || ~/.config/rofi/applets/bin/screenshot.sh"
+bindsym $mod+p exec bash -c "pidof rofi && pkill rofi || ~/.config/rofi/applets/screenshot.sh"
 # bindsym $mod+Shift+p exec grim -g "$(slurp)" - | wl-copy
 
 ## Alt+Tab window switching (swtchr)

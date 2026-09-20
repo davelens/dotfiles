@@ -1,8 +1,6 @@
-/**
- * Clipboard variant of style-5 (no icons)
- **/
+/* Launcher theme without icons, for piped (dmenu) lists. */
 
-@import "style-5.rasi"
+@import "launcher.rasi"
 
 configuration {
     show-icons: false;

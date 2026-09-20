@@ -2,8 +2,6 @@ alias cpuclock='cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq'
 alias flushlogs='sudo journalctl --user --rotate && sudo journalctl --user --vacuum-time=1s'
 alias flushram="sudo sh -c 'sync; echo 3 > /proc/sys/vm/drop_caches'"
 alias mysqldump="mariadb-dump"
-# shellcheck disable=SC2154
-alias rofi-test='for i in $(seq 8); do for j in $(seq 15); do echo "$i - $j"; rofi-start --launcher type-$i --theme style-$j; done; done'
 alias wget='wget --hsts-file="$XDG_STATE_HOME/wget-hsts"'
 
 # Clipboard aliases (pbcopy/pbpaste for macOS muscle memory)

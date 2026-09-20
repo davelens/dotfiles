@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1091
-source "$HOME/.config/rofi/applets/shared/theme.bash"
+# Rofi applet: take a screenshot (area/window/desktop/delayed) or start a
+# screen recording. Screenshots land in $PICTURES/screenshots and on the
+# clipboard.
+
+XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
 
 rofi_cmd() {
-  rofi -theme-str "window {width: $win_width;}" \
-    -theme-str "listview {columns: $list_col; lines: $list_row;}" \
-    -theme-str 'textbox-prompt-colon {str: "󰋫";}' \
-    -dmenu \
-    -p "Screen recording" \
-    -msg "$msg" \
-    -markup-rows \
-    -theme "$theme"
+  "$XDG_BIN_HOME/rofi-start" --dmenu --theme applet \
+    -theme-str 'listview {lines: 5;}' \
+    -p "Screenshot" \
+    -mesg "DIR: $dir"
 }
 
 pipe_options_to_rofi() {
@@ -77,46 +76,15 @@ take_screenshot_area() {
 }
 
 main() {
-  # type/style are defined in the shared theme.bash file.
-  # shellcheck disable=SC2154
-  theme="$type/$style"
-  msg="DIR: $(xdg-user-dir PICTURES)/Screenshots"
-  layout=$(cat "$theme" | grep 'USE_ICON' | cut -d'=' -f2)
   geometry=$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | "\(.current_mode.width)x\(.current_mode.height)"')
   dir="$(xdg-user-dir PICTURES)/screenshots"
   file="$(date +%Y-%m-%d-%H-%M-%S)_${geometry}.png"
 
-  if [[ "$theme" == *'type-1'* ]]; then
-    list_col='1'
-    list_row='5'
-    win_width='400px'
-  elif [[ "$theme" == *'type-3'* ]]; then
-    list_col='1'
-    list_row='5'
-    win_width='120px'
-  elif [[ "$theme" == *'type-5'* ]]; then
-    list_col='1'
-    list_row='5'
-    win_width='520px'
-  elif [[ ("$theme" == *'type-2'*) || ("$theme" == *'type-4'*) ]]; then
-    list_col='5'
-    list_row='1'
-    win_width='560px'
-  fi
-
-  if [ "$layout" == 'NO' ]; then
-    option_1="󰹑 Screenshot Area"
-    option_2="󰘔 Screenshot Window"
-    option_3="󰍹 Screenshot Desktop"
-    option_4="󰚭 Screenshot in 5s"
-    option_5="󰕧 Record screen in 5s"
-  else
-    option_1="󰹑"
-    option_2="󰘔"
-    option_3="󰍹"
-    option_4="󰚭"
-    option_5="󰕧"
-  fi
+  option_1="󰹑 Screenshot Area"
+  option_2="󰘔 Screenshot Window"
+  option_3="󰍹 Screenshot Desktop"
+  option_4="󰚭 Screenshot in 5s"
+  option_5="󰕧 Record screen in 5s"
 
   [ ! -d "$dir" ] && mkdir -p "$dir"
 

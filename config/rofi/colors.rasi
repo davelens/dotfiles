@@ -1,12 +1,7 @@
-/**
- *
- * Author : Aditya Shakya (adi1090x)
- * Github : @adi1090x
- * 
- * Colors
- **/
+/* Catppuccin palette (from adi1090x/rofi), shared by every theme. */
 
 * {
+    font:           "Hack Nerd Font Mono 12";
     background:     #1E1D2FFF;
     background-alt: #282839FF;
     foreground:     #D9E0EEFF;

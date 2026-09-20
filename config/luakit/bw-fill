@@ -138,7 +138,7 @@ else
   # Build a display list: "username (name)" for each match.
   options=$(echo "$result" | jq -r \
     'to_entries[] | "\(.key)) \(.value.login.username // "no username") — \(.value.name // "untitled")"')
-  selected=$(echo "$options" | ~/.local/bin/rofi-start -dmenu -i -p "Bitwarden ($domain)" -no-custom)
+  selected=$(echo "$options" | ~/.local/bin/rofi-start --dmenu -i -p "Bitwarden ($domain)" -no-custom)
   if [[ -z "$selected" ]]; then
     exit 1
   fi

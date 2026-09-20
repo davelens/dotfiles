@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
 
-# Stops further execution after any error.
+# Launch rofi with one of the themes in $XDG_CONFIG_HOME/rofi, or close it if
+# it's already open (so a keybind toggles it).
+#
+#   rofi-start [--mode drun|run|window|...] [rofi args...]
+#   rofi-start --dmenu [--theme launcher|dmenu|applet] [rofi args...]
+
 set -e
 
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
 
-launcher="type-1"
-# Available styles are 1 to 15.
-theme="style-5"
 mode="drun"
 dmenu=0
-powermenu=0
-extra_args=()  # Any additional arguments to pass through to rofi
+theme=""
+extra_args=() # Any additional arguments to pass through to rofi
 
 main() {
-  # Toggle behavior: if rofi is already running, kill it and exit
   if pgrep -x rofi >/dev/null; then
     pkill -x rofi
     exit 0
@@ -23,45 +24,34 @@ main() {
 
   while [[ $# -gt 0 ]]; do
     case $1 in
-    --powermenu)
-      powermenu=1
-      shift
-      ;;
-    --dmenu)
+    --dmenu | -dmenu)
       dmenu=1
       shift
       ;;
-    --launcher)
-      launcher="${2:-$launcher}"
-      shift 2
-      ;;
     --theme)
-      theme="${2:-$theme}"
+      theme="$2"
       shift 2
       ;;
     --mode)
-      mode="${2:-$mode}"
+      mode="$2"
       shift 2
       ;;
     *)
-      # Pass through any unknown options to rofi
       extra_args+=("$1")
       shift
       ;;
     esac
   done
 
-  if [ $powermenu -eq 1 ]; then
-    "$XDG_CONFIG_HOME/rofi/powermenu/type-1/powermenu.sh"
+  if [ $dmenu -eq 1 ]; then
+    cmd=(rofi -dmenu)
+    theme="${theme:-dmenu}"
   else
-    if [ $dmenu -eq 1 ]; then
-      cmd=(rofi -dmenu show)
-    else
-      cmd=(rofi -show "$mode" -run-command "$XDG_BIN_HOME/desktop-session launch {cmd}")
-    fi
-
-    "${cmd[@]}" -theme "$XDG_CONFIG_HOME/rofi/launchers/${launcher}/${theme}.rasi" "${extra_args[@]}"
+    cmd=(rofi -show "$mode" -run-command "$XDG_BIN_HOME/desktop-session launch {cmd}")
+    theme="${theme:-launcher}"
   fi
+
+  "${cmd[@]}" -theme "$XDG_CONFIG_HOME/rofi/$theme.rasi" "${extra_args[@]}"
 }
 
 main "$@"

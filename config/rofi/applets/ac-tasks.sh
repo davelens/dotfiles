@@ -11,7 +11,7 @@ set -e
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 CACHE_DIR="$XDG_CACHE_HOME/ac-cli"
-ROFI="$HOME/.local/bin/rofi-start --dmenu --theme style-5-no-indent -i"
+ROFI="${XDG_BIN_HOME:-$HOME/.local/bin}/rofi-start --dmenu -i"
 AC_ENV_FILE="$XDG_CONFIG_HOME/ac-cli/env"
 
 get_ac_account_id() {
