@@ -1,0 +1,74 @@
+/* Shared base for every theme: Catppuccin palette, font, and the widget
+   styling launcher.rasi and applet.rasi have in common. Rofi layers this
+   over its built-in default theme, so only deviations from that are set. */
+
+* {
+    font:           "Hack Nerd Font Mono 12";
+
+    background:     #1E1D2F;
+    background-alt: #282839;
+    foreground:     #D9E0EE;
+    selected:       #B4BEFE;
+    active:         #ABE9B3;
+    urgent:         #F28FAD;
+
+    text-color:     @foreground;
+
+    /* Element states; the defaults point these at rofi's solarized palette. */
+    normal-background:           @background;
+    normal-foreground:           @foreground;
+    alternate-normal-background: @background;
+    alternate-normal-foreground: @foreground;
+    selected-normal-background:  @selected;
+    selected-normal-foreground:  @background;
+    active-background:           @active;
+    active-foreground:           @background;
+    alternate-active-background: @active;
+    alternate-active-foreground: @background;
+    selected-active-background:  @urgent;
+    selected-active-foreground:  @background;
+    urgent-background:           @urgent;
+    urgent-foreground:           @background;
+    alternate-urgent-background: @urgent;
+    alternate-urgent-foreground: @background;
+    selected-urgent-background:  @active;
+    selected-urgent-foreground:  @background;
+}
+
+window {
+    padding:          0;
+    border:           1px;
+    border-radius:    10px;
+    border-color:     @selected;
+    background-color: @background;
+}
+mainbox {
+    spacing:  10px;
+    children: [ "inputbar", "message", "listview" ];
+}
+inputbar {
+    spacing: 10px;
+    padding: 0;
+}
+listview {
+    spacing: 5px;
+    padding: 0;
+    border:  0;
+}
+element {
+    spacing:       10px;
+    border-radius: 10px;
+}
+element-text {
+    vertical-align: 0.5;
+}
+message {
+    padding: 0;
+    border:  0;
+}
+textbox {
+    padding:          8px 10px;
+    border-radius:    10px;
+    background-color: @background-alt;
+    markup:           true;
+}

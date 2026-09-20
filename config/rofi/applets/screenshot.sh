@@ -12,7 +12,6 @@ export DOTFILES_REPO_HOME
 
 rofi_cmd() {
   "$XDG_BIN_HOME/rofi-start" --dmenu --theme applet \
-    -theme-str 'listview {lines: 5;}' \
     -p "Record"
 }
 

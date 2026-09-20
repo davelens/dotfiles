@@ -1,143 +1,37 @@
-/* Menu theme for applets: prompt only, no search entry (adi1090x applet
-   type-1/style-1). */
+/* Applet menu: a prompt pill and a fixed list, no search entry. */
 
-/*****----- Configuration -----*****/
+@import "theme.rasi"
+
 configuration {
-    show-icons:                 false;
+    show-icons: false;
 }
 
-/*****----- Global Properties -----*****/
-@import                          "colors.rasi"
+window  { width: 400px; }
+mainbox { padding: 20px; }
 
-/*****----- Main Window -----*****/
-window {
-    transparency:                "real";
-    location:                    center;
-    anchor:                      center;
-    fullscreen:                  false;
-    width:                       400px;
-    x-offset:                    0px;
-    y-offset:                    0px;
-    margin:                      0px;
-    padding:                     0px;
-    border:                      1px solid;
-    border-radius:               20px;
-    border-color:                @selected;
-    cursor:                      "default";
-    background-color:            @background;
-}
-
-/*****----- Main Box -----*****/
-mainbox {
-    enabled:                     true;
-    spacing:                     10px;
-    margin:                      0px;
-    padding:                     20px;
-    background-color:            transparent;
-    children:                    [ "inputbar", "message", "listview" ];
-}
-
-/*****----- Inputbar -----*****/
 inputbar {
-    enabled:                     true;
-    spacing:                     10px;
-    padding:                     0px;
-    border:                      0px;
-    border-radius:               0px;
-    border-color:                @selected;
-    background-color:            transparent;
-    text-color:                  @foreground;
-    children:                    [ "textbox-prompt-colon", "prompt"];
+    children: [ "textbox-prompt-colon", "prompt" ];
 }
-
 textbox-prompt-colon {
-    enabled:                     true;
-    expand:                      false;
-    str:                         "󰋫";
-    font:                        "Hack Nerd Font Mono 16";
-    padding:                     10px 14px;
-    border-radius:               10px;
-    background-color:            @urgent;
-    text-color:                  @background;
+    str:              "󰋫";
+    font:             "Hack Nerd Font Mono 16";
+    padding:          10px 14px;
+    border-radius:    10px;
+    background-color: @urgent;
+    text-color:       @background;
 }
 prompt {
-    enabled:                     true;
-    padding:                     10px;
-    border-radius:               0px;
-    background-color:            @active;
-    text-color:                  @background;
-    vertical-align:              0.5;
+    padding:          10px;
+    border-radius:    10px;
+    background-color: @active;
+    text-color:       @background;
+    vertical-align:   0.5;
 }
 
-/*****----- Message -----*****/
-message {
-    enabled:                     true;
-    margin:                      0px;
-    padding:                     10px;
-    border:                      0px solid;
-    border-radius:               0px;
-    border-color:                @selected;
-    background-color:            @background-alt;
-    text-color:                  @foreground;
-}
-textbox {
-    background-color:            inherit;
-    text-color:                  inherit;
-    vertical-align:              0.5;
-    horizontal-align:            0.0;
-}
-
-/*****----- Listview -----*****/
 listview {
-    enabled:                     true;
-    columns:                     1;
-    lines:                       6;
-    cycle:                       true;
-    scrollbar:                   false;
-    layout:                      vertical;
-    
-    spacing:                     5px;
-    background-color:            transparent;
-    cursor:                      "default";
+    lines:     6;
+    scrollbar: false;
 }
-
-/*****----- Elements -----*****/
 element {
-    enabled:                     true;
-    padding:                     10px;
-    border:                      0px solid;
-    border-radius:               0px;
-    border-color:                @selected;
-    background-color:            transparent;
-    text-color:                  @foreground;
-    cursor:                      pointer;
-}
-element-text {
-    background-color:            transparent;
-    text-color:                  inherit;
-    cursor:                      inherit;
-    vertical-align:              0.5;
-    horizontal-align:            0.0;
-}
-
-element normal.normal,
-element alternate.normal {
-    background-color:            var(background);
-    text-color:                  var(foreground);
-}
-element normal.urgent,
-element alternate.urgent,
-element selected.active {
-    background-color:            var(urgent);
-    text-color:                  var(background);
-}
-element normal.active,
-element alternate.active,
-element selected.urgent {
-    background-color:            var(active);
-    text-color:                  var(background);
-}
-element selected.normal {
-    background-color:            var(selected);
-    text-color:                  var(background);
+    padding: 10px;
 }

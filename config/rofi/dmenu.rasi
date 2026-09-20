@@ -1,12 +1,11 @@
-/* Launcher theme without icons, for piped (dmenu) lists. */
+/* Launcher without icons, for piped (dmenu) lists. */
 
 @import "launcher.rasi"
 
 configuration {
     show-icons: false;
 }
-
 element-icon {
     enabled: false;
-    size: 0px;
+    size:    0;
 }
