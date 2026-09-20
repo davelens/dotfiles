@@ -37,21 +37,12 @@ countdown() {
     fi
     sleep 1
   done
-  qs -p ~/.config/dotshell ipc call notifications dismiss "$notification_id"
-}
-
-setup_repo_env() {
-  local real_script
-  real_script="$(readlink -f "${BASH_SOURCE[0]}")"
-  DOTFILES_REPO_HOME="$(cd "$(dirname "$real_script")/../../../.." && pwd)"
-  XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
-  export DOTFILES_REPO_HOME XDG_BIN_HOME
+  "$XDG_BIN_HOME/dshell" notifications dismiss "$notification_id"
 }
 
 record_screen_delay() {
   countdown "${1:-5}" "Screen Recording"
-  setup_repo_env
-  "$DOTFILES_REPO_HOME/bin/utilities/misc/screencast" &
+  "$XDG_BIN_HOME/utility" misc screencast &
 }
 
 take_screenshot_full() {
@@ -71,8 +62,7 @@ take_screenshot_window() {
 }
 
 take_screenshot_area() {
-  setup_repo_env
-  "$DOTFILES_REPO_HOME/bin/utilities/misc/screenshot" &
+  "$XDG_BIN_HOME/utility" misc screenshot &
 }
 
 main() {
