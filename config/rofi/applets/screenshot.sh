@@ -4,7 +4,11 @@
 # screen recording. Screenshots land in $PICTURES/screenshots and on the
 # clipboard.
 
-XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
+# Sway's exec environment has neither $XDG_BIN_HOME nor $DOTFILES_REPO_HOME,
+# so resolve both from this script's real location.
+export XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
+DOTFILES_REPO_HOME="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../.." && pwd)"
+export DOTFILES_REPO_HOME
 
 rofi_cmd() {
   "$XDG_BIN_HOME/rofi-start" --dmenu --theme applet \
@@ -42,7 +46,7 @@ countdown() {
 
 record_screen_delay() {
   countdown "${1:-5}" "Screen Recording"
-  "$XDG_BIN_HOME/utility" misc screencast &
+  "$DOTFILES_REPO_HOME/bin/utilities/misc/screencast" &
 }
 
 take_screenshot_full() {
@@ -62,7 +66,7 @@ take_screenshot_window() {
 }
 
 take_screenshot_area() {
-  "$XDG_BIN_HOME/utility" misc screenshot &
+  "$DOTFILES_REPO_HOME/bin/utilities/misc/screenshot" &
 }
 
 main() {
