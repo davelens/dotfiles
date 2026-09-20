@@ -1,0 +1,5 @@
+--exclude-file latest.sql
+--exclude-dir vendor,data,docs,.scratch
+--exclude-ext md
+--not-match '(^|/)(db/schema\.rb|spec/fixtures/|app/assets/fonts/|public/uploads/)'
+
