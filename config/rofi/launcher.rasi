@@ -38,6 +38,7 @@ button {
 listview {
     lines:        8;
     fixed-height: true;
+    scrollbar:    true;
 }
 scrollbar {
     handle-width:     5px;
