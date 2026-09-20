@@ -72,6 +72,7 @@ export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
 export WATSON_DIR="$XDG_CONFIG_HOME/watson"
 export WGETRC="$XDG_CONFIG_HOME/wget/config"
+export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
 export XCOMPOSECACHE="$XDG_CACHE_HOME/X11/xcompose"
 export XCOMPOSEFILE="$XDG_CONFIG_HOME/X11/xcompose"
 export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
