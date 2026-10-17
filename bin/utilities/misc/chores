@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+utility misc notes --no-attach "$@"
+tmux new-window -S -t '=alexandria:' -n chores -c "$HOME/Network/alexandria" \
+  "${EDITOR:-vim} ./documents/CHORES.md"
+tmux select-window -t '=alexandria:=chores'
+tmux attach -t '=alexandria'

@@ -38,6 +38,7 @@ alias dotshell='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/da
 alias dotsys='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotsys\"" --'
 alias dotvim='bash -c "utility tmux quickstart \"\$@\" -- \"$REPO_NAMESPACE/davelens/dotvim\"" --'
 alias notes='utility misc notes'
+alias chores='utility misc chores'
 
 # Generic helpers and custom commands
 alias colors='for i in {0..255}; do printf "\x1b[38;5;${i}mcolour${i}\n"; done'

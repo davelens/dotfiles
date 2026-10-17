@@ -4,10 +4,11 @@ set -e
 
 usage() {
   echo
-  echo "Usage: $(basename $0) [-h|--help] [tmux-options --] <path-to-folder>"
+  echo "Usage: $(basename "$0") [-h|--help] [--no-attach] [tmux-options --] <path-to-folder>"
   echo
   echo "Options:"
   echo "  -h|--help            Show this help message and exit."
+  echo "  --no-attach          Set up the session without attaching to it."
   echo "  [tmux-options --]    Any valid tmux options or flags (such as -f, -v,...)."
   echo "  <path-to-folder>     Target directory to start the session in."
 }
@@ -18,11 +19,16 @@ usage() {
 # Parse options and target path
 TMUX_OPTIONS=()
 TARGET_PATH=""
+ATTACH=1
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
   -h | --help)
     usage && exit 0
+    ;;
+  --no-attach)
+    ATTACH=0
+    shift
     ;;
   --)
     shift
@@ -73,4 +79,6 @@ if ! tmux has-session -t "=$SESSION_NAME" 2>/dev/null; then
   tmux select-window -t "$SESSION_NAME:1"
 fi
 
-tmux attach -t "=$SESSION_NAME"
+if [[ "$ATTACH" == 1 ]]; then
+  tmux attach -t "=$SESSION_NAME"
+fi

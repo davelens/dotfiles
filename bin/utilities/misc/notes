@@ -1,53 +1,32 @@
 #!/usr/bin/env bash
+set -e
 
-# This uses tmux/quickstart to open a tmux session to my NAS's notes directory.
-#
-# TODO:
-# - [x] Move this to an os-unisex command
-# - [x] Have it detect whether I'm home. If I'm not: Boot up Tailscale
-# - [ ] Test it externally
-#
-
-# TODO: in ENV var ...
-LOCATION=alexandria.local
-
-get_wifi_interface() {
-  # finds the device name for Wi-Fi (usually en0 or en1)
-  networksetup -listallhardwareports |
-    awk '/Wi-?Fi|AirPort/{getline; print $2}'
-}
-
-get_ssid() {
-  local iface
-  iface=$(get_wifi_interface)
-  networksetup -getairportnetwork "$iface" 2>/dev/null |
-    awk -F': ' '{print $2}'
-}
-
-if [[ "$(get_ssid)" != "jura" ]] >/dev/null; then
-  LOCATION=100.73.75.7
-fi
+# Open a tmux session in the NAS notes directory.
+LOCATION=100.73.75.7
+platform=$(os --platform)
+distro=$(os)
 
 mountpoint="$HOME/Network/alexandria"
-[ ! -d "$mountpoint" ] && mkdir -p "$mountpoint"
+mkdir -p "$mountpoint"
 
-macos=0
-[ "$(os)" == "macos" ] && macos=1
-
-cmd="mount -l"
-[ $macos -eq 1 ] && cmd="mount"
-
-if ! command $cmd | grep Network/alexandria >/dev/null; then
-  if [ $macos -eq 1 ]; then
-    if [ "$LOCATION" != "alexandria.local" ]; then
-      tailscale rungui &
-      tailscale up
-    fi
-
-    mount_smbfs "//davelens@${LOCATION}/storage/projects/notes" "${HOME}/Network/alexandria"
-  else
-    sudo mount -t drvfs '\\alexandria\storage\projects\notes' "$mountpoint"
-  fi
+if ! mount | grep -Fq " on $mountpoint "; then
+  case "$platform:$distro" in
+    macos:*)
+      mount_smbfs "//davelens@${LOCATION}/storage/projects/notes" "$mountpoint"
+      ;;
+    linux:wsl)
+      sudo mount -t drvfs "\\\\${LOCATION}\\storage\\projects\\notes" "$mountpoint"
+      ;;
+    linux:*)
+      # This NAS supports SMB 2.0, below the client's default minimum of 2.1.
+      sudo mount -t cifs "//${LOCATION}/storage" "$mountpoint" \
+        -o "vers=2.0,username=davelens,prefixpath=projects/notes,uid=$(id -u),gid=$(id -g)"
+      ;;
+    *)
+      echo "notes: unsupported platform: $platform" >&2
+      exit 1
+      ;;
+  esac
 fi
 
-bash -c "utility tmux quickstart \"$*\" -- \"$mountpoint\" --"
+utility tmux quickstart "$@" -- "$mountpoint" --
