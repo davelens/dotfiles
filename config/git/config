@@ -63,7 +63,7 @@
   # remove local branches that were created from `git pr`
   pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
 
-  pr-body = "!utility github pr-body"
+  pr-body = "!utility git pr-body"
   pullff = pull --ff-only
   r = !git --no-pager l -20 && echo
   origin = "!utility github origin"
