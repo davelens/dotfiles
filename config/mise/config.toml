@@ -4,7 +4,7 @@ ASDF_LUA_LUAROCKS_VERSION = "3.11.1"
 RUBY_CONFIGURE_OPTS = "--enable-zjit"
 
 [tools]
-claude-code = "2.1.251"
+claude-code = "2.1.304"
 elixir = "1.20.3"
 elixir-ls = "latest"
 erlang = "29.0.5"
