@@ -80,7 +80,9 @@ detect_adapter() {
 
 # Get credential value using db-credentials utility
 get_cred() {
-  utility phoenix db-credentials --app="$APP_PATH" --key="$1" 2>/dev/null || echo ""
+  local env_option=""
+  [[ "$PHOENIX_ENV" != dev ]] && env_option="--$PHOENIX_ENV"
+  utility phoenix db-credentials --app="$APP_PATH" --key="$1" $env_option 2>/dev/null || echo ""
 }
 
 adapter=$(detect_adapter)

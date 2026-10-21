@@ -19,6 +19,15 @@ export PATH="$test_root/bin:$PATH"
 unset BASH_ENV
 
 for format in multiline inline; do
+  cat >"$test_root/app/config/config.exs" <<'EX'
+config :sample, Sample.Repo,
+  database: "common_dev",
+  username: "sample_user",
+  password: System.get_env("SAMPLE_DB_PASSWORD", "sample_password"),
+  hostname: "localhost",
+  port: 5433
+config :sample, SampleWeb.Endpoint, server: false
+EX
   if [[ "$format" == multiline ]]; then
     printf '%s\n' 'config :sample, Sample.Repo,' '  database: "sample_dev",' >"$test_root/app/config/dev.exs"
   else
@@ -29,6 +38,7 @@ for format in multiline inline; do
   password: System.get_env("SAMPLE_DB_PASSWORD", "sample_password"),
   hostname: "localhost",
   port: 5433
+config :sample, SampleWeb.Endpoint, server: false
 EX
 
   database=$(utility phoenix db-credentials --app="$test_root/app" --key=database)
@@ -40,4 +50,20 @@ done
 
 printf '%s\n' 'config :sample, Sample.Repo, database: "sample_dev"' >"$test_root/app/config/dev.exs"
 test "$(utility phoenix db-credentials --app="$test_root/app" --key=database)" = sample_dev
-echo 'Standalone inline database passed'
+# Several keys on one line plus a non-credential key, as in a real test.exs; comments are ignored.
+printf '%s\n' 'config :sample, Sample.Repo, database: "sample_test", pool: Ecto.Adapters.SQL.Sandbox, port: 5434' \
+  '# hostname: "commented-out"' >"$test_root/app/config/test.exs"
+test "$(utility phoenix db-connection-url --app="$test_root/app" --test)" = 'postgres://sample_user:sample_password@localhost:5434/sample_test?sslmode=disable'
+printf '%s\n' 'config :sample, Sample.Repo, database: System.get_env("DATABASE_URL")' >"$test_root/app/config/dev.exs"
+if utility phoenix db-credentials --app="$test_root/app" --key=database >/dev/null 2>&1; then
+  echo 'Unsupported credential expression unexpectedly succeeded' >&2
+  exit 1
+fi
+# An unsupported expression in the common config must fail the URL instead of defaulting the user.
+printf '%s\n' 'config :sample, Sample.Repo, username: System.fetch_env!("DB_USER"), database: "common_dev"' >"$test_root/app/config/config.exs"
+printf '%s\n' 'config :sample, Sample.Repo, database: "sample_dev"' >"$test_root/app/config/dev.exs"
+if utility phoenix db-connection-url --app="$test_root/app" >/dev/null 2>&1; then
+  echo 'Unsupported common credential expression unexpectedly produced a URL' >&2
+  exit 1
+fi
+echo 'Inline override, environment selection, and unsupported expressions passed'
