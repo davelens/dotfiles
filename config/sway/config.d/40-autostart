@@ -16,3 +16,5 @@ exec swayidle -w \
 exec wl-clip-persist --clipboard regular
 exec wl-paste --type text --watch cliphist store
 exec wl-paste --type image --watch cliphist store
+# Mirror copied images to the desktop, where Pi runs in tmux (no-op on itself).
+exec wl-paste --type image/png --watch ~/.local/bin/push-clipboard-image framework-desktop

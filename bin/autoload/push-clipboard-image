@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Push a PNG from stdin into <host>'s Wayland clipboard over SSH, so apps there
+# (e.g. Pi inside tmux) can paste images copied on this machine.
+# Meant for `wl-paste --type image/png --watch`; failures are silent.
+# Usage: push-clipboard-image <host> < image.png
+
+host="${1:?Usage: push-clipboard-image <host>}"
+[[ "$host" == "$(uname -n)" ]] && exit 0
+
+# shortcut: takes the first live Wayland socket on <host>, pass it explicitly if a host ever runs several sessions.
+# shellcheck disable=SC2016
+ssh -o BatchMode=yes -o ConnectTimeout=3 "$host" \
+  'for s in "/run/user/$(id -u)"/wayland-*; do [ -S "$s" ] && exec env WAYLAND_DISPLAY="${s##*/}" wl-copy -t image/png >/dev/null 2>&1; done; exit 1' \
+  >/dev/null 2>&1
