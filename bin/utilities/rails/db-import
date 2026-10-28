@@ -189,20 +189,23 @@ declare -A ssh_credentials
 eval "ssh_credentials=$(get_ssh_credentials "$app")"
 user="${ssh_credentials[user]}"
 server="${ssh_credentials[server]}"
+remote_dir="db-import.$(date +%Y%m%d%H%M%S).$$"
 
 ###############################################################################
 # Import process
 ###############################################################################
 
 log "[$user@$server] Dumping $remote_db ..."
+# Unique per run: an orphaned mysqldump from an earlier run would otherwise keep appending to the same file.
 # shellcheck disable=SC2029
 ssh "$user@$server" \
-  "mysqldump $remote_db --no-tablespaces --single-transaction --no-data --routines > dump.sql && \
+  "mkdir $remote_dir && cd $remote_dir && \
+   mysqldump $remote_db --no-tablespaces --single-transaction --no-data --routines > dump.sql && \
    mysqldump $remote_db --no-tablespaces --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']/} >> dump.sql && \
    tar -czf dump.sql.tar dump.sql" >/dev/null
 
 log "[$user@$server] Downloading dump.sql.tar"
-scp "$user@$server:dump.sql.tar" "$app/db/dump/"
+scp "$user@$server:$remote_dir/dump.sql.tar" "$app/db/dump/"
 
 log "Unpacking dump.sql.tar"
 tar -C "$app/db/dump/" -xzf "$app/db/dump/dump.sql.tar" >/dev/null 2>&1
@@ -230,7 +233,8 @@ if [[ -n "$test_database" ]]; then
 fi
 
 log "[$user@$server] Cleaning up"
-ssh "$user@$server" 'rm -f dump.sql dump.clean.sql dump.sql.tar'
+# shellcheck disable=SC2029
+ssh "$user@$server" "rm -rf $remote_dir"
 
 log "Cleaning up"
 rm -f "$app"/db/dump/*
