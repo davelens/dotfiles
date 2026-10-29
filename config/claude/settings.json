@@ -5,5 +5,90 @@
   "disableWorkflows": true,
   "disableArtifact": true,
   "outputStyle": "Concise",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${XDG_BIN_HOME:-$HOME/.local/bin}/claude-hook\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${XDG_BIN_HOME:-$HOME/.local/bin}/claude-hook\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${XDG_BIN_HOME:-$HOME/.local/bin}/claude-hook\""
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${XDG_BIN_HOME:-$HOME/.local/bin}/claude-hook\""
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${XDG_BIN_HOME:-$HOME/.local/bin}/claude-hook\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${XDG_BIN_HOME:-$HOME/.local/bin}/claude-hook\""
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${XDG_BIN_HOME:-$HOME/.local/bin}/claude-hook\""
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${XDG_BIN_HOME:-$HOME/.local/bin}/claude-hook\""
+          }
+        ],
+        "matcher": "*"
+      }
+    ]
+  }
 }
