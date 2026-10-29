@@ -23,11 +23,43 @@ fi
 git checkout $target
 git merge --no-ff $branch_name
 
+# Prints the number of the open Forgejo PR for $branch_name -> $target, if any.
+# Fails silently on non-Forgejo remotes.
+forgejo_pr_number() {
+  command -v fj >/dev/null || return 0
+  local n
+  for n in $(fj --style minimal pr search 2>/dev/null | sed -n 's/^#\([0-9]*\):.*/\1/p'); do
+    if fj --style minimal pr view "$n" 2>/dev/null | grep -qF "From \`$branch_name\` into \`$target\`"; then
+      echo "$n"
+      return
+    fi
+  done
+}
+
+# Forgejo flags PRs as merged asynchronously after a push; deleting the head
+# branch before that happens closes the PR instead.
+wait_for_merged_pr() {
+  for _ in {1..30}; do
+    fj --style minimal pr view "$1" 2>/dev/null | sed -n 2p | grep -q " Merged " && return
+    sleep 1
+  done
+  return 1
+}
+
 push_and_clean_up() {
+  local pr
+  pr=$(forgejo_pr_number)
   git push origin $target
   echo "Branch $target pushed to remote."
   git branch -d $branch_name
   echo "Local branch $branch_name removed."
+  if [[ -n $pr ]]; then
+    echo "Waiting for Forgejo to mark PR #$pr as merged..."
+    if ! wait_for_merged_pr "$pr"; then
+      echo "PR #$pr not marked as merged after 30s; keeping remote branch $branch_name."
+      return
+    fi
+  fi
   git push origin :$branch_name
   echo "Remote branch $branch_name removed."
 
