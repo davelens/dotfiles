@@ -20,6 +20,7 @@ config/pi/*
 !config/pi/extensions/
 config/macos/karabiner/automatic_backups
 config/opencode/package-lock.json
+config/opencode/service.json
 config/tmux/plugins
 
 # These are symlinks to bin folders of some private repos.
