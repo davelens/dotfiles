@@ -218,8 +218,9 @@ docker_preflight() {
   compose exec -T db sh -c 'command -v mysql mysqldump' </dev/null >/dev/null || fail "[$me] ERROR: mysql/mysqldump not found in the db container."
   db_mysql -e 'SELECT 1' </dev/null >/dev/null || fail "[$me] ERROR: root authentication inside the db container failed."
   # The app user (what Rails uses) must reach both databases and nothing broader.
-  grants=$(compose exec -T db sh -c 'MYSQL_PWD=$MYSQL_PASSWORD exec mysql -h127.0.0.1 -u"$MYSQL_USER" -N -e "SHOW GRANTS"' </dev/null | tr -d '\\') ||
+  grants=$(compose exec -T db sh -c 'MYSQL_PWD=$MYSQL_PASSWORD exec mysql -h127.0.0.1 -u"$MYSQL_USER" -N -e "SHOW GRANTS"' </dev/null) ||
     fail "[$me] ERROR: app user authentication inside the db container failed."
+  grants=${grants//\\/}
   grep -q "ON \`$local_db\`\.\*" <<<"$grants" && grep -q "ON \`$test_database\`\.\*" <<<"$grants" ||
     fail "[$me] ERROR: app user has no grants on both $local_db and $test_database."
   grep -q 'ALL PRIVILEGES ON \*\.\*' <<<"$grants" && fail "[$me] ERROR: app user has global privileges; refusing."
@@ -254,7 +255,9 @@ docker_backup() {
       log "Backup: $db does not exist, skipping"
       continue
     fi
-    file=$(mktemp "$backups/$COMPOSE_PROJECT_NAME.$db.$(date +%Y%m%d-%H%M%S).XXXXXX.sql")
+    # BSD mktemp only replaces trailing X's, so the extension is added afterwards.
+    file=$(mktemp "$backups/$COMPOSE_PROJECT_NAME.$db.$(date +%Y%m%d-%H%M%S).XXXXXX")
+    mv "$file" "$file.sql" && file="$file.sql"
     (umask 077 && db_mysqldump --single-transaction --routines --triggers "$db" >"$file") ||
       fail "[$me] ERROR: Backup of $db failed, nothing dropped."
     log "Backup: $file"
