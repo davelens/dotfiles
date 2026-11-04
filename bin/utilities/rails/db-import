@@ -6,8 +6,7 @@ set -e
 # not reflect your own situation.
 #
 # This script is otherwise self-contained and has no external dependencies
-# beyond standard Unix tools (bash 4+, ssh, scp, mysql, mysqldump, ruby, tar,
-# sed, grep).
+# beyond standard Unix tools (bash 4+, ssh, mysql, mysqldump, ruby, sed, grep).
 #
 # Usage:
 #   db-import [options]
@@ -20,19 +19,33 @@ set -e
 #   -t, --test                Use test environment
 #   -s, --staging             Use staging environment
 #   -p, --production          Use production environment (default)
-#   --docker                  Run mysql commands through docker-compose
+#   --docker                  Run mysql/mysqldump inside the Compose `db` service
 #
 # Requirements:
-#   - Rails project with config/deploy.rb (Capistrano) for SSH credentials
+#   - Rails project with Kamal (config/deploy.yml) or Capistrano
+#     (config/deploy.rb) configuration for SSH credentials
 #   - config/database.yml with environment configurations
 #   - SSH access to the remote server
 #   - MySQL client installed locally
+#
+# Docker mode (--docker):
+#   - COMPOSE_FILE and COMPOSE_PROJECT_NAME must be set explicitly. Compose runs
+#     with --env-file /dev/null, so no .env or default stack is ever picked up.
+#   - The `db` service must be running and declare MYSQL_DATABASE (development),
+#     MYSQL_TEST_DATABASE, MYSQL_USER, MYSQL_PASSWORD and MYSQL_ROOT_PASSWORD.
+#     Destinations come from that container, not from config/database.yml.
+#   - --remote-database is required; there is no host MySQL fallback.
+#   - The stack is validated before anything remote happens. Existing tables
+#     require typing "yes"; both databases are then backed up to
+#     <app>/tmp/docker-db-import-backups/ (kept after success or failure).
+#   - SQL is streamed over stdin. mysql/mysqldump run as root inside `db` only
+#     (production dumps carry DEFINER clauses); the app user stays scoped.
 
 me=$(basename "$0")
 app="$(realpath ".")"
 env=production
 ignore_tables=
-docker_prefix=
+docker=
 mysql='mysql'
 mysqldump='mysqldump'
 
@@ -49,34 +62,54 @@ log() {
   echo "[$me] $1"
 }
 
-# Extract SSH credentials from Capistrano config files.
-# Checks config/deploy.rb and config/deploy/production.rb for user/server.
+# Read SSH credentials for <environment> from Kamal or Capistrano config files
+# into the globals user and server. Checks config/deploy.yml with
+# config/deploy.<environment>.yml (Kamal), then config/deploy.rb and
+# config/deploy/<environment>.rb (Capistrano).
 #
-# Usage: get_ssh_credentials <app_path>
-# Returns: Bash associative array syntax: (["user"]="..." ["server"]="...")
+# Usage: get_ssh_credentials <app_path> <environment>
 get_ssh_credentials() {
   local app_path="$1"
-  local ssh_user ssh_server file
+  local env="$2"
+  local file
+  user=
+  server=
 
-  # Try config/deploy.rb first
-  file="$app_path/config/deploy.rb"
+  # Try Kamal first: the destination file overrides the base file.
+  # ERB tags are dropped; SSH settings never depend on them.
+  file="$app_path/config/deploy.yml"
   if [[ -f "$file" ]]; then
-    ssh_user=$(grep -Eo "set :user, ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/set :user, ['\"]([^'\"]+)['\"]/\1/") || true
-    ssh_server=$(grep -Eo "set :server, ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/set :server, ['\"]([^'\"]+)['\"]/\1/") || true
+    read -r user server < <(ruby -r yaml -e "
+      load = ->(f) { File.exist?(f) ? YAML.safe_load(File.read(f).gsub(/<%.*?%>/m, ''), aliases: true) || {} : {} }
+      base = load.('$file')
+      dest = load.('$app_path/config/deploy.$env.yml')
+      servers = dest['servers'] || base['servers']
+      hosts = servers.is_a?(Hash) ? servers.values.first : servers
+      hosts = hosts['hosts'] if hosts.is_a?(Hash)
+      host = Array(hosts).first
+      host = host.keys.first if host.is_a?(Hash)
+      puts [dest.dig('ssh', 'user') || base.dig('ssh', 'user') || 'root', host].join(' ') if host
+    " 2>/dev/null) || true
   fi
 
-  # Fall back to config/deploy/production.rb
-  if [[ -z "$ssh_user" || -z "$ssh_server" ]]; then
-    file="$app_path/config/deploy/production.rb"
+  # Fall back to config/deploy.rb
+  file="$app_path/config/deploy.rb"
+  if [[ (-z "$user" || -z "$server") && -f "$file" ]]; then
+    user=$(grep -Eo "set :user, ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/set :user, ['\"]([^'\"]+)['\"]/\1/") || true
+    server=$(grep -Eo "set :server, ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/set :server, ['\"]([^'\"]+)['\"]/\1/") || true
+  fi
+
+  # Fall back to config/deploy/<environment>.rb
+  if [[ -z "$user" || -z "$server" ]]; then
+    file="$app_path/config/deploy/$env.rb"
     if [[ -f "$file" ]]; then
-      ssh_user=$(grep -Eo "user:? ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/user:? ['\"]([^'\"]+)['\"]/\1/") || true
-      ssh_server=$(grep -Eo "server:? ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/server:? ['\"]([^'\"]+)['\"]/\1/") || true
+      user=$(grep -Eo "user:? ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/user:? ['\"]([^'\"]+)['\"]/\1/") || true
+      server=$(grep -Eo "server:? ['\"][^'\"]+['\"]" "$file" 2>/dev/null | sed -E "s/server:? ['\"]([^'\"]+)['\"]/\1/") || true
     fi
   fi
 
-  [[ -z "$ssh_user" || -z "$ssh_server" ]] && fail "[$me] ERROR: No SSH user/server found in Capistrano config."
-
-  printf '(["user"]="%s" ["server"]="%s")\n' "$ssh_user" "$ssh_server"
+  [[ -z "$user" || -z "$server" ]] && fail "[$me] ERROR: No SSH user/server found in Kamal or Capistrano config."
+  return 0
 }
 
 # Extract database credentials from Rails database.yml.
@@ -99,6 +132,165 @@ get_db_credential() {
   " 2>/dev/null
 }
 
+# Stream a dump of the remote database into <dir>/dump.sql. Nothing is written
+# on the server; -C compresses the transfer.
+#
+# Usage: fetch_dump <dir>
+fetch_dump() {
+  local dir="$1" shown="$1"
+  [[ "$dir" == "$HOME"/* ]] && shown="~${dir#"$HOME"}"
+
+  log "[$user@$server] Dumping $remote_db into $shown/dump.sql"
+  # --single-transaction on both dumps: InnoDB tables are read from a snapshot instead of locked.
+  # shellcheck disable=SC2029
+  ssh -C "$user@$server" \
+    "mysqldump $remote_db --no-tablespaces --single-transaction --no-data --routines && \
+     mysqldump $remote_db --no-tablespaces --single-transaction --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']/}" \
+    >"$dir/dump.sql" || fail "[$me] ERROR: Dumping $remote_db failed."
+}
+
+# Fix MySQL 8 integer display width deprecation, but preserve tinyint(1) for Rails booleans.
+# Only CREATE TABLE statements are rewritten, so row data stays untouched.
+#
+# Usage: clean_dump <in.sql> <out.sql>
+clean_dump() {
+  sed -E '/^CREATE TABLE/,/^\)/ { s/tinyint\(1\)/TINYINT_BOOL_PLACEHOLDER/g; s/(tiny|small|medium|big)?int\([0-9]+\)/\1int/g; s/TINYINT_BOOL_PLACEHOLDER/tinyint(1)/g }' "$1" >"$2"
+}
+
+###############################################################################
+# Docker helpers
+###############################################################################
+# Everything below talks to the `db` service of the Compose stack selected by
+# COMPOSE_FILE/COMPOSE_PROJECT_NAME. Credentials never leave that container:
+# they are read from its own environment and passed through MYSQL_PWD.
+
+compose() {
+  docker compose --env-file /dev/null -f "$COMPOSE_FILE" -p "$COMPOSE_PROJECT_NAME" "$@"
+}
+
+db_env() {
+  compose exec -T db printenv "$1" </dev/null
+}
+
+db_mysql() {
+  compose exec -T db sh -c 'MYSQL_PWD=$MYSQL_ROOT_PASSWORD exec mysql -uroot "$@"' mysql "$@"
+}
+
+db_mysqldump() {
+  compose exec -T db sh -c 'MYSQL_PWD=$MYSQL_ROOT_PASSWORD exec mysqldump -uroot --no-tablespaces --set-gtid-purged=OFF "$@"' mysqldump "$@" </dev/null
+}
+
+valid_identifier() {
+  [[ "$1" =~ ^[A-Za-z0-9_]+$ ]] || fail "[$me] ERROR: Unsafe database name '$1'."
+  case "$1" in
+  mysql | sys | information_schema | performance_schema) fail "[$me] ERROR: Refusing system database '$1'." ;;
+  esac
+}
+
+# Validates arguments, the selected stack and the destinations. Runs before
+# any SSH/remote or destructive work; sets local_db, test_database, work, backups.
+docker_preflight() {
+  local cid labels grants
+
+  [[ -z "$remote_db" ]] && fail "[$me] ERROR: --remote-database is required with --docker."
+  [[ -z "${COMPOSE_FILE-}" || -z "${COMPOSE_PROJECT_NAME-}" ]] && fail "[$me] ERROR: --docker requires COMPOSE_FILE and COMPOSE_PROJECT_NAME."
+  [[ ! -f "$COMPOSE_FILE" ]] && fail "[$me] ERROR: COMPOSE_FILE '$COMPOSE_FILE' not found."
+  valid_identifier "$remote_db"
+
+  cid=$(compose ps -q db 2>/dev/null) || true
+  [[ -z "$cid" ]] && fail "[$me] ERROR: Service 'db' of project '$COMPOSE_PROJECT_NAME' is not running."
+  labels=$(docker inspect -f '{{index .Config.Labels "com.docker.compose.project"}}/{{index .Config.Labels "com.docker.compose.service"}}' "$cid")
+  [[ "$labels" != "$COMPOSE_PROJECT_NAME/db" ]] && fail "[$me] ERROR: Container $cid is '$labels', expected '$COMPOSE_PROJECT_NAME/db'."
+
+  local dev test
+  dev=$(db_env MYSQL_DATABASE) || true
+  test=$(db_env MYSQL_TEST_DATABASE) || true
+  [[ -z "$dev" || -z "$test" ]] && fail "[$me] ERROR: db service must declare MYSQL_DATABASE and MYSQL_TEST_DATABASE (not a development stack?)."
+  compose exec -T db sh -c 'test -n "$MYSQL_USER" && test -n "$MYSQL_PASSWORD" && test -n "$MYSQL_ROOT_PASSWORD"' </dev/null ||
+    fail "[$me] ERROR: db service must declare MYSQL_USER/MYSQL_PASSWORD and MYSQL_ROOT_PASSWORD."
+  valid_identifier "$dev"
+  valid_identifier "$test"
+  [[ "$dev" == "$test" ]] && fail "[$me] ERROR: Development and test database are both '$dev'."
+  [[ -n "$local_db" && "$local_db" != "$dev" ]] && fail "[$me] ERROR: --local-database '$local_db' does not match the container's MYSQL_DATABASE '$dev'."
+  local_db="$dev"
+  test_database="$test"
+
+  compose exec -T db sh -c 'command -v mysql mysqldump' </dev/null >/dev/null || fail "[$me] ERROR: mysql/mysqldump not found in the db container."
+  db_mysql -e 'SELECT 1' </dev/null >/dev/null || fail "[$me] ERROR: root authentication inside the db container failed."
+  # The app user (what Rails uses) must reach both databases and nothing broader.
+  grants=$(compose exec -T db sh -c 'MYSQL_PWD=$MYSQL_PASSWORD exec mysql -h127.0.0.1 -u"$MYSQL_USER" -N -e "SHOW GRANTS"' </dev/null | tr -d '\\') ||
+    fail "[$me] ERROR: app user authentication inside the db container failed."
+  grep -q "ON \`$local_db\`\.\*" <<<"$grants" && grep -q "ON \`$test_database\`\.\*" <<<"$grants" ||
+    fail "[$me] ERROR: app user has no grants on both $local_db and $test_database."
+  grep -q 'ALL PRIVILEGES ON \*\.\*' <<<"$grants" && fail "[$me] ERROR: app user has global privileges; refusing."
+
+  backups="$app/tmp/docker-db-import-backups"
+  mkdir -p "$backups" && chmod 700 "$backups"
+  [[ -w "$backups" ]] || fail "[$me] ERROR: $backups is not writable."
+}
+
+docker_confirm() {
+  local count answer
+
+  count=$(db_mysql -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema IN ('$local_db', '$test_database')" </dev/null)
+  log "Project:     $COMPOSE_PROJECT_NAME"
+  log "Development: $local_db (replaced with $remote_db)"
+  log "Test:        $test_database (replaced with schema + schema_migrations)"
+  [[ "$count" == 0 ]] && return 0
+
+  # Printed explicitly: read -p only shows its prompt on a terminal.
+  printf "[%s] These databases hold %s tables which will be DROPPED. Type 'yes' to continue: " "$me" "$count"
+  read -r answer || answer=
+  [[ -t 0 ]] || echo
+  [[ "$answer" == "yes" ]] || fail "[$me] Aborted, nothing changed."
+}
+
+# Backs up every existing destination to a unique 0600 file before dropping.
+docker_backup() {
+  local db file
+
+  for db in "$local_db" "$test_database"; do
+    if [[ "$(db_mysql -N -e "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$db'" </dev/null)" == 0 ]]; then
+      log "Backup: $db does not exist, skipping"
+      continue
+    fi
+    file=$(mktemp "$backups/$COMPOSE_PROJECT_NAME.$db.$(date +%Y%m%d-%H%M%S).XXXXXX.sql")
+    (umask 077 && db_mysqldump --single-transaction --routines --triggers "$db" >"$file") ||
+      fail "[$me] ERROR: Backup of $db failed, nothing dropped."
+    log "Backup: $file"
+  done
+}
+
+docker_import() {
+  local db
+
+  docker_confirm
+  work=$(mktemp -d "$app/tmp/docker-db-import.XXXXXX")
+  trap '[[ $? -eq 0 ]] || log "Failed. Kept $work and backups in $backups."' EXIT
+  fetch_dump "$work"
+  [[ -s "$work/dump.sql" ]] || fail "[$me] ERROR: Downloaded dump is empty, nothing dropped."
+  clean_dump "$work/dump.sql" "$work/dump.clean.sql"
+  docker_backup
+
+  log "Recreating $local_db and $test_database"
+  for db in "$local_db" "$test_database"; do
+    db_mysql -e "DROP DATABASE IF EXISTS \`$db\`; CREATE DATABASE \`$db\` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin" </dev/null
+  done
+
+  log "Importing dump.sql into $local_db"
+  db_mysql "$local_db" <"$work/dump.clean.sql"
+
+  log "Importing schema into $test_database"
+  db_mysqldump --no-data "$local_db" >"$work/dump.test.sql"
+  db_mysqldump "$local_db" schema_migrations >"$work/migrations.test.sql"
+  db_mysql "$test_database" <"$work/dump.test.sql"
+  db_mysql "$test_database" <"$work/migrations.test.sql"
+
+  rm -rf "$work"
+  log "Backups kept in $backups"
+  log "Restore one with: docker compose --env-file /dev/null -f '$COMPOSE_FILE' -p '$COMPOSE_PROJECT_NAME' exec -T db sh -c 'MYSQL_PWD=\$MYSQL_ROOT_PASSWORD exec mysql -uroot <database>' < <file>"
+}
+
 ###############################################################################
 # Argument parsing
 ###############################################################################
@@ -114,8 +306,7 @@ while [[ $# -gt 0 ]]; do
     ignore_tables="$1"
     ;;
   --docker)
-    docker_prefix="docker-compose run --rm rails"
-    mysqldump="mysqldump -h db"
+    docker=1
     ;;
   -l | --local-database)
     shift
@@ -154,26 +345,30 @@ done
 app="$(realpath "$app")"
 
 [[ ! -f "$app/config.ru" ]] && fail "[$me] ERROR: Not a Rails project (no config.ru found in $app)."
-[[ ! -f "$app/config/database.yml" ]] && fail "[$me] ERROR: No config/database.yml found. Create one first."
-[[ ! -f "$app/config/deploy.rb" ]] && fail "[$me] ERROR: No config/deploy.rb found. Capistrano config required for SSH credentials."
+[[ -z "$docker" && ! -f "$app/config/database.yml" ]] && fail "[$me] ERROR: No config/database.yml found. Create one first."
+[[ ! -f "$app/config/deploy.yml" && ! -f "$app/config/deploy.rb" ]] && fail "[$me] ERROR: No config/deploy.yml (Kamal) or config/deploy.rb (Capistrano) found for SSH credentials."
 
 ###############################################################################
 # Configuration
 ###############################################################################
 
-[[ ! -d "$app/db/dump" ]] && mkdir -p "$app/db/dump"
+if [[ -n "$docker" ]]; then
+  docker_preflight
+else
+  [[ ! -d "$app/db/dump" ]] && mkdir -p "$app/db/dump"
 
-# Get database names from database.yml if not provided
-[[ -z "$remote_db" ]] && remote_db=$(get_db_credential "$app" "production" "database")
-[[ -z "$local_db" ]] && local_db=$(get_db_credential "$app" "development" "database")
-test_database=$(get_db_credential "$app" "test" "database")
+  # Get database names from database.yml if not provided
+  [[ -z "$remote_db" ]] && remote_db=$(get_db_credential "$app" "$env" "database")
+  [[ -z "$local_db" ]] && local_db=$(get_db_credential "$app" "development" "database")
+  test_database=$(get_db_credential "$app" "test" "database")
 
-[[ -z "$local_db" ]] && fail "[$me] ERROR: No local database found in config/database.yml."
+  [[ -z "$local_db" ]] && fail "[$me] ERROR: No local database found in config/database.yml."
 
-if [[ -z "$remote_db" ]]; then
-  printf "[%s] WARNING: No $env database found in config/database.yml.\n" "$me"
-  read -r -p "[$me] Enter remote database name (default: website_prod): " remote_db
-  [[ -z "$remote_db" ]] && remote_db="website_prod"
+  if [[ -z "$remote_db" ]]; then
+    printf "[%s] WARNING: No $env database found in config/database.yml.\n" "$me"
+    read -r -p "[$me] Enter remote database name (default: website_db): " remote_db
+    [[ -z "$remote_db" ]] && remote_db="website_db"
+  fi
 fi
 
 # Build ignore tables string for mysqldump
@@ -184,57 +379,40 @@ for table in "${ignore_tables[@]}"; do
   [[ -n "$table" ]] && ignored_tables_string+=" --ignore-table=$remote_db.$table"
 done
 
-# Get SSH credentials
-declare -A ssh_credentials
-eval "ssh_credentials=$(get_ssh_credentials "$app")"
-user="${ssh_credentials[user]}"
-server="${ssh_credentials[server]}"
-remote_dir="db-import.$(date +%Y%m%d%H%M%S).$$"
+get_ssh_credentials "$app" "$env"
 
 ###############################################################################
 # Import process
 ###############################################################################
 
-log "[$user@$server] Dumping $remote_db ..."
-# Unique per run: an orphaned mysqldump from an earlier run would otherwise keep appending to the same file.
-# shellcheck disable=SC2029
-ssh "$user@$server" \
-  "mkdir $remote_dir && cd $remote_dir && \
-   mysqldump $remote_db --no-tablespaces --single-transaction --no-data --routines > dump.sql && \
-   mysqldump $remote_db --no-tablespaces --no-create-info --skip-triggers ${ignored_tables_string//[$'\t\r\n']/} >> dump.sql && \
-   tar -czf dump.sql.tar dump.sql" >/dev/null
-
-log "[$user@$server] Downloading dump.sql.tar"
-scp "$user@$server:$remote_dir/dump.sql.tar" "$app/db/dump/"
-
-log "Unpacking dump.sql.tar"
-tar -C "$app/db/dump/" -xzf "$app/db/dump/dump.sql.tar" >/dev/null 2>&1
-
-log "Recreating local databases"
-$docker_prefix $mysql -e "DROP DATABASE IF EXISTS $local_db"
-$docker_prefix $mysql -e "CREATE DATABASE $local_db"
-if [[ -n "$test_database" ]]; then
-  $docker_prefix $mysql -e "DROP DATABASE IF EXISTS $test_database"
-  $docker_prefix $mysql -e "CREATE DATABASE $test_database"
+if [[ -n "$docker" ]]; then
+  docker_import
+  log "Done!"
+  exit 0
 fi
 
-# Fix MySQL 8 integer display width deprecation, but preserve tinyint(1) for Rails booleans
-sed -E 's/tinyint\(1\)/TINYINT_BOOL_PLACEHOLDER/g; s/(tiny|small|medium|big)?int\([0-9]+\)/\1int/g; s/TINYINT_BOOL_PLACEHOLDER/tinyint(1)/g' "$app/db/dump/dump.sql" >"$app/db/dump/dump.clean.sql"
+fetch_dump "$app/db/dump"
+
+log "Recreating local databases"
+$mysql -e "DROP DATABASE IF EXISTS $local_db"
+$mysql -e "CREATE DATABASE $local_db"
+if [[ -n "$test_database" ]]; then
+  $mysql -e "DROP DATABASE IF EXISTS $test_database"
+  $mysql -e "CREATE DATABASE $test_database"
+fi
+
+clean_dump "$app/db/dump/dump.sql" "$app/db/dump/dump.clean.sql"
 
 log "Importing dump.sql into $local_db"
-$docker_prefix $mysql "$local_db" -e "source $app/db/dump/dump.clean.sql"
+$mysql "$local_db" -e "source $app/db/dump/dump.clean.sql"
 
 if [[ -n "$test_database" ]]; then
   log "Importing schema into $test_database"
-  $docker_prefix "$mysqldump" --no-data "$local_db" >"$app/db/dump/dump.test.sql"
-  $docker_prefix "$mysqldump" "$local_db" schema_migrations >"$app/db/dump/migrations.test.sql"
-  $docker_prefix $mysql "$test_database" -e "source $app/db/dump/dump.test.sql"
-  $docker_prefix $mysql "$test_database" -e "source $app/db/dump/migrations.test.sql"
+  $mysqldump --no-data "$local_db" >"$app/db/dump/dump.test.sql"
+  $mysqldump "$local_db" schema_migrations >"$app/db/dump/migrations.test.sql"
+  $mysql "$test_database" -e "source $app/db/dump/dump.test.sql"
+  $mysql "$test_database" -e "source $app/db/dump/migrations.test.sql"
 fi
-
-log "[$user@$server] Cleaning up"
-# shellcheck disable=SC2029
-ssh "$user@$server" "rm -rf $remote_dir"
 
 log "Cleaning up"
 rm -f "$app"/db/dump/*
