@@ -1,23 +1,24 @@
+import { readdirSync } from "node:fs"
 import { createConnection } from "node:net"
 import { join } from "node:path"
 
-// Pushes this OpenCode TUI's status to dotshell's ai-agents-monitor over its
-// Unix socket. Runs in the TUI process rather than the shared background
-// service, so the open connection doubles as the liveness signal: dotshell
-// drops the agent as soon as the TUI exits.
+// Pushes this OpenCode TUI's status to every reader socket in
+// $XDG_RUNTIME_DIR/agent-state/ (such as dotshell's ai-agents-monitor). Runs
+// in the TUI process rather than the shared background service, so each open
+// connection doubles as the liveness signal: a reader drops the agent as soon
+// as the TUI exits.
 // shortcut: tracks every session in this TUI's directory, so two TUIs in one
 // directory report the same status; follow ctx.ui.router if that matters.
 export default {
-  id: "dotshell-agents",
+  id: "agent-state",
   setup(ctx) {
     const directory = ctx.location?.directory ?? process.cwd()
     const sessions = new Map() // sessionID → "busy" | "retry"
     const waiting = new Set() // pending permission and form (question) IDs
     let failed = false
     let title = ""
-    let socket
+    const sockets = new Map() // reader socket path → connection
     let sent = ""
-    let stopped = false
 
     const status = () => {
       if (waiting.size) return "input"
@@ -26,30 +27,41 @@ export default {
       return states.length ? "busy" : "idle"
     }
 
+    const line = () => JSON.stringify({ provider: "opencode", pid: process.pid, cwd: directory, status: status(), title }) + "\n"
+
     const send = () => {
-      if (!socket || socket.connecting || socket.destroyed) return
-      const line = JSON.stringify({ provider: "opencode", pid: process.pid, cwd: directory, status: status(), title })
-      if (line === sent) return
-      sent = line
-      socket.write(line + "\n")
+      const next = line()
+      if (next === sent) return
+      sent = next
+      for (const socket of sockets.values()) {
+        if (!socket.connecting && !socket.destroyed) socket.write(next)
+      }
     }
 
-    const connect = () => {
+    // Connects to reader sockets that appeared since the last scan, so readers
+    // can start (or restart) at any time.
+    const connectAll = () => {
       const runtimeDir = process.env.XDG_RUNTIME_DIR || `/run/user/${process.getuid()}`
-      const conn = createConnection(join(runtimeDir, "dotshell-agents.sock"))
-      socket = conn
-      conn.unref()
-      conn.on("connect", () => {
-        sent = ""
-        send()
-      })
-      // Monitoring must not interrupt OpenCode; a missing dotshell just means retrying.
-      conn.on("error", () => {})
-      conn.on("close", () => {
-        if (socket !== conn) return
-        socket = undefined
-        if (!stopped) setTimeout(connect, 5000).unref()
-      })
+      const dir = join(runtimeDir, "agent-state")
+      let names
+      try {
+        names = readdirSync(dir)
+      } catch {
+        return // No reader has created the directory yet.
+      }
+      for (const name of names) {
+        const path = join(dir, name)
+        if (!name.endsWith(".sock") || sockets.has(path)) continue
+        const conn = createConnection(path)
+        sockets.set(path, conn)
+        conn.unref()
+        conn.on("connect", () => conn.write(line()))
+        // Monitoring must not interrupt OpenCode; a dead reader just means retrying.
+        conn.on("error", () => {})
+        conn.on("close", () => {
+          if (sockets.get(path) === conn) sockets.delete(path)
+        })
+      }
     }
 
     const handlers = {
@@ -87,12 +99,15 @@ export default {
       }),
     )
 
-    connect()
+    connectAll()
+    const scan = setInterval(connectAll, 5000)
+    scan.unref()
 
     return () => {
-      stopped = true
+      clearInterval(scan)
       for (const off of unsubscribe) off()
-      socket?.destroy()
+      for (const socket of sockets.values()) socket.destroy()
+      sockets.clear()
     }
   },
 }
