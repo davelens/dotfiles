@@ -43,4 +43,3 @@ You can symlink a directory with some of your personal scripts into `bin/utiliti
 ```bash
 source ~/.dotfiles/config/macos/defaults.sh
 ```
-
