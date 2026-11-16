@@ -26,11 +26,11 @@ echo
 # all containers, also stopped ones. Project is the Compose project, "anonymous"
 # for volumes that a container made without a name, or "-".
 unused=$(docker system df -v --format '{{json .Volumes}}' | jq -r '
-  def bytes: (capture("^(?<n>[0-9.]+)(?<u>[kMGT]?B)$") | (.n | tonumber) * {"B": 1, "kB": 1e3, "MB": 1e6, "GB": 1e9, "TB": 1e12}[.u]) // 0;
+  def bytes: (capture("^(?<n>[0-9.]+)(?<u>[kMGT]?B)$") | (.n | tonumber) * {"B": 1, "kB": 1e3, "MB": 1e6, "GB": 1e9, "TB": 1e12}[.u]) // -1;
   .[] | select(.Links == "0")
   | ((.Labels | capture("com.docker.compose.project=(?<p>[^,]+)") | .p)
      // (if (.Labels | test("com.docker.volume.anonymous")) then "anonymous" else "-" end)) as $project
-  | [(.Size | bytes), .Size, $project, .Name] | @tsv' | sort -rn)
+  | [(.Size | bytes | floor), .Size, $project, .Name] | @tsv' | sort -rn)
 
 if [[ -z "$unused" ]]; then
   echo "No unused volumes."
@@ -40,21 +40,31 @@ else
     created[$name]=${date:0:10}
   done < <(cut -f4 <<<"$unused" | xargs docker volume inspect -f '{{.Name}} {{.CreatedAt}}')
 
-  rows=$(while IFS=$'\t' read -r _ size project name; do
-    printf '%-9s %-10s %-20s %s\n' "$size" "${created[$name]}" "$project" "$name"
+  # safe: under 1 kB, so practically empty (for example an empty Redis dump.rdb).
+  # cache: the name says it holds data that its tool can download or build again.
+  # check: can hold data; look at the preview first.
+  rows=$(while IFS=$'\t' read -r bytes size project name; do
+    if (( bytes >= 0 && bytes < 1000 )); then
+      verdict=safe
+    elif [[ "$name" =~ cache|tmp|temp ]]; then
+      verdict=cache
+    else
+      verdict=check
+    fi
+    printf '%-6s %-9s %-10s %-20s %s\n' "$verdict" "$size" "${created[$name]}" "$project" "$name"
   done <<<"$unused")
 
   if [[ -t 0 ]] && command_exists 'fzf'; then
     # The preview lists the top of each volume, for example ib_* files for MySQL.
     selected=$(fzf --multi --reverse \
-      --header $'Unused volumes. Tab: select, Enter: remove selected, Esc: keep all\nSIZE      CREATED    PROJECT              NAME' \
+      --header $'Unused volumes. Tab: select, Enter: remove selected, Esc: keep all\nsafe: under 1 kB, cache: name says cache, check: can hold data, see preview\nSAFE   SIZE      CREATED    PROJECT              NAME' \
       --preview 'docker run --rm -q -v {-1}:/v:ro alpine:3 ls -A /v' \
       <<<"$rows" | awk '{print $NF}') || true
     # shellcheck disable=SC2086 # One volume name per word.
     [[ -n "$selected" ]] && docker volume rm $selected
   else
     echo "Unused volumes (remove with: docker volume rm <name>):"
-    echo "SIZE      CREATED    PROJECT              NAME"
+    echo "SAFE   SIZE      CREATED    PROJECT              NAME"
     echo "$rows"
   fi
 fi
