@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -e
+
+# Frees disk space without touching data: removes build cache and images that
+# no container uses. Then it lists the volumes that no container (running or
+# stopped) mounts, and removes only the volumes you select.
+# See `utility docker reset` to remove everything.
+#
+# Usage: utility docker clean [AGE]
+# AGE keeps build cache and images newer than this Go duration (default 168h, one week).
+# Example: utility docker clean 24h
+
+! command_exists 'docker' && fail "ERROR: Docker is not installed."
+docker info &>/dev/null || fail "ERROR: Docker is not running."
+
+age="${1:-168h}"
+[[ "$age" =~ ^[0-9]+(h|m|s)$ ]] || fail "ERROR: AGE must look like 168h, 30m or 90s, got: $age"
+
+docker system df
+echo
+docker builder prune -f --filter "until=$age"
+docker image prune -a -f --filter "until=$age"
+echo
+
+# Lines of "bytes<TAB>size<TAB>project<TAB>name", largest first. Links counts
+# all containers, also stopped ones. Project is the Compose project, "anonymous"
+# for volumes that a container made without a name, or "-".
+unused=$(docker system df -v --format '{{json .Volumes}}' | jq -r '
+  def bytes: (capture("^(?<n>[0-9.]+)(?<u>[kMGT]?B)$") | (.n | tonumber) * {"B": 1, "kB": 1e3, "MB": 1e6, "GB": 1e9, "TB": 1e12}[.u]) // 0;
+  .[] | select(.Links == "0")
+  | ((.Labels | capture("com.docker.compose.project=(?<p>[^,]+)") | .p)
+     // (if (.Labels | test("com.docker.volume.anonymous")) then "anonymous" else "-" end)) as $project
+  | [(.Size | bytes), .Size, $project, .Name] | @tsv' | sort -rn)
+
+if [[ -z "$unused" ]]; then
+  echo "No unused volumes."
+else
+  declare -A created
+  while read -r name date; do
+    created[$name]=${date:0:10}
+  done < <(cut -f4 <<<"$unused" | xargs docker volume inspect -f '{{.Name}} {{.CreatedAt}}')
+
+  rows=$(while IFS=$'\t' read -r _ size project name; do
+    printf '%-9s %-10s %-20s %s\n' "$size" "${created[$name]}" "$project" "$name"
+  done <<<"$unused")
+
+  if [[ -t 0 ]] && command_exists 'fzf'; then
+    # The preview lists the top of each volume, for example ib_* files for MySQL.
+    selected=$(fzf --multi --reverse \
+      --header $'Unused volumes. Tab: select, Enter: remove selected, Esc: keep all\nSIZE      CREATED    PROJECT              NAME' \
+      --preview 'docker run --rm -q -v {-1}:/v:ro alpine:3 ls -A /v' \
+      <<<"$rows" | awk '{print $NF}') || true
+    # shellcheck disable=SC2086 # One volume name per word.
+    [[ -n "$selected" ]] && docker volume rm $selected
+  else
+    echo "Unused volumes (remove with: docker volume rm <name>):"
+    echo "SIZE      CREATED    PROJECT              NAME"
+    echo "$rows"
+  fi
+fi
+
+echo
+docker system df
