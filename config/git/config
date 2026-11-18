@@ -1,6 +1,7 @@
 [core]
   editor = dvim
   pager = delta --side-by-side
+  hooksPath = ~/.config/git/hooks
 
 [include]
   path = "~/.config/git/config.env"

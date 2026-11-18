@@ -1,0 +1,5 @@
+#!/bin/sh
+# core.hooksPath makes git skip .git/hooks, so run the repo's own hook here.
+hook="$(git rev-parse --git-common-dir)/hooks/$(basename "$0")"
+[ -x "$hook" ] && exec "$hook" "$@"
+exit 0

@@ -1,0 +1,11 @@
+#!/bin/sh
+# Copy the untracked files that .worktreeinclude lists into a new worktree.
+# git worktree add runs this with an all-zero old HEAD.
+main=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")
+if [ -z "$(printf %s "$1" | tr -d 0)" ] && [ "$main" != "$(pwd -P)" ] && [ -f "$main/.worktreeinclude" ]; then
+  git -C "$main" ls-files --others --ignored --exclude-from="$main/.worktreeinclude" |
+    while IFS= read -r f; do
+      [ -e "$f" ] || { mkdir -p "$(dirname "$f")" && cp "$main/$f" "$f"; }
+    done
+fi
+. "$(dirname "$0")/_local"
