@@ -110,6 +110,48 @@ create_github_repo() {
   $print_status -i ok "Created private GitHub repository $namespace"
 }
 
+create_forgejo_repo() {
+  local namespace="$1"
+  local destination="$2"
+  local host="$3"
+  local user
+
+  user=$(fj -H "$host" whoami 2>/dev/null | sed -n 's/^currently signed into \(.*\)@.*/\1/p')
+  if [ -z "$user" ]; then
+    $print_status -i error "fj is not signed into $host; keeping the local repository"
+    return 1
+  fi
+
+  # fj only creates repos under the signed-in user
+  if [ "${namespace%%/*}" != "$user" ]; then
+    $print_status -i error "fj can only create repos for $user on $host, not ${namespace%%/*}; keeping the local repository"
+    return 1
+  fi
+
+  $print_status -i pending "Creating private Forgejo repository $namespace on $host..."
+  if ! fj -H "$host" -C "$destination" repo create "${namespace##*/}" --private --remote origin --ssh ||
+    ! git -C "$destination" push -qu origin master; then
+    $print_status -i error "Failed to create $namespace on $host; keeping the local repository"
+    return 1
+  fi
+
+  if ! fj -H "$host" repo edit "$namespace" --default-branch master >/dev/null; then
+    $print_status -i error "Created $namespace, but failed to set master as its default branch"
+    return 1
+  fi
+
+  $print_status -i ok "Created private Forgejo repository $namespace on $host"
+}
+
+# Prints "github", a Forgejo host from `fj auth list`, or nothing for local only.
+choose_remote_host() {
+  {
+    echo github
+    command -v fj &>/dev/null && fj --style minimal auth list 2>/dev/null
+    echo none
+  } | fzf --prompt="Create a private repository on: " | grep -vx none
+}
+
 confirm_repo_creation() {
   local namespace="$1"
   local answer
@@ -171,7 +213,7 @@ detect_framework() {
 ###############################################################################
 
 main() {
-  local target destination session bootstrap=0 start_server clone_status editor_file answer
+  local target destination session bootstrap=0 start_server clone_status editor_file host
 
   while [ $# -gt 0 ]; do
     case "$1" in
@@ -224,10 +266,12 @@ main() {
       create_repo "$target" "$destination"
       editor_file="README.md"
 
-      answer=$($prompt_user -yn "[$me] Create a private GitHub repository for $target?")
-      if [[ "$answer" =~ [Yy] ]]; then
-        create_github_repo "$target" "$destination" || true
-      fi
+      host=$(choose_remote_host) || true
+      case "$host" in
+      "") ;;
+      github) create_github_repo "$target" "$destination" || true ;;
+      *) create_forgejo_repo "$target" "$destination" "$host" || true ;;
+      esac
     fi
   fi
 
